@@ -1,0 +1,1064 @@
+<!-- 
+
+  Se prohibe el uso total o parcial del contenido de este fichero con
+  fines comerciales o no comerciales sin autorizaci�n previa del autor.
+  
+  http://www.inmensia.com/juegos
+
+-->
+
+<html>
+
+<head>
+<title>Arkanoid v1.2</title>
+<meta name="keywords" content="free,games,juegos,arkanoid,breakout,javascript" />
+</head>
+
+<style>
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial;
+  font-size: 12px;
+  font-weight: bold;
+  color: #FFFFFF;
+  background: #000000;
+}
+
+.div-score {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 150px;
+  height: 20px;
+  color: #FFFFFF;
+  background: #3F3F7F;
+}
+.score {
+  position: absolute;
+  left: 2px;
+  top: 3px;
+  text-align: left;
+}
+.hi-score {
+  position: absolute;
+  right: 2px;
+  top: 3px;
+  text-align: right;
+}
+
+.div-board {
+  position: absolute;
+  left: 0px;
+  top: 20px;
+  width: 150px;
+  height: 200px;
+  color: #FFFFFF;
+  background: #000000;
+}
+
+.div-help {
+  position: absolute;
+  left: 0px;
+  top: 220px;
+  width: 150px;
+  height: 20px;
+  text-align: center;
+  color: #FFFFFF;
+  background: #3F3F7F;
+}
+.help-message {
+  color: #FFFFFF;
+  background: #3F3F7F;
+}
+.help-tip {
+  color: #00FFFF;
+  background: #3F3F7F;
+}
+
+.brick-red {
+  position: absolute;
+  overflow: hidden;
+  color: #000000;
+  background: #FF0000;
+}
+.brick-green {
+  position: absolute;
+  overflow: hidden;
+  color: #000000;
+  background: #00FF00;
+}
+.brick-cyan {
+  position: absolute;
+  overflow: hidden;
+  color: #000000;
+  background: #00FFFF;
+}
+.brick-magenta {
+  position: absolute;
+  overflow: hidden;
+  color: #000000;
+  background: #FF00FF;
+}
+
+.stick {
+  position: absolute;
+  overflow: hidden;
+  color: #000000;
+  background: #FFFF00;
+}
+
+.ball {
+  position: absolute;
+  overflow: hidden;
+  color: #000000;
+  background: #FFFFFF;
+}
+
+.item {
+  position: absolute;
+  overflow: hidden;
+  color: #000000;
+  background: #FF9900;
+  font-size: 7px;
+  text-align: center;
+}
+
+.div-addfreestats {
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  display: none; 
+}
+
+</style>
+
+<body>
+
+<div class="div-game">
+<div id="div-score" class="div-score">
+<span id="score" class="score"></span>
+<span id="hi-score" class="hi-score"></span>
+</div>
+<div id="div-board" class="div-board">
+</div>
+<div id="div-help" class="div-help">
+<span id="help" class="help"></span>
+</div>
+</div>
+
+<div id="div-addfreestats" class="div-addfreestats">
+<!-- ADDFREESTATS.COM AUTOCODE V4.0 -->
+<script type="text/javascript">
+<!--
+var AFS_Account="00705080";
+var AFS_Tracker="auto";
+var AFS_Server="www7";
+var AFS_Page="DetectName";
+var AFS_Url="DetectUrl";
+// -->
+</script>
+<script type="text/javascript" src="http://www7.addfreestats.com/cgi-bin/afstrack.cgi?usr=00705080">
+</script>
+<noscript>
+<a href="http://www.addfreestats.com" >
+<img src="http://www7.addfreestats.com/cgi-bin/connect.cgi?usr=00705080Pauto" border=0 title="AddFreeStats.com Free Web Stats!"></a>
+</noscript>
+<!-- ENDADDFREESTATS.COM AUTOCODE V4.0  -->
+</div>
+
+<script type="text/javascript">
+
+//
+// Game
+//
+function Game() {
+  var self = this;
+  
+  this.score = new Score;
+  this.board = new Board;
+  this.help  = new Help;
+
+  this.state     = 1;
+  this.timeEvent = null;
+
+  this.lives = 3;
+  
+//
+// Control
+//
+  this.run = function() {
+    self.init();
+    self.registerKeyboard();
+    self.registerMouse();
+    self.activeTimer();
+  }
+
+  this.init = function() {
+    self.score.init();
+    self.board.init();
+    self.help.init();
+    
+    self.state = 1;
+  }
+  
+  this.start = function() {
+    self.lives = 3;
+    
+    self.score.start();
+    self.board.start();
+    self.help.start();
+    
+    self.state = 2;
+  }
+
+  this.stop = function() {
+    self.score.stop();
+    self.board.stop();
+    self.help.stop();
+    
+    self.state = 4;
+    self.timeEvent = new Date().getTime();
+  }
+
+//
+// Keyboard
+//
+  this.registerKeyboard = function() {
+    document.onkeydown = self.onKeyDown;
+  }
+  
+  this.onKeyDown = function(e) {
+    var keyCode = self.getKeyCode(e);
+    switch(self.state) {
+      case 1: self.onKeyMenu(keyCode); break;
+      case 2: self.onKeyGame(keyCode); break;
+    }
+  }
+
+  this.onKeyMenu = function(keyCode) {
+    switch(keyCode) {
+      case 32: self.start(); break;
+    }
+  }
+  
+  this.onKeyGame = function(keyCode) {
+    self.board.onKeyDown(keyCode);
+  }
+  
+  this.getKeyCode = function(e) {
+    return(e? e.keyCode: window.event.keyCode);
+  }
+
+//
+// Mouse
+//
+  this.registerMouse = function() {
+    document.onmousemove = self.onMouseMove;
+  }
+
+  this.onMouseMove = function(e) {
+    switch(self.state) {
+      case 2:
+      case 3:
+        self.board.onMouseMove( self.getClientX(e), self.getClientY(e) ); 
+        break;
+    }
+  }
+
+  this.getButton = function(e) {
+    return(e? e.which: window.event.button);
+  }
+
+  this.getClientX = function(e) {
+    return(e? e.pageX: window.event.clientX);
+  }
+  
+  this.getClientY = function(e) {
+    return(e? e.pageY: window.event.clientY);
+  }
+
+//
+// Timer
+//
+  this.activeTimer = function() {
+    setTimeout(self.onTimer, 35);
+  }
+  
+  this.onTimer = function() {
+    switch(self.state) {
+      case 2: self.onTimerGame();    break;
+      case 3: self.onTimerRestart(); break;
+      case 4: self.onTimerStop();    break;
+    }
+    self.activeTimer();
+  }
+
+  this.onTimerGame = function() {
+    self.help.onTimer();
+    self.board.onTimer();
+    self.score.addToScore( self.board.getPoints() );
+    self.board.removeBrokenOut();
+    
+    if ( self.board.bricksOut() )
+      self.board.nextLevel();
+      
+    if ( self.board.ballsOut() ) {
+      -- self.lives;
+      if (self.lives == 0) {
+        self.stop();
+      }
+      else {
+        self.state = 3;
+        self.timeEvent = new Date().getTime();
+      }
+    }
+  }
+  
+  this.onTimerRestart = function() {
+    self.help.display( String(self.lives) + " ball" + (self.lives > 1?"s":"")+ " left");
+    var currentTime = new Date().getTime();
+    if (currentTime - self.timeEvent > 2000) {
+      self.board.restart();
+      self.state = 2;
+    }
+  }
+  
+  this.onTimerStop = function() {
+    var currentTime = new Date().getTime();
+    if (currentTime - self.timeEvent > 2000) {
+      self.help.display("Press space bar to start");
+      self.init();
+    }
+  }
+}
+
+//
+// Score
+//
+function Score() {
+  this.divScore   = document.getElementById("score");
+  this.divHiScore = document.getElementById("hi-score");
+  
+  this.score   = 0;
+  this.hiScore = 0;
+  
+  this.init = function() {
+    this.score = 0;
+    this.loadHiScore();
+    this.display();
+  }
+
+  this.start = function() {
+    this.score = 0;
+    this.loadHiScore();
+    this.display();
+  }
+
+  this.stop = function() {
+    if (this.score > this.hiScore) {
+      this.hiScore = this.score;
+      this.saveHiScore();
+    }
+  }
+
+  this.addToScore = function(points) {
+    this.score += points;
+    this.display();
+  }
+
+  this.display = function() {
+    this.displayScore();
+    this.displayHiScore();
+  }
+  
+  this.displayScore = function() {
+    var text = this.formatScore(this.score);
+    if (text != this.divScore.innerHTML)
+      this.divScore.innerHTML = text;
+  }
+  
+  this.displayHiScore = function() {
+    var text = this.formatScore(this.hiScore);
+    if (text != this.divHiScore.innerHTML)
+      this.divHiScore.innerHTML = text;
+  }
+
+  this.loadHiScore = function() {
+    var from = document.cookie.indexOf("hiscore=");
+    if (from != -1) {
+      from += "hiscore=".length;
+      var to = document.cookie.indexOf(";", from);
+      if (to == -1)
+        to = document.cookie.length;
+      this.hiScore = Number( unescape( document.cookie.substring(from, to) ) );
+    }
+  }
+
+  this.saveHiScore = function() {
+    var expires = new Date;
+    expires.setFullYear( expires.getFullYear() + 1)
+    document.cookie = "hiscore=" + escape( String(this.hiScore) )
+                    + ";expires=" + expires.toGMTString();
+  }
+
+  this.formatScore = function(points) {
+    var digits = String(points);
+    while(digits.length != 6)
+      digits = "0" + digits;
+    return(digits);
+  }
+}
+
+//
+// Help
+//
+function Help() {
+  this.divHelp = document.getElementById("help");
+  
+  this.timeDisplay = null;
+
+  this.init = function() {
+    this.display("Press space bar to start");
+  }
+
+  this.start = function() {
+    this.display("Move mouse to play", "help-tip");
+  }
+
+  this.stop = function() {
+    this.display("Game Over");
+  }
+
+  this.onTimer = function() {
+    var currentTime = new Date().getTime();
+    if (currentTime - this.timeDisplay > 4000) {
+      this.display("");
+    }
+  }
+  
+  this.display = function(text, className) {
+    if (this.divHelp.className != className)
+      this.divHelp.className = className || "help-message";
+    if (this.divHelp.innerHTML != text)
+      this.divHelp.innerHTML = text;
+
+    this.timeDisplay = new Date().getTime();
+  }
+}
+
+//
+// Board
+//
+function Board() {
+  this.divBoard = document.getElementById("div-board");
+  
+  this.minLeft = 0;
+  this.maxLeft = this.divBoard.clientWidth;
+  this.minTop  = 0;
+  this.maxTop  = this.divBoard.clientHeight;
+
+  this.level = 1;
+  
+  this.bricks = new Array();
+  this.stick  = null;
+  this.balls  = new Array();
+  this.items  = new Array();
+
+//
+// Control
+//
+  this.init = function() {
+    this.level = 1;
+    this.destroy();
+    this.createBricks();
+    this.createStick();
+    this.display();
+  }
+  
+  this.start = function() {
+    this.level = 1;
+    this.destroy();
+    this.createBricks();
+    this.createStick();
+    this.createBall();
+    this.display();
+  }
+  
+  this.stop = function() {
+  }
+
+  this.nextLevel = function() {
+    this.level ++;
+    if (this.level > 3)
+      this.level = 1;
+    
+    this.destroyBalls();
+    this.destroyItems();
+    this.createBricks();
+    this.createBall();
+    this.display();
+  }
+  
+  this.restart = function() {
+    this.destroyBalls();
+    this.destroyItems();
+    this.createBall();
+    this.display();
+  }
+  
+  this.getPoints = function() {
+    return( this.getPointsBricks() + this.getPointsItems() );
+  }
+  
+  this.getPointsBricks = function() {
+    var points = 0;
+    for (var i in this.bricks)
+      if (this.bricks[i].broken)
+        points += this.bricks[i].getPoints();
+    return(points);
+  }
+
+  this.getPointsItems = function() {
+    var points = 0;
+    for (var i in this.items)
+      if (this.items[i].broken) {
+        points += this.items[i].getPoints();
+        if (this.items[i].effect == "B") {
+          this.createBall();
+          this.divBoard.appendChild(this.balls[this.balls.length - 1].div);
+        }
+      }
+    return(points);
+  }
+
+  this.removeBrokenOut = function() {
+    this.removeBricks();
+    this.removeItems();
+    this.removeBalls();
+  }
+  
+  this.removeBricks = function() {
+    var intact = new Array;
+    for (var i in this.bricks)
+      if (this.bricks[i].broken)
+        this.divBoard.removeChild(this.bricks[i].div);
+      else
+        intact.push(this.bricks[i]);
+    this.bricks = intact;
+  }
+
+  this.removeItems = function() {
+    var intact = new Array;
+    for (var i in this.items)
+      if (this.items[i].broken || this.itemOut(i) )
+        this.divBoard.removeChild(this.items[i].div);
+      else
+        intact.push(this.items[i]);
+    this.items = intact;
+  }
+
+  this.itemOut = function(i) {
+    return(this.items[i].top + this.items[i].height == this.maxTop);
+  }
+  
+  this.removeBalls = function() {
+    var intact = new Array;
+    for (var i in this.balls)
+      if ( this.ballOut(i) )
+        this.divBoard.removeChild(this.balls[i].div);
+      else
+        intact.push(this.balls[i]);
+    this.balls = intact;
+  }
+
+  this.ballOut = function(i) {
+    return(this.balls[i].top + this.balls[i].height == this.maxTop);
+  }
+  
+  this.ballsOut = function() {
+    return(this.balls.length == 0);
+  }
+  
+  this.bricksOut = function() {
+    return(this.bricks.length == 0);
+  }
+  
+//
+// Events
+//
+  this.onKeyDown = function(keyCode) {
+  }
+
+  this.onMouseMove = function(clientX, clientY) {
+    this.stick.onMouseMove(clientX, clientY);
+  }
+
+  this.onTimer = function() {
+    for (var i in this.balls)
+      this.balls[i].onTimer();
+    for (var i in this.items)
+      this.items[i].onTimer();
+  }
+
+//
+// Level
+//
+  this.createBricks = function() {
+    this["createBricks" + String(this.level)]();
+  }
+  
+  this.createBricks1 = function() {
+    var rows    = 4,  columns = 7;
+    var width   = 20, height  = 5;
+    var minLeft = 2,  minTop  = 20;
+
+    for (var i = 0; i < rows; ++ i)
+      for (var j = 0; j < columns; ++ j) {
+        var id        = "brick" + String( (i * rows) + j);
+        var className = "brick-red";
+        var left      = minLeft + (j * (width + 1) );
+        var top       = minTop + (i * (height + 1) );
+        
+        this.bricks.push( new Brick( this.createDiv(id, className, left, top, width, height) ) );
+      }
+  }
+
+  this.createBricks2 = function() {
+    var rows    = 3,  columns = 7;
+    var width   = 20, height = 5;
+    var minLeft = 2,  minTop = 20;
+    
+    for (var i = 0; i < rows; ++ i)
+      for (var j = 0; j < columns; ++ j) {
+        var id        = "brick" + String( (i * rows) + j);
+        var className = "brick-cyan";
+        var left      = minLeft + (j * (width + 1) );
+        var top       = minTop + (i * (height + 1) );
+        
+        this.bricks.push( new Brick( this.createDiv(id, className, left, top, width, height) ) );
+      }
+
+    minTop = 60;
+    
+    for (var i = 0; i < rows; ++ i)
+      for (var j = 0; j < columns; ++ j) {
+        var id        = "brick" + String( this.bricks.length + (i * rows) + j);
+        var className = "brick-green";
+        var left      = minLeft + (j * (width + 1) );
+        var top       = minTop + (i * (height + 1) );
+        
+        this.bricks.push( new Brick( this.createDiv(id, className, left, top, width, height) ) );
+      }
+  }
+
+  this.createBricks3 = function() {
+    var rows    = 2,  columns = 7;
+    var width   = 20, height = 5;
+    var minLeft = 2,  minTop = 20;
+    
+    for (var i = 0; i < rows; ++ i)
+      for (var j = 0; j < columns; ++ j) {
+        var id        = "brick" + String( (i * rows) + j);
+        var className = "brick-magenta";
+        var left      = minLeft + (j * (width + 1) );
+        var top       = minTop + (i * (height + 1) );
+        
+        this.bricks.push( new Brick( this.createDiv(id, className, left, top, width, height) ) );
+      }
+    
+    minTop = 50;
+    
+    for (var i = 0; i < rows; ++ i)
+      for (var j = 0; j < columns; ++ j) {
+        var id        = "brick" + String( this.bricks.length + (i * rows) + j);
+        var className = "brick-magenta";
+        var left      = minLeft + (j * (width + 1) );
+        var top       = minTop + (i * (height + 1) );
+        
+        this.bricks.push( new Brick( this.createDiv(id, className, left, top, width, height) ) );
+      }
+
+    minTop = 80;
+    
+    for (var i = 0; i < rows; ++ i)
+      for (var j = 0; j < columns; ++ j) {
+        var id        = "brick" + String( this.bricks.length + (i * rows) + j);
+        var className = "brick-magenta";
+        var left      = minLeft + (j * (width + 1) );
+        var top       = minTop + (i * (height + 1) );
+        
+        this.bricks.push( new Brick( this.createDiv(id, className, left, top, width, height) ) );
+      }
+  }
+
+  this.createStick = function() {
+    this.stick = new Stick(this, this.createDiv("stick1", "stick", 60, 190, 20, 5) );
+  }
+  
+  this.createBall = function() {
+    var id   = "ball" + String( new Date().getTime() );
+    var left = 70 + Math.round( Math.random() * 50);
+    this.balls.push( new Ball(this, this.createDiv(id, "ball", left, 180, 4, 4) ) );
+  }
+
+  this.createItem = function(left, top) {
+    if ( (this.items.length < 3) && (Math.random() < 0.5) ) {
+      var id = "item" + String( new Date().getTime() );
+      this.items.push( new Item(this, this.createDiv(id, "item", left, top, 10, 8) ) );
+      this.divBoard.appendChild(this.items[this.items.length - 1].div);
+    }
+  }
+
+  this.createDiv = function(id, className, left, top, width, height) {
+    var div = document.createElement("div");
+    
+    div.id           = id;
+    div.className    = className;
+    div.style.left   = String(left)   + "px";
+    div.style.top    = String(top)    + "px";
+    div.style.width  = String(width)  + "px";
+    div.style.height = String(height) + "px";
+    
+    return(div);
+  }
+
+  this.destroy = function() {
+    this.destroyBalls();
+    this.destroyItems();
+    this.destroyBricks();
+    this.destroyStick();
+  }
+  
+  this.destroyBricks = function() {
+    for (var i in this.bricks)
+      this.divBoard.removeChild(this.bricks[i].div);
+    this.bricks.length = 0;
+  }
+  
+  this.destroyStick = function() {
+    if (this.stick)
+      this.divBoard.removeChild(this.stick.div);
+    this.stick = null;    
+  }
+
+  this.destroyBalls = function() {
+    for (var i in this.balls)
+      this.divBoard.removeChild(this.balls[i].div);
+    this.balls.length = 0;
+  }
+
+  this.destroyItems = function() {
+    for (var i in this.items)
+      this.divBoard.removeChild(this.items[i].div);
+    this.items.length = 0;
+  }
+
+  this.display = function() {
+    this.displayBricks();
+    this.displayStick();
+    this.displayItems();
+    this.displayBalls();
+  }
+
+  this.displayBricks = function() {
+    for (var i in this.bricks)
+      this.divBoard.appendChild(this.bricks[i].div);
+  }
+
+  this.displayStick = function() {
+    if (this.stick)
+      this.divBoard.appendChild(this.stick.div);
+  }
+
+  this.displayBalls = function() {
+    for (var i in this.balls)
+      this.divBoard.appendChild(this.balls[i].div);
+  }
+
+  this.displayItems = function() {
+    for (var i in this.items)
+      this.divBoard.appendChild(this.items[i].div);
+  }
+
+//
+// Hits
+//
+  this.checkHits = function(left, top, width, height) {
+    var hit = false;
+    hit |= this.checkHitBricks(left, top, width, height);
+    hit |= this.checkHitStick(left, top, width, height);
+    return(hit);
+  }
+  
+  this.checkHitBricks = function(left, top, width, height) {
+    var hit = false;
+    for (var i in this.bricks)
+      if ( this.isHitting(this.bricks[i], left, top, width, height) ) {
+        this.bricks[i].broken = true;
+        this.createItem(this.bricks[i].left, this.bricks[i].top);
+        hit = true;   
+      }
+    return(hit);
+  }
+  
+  this.checkHitStick = function(left, top, width, height) {
+    return( this.isHitting(this.stick, left, top, width, height) );
+  }
+
+  this.checkHitBalls = function(left, top, width, height) {
+    for (var i in this.balls)
+      if ( this.isHitting(this.balls[i], left, top, width, height) )
+        return(true);
+    return(false);
+  }
+ 
+  this.isHitting = function(token, left, top, width, height) {
+    return( (token.left                < left + width ) &&
+            (token.left + token.width  > left         ) &&
+            (token.top                 < top  + height) &&
+            (token.top  + token.height > top          ) );
+  }
+}
+
+//
+// Brick
+//
+function Brick(div) {
+  this.div = div;
+
+  this.left   = pxToNumber(this.div.style.left);
+  this.top    = pxToNumber(this.div.style.top);
+  this.width  = pxToNumber(this.div.style.width);
+  this.height = pxToNumber(this.div.style.height);
+
+  this.broken = false;
+
+  this.getPoints = function() {
+     return(7);
+  }
+}
+
+//
+// Stick
+//
+function Stick(board, div) {
+  this.board = board;
+  this.div   = div;
+  
+  this.left   = pxToNumber(this.div.style.left);
+  this.top    = pxToNumber(this.div.style.top);
+  this.width  = pxToNumber(this.div.style.width);
+  this.height = pxToNumber(this.div.style.height);
+  
+  this.speed = 5;
+
+  this.onMouseMove = function(clientX, clientY) {
+    if (clientX - this.left > this.speed)
+      this.move(this.speed);
+    if (clientX - this.left < this.speed)
+      this.move(-this.speed);
+  }
+  
+  this.move = function(speed) {
+    var left    = this.left;
+    var newLeft = this.left;
+
+    var deltaLeft = this.getNewLeft(speed) - this.left;
+    var delta     = Math.abs(deltaLeft);
+
+    for (var i = 0; i < delta; ++ i) {
+      left += (deltaLeft / delta);
+      if ( this.board.checkHitBalls(left, this.top, this.width, this.height) ) {
+        break;
+      }
+        
+      newLeft = left;
+    }
+
+    this.moveLeft(newLeft);
+  }
+
+  this.getNewLeft = function(delta) {
+    var newLeft = Math.max(this.left + delta, this.board.minLeft);
+    return( Math.min(newLeft, this.board.maxLeft - this.width) );
+  }
+
+  this.moveLeft = function(newLeft) {
+    if (this.left != newLeft) {
+      this.left = newLeft;
+      this.div.style.left = String(this.left) + "px";
+    }
+  }
+}
+
+//
+// Ball
+//
+function Ball(board, div) {
+  this.board = board;
+  this.div   = div;
+
+  this.left   = pxToNumber(this.div.style.left);
+  this.top    = pxToNumber(this.div.style.top);
+  this.width  = pxToNumber(this.div.style.width);
+  this.height = pxToNumber(this.div.style.height);
+  
+  this.speedLeft = -2;
+  this.speedTop  = -5;
+
+  this.onTimer = function() {
+    var hit = this.move();
+    this.changeDirection(hit);
+  }
+
+  this.move = function() {
+    var left    = this.left;
+    var top     = this.top;
+    var newLeft = this.left;
+    var newTop  = this.top;
+    var hit     = 0;
+
+    var deltaLeft = this.getNewLeft(this.speedLeft) - this.left;
+    var deltaTop  = this.getNewTop(this.speedTop)   - this.top;
+    var delta     = Math.max( Math.abs(deltaLeft), Math.abs(deltaTop) );
+
+    for (var i = 0; i < delta; ++ i) {
+      left += (deltaLeft / delta);
+      if ( this.board.checkHits(left, top, this.width, this.height) ) {
+        hit = 1;
+        break;
+      }
+        
+      top += (deltaTop  / delta);
+      if ( this.board.checkHits(left, top, this.width, this.height) ) {
+        hit = 2;
+        break;
+      }
+
+      newLeft = left;
+      newTop  = top;
+    }
+
+    this.moveLeft( Math.round(newLeft) );
+    this.moveTop( Math.round(newTop) );
+    
+    return(hit);
+  }
+
+  this.getNewLeft = function(delta) {
+    var newLeft = Math.max(this.left + delta, this.board.minLeft);
+    return( Math.min(newLeft, this.board.maxLeft - this.width) );
+  }
+
+  this.getNewTop = function(delta) {
+    var newTop = Math.max(this.top + delta, this.board.minTop);
+    return( Math.min(newTop, this.board.maxTop - this.height) );
+  }
+  
+  this.moveLeft = function(newLeft) {
+    if (this.left != newLeft) {
+      this.left = newLeft;
+      this.div.style.left = String(this.left) + "px";
+    }
+  }
+      
+  this.moveTop = function(newTop) {
+    if (this.top != newTop) {
+      this.top = newTop;
+      this.div.style.top = String(this.top) + "px";
+    }
+  }
+  
+  this.changeDirection = function(hit) {
+    if ( (hit == 1) || (this.left == this.board.minLeft) || (this.left + this.width == this.board.maxLeft) )
+      this.speedLeft = -this.speedLeft;
+    if ( (hit == 2) || (this.top == this.board.minTop) || (this.top + this.height == this.board.maxTop) )
+      this.speedTop = -this.speedTop;
+  }
+}
+
+//
+// Item
+//
+function Item(board, div) {
+  this.board  = board;
+  this.div    = div;
+
+  this.left   = pxToNumber(this.div.style.left);
+  this.top    = pxToNumber(this.div.style.top);
+  this.width  = pxToNumber(this.div.style.width);
+  this.height = pxToNumber(this.div.style.height);
+
+  this.speed  = 2;
+  this.broken = false;
+  this.effect = (Math.random() < 0.75)? "P": "B";
+    
+  this.div.innerHTML = this.effect;
+  
+  this.getPoints = function() {
+     return(23);
+  }
+  
+  this.onTimer = function() {
+    this.move(this.speed);
+  }
+  
+  this.move = function(speed) {
+    var top    = this.top;
+    var newTop = this.top;
+
+    var deltaTop = this.getNewTop(speed) - this.top;
+    var delta    = Math.abs(deltaTop);
+
+    for (var i = 0; i < delta; ++ i) {
+      top += (deltaTop / delta);
+      if ( this.board.checkHitStick(this.left, top, this.width, this.height) ) {
+        this.broken = true;
+        break;
+      }
+
+      newTop = top;
+    }
+
+    this.moveTop(newTop);
+  }
+
+  this.getNewTop = function(delta) {
+    var newTop = Math.max(this.top + delta, this.board.minTop);
+    return( Math.min(newTop, this.board.maxTop - this.height) );
+  }
+
+  this.moveTop = function(newTop) {
+    if (this.top != newTop) {
+      this.top = newTop;
+      this.div.style.top = String(this.top) + "px";
+    }
+  }
+}
+
+//
+// Utils
+//
+function pxToNumber(s) {
+  return( Number( s.substring(0, s.length - 2) ) );
+}
+
+//
+// Instance and start Game
+//
+var game = new Game;
+game.run();
+
+</script>
+
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+_uacct = "UA-276332-1";
+urchinTracker();
+</script>
+</body>
+
+</html>
