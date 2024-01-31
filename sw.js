@@ -1,3 +1,4 @@
+/* This is the service worker for Super-Snap! */
 var cacheName = 'super-snap-worker',
     filesToCache = [
     'index.html',
@@ -41,18 +42,14 @@ var cacheName = 'super-snap-worker',
     'src/beep.waw',
     'src/click.waw'
     ];
-
-console.log('service worker executed');
-/* Start the service worker and cache all of the app's content */
+try {/* Start the service worker and cache all of the app's content */
 self.addEventListener('install', function(e) {
     e.waitUntil(
         caches.open(cacheName).then(function(cache) {
             return cache.addAll(filesToCache);
         })
     );
-});
-
-self.addEventListener('activate', (evt) => {
+}); self.addEventListener('activate', (evt) => {
     evt.waitUntil(
         caches.keys().then((keyList) => {
             return Promise.all(keyList.map((key) => {
@@ -63,9 +60,7 @@ self.addEventListener('activate', (evt) => {
         })
     );
     self.clients.claim();
-});
-
-/* Serve cached content when offline */
+}); /* Serve cached content when offline */
 self.addEventListener('fetch', function(event) {
     event.respondWith(
       fetch(event.request).catch(function(e) {
@@ -73,4 +68,4 @@ self.addEventListener('fetch', function(event) {
           return cache.match(event.request, {'ignoreSearch' : true }).then(response => response);
         });
     }));
-});
+});} catch (error) {};
