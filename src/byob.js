@@ -1601,7 +1601,7 @@ CustomReporterBlockMorph.prototype.refresh = function (aDefinition) {
     this.definition) ? 'color' : this.definition.specialBlockType
     ); if (this.parent instanceof SyntaxElementMorph) {
         this.parent.cachedInputs = null;
-    }; this.rounding = (9 * (
+    }; this.rounding = (9 * this.scale * (
     (specialType === 'color' ? 0 : 0.5) + (
     !isSpecial / (specialType === 'color' ? 1 : 2))));
     this.fixLayout();
@@ -1610,8 +1610,7 @@ CustomReporterBlockMorph.prototype.refresh = function (aDefinition) {
 CustomReporterBlockMorph.prototype.mouseClickLeft = function () {
     if (!this.isPrototype) {
         return CustomReporterBlockMorph.uber.mouseClickLeft.call(this);
-    }
-    this.edit();
+    }; this.edit();
 };
 
 CustomReporterBlockMorph.prototype.placeHolder
