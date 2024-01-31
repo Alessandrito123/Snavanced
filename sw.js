@@ -1,4 +1,4 @@
-var cacheName = `super-snap-worker-${SuperSnapVersion}`,
+var cacheName = 'super-snap-worker',
     filesToCache = [
     'index.html',
     'loading.svg',
@@ -12,6 +12,7 @@ var cacheName = `super-snap-worker-${SuperSnapVersion}`,
     'src/midi.js',
     'src/gui.js',
     'src/desktop.js',
+    'src/scenes.js',
     'src/charts.js',
     'src/bpmn.js',
     'src/lists.js',
@@ -39,9 +40,9 @@ var cacheName = `super-snap-worker-${SuperSnapVersion}`,
     'src/compilers.js',
     'src/beep.waw',
     'src/click.waw'
-                   ];
+    ];
 
-console.log('service worker executed')
+console.log('service worker executed');
 /* Start the service worker and cache all of the app's content */
 self.addEventListener('install', function(e) {
     e.waitUntil(
