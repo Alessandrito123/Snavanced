@@ -789,10 +789,8 @@ var aBlock = new JaggedBlockMorph;}; var i = 0; if (!(block.expression.isCustomB
 i].fullCopy();} else {aBlock.add(block.expression.children[i].fullCopy());}; i++;}; aBlock.blockSpec = block.expression.blockSpec; aBlock.fixLayout(); aBlock.fixBlockColor(); return (
 aBlock instanceof CommandBlockMorph) ? Process.prototype.reportScript(new List, aBlock) : Process.prototype.reify(aBlock, new List);}; /* This is so cool! Please use it! :~) */
 
-// Process: Special Forms Blocks Primitives
-
 Process.prototype.reportVariadicAnd = function anonymous (inputs) {this.assertType(inputs, 'list'); if (inputs.length() > 2) {return this.reportAnd(inputs.at(1), this.reportVariadicAnd(inputs.cdr()));} else if (
-inputs.length() > 1) {return this.reportAnd(inputs.at(1), inputs.at(2));} else if (inputs.length() > 0) {return asABool(inputs.at(1));} else {return false;};}; Process.prototype.reportAnd = function anonymous (
+inputs.length() > 1) {return this.reportAnd(inputs.at(1), inputs.at(2));} else if (inputs.length() > 0) {return asABool(inputs.at(1));} else {return true;};}; Process.prototype.reportAnd = function anonymous (
 input1, input2) {if (input1 instanceof List) {input1 = this.reportVariadicAnd(input1);}; if (input2 instanceof List) {input2 = this.reportVariadicAnd(input2);}; return asABool(this.reportBasicAnd(input1, input2)
 );}; Process.prototype.reportBasicAnd = function anonymous (input1, input2) {return +((Math.sign(Math.abs(input1)) + Math.sign(Math.abs(input2))) > 1);};
 
@@ -810,6 +808,8 @@ input1)) - Math.sign(Math.abs(input2))) > 0);}; Process.prototype.reportNot = fu
 myself = this; return ((input instanceof List) ? (input.fullCopy().map(item => myself.reportNot(item))
 ) : asABool(myself.reportBasicNot(input)));}; Process.prototype.reportBasicNot = function anonymous (
 input) {return (1 - Math.sign(Math.abs(input)));}; /* Any of the boolean operators are better. */
+
+// Process: Special Forms Blocks Primitives
 
 Process.prototype.doReport = function (block) {var outer = this.context.outerContext; if (
 this.flashContext()) {return;}; if (this.isClicked && (block.topBlock() === this.topBlock)
@@ -2158,24 +2158,20 @@ Process.prototype.doIf = function (block) {
     if (!acc) {
         acc = this.context.accumulator = {
             args: inps.slice(0, 2).concat(inps[2].inputs())
-        };
-    }
-    if (!args.length) {
+        }; console.log(args);
+    }; if (!args.length) {
         if (acc.args.length) {
-            this.pushContext(acc.args.shift(), outer);
+            this.pushContext(
+	          acc.args.shift().evaluate()?.blockSequence(), outer);
             this.context.isCustomBlock = isCustomBlock;
             return;
-        }
-        this.popContext();
-        return;
-    }
-    if (args.pop()) {
+        }; this.popContext(); return;
+    }; if (asABool(args.pop())) {
         this.popContext();
         this.pushContext(acc.args.shift().evaluate()?.blockSequence(), outer);
         this.context.isCustomBlock = isCustomBlock;
         return;
-    }
-    acc.args.shift();
+    }; acc.args.shift();
 };
 
 Process.prototype.doIfElse = function () {
@@ -2185,22 +2181,19 @@ Process.prototype.doIfElse = function () {
 
     // this.assertType(args[0], ['Boolean']);
     this.popContext();
-    if (args[0]) {
+    if (asABool(args[0])) {
         if (args[1]) {
             this.pushContext(args[1].blockSequence(), outer);
-        }
+        };
     } else {
         if (args[2]) {
             this.pushContext(args[2].blockSequence(), outer);
         } else {
             this.pushContext('doYield');
-        }
-    }
-    if (this.context) {
+        };
+    }; if (this.context) {
         this.context.isCustomBlock = isCustomBlock;
-    }
-
-    this.pushContext();
+    }; this.pushContext();
 };
 
 Process.prototype.reportIfElse = function (block) {
@@ -2215,9 +2208,7 @@ Process.prototype.reportIfElse = function (block) {
         // evaluate the first input, either a Boolean or a (nested) list
         this.evaluateNextInput(block);
         return;
-    }
-
-    if (inputs[0] instanceof List && this.enableHyperOps) {
+    }; if (inputs[0] instanceof List && this.enableHyperOps) {
         // hyperize a (nested) list of Booleans
         if (this.context.accumulator === null) {
             // cache literal true/false cases for optimized evaluation
