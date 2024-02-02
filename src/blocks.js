@@ -9,7 +9,7 @@
     written by Jens Mönig
     jens@moenig.org
 
-    Copyright (C) 2023 by Jens Mönig
+    Copyright (C) 2024 by Jens Mönig
 
     This file is part of Snap!.
 
@@ -158,12 +158,6 @@ Costume, IDE_Morph, BlockDialogMorph, BlockEditorMorph, localize, CLEAR, Point,
 isSnapObject, PushButtonMorph, SpriteIconMorph, Process, AlignmentMorph, List,
 CustomCommandBlockMorph, ToggleButtonMorph, DialMorph, SnapExtensions,
 CostumeIconMorph, SoundIconMorph, SVG_Costume*/
-
-/*jshint esversion: 6*/
-
-// Global stuff ////////////////////////////////////////////////////////
-
-modules.blocks = '2023-December-11';
 
 var SyntaxElementMorph;
 var BlockMorph;
@@ -12009,10 +12003,7 @@ InputSlotMorph.prototype.drawRoundBorder = function (ctx) {
         radians(180),
         radians(270),
         false
-    );
-
-    ctx.stroke();
-
+    );  ctx.stroke();
     ctx.shadowOffsetX = 0;
     ctx.shadowOffsetY = 0;
     ctx.shadowBlur = 0;
@@ -12025,8 +12016,7 @@ InputSlotMorph.prototype.drawRoundBorder = function (ctx) {
         this.width() - r,
         r,
         r
-    );
-    gradient.addColorStop(1, this.cachedClr);
+    ); gradient.addColorStop(1, this.cachedClr);
     gradient.addColorStop(0, this.cachedClrBright);
     ctx.strokeStyle = gradient;
     ctx.beginPath();
@@ -12037,8 +12027,7 @@ InputSlotMorph.prototype.drawRoundBorder = function (ctx) {
         radians(0),
         radians(90),
         false
-    );
-    ctx.stroke();
+    );  ctx.stroke();
 };
 
 // InputSlotStringMorph ///////////////////////////////////////////////
@@ -12084,10 +12073,8 @@ InputSlotStringMorph.prototype.getRenderColor = function () {
     if (MorphicPreferences.isFlat) {
         if (this.isEditable) {
             return this.color;
-        }
-        return this.parent.alpha > 0.5 ? this.color : BLACK;
-    }
-    return this.parent.alpha > 0.25 ? this.color : WHITE;
+        };  return this.parent.alpha > 0.5 ? this.color : BLACK;
+    };  return this.parent.alpha > 0.25 ? this.color : WHITE;
 };
 
 InputSlotStringMorph.prototype.getShadowRenderColor = function () {
@@ -12117,8 +12104,7 @@ function InputSlotTextMorph(
     width,
     fontName,
     shadowOffset,
-    shadowColor
-) {
+    shadowColor) {
     this.init(text,
         fontSize,
         fontStyle,
@@ -12129,13 +12115,10 @@ function InputSlotTextMorph(
         fontName,
         shadowOffset,
         shadowColor);
-}
-
-InputSlotTextMorph.prototype.getRenderColor =
-    InputSlotStringMorph.prototype.getRenderColor;
-
-InputSlotTextMorph.prototype.getShadowRenderColor =
-    InputSlotStringMorph.prototype.getShadowRenderColor;
+}; InputSlotTextMorph.prototype.getRenderColor =
+   InputSlotStringMorph.prototype.getRenderColor;
+   InputSlotTextMorph.prototype.getShadowRenderColor =
+   InputSlotStringMorph.prototype.getShadowRenderColor;
 
 // TemplateSlotMorph ///////////////////////////////////////////////////
 
@@ -12158,16 +12141,17 @@ TemplateSlotMorph.uber = ArgMorph.prototype;
 
 function TemplateSlotMorph(name) {this.init(name);};
 
-TemplateSlotMorph.prototype.init = function (name) {var template = new ReporterBlockMorph(); this.labelString = name || ''; template.isDraggable = false; template.isTemplate = true; if (!isNil(modules.objects)) {
-template.color = SpriteMorph.prototype.blockColor.variables; template.category = 'variables';} else {template.color = new Color(243, 118, 29); template.category = null;}; template.setSpec(this.labelString);
-template.selector = 'reportGetVar'; TemplateSlotMorph.uber.init.call(this); this.add(template); this.fixLayout(); this.isDraggable = false; this.isStatic = true; template.cursorStyle = 'pointer';};
+TemplateSlotMorph.prototype.init = function (name) {var template = new ReporterBlockMorph; this.labelString = name || ''; template.isDraggable = false; template.isTemplate = true;
+template.color = SpriteMorph.prototype.blockColor.variables; template.category = 'variables'; template.setSpec(this.labelString); template.selector = 'reportGetVar';
+TemplateSlotMorph.uber.init.call(this); this.add(template); this.fixLayout(); this.isDraggable = false; this.isStatic = true; template.cursorStyle = 'pointer';};
 
 // TemplateSlotMorph accessing:
 
-TemplateSlotMorph.prototype.getSpec = function () {return '%t';}; TemplateSlotMorph.prototype.template = function () {return this.children[0];};
-TemplateSlotMorph.prototype.contents = function () {return this.template().blockSpec;};
+TemplateSlotMorph.prototype.getSpec = (() => '%t'); TemplateSlotMorph.prototype.template = function () {
+return this.children[0];}; TemplateSlotMorph.prototype.contents = function () {return this.template().blockSpec;};
 
-TemplateSlotMorph.prototype.setContents = function (aString) {var tmp = this.template(); tmp.setSpec(aString instanceof Array? localize(aString[0]) : aString); tmp.fixBlockColor(); tmp.fixLabelColor();};
+TemplateSlotMorph.prototype.setContents = function (aString) {var tmp = this.template(); tmp.setSpec((
+aString instanceof Array) ? localize(aString[0]) : aString); tmp.fixBlockColor(); tmp.fixLabelColor();};
 
 // TemplateSlotMorph evaluating:
 
@@ -12175,7 +12159,8 @@ TemplateSlotMorph.prototype.evaluate = function () {return this.contents();};
 
 // TemplateSlotMorph layout:
 
-TemplateSlotMorph.prototype.fixLayout = function () {var template = this.template(); this.bounds.setExtent(template.extent().add(this.edge * 2 + 2)); template.setPosition(this.position().add(this.edge + 1));
+TemplateSlotMorph.prototype.fixLayout = function () {var template = this.template(); this.bounds.setExtent(
+template.extent().add(this.edge * 2 + 2)); template.setPosition(this.position().add(this.edge + 1));
 if (this.parent) {if (this.parent.fixLayout) {this.parent.fixLayout();};};};
 
 // TemplateSlotMorph drop behavior:
