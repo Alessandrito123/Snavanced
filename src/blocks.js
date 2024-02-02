@@ -16536,10 +16536,7 @@ ScriptFocusMorph.prototype.processKeyEvent = function (event, action) {
 };
 
 ScriptFocusMorph.prototype.reactToKeyEvent = function (key) {
-    var evt = key.toLowerCase(),
-        shift = 50,
-        types,
-        vNames;
+    var evt = key.toLowerCase(), shift = 50, types, vNames;
 
     // console.log(evt);
     switch (evt) {
@@ -16587,8 +16584,7 @@ ScriptFocusMorph.prototype.reactToKeyEvent = function (key) {
         if (!(this.element instanceof ScriptsMorph) &&
                 types && contains(types, 'reporter')) {
             vNames = Object.keys(this.element.getVarNamesDict());
-        }
-        if (types) {
+        };  if (types) {
             delete this.fps;
             delete this.step;
             this.show();
@@ -16598,13 +16594,6 @@ ScriptFocusMorph.prototype.reactToKeyEvent = function (key) {
                 vNames,
                 this
             );
-        }
-    }
+        };
+    };
 };
-
-(function () {var h, b, c, ci, cb, cm, cd, co, cl, cu, cs, cmd, rings, rc; h = new HatBlockMorph; h.setSpec('when $flag pressed'); b = new ReporterBlockMorph(true); b.setSpec('%bool'); c = new CommandBlockMorph;
-c.setSpec('this is a test $globe'); ci = new CommandBlockMorph; ci.setSpec('block with input %s unit %mult%n number'); cb = new CommandBlockMorph; cb.setSpec('bool %b ?'); cd = new CommandBlockMorph;
-cd.setSpec('direction %dir degrees'); co = new CommandBlockMorph; co.setSpec('object %obj'); cl = new CommandBlockMorph; cl.setSpec('list %l'); cu = new CommandBlockMorph; cu.setSpec('upvar %upvar');
-cs = new CommandBlockMorph; cs.setSpec('control %b %ca'); cmd = new CommandBlockMorph; cmd.setSpec('command %cmd'); rings = new CommandBlockMorph; rings.setSpec('reporter %r predicate %p');
-rc = new ReporterBlockMorph(); rc.setSpec('color %clr'); BlockMorph.prototype.addToDemoMenu(['Syntax', [[h, 'hat'], [b, 'predicate'], [c, 'with label text'], [ci, 'editable input slots'], [cb, 'Boolean slot'],
-[cd, 'direction input'], [co, 'object input'], [cl, 'list input'], [cu, 'upvar input'], [cs, 'loop input'], [cmd, 'cmd ring input'], [rings, 'reporter rings input'], [rc, 'color input']]]);})();
