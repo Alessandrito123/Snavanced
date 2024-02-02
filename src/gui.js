@@ -9,7 +9,7 @@
     written by Jens Mönig
     jens@moenig.org
 
-    Copyright (C) 2023 by Jens Mönig
+    Copyright (C) 2024 by Jens Mönig
 
     This file is part of Snap!.
 
@@ -81,12 +81,6 @@ BlockRemovalDialogMorph,TableMorph, isSnapObject, isRetinaEnabled, SliderMorph,
 disableRetinaSupport, enableRetinaSupport, isRetinaSupported, MediaRecorder,
 Animation, BoxMorph, BlockDialogMorph, Project, ZERO, BLACK,
 BlockVisibilityDialogMorph, ThreadManager*/
-
-/*jshint esversion: 6*/
-
-// Global stuff ////////////////////////////////////////////////////////
-
-modules.gui = '2023-December-11';
 
 // Declarations
 

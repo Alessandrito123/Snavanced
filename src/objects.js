@@ -86,11 +86,9 @@ TableFrameMorph, normalizeCanvas, VectorPaintEditorMorph, AlignmentMorph, Proces
 WorldMap, copyCanvas, useBlurredShadows, BlockVisibilityDialogMorph, CostumeIconMorph,
 SoundIconMorph */
 
-/*jshint esversion: 6*/
-
-modules.objects = '2023-December-11';
-
-var SpriteMorph, StageMorph, TimerFunction, SpriteBubbleMorph, Costume, SVG_Costume, CostumeEditorMorph, Sound, Note, Microphone, CellMorph, WatcherMorph, StagePrompterMorph, Note, SpriteHighlightMorph;
+var SpriteMorph, StageMorph, TimerFunction, SpriteBubbleMorph,
+Costume, SVG_Costume, CostumeEditorMorph, Sound, Note, Microphone,
+CellMorph, WatcherMorph, StagePrompterMorph, Note, SpriteHighlightMorph;
 
 /* Timer functions */
 
@@ -9809,8 +9807,7 @@ StageMorph.prototype.setColorDimension = function anonymous (idx, num) {
             this.color,
             this.cachedColorDimensions
         );
-    }
-    this.rerender();
+    }; this.rerender();
 };
 
 StageMorph.prototype.getColorDimension =
@@ -9826,16 +9823,19 @@ StageMorph.prototype.changeColorRGBA =
     SpriteMorph.prototype.changeColorRGBA;
 
 StageMorph.prototype.setColor = function (aColor) {
-    if (!this.color.eq(aColor, true)) { // observeAlpha
-        this.color = aColor.copy();
-        this.rerender();
-        this.cachedColorDimensions = this.color[
+    var stage = ((this instanceof StageMorph
+    ) ? this : this.parentThatIsA(StageMorph));
+    if (!stage.color.eq(aColor, true)) {// observeAlpha
+        stage.color = aColor.copy();
+        stage.rerender();
+        stage.cachedColorDimensions = stage.color[
             SpriteMorph.prototype.penColorModel
         ]();
-    }
+    };
 };
 
 StageMorph.prototype.setBackgroundColor = StageMorph.prototype.setColor;
+SpriteMorph.prototype.setBackgroundColor = StageMorph.prototype.setBackgroundColor;
 
 StageMorph.prototype.getPenAttribute
     = SpriteMorph.prototype.getPenAttribute;

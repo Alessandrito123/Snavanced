@@ -7497,8 +7497,7 @@ Context.prototype.catchContinuation = function () {
     return cont;
 };
 Context.prototype.continuation = function (isReporter) {
-    var cont;
-    if (this.expression instanceof Array) {
+    var cont; if (this.expression instanceof Array) {
         cont = this;
     } else if (this.parentContext) {
         cont = this.parentContext;
@@ -7509,14 +7508,12 @@ Context.prototype.continuation = function (isReporter) {
         );
         cont.isContinuation = true;
         return cont;
-    };
-    cont = cont.copyForContinuation();
+    }; cont = cont.copyForContinuation();
     cont.tag = null;
     cont.isContinuation = true;
     return cont;
 }; Context.prototype.copyForContinuation = function () {
-    var cpy = copy(this),
-        cur = cpy,
+    var cpy = copy(this), cur = cpy,
         isReporter = !(this.expression instanceof Array ||
             isString(this.expression));
     if (isReporter) {
@@ -7525,12 +7522,10 @@ Context.prototype.continuation = function (isReporter) {
             cur.parentContext = copy(cur.parentContext);
             cur = cur.parentContext;
             cur.inputs = [];
-        }
-    }
-    return cpy;
+        };
+    }; return cpy;
 }; Context.prototype.copyForContinuationCall = function () {
-    var cpy = copy(this),
-        cur = cpy,
+    var cpy = copy(this), cur = cpy,
         isReporter = !(this.expression instanceof Array ||
             isString(this.expression));
     if (isReporter) {
@@ -7540,9 +7535,8 @@ Context.prototype.continuation = function (isReporter) {
             cur.parentContext = copy(cur.parentContext);
             cur = cur.parentContext;
             cur.inputs = [];
-        }
-    }
-    return cpy;
+        };
+    }; return cpy;
 }; Context.prototype.prepareContinuationForBinding = function () {
     var pos = this.inputs.length,
         slot;
@@ -7554,7 +7548,7 @@ Context.prototype.continuation = function (isReporter) {
         slot.bindingID = 1;
         // and remember the number of detected empty slots
         this.emptySlots = 1;
-    }
+    };
 }; Context.prototype.addInput = function (input) {this.inputs.push(input);};
 Context.prototype.stopMusic = function () {if (this.activeNote) {this.activeNote.stop();
 this.activeNote = null;};}; Context.prototype.lastFlashable = function () {
@@ -7564,8 +7558,7 @@ this.activeNote = null;};}; Context.prototype.lastFlashable = function () {
         return this;
     } else if (this.parentContext) {
         return this.parentContext.lastFlashable();
-    }
-    return null;};
+    }; return null;};
 Context.prototype.stackSize = function () {if (!this.parentContext) {return 1;};
 return 1 + this.parentContext.stackSize();}; Context.prototype.isInCustomBlock = function () {
 if (this.isCustomBlock) {return true;}; if (this.parentContext) {return this.parentContext.isInCustomBlock();
@@ -7580,12 +7573,10 @@ return (expr instanceof Context) ? new List([expr]) : expr;}; Context.prototype.
         if (this.expression && this.expression.length === 1 &&
                 other.expression && other.expression.length === 1) {
             return snapEquals(this.expression[0], other.expression[0]);
-        }
-        return snapEquals(this.expression, other.expression);
-    }
-    return false;}; Context.prototype.emptyOrEqual = function (list1, list2) {
-    // private - return TRUE if both lists are either equal
-    // or only contain empty items
+        }; return snapEquals(this.expression, other.expression);
+    }; return false;}; Context.prototype.emptyOrEqual = function (
+    list1, list2) { // private - return TRUE if both lists are
+    // either equal or only contain empty items
     return list1.equalTo(list2) || (
         list1.itemsArray().every(item => !item) &&
         list2.itemsArray().every(item => !item)
@@ -7618,8 +7609,7 @@ VariableFrame.prototype.copy = function () {
     var frame = new VariableFrame(this.parentFrame);
     this.names().forEach(vName =>
         frame.addVar(vName, this.getVar(vName))
-    );
-    return frame;
+    ); return frame;
 };
 
 VariableFrame.prototype.fullCopy = function () {
@@ -7629,16 +7619,14 @@ VariableFrame.prototype.fullCopy = function () {
         frame = new VariableFrame(this.parentFrame.fullCopy());
     } else {
         frame = new VariableFrame();
-    }
-    frame.vars = copy(this.vars);
+    }; frame.vars = copy(this.vars);
     return frame;
 };
 
 VariableFrame.prototype.root = function () {
     if (this.parentFrame) {
         return this.parentFrame.root();
-    }
-    return this;
+    }; return this;
 };
 
 VariableFrame.prototype.find = function (name) {
@@ -7658,11 +7646,9 @@ VariableFrame.prototype.silentFind = function (name) {
     // the specified variable. Otherwise return null.
     if (this.vars[name] instanceof Variable) {
         return this;
-    }
-    if (this.parentFrame) {
+    }; if (this.parentFrame) {
         return this.parentFrame.silentFind(name);
-    }
-    return null;
+    }; return null;
 };
 
 VariableFrame.prototype.setVar = function (name, value, sender) {
@@ -7682,8 +7668,8 @@ VariableFrame.prototype.setVar = function (name, value, sender) {
             sender.shadowVar(name, value);
         } else {
             frame.vars[name].value = value;
-        }
-    }
+        };
+    };
 };
 
 VariableFrame.prototype.changeVar = function (name, delta, sender) {
@@ -7695,9 +7681,7 @@ VariableFrame.prototype.changeVar = function (name, delta, sender) {
     // shadow it (create an explicit one for the sender)
     // before changing the value ("create-on-write")
 
-    var frame = this.find(
-        name), newValue;
-    if (frame) {
+    var frame = this.find(name), newValue; if (frame) {
         newValue = Process.prototype.reportSum(frame.vars[name].value, delta);
         if (sender instanceof SpriteMorph &&
                 (frame.owner instanceof SpriteMorph) &&
@@ -7705,9 +7689,8 @@ VariableFrame.prototype.changeVar = function (name, delta, sender) {
             sender.shadowVar(name, newValue);
         } else {
             frame.vars[name].value = newValue;
-        }
-
-    }
+        };
+    };
 };
 
 VariableFrame.prototype.getVar = function (name) {
@@ -7719,12 +7702,10 @@ VariableFrame.prototype.getVar = function (name) {
                 : value === false ? false
                         : value === '' ? ''
                             : value || 0); // don't return null
-    }
-    if (typeof name === 'number') {
+    }; if (typeof name === 'number') {
         // empty input with a Binding-ID called without an argument
         return '';
-    }
-    throw new Error(
+    }; throw new Error(
         localize('a variable of name \'')
             + name
             + localize('\'\ndoes not exist in this context')
@@ -7754,8 +7735,7 @@ VariableFrame.prototype.names = function (includeHidden) {
                 names.push(each);
             };
         };
-    };
-    return names;
+    }; return names;
 };
 
 VariableFrame.prototype.allNamesDict = function (upTo, includeHidden) {
@@ -7776,8 +7756,7 @@ VariableFrame.prototype.allNamesDict = function (upTo, includeHidden) {
     while (current && (current !== upTo)) {
         addKeysToDict(current.vars, dict);
         current = current.parentFrame;
-    };
-    return dict;
+    }; return dict;
 };
 
 VariableFrame.prototype.allNames = function (upTo, includeHidden) {
@@ -7791,7 +7770,6 @@ VariableFrame.prototype.allNames = function (upTo, includeHidden) {
     for (each in dict) {
         if (Object.prototype.hasOwnProperty.call(dict, each)) {
             answer.push(each);
-        }
-    }
-    return answer;
+        };
+    }; return answer;
 };

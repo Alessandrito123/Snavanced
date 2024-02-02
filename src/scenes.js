@@ -49,12 +49,6 @@
 /*global modules, VariableFrame, StageMorph, SpriteMorph, Process, List,
 normalizeCanvas, SnapSerializer, Costume, ThreadManager, IDE_Morph*/
 
-/*jshint esversion: 6*/
-
-// Global stuff ////////////////////////////////////////////////////////
-
-modules.scenes = '2024-Jan-29';
-
 // Project /////////////////////////////////////////////////////////
 
 // I am a container for a set of one or more Snap! scenes,
@@ -77,8 +71,7 @@ var scene = new Scene; scene.addDefaultSprite(); this.scenes.add(scene);};
 // Scene instance creation:
 
 function Scene(aStageMorph) {
-    this.name = '';
-    this.notes = '';
+    this.name = ''; this.notes = '';
     this.globalVariables = aStageMorph ?
         aStageMorph.globalVariables() : new VariableFrame;
     this.stage = aStageMorph || new StageMorph(this.globalVariables);
@@ -122,16 +115,15 @@ Scene.prototype.initialize = function () {
     // only to be called by store
     var objs = this.stage.children.filter(
         child => child instanceof SpriteMorph
-    );
-    objs.sort((x, y) => x.idx - y.idx);
+    ); objs.sort((x, y) => x.idx - y.idx);
     this.sprites = new List(objs);
     if (this.spriteIdx === null && this.sprites.length() > 0) {
         this.currentSprite = this.sprites.at(1);
     } else if (this.spriteIdx === 0) {
         this.currentSprite = this.stage;
     } else {
-        this.currentSprite = this.sprites.at(this.spriteIdx) ||
-            this.stage;
+        this.currentSprite = (this.sprites.at(
+        this.spriteIdx) || this.stage);
     }; return this;
 };
 
@@ -181,16 +173,19 @@ Scene.prototype.restart = function () {
     var ide; window.speechSynthesis.cancel();
     this.stage.threads.pauseCustomHatBlocks = false;
     this.stage.stopAllActiveSounds();
-    this.stage.threads.resumeAll(this.stage);
+    this.stage.children.map(function anonymous (sprite) {
+    if (sprite instanceof SpriteMorph) {sprite.stopFreq(
+    );};}); this.stage.clearEffects();
+    this.stage.stopFreq();
     this.stage.keysPressed = {};
-    this.stage.runStopScripts();
     this.stage.threads.stopAll();
     if (this.stage.projectionSource) {
         this.stage.stopProjection();
     }; this.stage.children.forEach(morph => {
         if (morph.stopTalking) {
             morph.stopTalking();
-        };
+        };  if (morph.clearEffects
+        ) {morph.clearEffects();};
     }); this.stage.removeAllClones();
     ide = this.stage.parentThatIsA(IDE_Morph);
     if (ide) {
@@ -209,7 +204,8 @@ Scene.prototype.stop = function (forGood) {
     }; this.stage.stopAllActiveSounds();
     this.stage.children.map(function anonymous (sprite) {
     if (sprite instanceof SpriteMorph) {sprite.stopFreq(
-    );};}); this.stage.stopFreq();
+    );};}); this.stage.clearEffects();
+    this.stage.stopFreq();
     this.stage.threads.resumeAll(this.stage);
     this.stage.keysPressed = {};
     this.stage.runStopScripts();
@@ -219,7 +215,8 @@ Scene.prototype.stop = function (forGood) {
     }; this.stage.children.forEach(morph => {
         if (morph.stopTalking) {
             morph.stopTalking();
-        };
+        };  if (morph.clearEffects
+        ) {morph.clearEffects();};
     }); this.stage.removeAllClones();
     ide = this.stage.parentThatIsA(IDE_Morph);
     if (ide) {
