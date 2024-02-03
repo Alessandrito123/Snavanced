@@ -3641,6 +3641,15 @@ Process.prototype.hyperZip = function (baseOp, a, b) {
     return baseOp(a, b);
 };
 
+Process.prototype.packCoordinates = function (list) {
+    // convert all numerical 2-item sub-lists into a variable to they
+    // can be handled as atomic by hyperDyadic(),
+    // remember to let the baseOp unpack them.
+    return this.isCoordinate(list) ? new Variable(list)
+        : list.map(each => each instanceof List ? this.packCoordinates(each)
+            : each);
+};
+
 Process.prototype.isMatrix = function anonymous (data) {return ((data instanceof List) ? (data.at(1) instanceof List) : false);};
 
 // Process math primtives - arithmetic
@@ -4871,8 +4880,7 @@ Process.prototype.reportAspect = function (aspect, location) {
     }
     if (idx === 3) {
         return (1 - clr.a) * 100;
-    }
-    return clr[SpriteMorph.prototype.penColorModel]()[idx] * 100;
+    }; return clr[SpriteMorph.prototype.penColorModel]()[idx] * 100;
 };
 
 Process.prototype.colorAtSprite = function (sprite) {
@@ -4882,10 +4890,9 @@ Process.prototype.colorAtSprite = function (sprite) {
     var point = sprite instanceof SpriteMorph ? sprite.rotationCenter()
             : sprite.center(),
         stage = sprite.parentThatIsA(StageMorph),
-        child,
-        i;
+        child, i;
 
-    if (!stage) {return BLACK; }
+    if (!stage) {return BLACK;};
     for (i = stage.children.length; i > 0; i -= 1) {
         child = stage.children[i - 1];
         if ((child !== sprite) &&
@@ -4894,12 +4901,10 @@ Process.prototype.colorAtSprite = function (sprite) {
             !child.isTransparentAt(point)
         ) {
             return child.getPixelColor(point);
-        }
-    }
-    if (stage.bounds.containsPoint(point)) {
+        };
+    }; if (stage.bounds.containsPoint(point)) {
         return stage.getPixelColor(point);
-    }
-    return BLACK;
+    }; return BLACK;
 };
 
 Process.prototype.colorBelowSprite = function (sprite) {
@@ -4910,12 +4915,9 @@ Process.prototype.colorBelowSprite = function (sprite) {
     var point = sprite instanceof SpriteMorph ? sprite.rotationCenter()
             : sprite.center(),
         stage = sprite.parentThatIsA(StageMorph),
-        below = stage,
-        found = false,
-        child,
-        i;
+        below = stage, found = false, child, i;
 
-    if (!stage) {return BLACK; }
+    if (!stage) {return BLACK;};
     for (i = 0; i < stage.children.length; i += 1) {
         if (!found) {
             child = stage.children[i];
@@ -4926,13 +4928,11 @@ Process.prototype.colorBelowSprite = function (sprite) {
                 !child.isTransparentAt(point)
             ) {
                 below = child;
-            }
-        }
-    }
-    if (below.bounds.containsPoint(point)) {
+            };
+        };
+    }; if (below.bounds.containsPoint(point)) {
         return below.getPixelColor(point);
-    }
-    return BLACK;
+    }; return BLACK;
 };
 
 Process.prototype.spritesAtPoint = function (point, stage) {
@@ -4955,14 +4955,12 @@ Process.prototype.reportRelationTo = function (relation, name) {
         if (name instanceof List) {
             // make all numerical 2-item lists atomic
             name = this.packCoordinates(name);
-        }
-        return this.hyperDyadic(
+        }; return this.hyperDyadic(
             (rel, nam) => this.reportBasicRelationTo(rel, nam),
             relation,
             name
         );
-    }
-    return this.reportBasicRelationTo(relation, name);
+    }; return this.reportBasicRelationTo(relation, name);
 };
 
 Process.prototype.reportBasicRelationTo = function (relation, name) {
@@ -4990,10 +4988,7 @@ Process.prototype.isCoordinate = function (data) {
 
 Process.prototype.reportDistanceTo = function (name) {
     var thisObj = this.blockReceiver(),
-        thatObj,
-        stage,
-        rc,
-        point;
+        thatObj, stage, rc, point;
 
     if (thisObj) {
         rc = thisObj.rotationCenter();
