@@ -6,7 +6,7 @@
     inspired by the Scratch paint editor.
 
     written by Kartik Chandra
-    Copyright (C) 2023 by Kartik Chandra
+    Copyright (C) 2024 by Kartik Chandra
 
     This file is part of Snap!.
 
@@ -42,59 +42,11 @@
 
     Jens Mönig has contributed icons and bugfixes and says he has probably
     introduced many other bugs in that process. :-)
-
-
-    revision history
-    ----------------
-    May 10 - first full release (Kartik)
-    May 14 - bugfixes, Snap integration (Jens)
-    May 16 - flat design adjustments (Jens)
-    July 12 - pipette tool, code formatting adjustments (Jens)
-    Sept 16 - flood fill freeze fix (Kartik)
-    Jan 08 - mouse leave dragging fix (Kartik)
-    Feb 11 - dynamically adjust to stage dimensions (Jens)
-    Apr 30 - localizations (Manuel)
-    June 3 - transformations (Kartik)
-    June 4 - tweaks (Jens)
-    Aug 24 - floodfill alpha-integer issue (Kartik)
-    Sep 29 - tweaks (Jens)
-    Sep 28 [of the following year :)] - Try to prevent antialiasing (Kartik)
-    Oct 02 - revert disable smoothing (Jens)
-    Dec 15 - center rotation point on costume creating (Craxic)
-    Jan 18 - avoid pixel collision detection in PaintCanvas (Jens)
-    Mar 22 - fixed automatic rotation center point mechanism (Jens)
-    May 10 - retina display support adjustments (Jens)
-    2017
-    Apr 10 - getGlobalPixelColor adjustment for Chrome & retina (Jens)
-    2018
-    Jan 22 - floodfill alpha tweak (Bernat)
-    Mar 19 - vector paint editor (Bernat)
-
-    2020 Apr 14 - Morphic2 migration (Jens)
-    2020 May 17 - Pipette alpha fix (Joan)
-    2020 Jul 13 - modified scale buttons (Jadga)
-
-    2021 Mar 17 - moved stage dimension handling to scenes (Jens)
-
-    2023 Jan 26 - support to edit any costume with blocks (Aless)
 */
-
-/*global Point, Rectangle, DialogBoxMorph, AlignmentMorph, PushButtonMorph, nop,
-Color, SymbolMorph, newCanvas, Morph, StringMorph, Costume, SpriteMorph,  isNil,
-localize, InputFieldMorph, SliderMorph, ToggleMorph, ToggleButtonMorph, modules,
-BoxMorph, radians, MorphicPreferences, getDocumentPositionOf, SVG_Costume*/
-
-/*jshint esversion: 6*/
-
-// Global stuff ////////////////////////////////////////////////////////
-
-modules.paint = '2023-January-26';
 
 // Declarations
 
-var PaintEditorMorph;
-var PaintCanvasMorph;
-var PaintColorPickerMorph;
+var PaintEditorMorph, PaintCanvasMorph, PaintColorPickerMorph;
 
 // PaintEditorMorph //////////////////////////
 
@@ -119,6 +71,7 @@ PaintEditorMorph.prototype.init = function () {
 
     // override inherited properties:
     this.labelString = "Paint Editor";
+    editor.cursorStyle = 'default';
     this.createLabel();
 
     // building the contents happens when I am opened with an IDE
@@ -150,9 +103,7 @@ PaintEditorMorph.prototype.buildContents = function () {
     this.toolbox.borderColor = this.toolbox.color.lighter(40);
     if (MorphicPreferences.isFlat) {
         this.toolbox.edge = 0;
-    }
-
-    this.buildToolbox();
+    };  this.buildToolbox();
     this.controls.add(this.toolbox);
 
     this.scaleBox = new AlignmentMorph('row', this.padding / 2);
@@ -166,8 +117,7 @@ PaintEditorMorph.prototype.buildContents = function () {
         primaryColorButton: null,
         primaryColorViewer: null,
         constrain: null
-    };
-    this.populatePropertiesMenu();
+    };  this.populatePropertiesMenu();
 
     this.addButton("ok", "OK");
     this.addButton("cancel", "Cancel");

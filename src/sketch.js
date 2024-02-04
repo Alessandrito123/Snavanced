@@ -5,7 +5,7 @@
     inspired by the Snap bitmap paint editor and the Scratch vector editor.
 
     written by Carles Paredes and Bernat Romagosa
-    Copyright (C) 2017 by Carles Paredes and Bernat Romagosa
+    Copyright (C) 2024 by Carles Paredes and Bernat Romagosa
 
     This file is part of Snap!.
 
@@ -44,30 +44,7 @@
     -------
     Carles Paredes wrote the first working prototype in 2015
     Bernat Romagosa rewrote most of the code in 2017
-
-    revision history
-    -----------------
-    2018, June 5 (Jens):
-        - fixed initial rotation center for an existing costume
-        - fixed initial rendering, so costumes can be re-opened after saving
-    2018, June 20 (Jens):
-        - select primary color with right-click (in addition to shift-click)
-    2020, April 15 (Jens):
-        - migrated to new Morphic2 architecture
-    2021, March 17 (Jens):
-        - moved stage dimension handling to scenes
-    2023, Jan 26 (Aless):
-        - support to edit any costume with blocks
 */
-
-/*global Point, Object, Rectangle, AlignmentMorph, Morph, XML_Element, localize,
-PaintColorPickerMorph, Color, SliderMorph, InputFieldMorph, ToggleMorph, isNil,
-TextMorph, Image, newCanvas, PaintEditorMorph, Costume, nop, PaintCanvasMorph,
-StringMorph, detect, modules*/
-
-/*jshint esversion: 6*/
-
-modules.sketch = '2023-January-26';
 
 // Declarations
 
@@ -928,15 +905,13 @@ Crosshair.prototype.drawOn = function (aCanvasMorph) {
 
 /////////// VectorPaintEditorMorph //////////////////////////
 
-VectorPaintEditorMorph.prototype = new PaintEditorMorph();
+VectorPaintEditorMorph.prototype = new PaintEditorMorph;
 VectorPaintEditorMorph.prototype.constructor = VectorPaintEditorMorph;
 VectorPaintEditorMorph.uber = PaintEditorMorph.prototype;
 
 function VectorPaintEditorMorph() {
     this.init();
-}
-
-VectorPaintEditorMorph.prototype.init = function () {
+};  VectorPaintEditorMorph.prototype.init = function () {
     // additional properties:
     this.paper = null; // paint canvas
     this.shapes = [];
@@ -953,6 +928,7 @@ VectorPaintEditorMorph.prototype.init = function () {
     VectorPaintEditorMorph.uber.init.call(this);
 
     this.labelString = 'Vector Paint Editor';
+    this.cursorStyle = 'default';
     this.createLabel();
     this.fixLayout();
 };
@@ -1716,7 +1692,7 @@ VectorPaintCanvasMorph.prototype.updateAutomaticCenter = function () {
                     (shapeBounds.height()) / 2)).add(relativePosition);
     } else if (this.automaticCrosshairs) {
         this.calculateCanvasCenter();
-    }
+    };
 };
 
 VectorPaintCanvasMorph.prototype.clearCanvas = function () {
@@ -1725,12 +1701,9 @@ VectorPaintCanvasMorph.prototype.clearCanvas = function () {
     editor.shapes = [];
     editor.clearSelection();
     this.mask.getContext('2d').clearRect(
-        0,
-        0,
-        this.bounds.width(),
+        0, 0, this.bounds.width(),
         this.bounds.height()
-    );
-    this.redraw = true;
+    );  this.redraw = true;
 };
 
 VectorPaintCanvasMorph.prototype.toolChanged = function (tool) {
@@ -1741,9 +1714,7 @@ VectorPaintCanvasMorph.prototype.toolChanged = function (tool) {
         editor.currentShape.close();
         editor.currentShape.drawOn(this);
         editor.shapes.push(editor.currentShape);
-    }
-
-    if (tool === 'crosshairs') {
+    };  if (tool === 'crosshairs') {
         editor.clearSelection();
         editor.currentShape = new Crosshair(this.rotationCenter, this);
         editor.currentShape.drawOn(this);
@@ -1753,7 +1724,7 @@ VectorPaintCanvasMorph.prototype.toolChanged = function (tool) {
     } else {
         editor.clearSelection();
         editor.currentShape = null;
-    }
+    };
 };
 
 VectorPaintCanvasMorph.prototype.drawNew = function () {
@@ -1767,14 +1738,10 @@ VectorPaintCanvasMorph.prototype.drawNew = function () {
     if (editor) {
         editor.shapes.forEach(function(each) {
             myself.merge(each.image, canvas);
-        });
-
-        if (editor.currentShape) {
+        }); if (editor.currentShape) {
             this.merge(editor.currentShape.image, canvas);
-        }
-    }
-
-    this.cachedImage = canvas;
+        };
+    };  this.cachedImage = canvas;
     this.drawFrame();
 };
 
@@ -1786,7 +1753,7 @@ VectorPaintCanvasMorph.prototype.step = function () {
         this.drawNew();
         this.changed();
         this.redraw = false;
-    }
+    };
 };
 
 VectorPaintCanvasMorph.prototype.mouseMove = function (pos) {
@@ -1800,7 +1767,6 @@ VectorPaintCanvasMorph.prototype.mouseMove = function (pos) {
     if (borderWidth > 0) {
     if (this.currentTool === 'paintbucket') {
         return;
-
     } else if (editor.currentShape && editor.currentShape.isSelection
             && !editor.selecting) {
 
@@ -1811,18 +1777,17 @@ VectorPaintCanvasMorph.prototype.mouseMove = function (pos) {
         } else if (selectionCorner) {
             oppositeCorner = editor.currentShape.cornerOppositeTo(
                 selectionCorner
-            );
-            editor.currentShape = new VectorSelection(
+            ); editor.currentShape = new VectorSelection(
                 oppositeCorner,
                 selectionCorner
             );
             editor.currentShape.drawOn(this);
             editor.resizing = true;
-            document.body.style.cursor = 'move';
+            editor.cursorStyle = 'move';
         } else if (editor.currentShape.containsPoint(pos)) {
             editor.moving = true;
-            document.body.style.cursor = 'move';
-        }
+            editor.cursorStyle = 'move';
+        };
 
     } else if (!editor.currentShape || editor.currentShape.isSelection
             && !editor.selecting) {
@@ -1836,14 +1801,14 @@ VectorPaintCanvasMorph.prototype.mouseMove = function (pos) {
 
 VectorPaintCanvasMorph.prototype.mouseEnter = function () {
     if (this.currentTool === 'selection') {
-        document.body.style.cursor = 'crosshair';
+        editor.cursorStyle = 'crosshair';
     } else {
-        document.body.style.cursor = 'default';
-    }
+        editor.cursorStyle = 'default';
+    };
 };
 
 VectorPaintCanvasMorph.prototype.mouseLeave = function () {
-    document.body.style.cursor = 'default';
+    editor.cursorStyle = 'default';
 };
 
 VectorPaintCanvasMorph.prototype.mouseClickLeft = function (pos) {

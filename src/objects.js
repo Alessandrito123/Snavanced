@@ -9,7 +9,7 @@
     written by Jens Mönig
     jens@moenig.org
 
-    Copyright (C) 2023 by Jens Mönig
+    Copyright (C) 2024 by Jens Mönig
 
     This file is part of Snap!.
 
@@ -3008,7 +3008,7 @@ var blocks = [], myself = this, varNames, inheritedVars = this.inheritedVariable
         blocks.push('-');
         blocks.push(this.subCategoryText('Coordinates'));
         blocks.push('-');
-        blocks.push(block('gotoXY'));
+        blocks.push(block('gotoDeviatedXY'));
         blocks.push(block('doGotoObject'));
         blocks.push(block('doUpdatePosition'));
         blocks.push('-');
@@ -4949,10 +4949,10 @@ SpriteMorph.prototype.remove = function () {
 // SpriteMorph cloning
 
 /*
-    clones are permanent, partially shallow copies of sprites that appears as icons in the corral.
-    Clones get deleted when is temporary and the red stop button
-    is pressed. Shallow-copying clones' scripts and costumes makes spawning
-    very fast, so they can be used for particle system simulations.
+    Clones are permanent, partially shallow copies of sprites that appears
+    as icons in the corral. These can get deleted when are temporary and the
+    red stop button is pressed. Shallow-copying clones' scripts and costumes
+    makes spawning very fast, so they can be used for particle system simulations.
     This speed-up, however, comes at the cost of some detrimental side
     effects: Changes to a costume or a script of the original sprite are
     in some cases shared with all of its clones, however such shared changes
@@ -5035,12 +5035,11 @@ SpriteMorph.prototype.perpetuate = function () {var stage = this.parentThatIsA(S
 .forEach(part => part.perpetuate());};
 
 SpriteMorph.prototype.perpetuateAndEdit = function () {
-    var ide = this.parentThatIsA(IDE_Morph);
-    if (ide) {
+    var ide = this.parentThatIsA(IDE_Morph); if (ide) {
         this.perpetuate();
         ide.selectSprite(this);
         ide.recordUnsavedChanges();
-    }
+    };
 };
 
 SpriteMorph.prototype.release = function () {
@@ -5054,9 +5053,7 @@ SpriteMorph.prototype.release = function () {
 
     if (this.isTemporary || !this.exemplar || !stage || !ide) {
         return;
-    }
-
-	// make sure all parts and instances are also released
+    };  // make sure all parts and instances are also released
     this.parts.forEach(part => part.release());
     this.instances.forEach(inst => inst.release());
     this.isTemporary = true;
@@ -5067,29 +5064,28 @@ SpriteMorph.prototype.release = function () {
     stage.watchers().forEach(watcher => {
         if (watcher.object() === this) {
             watcher.destroy();
-        }
+        };
     });
     if (idx > 0) {
         ide.sprites.remove(idx);
-    }
-    ide.createCorral();
+    }; ide.createCorral();
     ide.fixLayout();
     if (ide.currentSprite === this) {
         ide.currentSprite = detect(
             stage.children,
             morph => morph instanceof SpriteMorph && !morph.isTemporary
         ) || this.stage;
-    }
-    ide.selectSprite(ide.currentSprite);
+    }; ide.selectSprite(ide.currentSprite);
     if (ide.isAppMode) {
         ide.toggleAppMode(true);
-    }
+    };
 };
 
 // SpriteMorph deleting
 
-SpriteMorph.prototype.corpsify = function anonymous () {
-this.isCorpse = true; this.version = Date.now(); this.changed();};
+SpriteMorph.prototype.corpsify = function () {
+this.isCorpse = true; this.version = Date.now();
+this.changed();}; /* Dead sprite incoming. :~( */
 
 // SpriteMorph primitives
 
@@ -5100,41 +5096,34 @@ this.isCorpse = true; this.version = Date.now(); this.changed();};
     nested parts.
 */
 
-SpriteMorph.prototype.show = function anonymous () {this.setVisibility(true);};
+SpriteMorph.prototype.show = function () {this.setVisibility(true);
+}; SpriteMorph.prototype.hide = function () {this.setVisibility();};
 
-SpriteMorph.prototype.hide = function anonymous () {this.setVisibility(false);};
-
-SpriteMorph.prototype.setVisibility = function (bool, noShadow) {
-    var bubble = this.talkBubble();
-
-    if (bool) {
+SpriteMorph.prototype.setVisibility = function (
+    bool, noShadow) {var bubble = this.talkBubble(
+    );  if (asABool(bool)) {
         SpriteMorph.uber.show.call(this);
     } else {
         SpriteMorph.uber.hide.call(this);
-    }
-
-    // propagate to speech bubble, if any
+    };  // propagate to speech bubble, if any
     if (bubble) {
         if (bool) {
             bubble.show();
         } else {
             bubble.hide();
-        }
-    }
-
-    // progagate to parts
+        };
+    };  // progagate to parts
     this.parts.forEach(part => part.setVisibility(bool));
 
     // propagate to children that inherit my visibility
     if (!noShadow) {
         this.shadowAttribute('shown?');
-    }
-    this.instances.forEach(instance => {
+    };  this.instances.forEach(instance => {
         if (instance.cachedPropagation) {
             if (instance.inheritsAttribute('shown?')) {
                 instance.setVisibility(bool, true);
-            }
-        }
+            };
+        };
     });
 };
 
@@ -12075,7 +12064,7 @@ CellMorph.prototype.createContents = function () {
                     }; this.prepareToBeGrabbed = prepare;
                 };
 
-                if (ide.isAppMode) {return; }
+                if (ide.isAppMode) {return;};
                 icon.setCenter(this.center());
                 return icon;
             };  if (this.contentsMorph.isDraggable) {
@@ -12342,7 +12331,7 @@ WatcherMorph.prototype.init = function (
     this.update();
     if (isHidden) { // for de-serializing
         this.hide();
-    }; this.cursorStyle = 'grab';
+    };  this.cursorStyle = 'grab';
     this.cursorGrabStyle = 'grabbing';
 };
 
