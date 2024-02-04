@@ -6726,29 +6726,21 @@ SpriteMorph.prototype.xPosition = function () {
 SpriteMorph.prototype.yPosition = function () {
     if (this.inheritsAttribute('y position')) {
         return this.exemplar.yPosition();
-    };
-
-    var stage = this.parentThatIsA(StageMorph);
-
+    };  var stage = this.parentThatIsA(StageMorph);
     if (!stage && this.parent.grabOrigin) { // I'm currently being dragged
         stage = this.parent.grabOrigin.origin;
-    };
-    if (stage) {
+    };  if (stage) {
         return (stage.center().y - this.rotationCenter().y) / stage.scale;
-    };
-    return this.rotationCenter().y;
+    };  return this.rotationCenter().y;
 };
 
 SpriteMorph.prototype.direction = function () {
     if (this.inheritsAttribute('direction')) {
         return this.exemplar.direction();
-    };
-    return this.heading;
+    };  return this.heading;
 };
 
-SpriteMorph.prototype.penSize = function () {
-    return this.size;
-};
+SpriteMorph.prototype.penSize = function () {return this.size;};
 
 SpriteMorph.prototype.gotoXY = function (x, y, justMe, noShadow) {
     var stage = this.parentThatIsA(StageMorph),
@@ -6771,20 +6763,16 @@ SpriteMorph.prototype.gotoXY = function (x, y, justMe, noShadow) {
 };};
 
 SpriteMorph.prototype.silentGotoXY = function (x, y, justMe) {
-    // move without drawing
-    // don't shadow coordinate attributes
-    var penState = this.isDown;
-    this.isDown = false;
-    this.gotoXY(x, y, justMe, true); // don't shadow coordinates
-    this.isDown = penState;
-};
+// move without drawing, don't shadow coordinate attributes
+var penState = this.isDown; this.isDown = false; this.gotoXY(
+x, y, justMe, true); this.isDown = penState;};
 
 SpriteMorph.prototype.gotoDeviatedXY = function (x, y, direction) {
 var selectedDirection = Process.prototype.reportBasicAtan2(+asANum(
 x), +asANum(y)), distance = Math.hypot(+asANum(x), +asANum(y));
-direction = ((direction.length > 0) ? (selectedDirection + (
-asANum(direction[0]) - 90)) : selectedDirection); this.gotoXY((
-distance * Process.prototype.reportMonadic(['sin'], direction)),
+direction = ((direction.length() > 0) ? (selectedDirection + (
+asANum(direction.at(1)) - 90)) : selectedDirection); this.gotoXY(
+(distance * Process.prototype.reportMonadic(['sin'], direction)),
 (distance * Process.prototype.reportMonadic(['cos'], direction
 )));}; /* This block is very important for rendering. :~) */
 

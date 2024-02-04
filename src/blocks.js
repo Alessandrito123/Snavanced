@@ -770,6 +770,7 @@ SyntaxElementMorph.prototype.labelParts = {
             sign : ['sign'],
             ceiling : ['ceiling'],
             floor : ['floor'],
+            perfectRound : ['perfectRound'],
             int : ['int'],
             dec : ['dec'],
             real : ['real'],

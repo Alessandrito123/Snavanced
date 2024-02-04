@@ -3791,14 +3791,14 @@ number, optional) {var power = (10 ** (isNil(optional
 ) : Math.abs(+number)); return ((Math.sign(+number
 ) < 0) ? -result : +result);};
 
-Process.prototype.reportRandom = function anonymous (a, b, c
-) {return ((c === 'without rounding') ? (a + (Math.random() * (b - a))) : this.hyperDyadic(this.reportBasicRandom, a, b));};
+Process.prototype.reportRandom = function anonymous (a, b, c) {
+return ((c === 'without rounding') ? (a + (Math.random() * (
+b - a))) : this.hyperDyadic(this.reportBasicRandom, a, b));};
 
-Process.prototype.reportBasicRandom = function (min, max) {
-var floor = Math.min(+min, +max), ceil = Math.max(+min, +max);
-if ((floor % 1 !== 0) || (ceil % 1 !== 0)) {return Math.random(
-) * (ceil - floor) + floor;}; return Math.floor(Math.random(
-) * (ceil - floor + 1)) + floor;};
+Process.prototype.reportBasicRandom = function (min, max) {var floor = Math.min(
++min, +max), ceil = Math.max(+min, +max); if (!((floor % 1) == 0) || !((ceil % 1
+) == 0)) {return Math.random() * (ceil - floor) + floor;}; return Math.floor(
+Math.random() * (ceil - floor + 1)) + floor;}; /* Aligned perfectly. :~) */
 
 Process.prototype.reportIntegral = function anonymous (a, b, c, d) {a = asAComplexNum(a); b = asAComplexNum(b); c = asAComplexNum(c); d = asAComplexNum(d); return Process.prototype.reportComplexQuotient(
 Process.prototype.reportComplexProduct(b, Process.prototype.reportComplexDifference(Process.prototype.reportComplexPower(a, Process.prototype.reportComplexSum(c, 1)), Process.prototype.reportComplexPower(
@@ -3940,6 +3940,10 @@ Process.prototype.reportComplexQuotient(180, Math.PI));}; switch (this.inputOpti
     case 'floor':
         return Math.floor(+n);
         break;
+    case 'perfectRound':
+        return (Math.round(
+        Math.abs(+n)) * sign(
+        +n)); break;
     case 'int':
         return Math.trunc(+n);
         break;
