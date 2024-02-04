@@ -1076,10 +1076,11 @@ function anonymous (clr1, clr2) {return [(clr1[0] + clr2[0]), (clr1[1] + clr2[1]
 (clr1[2] + clr2[2]), (clr1[3] + clr2[3])];}); return new Color((result[0] / inputs.length(
 )), (result[1] / inputs.length()), (result[2] / inputs.length()), (result[3] / inputs.length(
 )));}; Process.prototype.mixClrsAt = function anonymous (color1, color2, percent) {
-return new Color(((color1.r * (1 - (percent / 100))) + (color2.r * (percent / 100))
-), ((color1.g * (1 - (percent / 100))) + (color2.g * (percent / 100))), ((color1.b * (
-1 - (percent / 100))) + (color2.b * (percent / 100))), ((color1.a * (1 - (percent / 100
-))) + (color2.a * (percent / 100))));}; /* Use them to make better graphics and designs. :) */
+percent = Math.min(Math.max(+percent, -100), 100); return new Color(((color1.r * (
+1 - (percent / 100))) + (color2.r * (percent / 100))), ((color1.g * (1 - (
+percent / 100))) + (color2.g * (percent / 100))), ((color1.b * (1 - (
+percent / 100))) + (color2.b * (percent / 100))), ((color1.a * (1 - (
+percent / 100))) + (color2.a * (percent / 100))));}; /* :~) */
 
 // Manage Custom Categories
 
