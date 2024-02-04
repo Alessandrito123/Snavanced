@@ -928,7 +928,6 @@ function VectorPaintEditorMorph() {
     VectorPaintEditorMorph.uber.init.call(this);
 
     this.labelString = 'Vector Paint Editor';
-    this.cursorStyle = 'default';
     this.createLabel();
     this.fixLayout();
 };
@@ -1632,17 +1631,14 @@ VectorPaintEditorMorph.prototype.undo = function () {
         this.shapes = this.history.pop() || [];
         this.shapes.forEach(draw);
         newSum = this.checksum();
-    }
-
-    this.clearSelection();
+    };  this.clearSelection();
 };
 
 VectorPaintEditorMorph.prototype.checksum = function () {
     return JSON.stringify(this.shapes).split('').reduce(
             function (previousSum, currentChar) {
                 return previousSum + currentChar.charCodeAt(0);
-            },
-            0);
+            },  0);
 };
 
 VectorPaintEditorMorph.prototype._destroy = PaintEditorMorph.prototype._destroy;
@@ -1650,15 +1646,13 @@ VectorPaintEditorMorph.prototype.destroy = PaintEditorMorph.prototype.destroy;
 
 // VectorPaintCanvasMorph //////////////////////////
 
-VectorPaintCanvasMorph.prototype = new PaintCanvasMorph();
+VectorPaintCanvasMorph.prototype = new PaintCanvasMorph;
 VectorPaintCanvasMorph.prototype.constructor = VectorPaintCanvasMorph;
 VectorPaintCanvasMorph.uber = PaintCanvasMorph.prototype;
 
 function VectorPaintCanvasMorph (shift) {
     this.init(shift);
-}
-
-VectorPaintCanvasMorph.prototype.init = function (shift) {
+}; VectorPaintCanvasMorph.prototype.init = function (shift) {
     VectorPaintCanvasMorph.uber.init.call(this, shift);
     this.isCachingImage = true;
     this.pointBuffer = [];
@@ -1783,10 +1777,10 @@ VectorPaintCanvasMorph.prototype.mouseMove = function (pos) {
             );
             editor.currentShape.drawOn(this);
             editor.resizing = true;
-            editor.cursorStyle = 'move';
+            this.cursorStyle = 'move';
         } else if (editor.currentShape.containsPoint(pos)) {
             editor.moving = true;
-            editor.cursorStyle = 'move';
+            this.cursorStyle = 'move';
         };
 
     } else if (!editor.currentShape || editor.currentShape.isSelection
@@ -1801,14 +1795,14 @@ VectorPaintCanvasMorph.prototype.mouseMove = function (pos) {
 
 VectorPaintCanvasMorph.prototype.mouseEnter = function () {
     if (this.currentTool === 'selection') {
-        editor.cursorStyle = 'crosshair';
+        this.cursorStyle = 'crosshair';
     } else {
-        editor.cursorStyle = 'default';
+        this.cursorStyle = 'default';
     };
 };
 
 VectorPaintCanvasMorph.prototype.mouseLeave = function () {
-    editor.cursorStyle = 'default';
+    this.cursorStyle = 'default';
 };
 
 VectorPaintCanvasMorph.prototype.mouseClickLeft = function (pos) {

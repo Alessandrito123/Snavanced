@@ -58,7 +58,7 @@ PaintEditorMorph.uber = DialogBoxMorph.prototype;
 
 PaintEditorMorph.prototype.padding = 10;
 
-function PaintEditorMorph() {this.init();}
+function PaintEditorMorph() {this.init();};
 
 PaintEditorMorph.prototype.init = function () {
     // additional properties:
@@ -71,7 +71,6 @@ PaintEditorMorph.prototype.init = function () {
 
     // override inherited properties:
     this.labelString = "Paint Editor";
-    this.cursorStyle = 'default';
     this.createLabel();
 
     // building the contents happens when I am opened with an IDE
@@ -578,20 +577,19 @@ PaintColorPickerMorph.prototype.mouseMove =
     modify its image, based on a 'tool' property.
 */
 
-PaintCanvasMorph.prototype = new Morph();
+PaintCanvasMorph.prototype = new Morph;
 PaintCanvasMorph.prototype.constructor = PaintCanvasMorph;
 PaintCanvasMorph.uber = Morph.prototype;
 
-function PaintCanvasMorph(shift) {
-    this.init(shift);
-}
+function PaintCanvasMorph(shift) {this.init(shift);};
 
 PaintCanvasMorph.prototype.init = function (shift) {
     this.rotationCenter = new Point(240, 180);
+    this.cursorStyle = 'default';
     this.dragRect = null;
     this.previousDragPoint = null;
     this.currentTool = "brush";
-    this.dragRect = new Rectangle();
+    this.dragRect = new Rectangle;
     // rectangle with origin being the starting drag position and
     // corner being the current drag position
     this.mask = null; // Temporary canvas
@@ -602,15 +600,13 @@ PaintCanvasMorph.prototype.init = function (shift) {
         "primarycolor": new Color(0, 0, 0, 1), // usually fill color
         "secondarycolor": new Color(0, 0, 0, 1), // (unused)
         "linewidth": 5 // stroke width
-    };
-    this.brushBuffer = [];
+    };  this.brushBuffer = [];
     this.undoBuffer = [];
     this.isShiftPressed = shift || function () {
         var key = this.world().currentKey;
         return (key === 16);
-    };
-    // should we calculate the center of the image ourselves,
-    // or use the user position
+    }; // should we calculate the center of the
+    // image ourselves, or use the user position
     this.automaticCrosshairs = true;
     this.isCachingImage = true;
     this.buildContents();
@@ -622,8 +618,7 @@ PaintCanvasMorph.prototype.calculateCanvasCenter = function(canvas) {
     var canvasBounds = Costume.prototype.canvasBoundingBox(canvas);
     if (canvasBounds === null) {
         return null;
-    }
-    // Can't use canvasBounds.center(), it rounds down.
+    };  // Can't use canvasBounds.center(), it rounds down.
     return new Point(
     	(canvasBounds.origin.x + canvasBounds.corner.x) / 2,
         (canvasBounds.origin.y + canvasBounds.corner.y) / 2
