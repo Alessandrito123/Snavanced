@@ -6,7 +6,7 @@
 
     written by Jens Mönig
 
-    Copyright (C) 2023 by Jens Mönig
+    Copyright (C) 2024 by Jens Mönig
 
     This file is part of Snap!.
 
@@ -156,16 +156,6 @@
 
 */
 
-// Global settings /////////////////////////////////////////////////////
-
-/*global modules, contains, SpriteMorph*/
-
-/*jshint esversion: 6*/
-
-// Global stuff
-
-modules.locale = '2023-December-30';
-
 localize = function anonymous (string) {
 return SnapTranslator.translate(string);};
 
@@ -260,7 +250,7 @@ SnapTranslator.dict.en = {
     'translator_e-mail':
         'jens@moenig.org',
     'last_changed':
-        '2023-01-27',
+        '2024-02-03',
 
     // long strings look-up only
     'file menu import hint':
@@ -311,6 +301,7 @@ SnapTranslator.dict.en = {
 'SELECTOR turnLeft INPUTS %n degrees' : 'turn $turnLeft-1.5 %n degrees',
 'SELECTOR setHeading INPUTS %dir' : 'point in direction %dir',
 'SELECTOR doFaceTowards INPUTS %dst' : 'point towards %dst',
+'SELECTOR gotoDeviatedXY INPUTS %n %n %optDir' : 'go to x\: %n y\: %n %optDir',
 
 
 

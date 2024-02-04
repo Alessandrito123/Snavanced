@@ -198,11 +198,11 @@ SpriteMorph.prototype.blocks = {
             spec: 'SELECTOR doFaceTowards INPUTS %dst',
             defaults: [['mouse-pointer']]
         },
-        gotoXY: {
+        gotoDeviatedXY: {
             only: SpriteMorph,
             type: 'command',
             category: 'motion',
-            spec: 'go to x: %n y: %n',
+            spec: 'SELECTOR gotoDeviatedXY INPUTS %n %n %optDir',
             defaults: [0, 0]
         },
         doGotoObject: {
@@ -2107,6 +2107,9 @@ SpriteMorph.prototype.initBlockMigrations = function () {
             inputs: [['launch']],
             offset: 1
         },
+        gotoXY: {
+            selector: 'gotoDeviatedXY',
+        },
         changeXPosition: {
             selector: 'doUpdatePosition',
             inputs: [['change'], ['x']],
@@ -2404,9 +2407,9 @@ SpriteMorph.prototype.blockAlternatives = {
     turn: ['turnLeft'],
     turnLeft: ['turn'],
     doFaceTowards:  ['doGotoObject'],
-    gotoXY: [['doGlide', 1]],
+    gotoDeviatedXY: [['doGlide', 1]],
     doGotoObject: ['doFaceTowards'],
-    doGlide: [['gotoXY', -1]],
+    doGlide: [['gotoDeviatedXY', -1]],
     doMove: [['forward', -1]],
     xPosition: ['yPosition', 'direction', 'getPosition'],
     yPosition: ['xPosition', 'direction', 'getPosition'],
@@ -6788,6 +6791,15 @@ SpriteMorph.prototype.silentGotoXY = function (x, y, justMe) {
     this.gotoXY(x, y, justMe, true); // don't shadow coordinates
     this.isDown = penState;
 };
+
+SpriteMorph.prototype.gotoDeviatedXY = function (x, y, direction) {
+var selectedDirection = Process.prototype.reportBasicAtan2(+asANum(
+x), +asANum(y)), selectedDistance = Math.hypot(+asANum(x), +asANum(
+y)); direction = ((direction.length > 0) ? (selectedDirection + (
+asANum(direction[0]) - 90)) : selectedDirection); this.gotoXY((
+distance * Process.prototype.reportMonadic(['sin'], direction)),
+(distance * Process.prototype.reportMonadic(['cos'], direction
+)));}; /* This block is very important for rendering. :~) */
 
 SpriteMorph.prototype.setXPosition = function (num) {
 this.shadowAttribute('x position');
