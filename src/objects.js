@@ -92,7 +92,8 @@ CellMorph, WatcherMorph, StagePrompterMorph, Note, SpriteHighlightMorph;
 
 /* Timer functions */
 
-function TimerFunction () {this.stopNow();};
+function TimerFunction () {if (isNil(new.target)) {throw Error(
+'Please use the \"new\" operator.');} else {this.stopNow();};};
 
 TimerFunction.prototype.getTime = function anonymous () {if (this.state === 'paused') {
 var result = (this.pauseTime - this.resumeTime);} else {var result = (Date.now() -
@@ -6751,16 +6752,13 @@ SpriteMorph.prototype.penSize = function () {
 
 SpriteMorph.prototype.gotoXY = function (x, y, justMe, noShadow) {
     var stage = this.parentThatIsA(StageMorph),
-        newX,
-        newY,
-        dest;
+        newX, newY, dest;
 
     if (stage) {
     if (!noShadow) {
         this.shadowAttribute('x position');
         this.shadowAttribute('y position');
-    }
-    x = !isFinite(+x) ? 0 : +x;
+    }; x = !isFinite(+x) ? 0 : +x;
     y = !isFinite(+y) ? 0 : +y;
     newX = stage.center().x + x * stage.scale;
     newY = stage.center().y - y * stage.scale;
@@ -6783,8 +6781,8 @@ SpriteMorph.prototype.silentGotoXY = function (x, y, justMe) {
 
 SpriteMorph.prototype.gotoDeviatedXY = function (x, y, direction) {
 var selectedDirection = Process.prototype.reportBasicAtan2(+asANum(
-x), +asANum(y)), selectedDistance = Math.hypot(+asANum(x), +asANum(
-y)); direction = ((direction.length > 0) ? (selectedDirection + (
+x), +asANum(y)), distance = Math.hypot(+asANum(x), +asANum(y));
+direction = ((direction.length > 0) ? (selectedDirection + (
 asANum(direction[0]) - 90)) : selectedDirection); this.gotoXY((
 distance * Process.prototype.reportMonadic(['sin'], direction)),
 (distance * Process.prototype.reportMonadic(['cos'], direction
