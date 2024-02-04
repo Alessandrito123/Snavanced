@@ -71,7 +71,7 @@ PaintEditorMorph.prototype.init = function () {
 
     // override inherited properties:
     this.labelString = "Paint Editor";
-    editor.cursorStyle = 'default';
+    this.cursorStyle = 'default';
     this.createLabel();
 
     // building the contents happens when I am opened with an IDE
