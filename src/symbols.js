@@ -37,12 +37,6 @@
 
 */
 
-/*global modules, Morph, Point, radians, ZERO, BLACK*/
-
-// Global stuff ////////////////////////////////////////////////////////
-
-modules.symbols = '2023-September-14';
-
 var SymbolMorph;
 
 // SymbolMorph //////////////////////////////////////////////////////////
@@ -106,6 +100,7 @@ SymbolMorph.prototype.names = [
     'rectangleSolid',
     'circle',
     'circleSolid',
+    'dot',
     'ellipse',
     'line',
     'cross',
@@ -368,6 +363,7 @@ SymbolMorph.prototype.renderShape = function (ctx, aColor) {
         this.renderSymbolCircle(ctx, aColor);
         break;
     case 'circleSolid':
+    case 'dot':
         this.renderSymbolCircleSolid(ctx, aColor);
         break;
     case 'ellipse':
@@ -530,7 +526,9 @@ SymbolMorph.prototype.symbolWidth = function () {
     case 'pointRight':
         return Math.sqrt(size * size - Math.pow(size / 2, 2));
     case 'verticalEllipsis':
-        return size * 0.2;
+        return size / 5;
+    case 'dot':
+        return size * 0.4;
     case 'location':
         return size * 0.6;
     case 'flash':
@@ -556,7 +554,7 @@ SymbolMorph.prototype.symbolWidth = function () {
     case 'turnRight':
     case 'turnNormal':
     case 'turnLeft':
-        return size / 3 * 2;
+        return size * 1.5;
     case 'loop':
         return size * 2;
     default:
@@ -1471,11 +1469,12 @@ SymbolMorph.prototype.renderSymbolCircle = function (ctx, color) {
 
 SymbolMorph.prototype.renderSymbolCircleSolid = function (ctx, color) {
     // draw a solid circle
-    var w = this.symbolWidth();
+    var w = this.symbolWidth(),
+        h = this.size;
 
     ctx.fillStyle = color.toString();
     ctx.beginPath();
-    ctx.arc(w / 2, w / 2, w / 2, 0, radians(360), false);
+    ctx.arc(w / 2, h / 2, w / 2, 0, radians(360), false);
     ctx.fill();
 };
 
