@@ -156,9 +156,7 @@ SymbolMorph.prototype.names = [
 
 function SymbolMorph(name, size, color, shadowOffset, shadowColor) {
     this.init(name, size, color, shadowOffset, shadowColor);
-}
-
-SymbolMorph.prototype.init = function (
+};  SymbolMorph.prototype.init = function (
     name,
     size,
     color,
@@ -237,8 +235,7 @@ SymbolMorph.prototype.render = function (ctx) {
         ctx.translate(sx, sy);
         this.renderShape(ctx, this.getShadowRenderColor());
         ctx.restore();
-    }
-    ctx.save();
+    };  ctx.save();
     ctx.translate(x, y);
     this.renderShape(ctx, this.getRenderColor());
     ctx.restore();
@@ -515,7 +512,7 @@ SymbolMorph.prototype.renderShape = function (ctx, aColor) {
         break;
     default:
         throw new Error('unknown symbol name: "' + this.name + '"');
-    }
+    };
 };
 
 SymbolMorph.prototype.symbolWidth = function () {
@@ -531,6 +528,10 @@ SymbolMorph.prototype.symbolWidth = function () {
         return size * 0.4;
     case 'location':
         return size * 0.6;
+    case 'turnRight':
+    case 'turnNormal':
+    case 'turnLeft':
+        return size / 3 * 2;
     case 'flash':
     case 'file':
     case 'folder':
@@ -551,15 +552,11 @@ SymbolMorph.prototype.symbolWidth = function () {
     case 'keyboard':
     case 'keyboardFilled':
         return size * 1.6;
-    case 'turnRight':
-    case 'turnNormal':
-    case 'turnLeft':
-        return size * 1.5;
     case 'loop':
         return size * 2;
     default:
         return size;
-    }
+    };
 };
 
 SymbolMorph.prototype.renderSymbolStop = function (ctx, color) {
@@ -573,7 +570,7 @@ SymbolMorph.prototype.renderSymbolPointRight = function (ctx, color) {
     ctx.fillStyle = color.toString();
     ctx.beginPath();
     ctx.moveTo(0, 0);
-    ctx.lineTo(this.symbolWidth(), Math.round(this.size / 2));
+    ctx.lineTo(this.symbolWidth(), this.size / 2);
     ctx.lineTo(0, this.size);
     ctx.lineTo(0, 0);
     ctx.closePath();
@@ -589,7 +586,7 @@ SymbolMorph.prototype.renderSymbolStepForward = function (ctx, color) {
     ctx.fillStyle = color.toString();
     ctx.beginPath();
     ctx.moveTo(0, 0);
-    ctx.lineTo(w * 0.75, Math.round(h / 2));
+    ctx.lineTo(w * 0.75, h / 2);
     ctx.lineTo(0, h);
     ctx.lineTo(0, 0);
     ctx.closePath();
@@ -612,8 +609,8 @@ SymbolMorph.prototype.renderSymbolGears = function (ctx, color) {
     ctx.lineWidth = this.symbolWidth() / 4;
 
     ctx.beginPath();
-    ctx.arc(r, r, w, 0, radians(360), true);
-    ctx.arc(r, r, e * 2, 0, radians(360), false);
+    ctx.arc(r, r, w, 0, 2 * Math.PI, true);
+    ctx.arc(r, r, e * 2, 0, 2 * Math.PI, false);
     ctx.closePath();
     ctx.clip();
 
@@ -675,8 +672,8 @@ SymbolMorph.prototype.renderSymbolGearBig = function (ctx, color) {
     ctx.lineTo(w, r);
 
     // draw the holes in the middle
-    ctx.arc(r, r, r * 0.6, 0, radians(360));
-    ctx.arc(r, r, r * 0.2, 0, radians(360));
+    ctx.arc(r, r, r * 0.6, 0, 2 * Math.PI);
+    ctx.arc(r, r, r * 0.2, 0, 2 * Math.PI);
 
     // fill
     ctx.clip('evenodd');
@@ -725,7 +722,7 @@ SymbolMorph.prototype.renderSymbolGearPartial = function (ctx, color) {
     ctx.lineTo(w, r);
 
     // draw the hole in the middle
-    ctx.arc(r, r, r * 0.3, 0, radians(360));
+    ctx.arc(r, r, r * 0.3, 0, 2 * Math.PI);
 
     // fill
     ctx.clip('evenodd');
@@ -1463,7 +1460,7 @@ SymbolMorph.prototype.renderSymbolCircle = function (ctx, color) {
     ctx.strokeStyle = color.toString();
     ctx.lineWidth = l * 2;
     ctx.beginPath();
-    ctx.arc(w / 2, w / 2, w / 2 - l, 0, radians(360), false);
+    ctx.arc(w / 2, w / 2, w / 2 - l, 0, 2 * Math.PI, false);
     ctx.stroke();
 };
 
@@ -1474,7 +1471,7 @@ SymbolMorph.prototype.renderSymbolCircleSolid = function (ctx, color) {
 
     ctx.fillStyle = color.toString();
     ctx.beginPath();
-    ctx.arc(w / 2, h / 2, w / 2, 0, radians(360), false);
+    ctx.arc(w / 2, h / 2, w / 2, 0, 2 * Math.PI, false);
     ctx.fill();
 };
 
@@ -1529,7 +1526,7 @@ SymbolMorph.prototype.renderSymbolCrosshairs = function (ctx, color) {
     ctx.stroke();
     ctx.beginPath();
     ctx.moveTo(w / 2, h / 2);
-    ctx.arc(w / 2, w / 2, w / 3 - l, 0, radians(360), false);
+    ctx.arc(w / 2, w / 2, w / 3 - l, 0, 2 * Math.PI, false);
     ctx.stroke();
 };
 
@@ -1553,7 +1550,7 @@ SymbolMorph.prototype.renderSymbolPaintbucket = function (ctx, color) {
 
     ctx.lineWidth = l;
     ctx.moveTo(n * 2, n * 2.5);
-    ctx.arc(n * 2, n * 2.5, l, 0, radians(360), false);
+    ctx.arc(n * 2, n * 2.5, l, 0, 2 * Math.PI, false);
     ctx.stroke();
 
     ctx.moveTo(n * 2, n * 2.5);
@@ -1628,7 +1625,7 @@ SymbolMorph.prototype.renderSymbolPipette = function (ctx, color) {
     ctx.stroke();
 
     ctx.fillStyle = color.toString();
-    ctx.arc(n * 3, n, n - l, 0, radians(360), false);
+    ctx.arc(n * 3, n, n - l, 0, 2 * Math.PI, false);
     ctx.fill();
 
     ctx.beginPath();
@@ -2024,12 +2021,12 @@ SymbolMorph.prototype.renderSymbolMagnifyingGlass = function (ctx, color) {
     gradient.addColorStop(1, color.inverted().darker(25).toString());
     ctx.fillStyle = gradient;
     ctx.beginPath();
-    ctx.arc(x, y, r, 0, radians(360), false);
+    ctx.arc(x, y, r, 0, 2 * Math.PI, false);
     ctx.fill();
 
     ctx.lineWidth = l / 2;
     ctx.beginPath();
-    ctx.arc(x, y, r, 0, radians(360), false);
+    ctx.arc(x, y, r, 0, 2 * Math.PI, false);
     ctx.stroke();
 
     ctx.lineWidth = l;
@@ -2053,7 +2050,7 @@ SymbolMorph.prototype.renderSymbolMagnifierOutline = function (ctx, color) {
 
     ctx.lineWidth = l * 0.5;
     ctx.beginPath();
-    ctx.arc(x, y, r, 0, radians(360), false);
+    ctx.arc(x, y, r, 0, 2 * Math.PI, false);
     ctx.stroke();
 
     ctx.lineWidth = l;
@@ -2119,10 +2116,10 @@ SymbolMorph.prototype.renderSymbolNotes = function (ctx, color) {
     ctx.fillStyle = color.toString();
 
     ctx.beginPath();
-    ctx.arc(r, size - r, r, 0, radians(360), false);
+    ctx.arc(r, size - r, r, 0, 2 * Math.PI, false);
     ctx.fill();
     ctx.beginPath();
-    ctx.arc(size - r, size - (r * 2), r, 0, radians(360), false);
+    ctx.arc(size - r, size - (r * 2), r, 0, 2 * Math.PI, false);
     ctx.fill();
 
     ctx.beginPath();
@@ -2168,7 +2165,7 @@ SymbolMorph.prototype.renderSymbolCamera = function (ctx, color) {
     ctx.lineTo(l, h * 5 / 6);
 
     // camera lens
-    ctx.arc(w / 2, h / 2, r, 0, radians(360), false);
+    ctx.arc(w / 2, h / 2, r, 0, 2 * Math.PI, false);
 
     ctx.clip();
     ctx.fillRect(0, 0, w, h);
@@ -2200,7 +2197,7 @@ SymbolMorph.prototype.renderSymbolCameraOutline = function (ctx, color) {
 
     // camera lens
     ctx.beginPath();
-    ctx.arc(w / 2, h / 2, r, 0, radians(360), false);
+    ctx.arc(w / 2, h / 2, r, 0, 2 * Math.PI, false);
     ctx.stroke();
     ctx.closePath();
 };
@@ -2269,7 +2266,7 @@ SymbolMorph.prototype.renderSymbolLocation = function (ctx, color) {
     ctx.lineTo(0, r);
 
     // hole
-    ctx.arc(r, r, r * 0.5, 0, radians(360), false);
+    ctx.arc(r, r, r * 0.5, 0, 2 * Math.PI, false);
 
     ctx.clip('evenodd');
     ctx.fillRect(0, 0, w, h);
@@ -2373,7 +2370,7 @@ SymbolMorph.prototype.renderSymbolGlobe = function (ctx, color, detailed) {
     ctx.lineWidth = l * 2;
 
     ctx.beginPath();
-    ctx.arc(w / 2, w / 2, w / 2 - l, 0, radians(360), false);
+    ctx.arc(w / 2, w / 2, w / 2 - l, 0, 2 * Math.PI, false);
     ctx.stroke();
 
     if (detailed) {
@@ -2434,9 +2431,9 @@ SymbolMorph.prototype.renderSymbolVerticalEllipsis = function (ctx, color) {
 
     ctx.fillStyle = color.toString();
     ctx.beginPath();
-    ctx.arc(r, r, r, radians(0), radians(360), false);
-    ctx.arc(r, r * 5, r, radians(0), radians(360), false);
-    ctx.arc(r, r * 9, r, radians(0), radians(360), false);
+    ctx.arc(r, r, r, radians(0), 2 * Math.PI, false);
+    ctx.arc(r, r * 5, r, radians(0), 2 * Math.PI, false);
+    ctx.arc(r, r * 9, r, radians(0), 2 * Math.PI, false);
     ctx.fill();
 };
 
