@@ -84,26 +84,11 @@ BlockVisibilityDialogMorph, ThreadManager*/
 
 // Declarations
 
-var IDE_Morph,
-BackpackItemMorph,
-ProjectDialogMorph,
-LibraryImportDialogMorph,
-SpriteIconMorph,
-CostumeIconMorph,
-TurtleIconMorph,
-WardrobeMorph,
-SoundIconMorph,
-JukeboxMorph,
-MIDIMorph,
-MIDIIconMorph,
-MIDIVisualizerMorph,
-SceneIconMorph,
-SceneAlbumMorph,
-StageHandleMorph,
-PaletteHandleMorph,
-CamSnapshotDialogMorph,
-SoundRecorderDialogMorph,
-IDE_FPSMorph;
+var IDE_Morph, ProjectDialogMorph, LibraryImportDialogMorph, SpriteIconMorph,
+CostumeIconMorph, TurtleIconMorph, WardrobeMorph, SoundIconMorph, JukeboxMorph,
+MIDIMorph, MIDIIconMorph, MIDIVisualizerMorph, SceneIconMorph, SceneAlbumMorph,
+StageHandleMorph, PaletteHandleMorph, CamSnapshotDialogMorph, SoundRecorderDialogMorph,
+IDE_FPSMorph, BackpackItemMorph;
 
 if (isNil(localStorage['-snap-setting-backToOldPixelGetting'])) {localStorage['-snap-setting-backToOldPixelGetting'] = false;};
 if (isNil(localStorage['-snap-setting-flashScreenInBeep'])) {localStorage['-snap-setting-flashScreenInBeep'] = false;};
@@ -3997,21 +3982,16 @@ if (idx > 0) {this.sprites.remove(idx);}; this.createCorral(true); this.fixLayou
 IDE_Morph.prototype.newSoundName = function (name) {var lastSound = this.currentSprite.sounds.at(this.currentSprite.sounds.length());
 return this.newName(name || lastSound.name, this.currentSprite.sounds.asArray().map(eachSound => eachSound.name));};
 
-IDE_Morph.prototype.newSpriteName = function (name, ignoredSprite) {return this.newNameForASprite(name, this.sprites.asArray().concat(this.stage).filter(each => each !== ignoredSprite).map(each => each.name));};
-
-IDE_Morph.prototype.newSceneName = function (name, ignoredScene) {return this.newName(name.replace(/['"]/g, ''), all = this.scenes.asArray().filter(each => each !== ignoredScene).map(each => each.name));};
-
-IDE_Morph.prototype.newNameForASprite = function (name, elements) {var count = 0, newName = name; while (contains(elements, newName)) {count += 1; newName = localize('DEFAULT SPRITE NAME') + count;}; return newName;};
-
+IDE_Morph.prototype.newSpriteName = function (name, ignoredSprite) {return this.newNameForASprite(name, this.sprites.asArray().concat(this.stage).filter(each => each !== ignoredSprite).map(each => each.name));
+}; IDE_Morph.prototype.newSceneName = function (name, ignoredScene) {return this.newName(name.replace(/['"]/g, ''), all = this.scenes.asArray().filter(each => each !== ignoredScene).map(each => each.name));};
+IDE_Morph.prototype.newNameForASprite = function (name, elements) {var count = 0, eman = name; while (contains(elements, newName)) {count += 1; newName = localize('DEFAULT SPRITE NAME') + count;}; return eman;};
 IDE_Morph.prototype.newName = function (name, elements) {var count = 1, newName = name; while (contains(elements, newName)) {count += 1; newName = name + '(' + count + ')';}; return newName;};
 
 /* IDE_Morph deleting scripts */ IDE_Morph.prototype.removeBlock = function (aBlock, justThis) {this.stage.threads.stopAllForBlock(aBlock); aBlock.destroy(justThis);};
 
-/* IDE_Morph menus */ IDE_Morph.prototype.userMenu = function () {var menu = new MenuMorph(this); return menu;};
-
-IDE_Morph.prototype.snapMenu = function () {var menu = new MenuMorph(this), wrld = this.world(); menu.addItem('About...', 'aboutSnap'); menu.addLine(); menu.addItem('Thanks to...', 'certificate'); menu.addLine();
-menu.addItem('Reference manual', () => {window.open('src/SnapManual.pdf', 'SnapReferenceManual');}); menu.addItem('Snap! website', () => window.open('https://snap.berkeley.edu', 'SnapWebsite')); menu.addItem(
-'Download source', () => window.open('https://github.com/jmoenig/Snap/releases/latest', 'SnapSource')); menu.popup(world, this.logo.bottomLeft());};
+/* IDE_Morph menus */ IDE_Morph.prototype.userMenu = function () {var menu = new MenuMorph(this); return menu;}; IDE_Morph.prototype.snapMenu = function () {var menu = new MenuMorph(this), wrld = this.world(
+); menu.addItem('About...', 'aboutSnap'); menu.addLine(); menu.addItem('Thanks to...', 'certificate'); menu.addLine(); menu.addItem('Reference manual', () => window.open('src/SnapManual.pdf')); menu.addItem(
+'See our GiHhub', () => window.open('https://github.com/Alessandrito123/Super-Snap')); menu.popup(world, this.logo.bottomLeft());}; /* This is so interesting. :~) */
 
 IDE_Morph.prototype.settingsMenu = function () {
     var menu,
