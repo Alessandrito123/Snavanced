@@ -3984,7 +3984,7 @@ return this.newName(name || lastSound.name, this.currentSprite.sounds.asArray().
 
 IDE_Morph.prototype.newSpriteName = function (name, ignoredSprite) {return this.newNameForASprite(name, this.sprites.asArray().concat(this.stage).filter(each => each !== ignoredSprite).map(each => each.name));
 }; IDE_Morph.prototype.newSceneName = function (name, ignoredScene) {return this.newName(name.replace(/['"]/g, ''), all = this.scenes.asArray().filter(each => each !== ignoredScene).map(each => each.name));};
-IDE_Morph.prototype.newNameForASprite = function (name, elements) {var count = 0, eman = name; while (contains(elements, newName)) {count += 1; newName = localize('DEFAULT SPRITE NAME') + count;}; return eman;};
+IDE_Morph.prototype.newNameForASprite = function (name, elements) {var count = 0, eman = name; while (contains(elements, eman)) {count += 1; eman = localize('DEFAULT SPRITE NAME') + count;}; return eman;};
 IDE_Morph.prototype.newName = function (name, elements) {var count = 1, newName = name; while (contains(elements, newName)) {count += 1; newName = name + '(' + count + ')';}; return newName;};
 
 /* IDE_Morph deleting scripts */ IDE_Morph.prototype.removeBlock = function (aBlock, justThis) {this.stage.threads.stopAllForBlock(aBlock); aBlock.destroy(justThis);};

@@ -210,14 +210,14 @@ SpriteMorph.prototype.blocks = {
             only: SpriteMorph,
             type: 'command',
             category: 'motion',
-            spec: 'go to %dst',
+            spec: 'SELECTOR doGotoObject INPUTS %dst',
             defaults: [['random position']]
         },
         doGlide: {
             only: SpriteMorph,
             type: 'command',
             category: 'motion',
-            spec: 'glide %n secs to x: %n y: %n',
+            spec: 'SELECTOR doGlide INPUTS %n %n %n',
             defaults: [1, 0, 0]
         },
         doMove: {
