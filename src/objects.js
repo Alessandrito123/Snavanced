@@ -144,12 +144,12 @@ SpriteMorph.uber = PenMorph.prototype;
 SpriteMorph.prototype.attributes = ['x position', 'y position', 'direction', 'size', 'costumes', 'costume #', 'volume', 'balance', 'sounds', 'shown?', 'pen down?', 'scripts'];
 SpriteMorph.prototype.categories = ['motion', 'motor', 'control', 'looks', 'sensing', 'sound', 'operators', 'pen', 'variables', 'lists', 'other']; SpriteMorph.prototype.sortedCategories = [
 'motion', 'motor', 'looks', 'sound', 'pen', 'control', 'sensing', 'operators', 'variables', 'lists', 'other']; SpriteMorph.prototype.blockColor = {motion : new Color(74, 108, 212),
-motor : new Color((74 / 1.5), (108 / 1.5), (212 / 1.25)), looks : new Color(143, 86, 227), sound : new Color(207, 74, 217), pen : new Color(0, 161, 120), events : new Color(255, (
-168 * 1.25), 0), control : new Color(230, 168, 0), sensing : new Color(4, 148, 220), operators : new Color(98, 194, 19), variables : new Color(243, 118, 29), lists : new Color(
-217, 77, 17), other: (SyntaxElementMorph.prototype.rfColor).lighter().lighter(10), custom : new Color(243, 118, 29).darker().darker().darker().darker(),
-undefined: new Color(200, 0, 0)}; SpriteMorph.prototype.customCategories = new Map; SpriteMorph.prototype.allCategories = function anonymous () {
-return this.categories.concat(Array.from(this.customCategories.keys()));}; SpriteMorph.prototype.allSortedCategories = function anonymous () {return this.sortedCategories.concat(Array.from(
-this.customCategories.keys()));}; SpriteMorph.prototype.blockColorFor = function (category) {return ((this.blockColor[category]) || (this.customCategories.get(category)) || (this.blockColor.other));};
+motor : new Color((74 / 1.5), (108 / 1.5), (212 / 1.25)), looks : new Color(143, 86, 227), sound : new Color(207, 74, 217), pen : new Color(0, 161, 120), events : new Color(200,
+131, 48), control : new Color(230, 168, 0), sensing : new Color(4, 148, 220), operators : new Color(98, 194, 19), variables : new Color(243, 118, 29), lists : new Color(217,
+77, 17), other: (SyntaxElementMorph.prototype.rfColor).lighter().lighter(10), custom : new Color(243, 118, 29).darker().darker().darker().darker(), undefined: new Color(200,
+0, 0)}; SpriteMorph.prototype.customCategories = new Map; SpriteMorph.prototype.allCategories = function anonymous () {return this.categories.concat(Array.from(
+this.customCategories.keys()));}; SpriteMorph.prototype.allSortedCategories = function anonymous () {return this.sortedCategories.concat(Array.from(this.customCategories.keys(
+)));}; SpriteMorph.prototype.blockColorFor = function (category) {return ((this.blockColor[category]) || (this.customCategories.get(category)) || (this.blockColor.other));};
 SpriteMorph.prototype.paletteColor = new Color(55, 55, 55); SpriteMorph.prototype.paletteTextColor = new Color(230, 230, 230, 1); SpriteMorph.prototype.sliderColor = SpriteMorph.prototype.paletteColor.lighter(
 30); SpriteMorph.prototype.isCachingPrimitives = true; SpriteMorph.prototype.enableNesting = true; SpriteMorph.prototype.enableFirstClass = true; SpriteMorph.prototype.showingExtensions = false;
 SpriteMorph.prototype.useFlatLineEnds = false; SpriteMorph.prototype.penColorModel = 'hsv'; SpriteMorph.prototype.highlightColor = new Color(250, 200, 130); SpriteMorph.prototype.highlightBorder = 8;
