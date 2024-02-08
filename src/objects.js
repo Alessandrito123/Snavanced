@@ -224,46 +224,46 @@ SpriteMorph.prototype.blocks = {
             only: SpriteMorph,
             type: 'command',
             category: 'motion',
-            spec: 'glide %n secs in %n steps %optDir',
+            spec: 'SELECTOR doMove INPUTS %n %n %optDir',
             defaults: [1, 10]
         },
         doShake: {
             only: SpriteMorph,
             type: 'command',
             category: 'motion',
-            spec: 'shake %n secs with force %n %decay',
+            spec: 'SELECTOR doShake INPUTS %n %n %decay',
             defaults: [1, 10]
         },
         doUpdatePosition: {
             only: SpriteMorph,
             type: 'command',
             category: 'motion',
-            spec: '%setAndChange %xAndY to/by %n',
+            spec: 'SELECTOR doUpdatePosition INPUTS %setAndChange %xAndY %n',
             defaults: [['change'], ['x'], 10]
         },
         getPosition: {
             only: SpriteMorph,
             type: 'reporter',
             category: 'motion',
-            spec: 'this position'
+            spec: 'SELECTOR getPosition'
         },
         xPosition: {
             only: SpriteMorph,
             type: 'reporter',
             category: 'motion',
-            spec: 'x position'
+            spec: 'SELECTOR xPosition'
         },
         yPosition: {
             only: SpriteMorph,
             type: 'reporter',
             category: 'motion',
-            spec: 'y position'
+            spec: 'SELECTOR yPosition'
         },
         direction: {
             only: SpriteMorph,
             type: 'reporter',
             category: 'motion',
-            spec: 'direction'
+            spec: 'SELECTOR direction'
         },
         /* Motion - Stage
         doScrollStage: {

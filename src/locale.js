@@ -304,11 +304,13 @@ SnapTranslator.dict.en = {
 'SELECTOR gotoDeviatedXY INPUTS %n %n %optDir' : 'go to x\: %n y\: %n %optDir',
 'SELECTOR doGotoObject INPUTS %dst' : 'go to %dst',
 'SELECTOR doGlide INPUTS %n %n %n' : 'glide %n secs to x: %n y: %n',
-
-
-
-
-
+'SELECTOR doMove INPUTS %n %n %optDir' : 'glide %n secs in %n steps %optDir',
+'SELECTOR doShake INPUTS %n %n %decay' : 'shake %n secs with force %n %decay',
+'SELECTOR doUpdatePosition INPUTS %setAndChange %xAndY %n' : '%setAndChange %xAndY to/by %n',
+'SELECTOR getPosition' : 'this position',
+'SELECTOR xPosition' : 'x position',
+'SELECTOR yPosition' : 'y position',
+'SELECTOR direction' : 'direction',
 
 
 

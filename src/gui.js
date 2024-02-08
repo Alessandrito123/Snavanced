@@ -586,8 +586,8 @@ IDE_Morph.prototype.setAnimatedDesign = function () {
     IDE_Morph.prototype.scriptsPaneTexture = this.scriptsTexture();
 };
 
-IDE_Morph.prototype.mathConstants = (() => [['π Pi', Math.PI], ['e Euler', Math.E], ['p Plastic', (Math.cbrt((9 + Math.sqrt(69)) / 18) + Math.cbrt((9 - Math.sqrt(69)) / 18))], ['φ Phi', ((1 + Math.sqrt(5)) / 2)],
-['ψ Psi', ((1 + Math.cbrt((29 + Math.sqrt(837)) / 2) + Math.cbrt((29 - Math.sqrt(837)) / 2)) / 3)], ['ε Epsilon', Number.EPSILON], ['i Imaginary Number', new ComplexNumber(0, 1)]]); /*  | Okay, they are. :)  | */
+IDE_Morph.prototype.mathConstants = (() => [['π Pi', Math.PI], ['e Euler', Math.E], ['p Plastic', (Math.cbrt((9 + Math.sqrt(69)) / 18) + Math.cbrt((9 - Math.sqrt(69)) / 18))], ['φ Phi', ((1 + Math.sqrt(5)) / 2
+)], ['ψ Psi', ((1 + Math.cbrt((29 + Math.sqrt(837)) / 2) + Math.cbrt((29 - Math.sqrt(837)) / 2)) / 3)], ['ε Epsilon', Number.EPSILON], ['i Imaginary', new ComplexNumber(0, 1)]]); /*  | Okay, they are. :)  | */
 
 IDE_Morph.prototype.scriptsTexture = function anonymous () {
     var w = 100, h = w, pic = newCanvas(new Point(w, h)),
