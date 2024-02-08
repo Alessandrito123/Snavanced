@@ -809,6 +809,11 @@ SpriteMorph.prototype.blocks = {
             category: 'events',
             spec: 'when $flag-1.5-0-200-0 clicked'
         },
+	runGo: {
+            type: 'command',
+            category: 'events',
+            spec: 'start $flag-1.5-0-200-0'
+        },
         receiveKey: {
             type: 'hat',
             category: 'events',
@@ -3183,6 +3188,7 @@ var blocks = [], myself = this, varNames, inheritedVars = this.inheritedVariable
         blocks.push('-');
         blocks.push(block('doBroadcast'));
         blocks.push(block('stopTheMessage'));
+        blocks.push(block('runGo'));
         blocks.push('-');
         blocks.push(this.subCategoryText('Conditions'));
         blocks.push('-');
