@@ -3515,6 +3515,10 @@ Process.prototype.doBroadcast = function (message, receivers) {
     return procs;
 };
 
+Process.prototype.runGo = function () {
+this.doBroadcast("__shout__go__",[]);
+}
+
 Process.prototype.doBroadcastAndWait = function (message, target) {
     if (!this.context.activeSends) {
         this.context.activeSends = this.doBroadcast(message, target);
