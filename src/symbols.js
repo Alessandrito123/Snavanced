@@ -599,37 +599,16 @@ SymbolMorph.prototype.renderSymbolStepForward = function (ctx, color) {
     );
 };
 
-SymbolMorph.prototype.renderSymbolGears = function (ctx, color) {
-    // draw gears
-    var w = this.symbolWidth(),
-        r = w / 2,
-        e = w / 8;
-
-    ctx.strokeStyle = color.toString();
-    ctx.lineWidth = this.symbolWidth() / 4;
-
-    ctx.beginPath();
-    ctx.arc(r, r, w, 0, 2 * Math.PI, true);
-    ctx.arc(r, r, e * 2, 0, 2 * Math.PI, false);
-    ctx.closePath();
-    ctx.clip();
-
-    ctx.moveTo(0, r);
-    ctx.lineTo(w, r);
-    ctx.stroke();
-
-    ctx.moveTo(r, 0);
-    ctx.lineTo(r, w);
-    ctx.stroke();
-
-    ctx.moveTo(e, e);
-    ctx.lineTo(w - e, w - e);
-    ctx.stroke();
-
-    ctx.moveTo(w - e, e);
-    ctx.lineTo(e, w - e);
-    ctx.stroke();
-};
+SymbolMorph.prototype.renderSymbolGears = function (ctx, color
+) {var w = this.symbolWidth(), r = w / 2, e = r / 4, g = 1.625;
+ctx.beginPath(); ctx.lineCap = 'round'; ctx.strokeStyle = color.toString(
+); ctx.lineWidth = this.symbolWidth() / 4; ctx.arc(r, r, w, 0, 2 * Math.PI,
+true); ctx.arc(r, r, e * 2, 0, 2 * Math.PI, false); ctx.closePath();
+ctx.clip(); ctx.moveTo(e, r); ctx.lineTo(w - e, r); ctx.stroke();
+ctx.moveTo(r, e); ctx.lineTo(r, w - e); ctx.stroke(); ctx.moveTo(
+e * g, e * g); ctx.lineTo(w - (e * g), w - (e * g)); ctx.stroke();
+ctx.moveTo(w - (e * g), e * g); ctx.lineTo(e * g, w - (e * g));
+ctx.stroke();}; /* These are rounded gears!!! Exclusive :~O */
 
 SymbolMorph.prototype.renderSymbolGearBig = function (ctx, color) {
     // draw a large gear

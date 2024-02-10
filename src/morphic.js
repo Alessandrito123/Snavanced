@@ -10,7 +10,7 @@
 
     Copyright (C) 2010-2023 by Jens Mönig
 
-    This documentation last changed: December 11, 2023
+    This documentation last changed: Febraury 10, 2023
 
     This file is part of Snap!.
 
@@ -10163,6 +10163,7 @@ HandMorph.prototype.init = function (aWorld) {
     this.temporaries = [];
     this.touchHoldTimeout = null;
     this.contextMenuEnabled = false;
+    this.touchStartPosition = new Point;
 
     // properties for caching dragged objects:
     this.cachedFullImage = null;
@@ -10397,11 +10398,9 @@ HandMorph.prototype.processMouseDown = function (event) {
         } else {
             this.mouseButton = 'left';
             actualClick = 'mouseDownLeft';
-        };
-        while (!morph[actualClick]) {
+        };  while (!morph[actualClick]) {
             morph = morph.parent;
-        };
-        morph[actualClick](this.bounds.origin);
+        };  morph[actualClick](this.bounds.origin);
     };
 };
 
@@ -10409,7 +10408,10 @@ HandMorph.prototype.processTouchStart = function (event) {
     MorphicPreferences.isTouchDevice = true;
     clearInterval(this.touchHoldTimeout);
     if (event.touches.length === 1) {
-        this.touchHoldTimeout = setInterval( // simulate mouseRightClick
+        this.touchStartPosition = new Point(
+            event.touches[0].pageX,
+            event.touches[0].pageY
+        ); this.touchHoldTimeout = setInterval( // simulate mouseRightClick
             () => {
                 this.processMouseDown({button: 2});
                 this.processMouseUp({button: 2});
@@ -10417,8 +10419,7 @@ HandMorph.prototype.processTouchStart = function (event) {
                 clearInterval(this.touchHoldTimeout);
             },
             400
-        );
-        this.processMouseMove(event.touches[0]); // update my position
+        );  this.processMouseMove(event.touches[0]); // update my position
         this.processMouseDown({button: 0});
         event.preventDefault();
     };
@@ -10426,10 +10427,17 @@ HandMorph.prototype.processTouchStart = function (event) {
 
 HandMorph.prototype.processTouchMove = function (event) {
     MorphicPreferences.isTouchDevice = true;
-    if (event.touches.length === 1) {
-        var touch = event.touches[0];
-        this.processMouseMove(touch);
-        clearInterval(this.touchHoldTimeout);
+    let pos = new Point(
+        event.touches[0].pageX,
+        event.touches[0].pageY
+    );  let dis = this.touchStartPosition.distanceTo(pos);
+
+    if (dis > MorphicPreferences.grabThreshold) {
+        if (event.touches.length === 1) {
+            var touch = event.touches[0];
+            this.processMouseMove(touch);
+            clearInterval(this.touchHoldTimeout);
+        };
     };
 };
 

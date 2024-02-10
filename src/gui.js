@@ -3900,24 +3900,18 @@ IDE_Morph.prototype.makeSureRecordingIsMono = function (sound) {
         function writeFloat32(output, offset, input) {
             for (var i = 0; i < input.length; i += 1, offset += 4) {
                 output.setFloat32(offset, input[i], true);
-            }
-        }
-
-        function floatTo16BitPCM(output, offset, input) {
+            };
+        };  function floatTo16BitPCM(output, offset, input) {
             var i, s;
             for (i = 0; i < input.length; i += 1, offset += 2) {
                 s = Math.max(-1, Math.min(1, input[i]));
                 output.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7FFF, true);
-            }
-        }
-
-        function writeString(view, offset, string) {
+            };
+        };  function writeString(view, offset, string) {
             for (var i = 0; i < string.length; i += 1) {
                 view.setUint8(offset + i, string.charCodeAt(i));
-            }
-        }
-
-        writeString(view, 0, 'RIFF'); // RIFF identifier
+            };
+        };  writeString(view, 0, 'RIFF'); // RIFF identifier
         // RIFF chunk length:
         view.setUint32(4, 36 + samples.length * bytesPerSample, true);
         writeString(view, 8, 'WAVE'); // RIFF type
@@ -3938,9 +3932,8 @@ IDE_Morph.prototype.makeSureRecordingIsMono = function (sound) {
             floatTo16BitPCM(view, 44, samples);
         } else {
             writeFloat32(view, 44, samples);
-        }
-        return buffer;
-    }
+        };  return buffer;
+    };
 };
 
 IDE_Morph.prototype.duplicateSprite = function (sprite) {
@@ -3956,16 +3949,16 @@ IDE_Morph.prototype.duplicateSprite = function (sprite) {
 
 IDE_Morph.prototype.instantiateSprite = function (sprite) {
     var instance = sprite.fullCopy(true),
-        hats = instance.allHatBlocksFor('__clone__init__');
+    hats = instance.allHatBlocksFor('__clone__init__');
     instance.isDown = false;
     instance.appearIn(this);
     if (hats.length) {
         instance.initClone(hats);
     } else {
-        instance.setPosition(this.world().hand.position());
+        instance.setPosition(
+        this.world().hand.position());
         instance.keepWithin(this.stage);
-    }
-    instance.isDown = sprite.isDown;
+    };  instance.isDown = sprite.isDown;
     this.selectSprite(instance);
     this.recordUnsavedChanges();
 };
@@ -3991,7 +3984,7 @@ IDE_Morph.prototype.newName = function (name, elements) {var count = 1, newName 
 
 /* IDE_Morph menus */ IDE_Morph.prototype.userMenu = function () {var menu = new MenuMorph(this); return menu;}; IDE_Morph.prototype.snapMenu = function () {var menu = new MenuMorph(this), wrld = this.world(
 ); menu.addItem('About...', 'aboutSnap'); menu.addLine(); menu.addItem('Thanks to...', 'certificate'); menu.addLine(); menu.addItem('Reference manual', () => window.open('src/SnapManual.pdf')); menu.addItem(
-'See our GiHhub', () => window.open('https://github.com/Alessandrito123/Super-Snap')); menu.popup(world, this.logo.bottomLeft());}; /* This is so interesting. :~) */
+'See our GitHub', () => window.open('https://github.com/Alessandrito123/Super-Snap')); menu.popup(world, this.logo.bottomLeft());}; /* This is so interesting. :~) */
 
 IDE_Morph.prototype.settingsMenu = function () {
     var menu,
