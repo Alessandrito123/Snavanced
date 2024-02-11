@@ -3982,9 +3982,66 @@ IDE_Morph.prototype.newName = function (name, elements) {var count = 1, newName 
 
 /* IDE_Morph deleting scripts */ IDE_Morph.prototype.removeBlock = function (aBlock, justThis) {this.stage.threads.stopAllForBlock(aBlock); aBlock.destroy(justThis);};
 
-/* IDE_Morph menus */ IDE_Morph.prototype.userMenu = function () {var menu = new MenuMorph(this); return menu;}; IDE_Morph.prototype.snapMenu = function () {var menu = new MenuMorph(this), wrld = this.world(
-); menu.addItem('About...', 'aboutSnap'); menu.addLine(); menu.addItem('Thanks to...', 'certificate'); menu.addLine(); menu.addItem('Reference manual', () => window.open('src/SnapManual.pdf')); menu.addItem(
-'See our GitHub', () => window.open('https://github.com/Alessandrito123/Super-Snap')); menu.popup(world, this.logo.bottomLeft());}; /* This is so interesting. :~) */
+/* IDE_Morph menus */ IDE_Morph.prototype.userMenu = function () {var menu = new MenuMorph(this); return menu;}; IDE_Morph.prototype.snapMenu = function () {var menu = new MenuMorph(this),
+wrld = this.world(); menu.addItem('About...', 'aboutSnap'); menu.addLine(); menu.addItem('Thanks to...', 'certificate'); menu.addLine(); menu.addItem('Reference manual', () => window.open(
+'src/SnapManual.pdf')); menu.addItem('See our GitHub', () => window.open('https://github.com/Alessandrito123/Super-Snap')); if (world.isDevMode) {menu.addLine(); menu.addItem(
+'Switch back to user mode', 'switchToUserMode', 'disable deep-Morphic\ncontext menus\nand show user-friendly ones', new Color(0, 100, 0));} else if (world.currentKey === 16) {
+menu.addLine(); menu.addItem('Switch to dev mode', 'switchToDevMode', 'enable Morphic\ncontext menus\nand inspectors,\nnot user-friendly!', new Color(100, 0, 0));};
+menu.popup(world, this.logo.bottomLeft());}; /* You can now be happy with being developers. :~) */
+
+IDE_Morph.prototype.switchToDevMode = function () {
+    var world = this.world();
+
+    world.isDevMode = true;
+    Process.prototype.isCatchingErrors = false;
+    this.controlBar.updateLabel();
+    this.isAutoFill = false;
+    this.isDraggable = true;
+    this.setExtent(world.extent().subtract(100));
+    this.setPosition(world.position().add(20));
+    this.flushBlocksCache();
+    this.refreshPalette();
+    this.categories.refreshEmpty();
+    // enable non-DialogBoxMorphs to be dropped
+    // onto the World in dev-mode
+    delete world.reactToDropOf;
+    this.showMessage(
+        'Entering development mode.\n\n'
+            + 'Error catching is turned off,\n'
+            + 'use the browser\'s web console\n'
+            + 'to see error messages.'
+    );
+}; IDE_Morph.prototype.switchToUserMode = function () {
+    var world = this.world();
+
+    world.isDevMode = false;
+    Process.prototype.isCatchingErrors = true;
+    this.controlBar.updateLabel();
+    this.isAutoFill = true;
+    this.isDraggable = false;
+    this.reactToWorldResize(world.bounds.copy());
+    this.siblings().forEach(morph => {
+        if (morph instanceof DialogBoxMorph) {
+            world.add(morph); // bring to front
+        } else {
+            morph.destroy();
+        };
+    });  this.flushBlocksCache(
+    ); this.refreshPalette();
+    this.categories.refreshEmpty();
+    // prevent non-DialogBoxMorphs from being dropped
+    // onto the World in user-mode
+    world.reactToDropOf = (morph) => {
+        if (!(morph instanceof DialogBoxMorph ||
+        		(morph instanceof MenuMorph))) {
+            if (world.hand.grabOrigin) {
+                morph.slideBackTo(world.hand.grabOrigin);
+            } else {
+                world.hand.grab(morph);
+            };
+        };
+    }; this.showMessage('Entering user mode.', 1);
+};
 
 IDE_Morph.prototype.settingsMenu = function () {
     var menu,

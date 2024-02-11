@@ -7476,8 +7476,7 @@ return ring;}; Context.prototype.rawContinuation = function (isReporter) {
     cont = new Context(
         null,
         isReporter ? 'expectReport' : 'popContext'
-    );};
-    cont.isContinuation = true;
+    );}; cont.isContinuation = true;
     return cont;
 };
 Context.prototype.catchContinuation = function () {
