@@ -6216,61 +6216,22 @@ IDE_Morph.prototype.saveXMLAs = function(xml, fileName) {
     this.saveFileAs(xml, 'text/xml;chartset=utf-8', fileName);
 };
 
-IDE_Morph.prototype.switchToUserMode = function () {
-    var world = this.world();
-
-    world.isDevMode = false;
-    Process.prototype.isCatchingErrors = true;
-    this.controlBar.updateLabel();
-    this.isAutoFill = true;
-    this.isDraggable = false;
-    this.reactToWorldResize(world.bounds.copy());
-    this.siblings().forEach(morph => {
-        if (morph instanceof DialogBoxMorph) {
-            world.add(morph); // bring to front
-        } else {
-            morph.destroy();
-        }
-    });
-    this.flushBlocksCache();
-    this.refreshPalette();
-    this.categories.refreshEmpty();
-    // prevent non-DialogBoxMorphs from being dropped
-    // onto the World in user-mode
-    world.reactToDropOf = (morph) => {
-        if (!(morph instanceof DialogBoxMorph ||
-        		(morph instanceof MenuMorph))) {
-            if (world.hand.grabOrigin) {
-                morph.slideBackTo(world.hand.grabOrigin);
-            } else {
-                world.hand.grab(morph);
-            }
-        }
-    };
-    this.showMessage('entering user mode', 1);
-};
-
-IDE_Morph.prototype.switchToDevMode = function () {world.isDevMode = true; Process.prototype.isCatchingErrors = false; this.controlBar.updateLabel(); this.isAutoFill = false; this.isDraggable = true;
-this.setExtent(world.extent().subtract(100)); this.setPosition(world.position().add(20)); this.flushBlocksCache(); this.refreshPalette(); this.categories.refreshEmpty(); delete world.reactToDropOf;
-this.showMessage('entering development mode.\n\nerror catching is turned off,\nuse the browser\'s web console\nto see error messages.');};
-
 IDE_Morph.prototype.flushBlocksCache = function (category) {
     if (category && category !== 'unified') {
         this.stage.primitivesCache[category] = null;
         this.stage.children.forEach(m => {
             if (m instanceof SpriteMorph) {
                 m.primitivesCache[category] = null;
-            }
+            };
         });
     } else {
         this.stage.primitivesCache = {};
         this.stage.children.forEach(m => {
             if (m instanceof SpriteMorph) {
                 m.primitivesCache = {};
-            }
+            };
         });
-    }
-    this.flushPaletteCache(category);
+    }; this.flushPaletteCache(category);
 };
 
 IDE_Morph.prototype.flushPaletteCache = function (category) {
@@ -6281,21 +6242,20 @@ IDE_Morph.prototype.flushPaletteCache = function (category) {
             if (m instanceof SpriteMorph) {
                 m.paletteCache[category] = null;
                 m.paletteCache.unified = null;
-            }
+            };
         });
     } else {
         this.stage.paletteCache = {};
         this.stage.children.forEach(m => {
             if (m instanceof SpriteMorph) {
                 m.paletteCache = {};
-            }
+            };
         });
-    }
-    this.stage.categoriesCache = null;
+    }; this.stage.categoriesCache = null;
     this.stage.children.forEach(m => {
         if (m instanceof SpriteMorph) {
             m.categoriesCache = null;
-        }
+        };
     });
 };
 
@@ -6306,9 +6266,7 @@ IDE_Morph.prototype.toggleZebraColoring = function () {
         BlockMorph.prototype.zebraContrast = 40;
     } else {
         BlockMorph.prototype.zebraContrast = 0;
-    }
-
-    // select all scripts:
+    };  // select all scripts:
     this.stage.children.concat(this.stage).forEach(morph => {
         if (isSnapObject(morph)) {
             scripts = scripts.concat(
