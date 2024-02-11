@@ -2054,6 +2054,7 @@ SpriteMorph.prototype.blocks = {
 
         // Zoom Testing
         zoomLambdaTest: {
+            dev: true,
             type: 'reporter',
             category: 'operators',
             spec: 'ZOOM TEST STRING 1 INPUTS %c'
