@@ -172,14 +172,21 @@ Scene.prototype.updateTrash = function () {this.trash = this.trash.filter(sprite
 Scene.prototype.restart = function () {
     var ide; window.speechSynthesis.cancel();
     this.stage.threads.pauseCustomHatBlocks = false;
-    this.stage.stopAllActiveSounds();
+    this.stage.stopAllActiveSounds(true);
     this.stage.children.map(function anonymous (sprite) {
     if (sprite instanceof SpriteMorph) {sprite.stopFreq(
     );};}); this.stage.clearEffects();
     this.stage.stopFreq();
     this.stage.keysPressed = {};
     this.stage.threads.stopAll();
-    if (this.stage.projectionSource) {
+    this.stage.timerProcedure.stopNow();
+    world.children.filter(function (
+    child) {if (child instanceof DialogBoxMorph
+    ) {return (child.key).includes('debug'
+    ) && contains(this.stage.threads.processes,
+    child.process);} else {return false;};}
+    ).forEach(function (child) {child.destroy(
+    );}); if (this.stage.projectionSource) {
         this.stage.stopProjection();
     }; this.stage.children.forEach(morph => {
         if (morph.stopTalking) {
@@ -191,7 +198,7 @@ Scene.prototype.restart = function () {
     if (ide) {
         ide.controlBar.pauseButton.refresh();
         ide.controlBar.stopButton.refresh();
-    };
+    }; this.stage.timerProcedure.startNow();
 };
 
 Scene.prototype.stop = function (forGood) {
@@ -210,7 +217,14 @@ Scene.prototype.stop = function (forGood) {
     this.stage.keysPressed = {};
     this.stage.runStopScripts();
     this.stage.threads.stopAll();
-    if (this.stage.projectionSource) {
+    this.stage.timerProcedure.stopNow();
+    world.children.filter(function (
+    child) {if (child instanceof DialogBoxMorph
+    ) {return (child.key).includes('debug'
+    ) && contains(this.stage.threads.processes,
+    child.process);} else {return false;};}
+    ).forEach(function (child) {child.destroy(
+    );}); if (this.stage.projectionSource) {
         this.stage.stopProjection();
     }; this.stage.children.forEach(morph => {
         if (morph.stopTalking) {

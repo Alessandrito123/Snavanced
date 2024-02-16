@@ -2944,9 +2944,12 @@ Process.prototype.doPlaySoundUntilDone = function (name) {
 var stage = world.childThatIsA(StageMorph);
 if (this.readyToTerminate) {
 if (this.context.activeAudio) {
-this.context.activeAudio.pause();
-if (this.context.activeAudio && this.context.activeAudio.remove) {
-this.context.activeAudio.remove();};
+if ((typeof this.context.activeAudio.stop) === 'function'
+) {this.context.activeAudio.stop();} else if ((
+typeof this.context.activeAudio.pause) === 'function'
+) {this.context.activeAudio.pause();}; if (
+this.context.activeAudio && this.context.activeAudio.remove
+) {this.context.activeAudio.remove();};
 stage.activeSounds.splice(stage.activeSounds.indexOf(
 this.context.activeAudio), 1); this.context.activeAudio = null;
 };} else {
@@ -2955,10 +2958,15 @@ this.context.activeAudio), 1); this.context.activeAudio = null;
     }; if (!(this.context.activeAudio === null)) {
     if (name === null || this.context.activeAudio.ended
             || this.context.activeAudio.terminated) {
+        if ((typeof this.context.activeAudio.stop) === 'function'
+        ) {this.context.activeAudio.stop();} else if ((
+        typeof this.context.activeAudio.pause) === 'function'
+        ) {this.context.activeAudio.pause();};
         if (this.context.activeAudio && this.context.activeAudio.remove) {
             stage.activeSounds.splice(stage.activeSounds.indexOf(
             this.context.activeAudio), 1);
             this.context.activeAudio.remove();
+            this.context.activeAudio = null;
         }; return null;
     }; this.pushContext('doYield');
     this.pushContext();
@@ -2975,8 +2983,8 @@ Process.prototype.doStopAllSounds = function () {
                 }
             }
         });
-        stage.stopAllActiveSounds();
-    }
+        stage.stopAllActiveSounds(true);
+    };
 };
 
 Process.prototype.doPlaySoundAtRate = function (name, rate) {

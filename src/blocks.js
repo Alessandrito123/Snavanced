@@ -1909,32 +1909,23 @@ SyntaxElementMorph.prototype.refactorVarInStack = function (
     if ((this instanceof RingMorph && contains(this.inputNames(), oldName))
             || (!isScriptVar && this.definesScriptVariable(oldName))) {
         return;
-    }
-
-    if (this.selector === 'reportGetVar'
+    };  if (this.selector === 'reportGetVar'
             && this.blockSpec === oldName) {
         this.setSpec(newName);
         this.fullChanged();
         this.fixLabelColor();
-    };
-
-    if (this.choices === 'getVarNamesDict'
+    };  if (this.choices === 'getVarNamesDict'
             && this.contents().text === oldName) {
         this.setContents(newName);
-    };
-
-    if (this instanceof CustomCommandBlockMorph
-            && this.definition.body
-            && isNil(this.definition.declarations.get(oldName))
-            && !contains(this.definition.variableNames, oldName)) {
-        this.definition.body.expression.refactorVarInStack(oldName, newName);
-    };
-
-    this.inputs().forEach(input =>
+    };  if (this instanceof CustomCommandBlockMorph) {
+    var theDefinition = this.definition;
+    if (isNil(theDefinition)) {theDefinition = this.scriptTarget(
+    ).getMethod(this.semanticSpec);}; if (isNil(theDefinition.declarations.get(
+    oldName)) && !contains(theDefinition.variableNames, oldName)) {
+        theDefinition.body.expression.refactorVarInStack(oldName, newName);
+    };}; this.inputs().forEach(input =>
         input.refactorVarInStack(oldName, newName)
-    );
-
-    if (this.nextBlock) {
+    );  if (this.nextBlock) {
         var nb = this.nextBlock();
         if (nb) {
             nb.refactorVarInStack(oldName, newName);
@@ -5171,8 +5162,9 @@ BlockMorph.prototype.refactorThisVar = function (justTheTemplate) {
     }
 };
 
-BlockMorph.prototype.varExistsError = function (ide, where) {
-ide.inform(localize('A variable this name exists.'), localize('A variable with this name already exists ') + (where || localize('in this context')) + '.');};
+BlockMorph.prototype.varExistsError = function (ide, where) {ide.inform(localize(
+'A variable with this name exists.'), localize('A variable with this name already exists '
+) + (where || localize('in this context')) + '.');};
 
 BlockMorph.prototype.doRefactorBlockParameter = function (
     oldName,

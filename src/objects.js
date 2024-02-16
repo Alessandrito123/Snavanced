@@ -67,25 +67,6 @@
 
 */
 
-// Global stuff ////////////////////////////////////////////////////////
-
-/* global PaintEditorMorph, ListWatcherMorph, PushButtonMorph, ToggleMorph, ZERO,
-DialogBoxMorph, InputFieldMorph, SpriteIconMorph, BlockMorph, SymbolMorph, nop,
-ThreadManager, VariableFrame, detect, BlockMorph, BoxMorph, Color, Animation,
-CommandBlockMorph, FrameMorph, HatBlockMorph, MenuMorph, Morph, MultiArgMorph,
-ReporterBlockMorph, ScriptsMorph, StringMorph, SyntaxElementMorph, XML_Element,
-TextMorph, contains, degrees, detect, newCanvas, radians, Array, CursorMorph,
-Date, FrameMorph, Math, MenuMorph, Morph, invoke, MorphicPreferences, WHITE,
-Object, PenMorph, Point, Rectangle, ScrollFrameMorph, SliderMorph, VideoMotion,
-StringMorph, TextMorph, contains, copy, degrees, detect, document, isNaN, Point,
-isString, newCanvas, nop, parseFloat, radians, window, modules, IDE_Morph,
-VariableDialogMorph, HTMLCanvasElement, Context, List, RingMorph, HandleMorph,
-SpeechBubbleMorph, InputSlotMorph, isNil, FileReader, TableDialogMorph, String,
-BlockEditorMorph, BlockDialogMorph, PrototypeHatBlockMorph, localize, TableMorph,
-TableFrameMorph, normalizeCanvas, VectorPaintEditorMorph, AlignmentMorph, Process,
-WorldMap, copyCanvas, useBlurredShadows, BlockVisibilityDialogMorph, CostumeIconMorph,
-SoundIconMorph */
-
 var SpriteMorph, StageMorph, TimerFunction, SpriteBubbleMorph,
 Costume, SVG_Costume, CostumeEditorMorph, Sound, Note, Microphone,
 CellMorph, WatcherMorph, StagePrompterMorph, Note, SpriteHighlightMorph;
@@ -9480,7 +9461,7 @@ StageMorph.prototype.fireUserEditEvent = function (
                 var varName = block.inputs()[1].evaluate()[0],
                     varFrame;
                 if (varName) {
-                    varFrame = new VariableFrame();
+                    varFrame = new VariableFrame;
                     varFrame.addVar(
                         varName,
                         new List(
@@ -9507,15 +9488,15 @@ StageMorph.prototype.fireUserEditEvent = function (
     return procs;
 };
 
-StageMorph.prototype.fireGreenFlagEvent = function anonymous () {var procs = [], ide = this.parentThatIsA(IDE_Morph); this.lastAnswer = ''; ide.scene.restart(); this.timerStart = Date.now(); this.children.concat(
+StageMorph.prototype.fireGreenFlagEvent = function anonymous () {var procs = [], ide = this.parentThatIsA(IDE_Morph); ide.scene.restart(); this.lastAnswer = ''; this.children.concat(
 this).forEach(morph => {if (isSnapObject(morph)) {morph.allHatBlocksFor('__shout__go__').forEach(block => procs.push(this.threads.startProcess(block, morph, this.isThreadSafe)));}});
 var dialog = world.children.filter(child => child instanceof DialogBoxMorph).filter(child => child.key === 'screenshotMaker'); if (dialog.length > 0) {dialog = dialog[0]; if ((
-dialog.button2.labelString.color.g > 0) && (dialog.button1.labelString.name === 'pointRight')) {dialog.button1.action(); dialog.button1.fixLayout();};}; return procs;};
+dialog.button2.labelString.color.g > 0) && (dialog.button1.labelString.name === 'pointRight')) {dialog.button1.action(); dialog.button1.fixLayout();};}; this.timerStart = Date.now(); return procs;};
 StageMorph.prototype.runPauseScripts = function anonymous () {this.receiveUserInteraction('paused', true, true); this.children.forEach(morph => {if (morph instanceof SpriteMorph) {morph.receiveUserInteraction(
 'paused', true, true);}});}; StageMorph.prototype.runUnpauseScripts = function anonymous (receiver) {if (Process.prototype.reportIsA(receiver, ['agent'])) {receiver.receiveUserInteraction('unpaused', true,
 true);} else {this.receiveUserInteraction('unpaused', true, true); this.children.forEach(morph => {if (morph instanceof SpriteMorph) {morph.receiveUserInteraction('unpaused', true, true);}});};};
-StageMorph.prototype.runStopScripts = function anonymous () {this.receiveUserInteraction('stopped', true, true); this.children.forEach(morph => {if (
-morph instanceof SpriteMorph) {morph.receiveUserInteraction('stopped', true, true);}});}; StageMorph.prototype.removeAllClones = function anonymous () {var clones = this.children.filter(morph => (
+StageMorph.prototype.runStopScripts = function anonymous () {this.receiveUserInteraction('stopped', true, true); this.children.forEach(morph => {if (morph instanceof SpriteMorph) {
+morph.receiveUserInteraction('stopped', true, true);}});}; StageMorph.prototype.removeAllClones = function anonymous () {var clones = this.children.filter(morph => (
 morph instanceof SpriteMorph && morph.isTemporary)); clones.forEach(clone => {this.threads.stopAllForReceiver(clone); clone.detachFromAnchor(); clone.corpsify(); clone.destroy();}); this.cloneCount = 0;};
 /* StageMorph important block events */
 
@@ -9989,18 +9970,22 @@ StageMorph.prototype.doPlaySound
     = SpriteMorph.prototype.doPlaySound;
 
 StageMorph.prototype.stopAllActiveSounds = function (
-) {this.activeSounds.forEach(audio => (((
-typeof audio.stop) === 'function') ? audio.stop() : nop()));
-if (this.microphone.modifier && this.microphone.isReady
-) {this.microphone.stop();};};
+restarting) {this.activeSounds.forEach(audio => (((
+typeof audio.stop) === 'function') ? audio.stop(
+) : ((asABool(restarting) && ((typeof audio.pause
+) === 'function')) ? audio.pause() : nop())));
+this.activeSounds.forEach(audio => (isNil(
+audio.remove) ? nop() : audio.remove())); if (
+this.microphone.modifier && this.microphone.isReady
+) {this.microphone.stop();}; this.activeSounds = [];};
 
 StageMorph.prototype.pauseAllActiveSounds = function () {
-this.activeSounds.forEach(audio => (((
-typeof audio.pause) === 'function') ? audio.pause() : nop()));};
+this.activeSounds.forEach(audio => (((typeof audio.pause
+) === 'function') ? audio.pause() : nop()));};
 
 StageMorph.prototype.resumeAllActiveSounds = function () {
-this.activeSounds.forEach(audio => (((
-typeof audio.play) === 'function') ? audio.play() : nop()));};
+this.activeSounds.forEach(audio => (((typeof audio.play
+) === 'function') ? audio.play() : nop()));};
 
 StageMorph.prototype.reportSounds = SpriteMorph.prototype.reportSounds;
 
@@ -10089,7 +10074,7 @@ StageMorph.prototype.yCenter = function () {
 };
 
 StageMorph.prototype.xLeft = function () {
-    return this.dimensions.x * -0.5;
+    return this.dimensions.x / -2;
 };
 
 StageMorph.prototype.xRight = function () {
@@ -10101,7 +10086,7 @@ StageMorph.prototype.yTop = function () {
 };
 
 StageMorph.prototype.yBottom = function () {
-   return this.dimensions.y * -0.5;
+   return this.dimensions.y / -2;
 };
 
 // StageMorph message broadcasting

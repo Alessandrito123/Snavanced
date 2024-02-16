@@ -3429,17 +3429,13 @@ IDE_Morph.prototype.toggleCameraSupport = function () {
 IDE_Morph.prototype.startFastTracking = function () {this.stage.isFastTracked = true;};
 IDE_Morph.prototype.stopFastTracking = function () {this.stage.isFastTracked = false;};
 
-IDE_Morph.prototype.runScripts = function () {if (this.stage.threads.pauseCustomHatBlocks) {this.stage.threads.pauseCustomHatBlocks = false; this.controlBar.stopButton.refresh();};
-this.stage.timerProcedure.startNow(); this.stage.fireGreenFlagEvent();}; IDE_Morph.prototype.togglePauseResume = function () {if (this.stage.threads.isPaused()) {world.children.filter(
-function (child) {if (child instanceof DialogBoxMorph) {return child.key === 'debug';} else {return false;}}).forEach(function (child) {child.destroy();}); this.stage.timerProcedure.resumeNow(
-); this.stage.threads.resumeAll(this.stage);} else {this.stage.threads.pauseAll(this.stage); if (this.stage.threads.processes.length > 0) {this.stage.timerProcedure.pauseNow();} else {if (
-this.stage.timerProcedure.state === 'paused') {this.stage.timerProcedure.resumeNow();} else {this.stage.timerProcedure.pauseNow();};};}; this.controlBar.pauseButton.refresh();};
-IDE_Morph.prototype.isPaused = function () {if (!this.stage) {return false;}; return this.stage.threads.isPaused();}; IDE_Morph.prototype.stopAllScripts = function () {var ide = this;
-if (this.world().currentKey === 16) {this.scenes.map(scn => scn.stop(true)); world.children.filter(function (child) {if (child instanceof DialogBoxMorph) {return (child.key).includes(
-'debug');} else {return false;};}).forEach(function (child) {child.destroy();});} else {this.scene.stop(); world.children.filter(function (child) {if (child instanceof DialogBoxMorph
-) {return (child.key).includes('debug') && contains(ide.stage.threads.processes, child.process);} else {return false;};}).forEach(function (child) {child.destroy();});};
-this.controlBar.stopButton.refresh(); this.stage.timerProcedure.stopNow(); var dialog = world.children.filter(child => child instanceof DialogBoxMorph).filter(
-child => child.key === 'screenshotMaker'); if (dialog.length > 0) {dialog = dialog[0]; if ((dialog.button2.labelString.color.g > 0) && (
+IDE_Morph.prototype.runScripts = function () {if (this.stage.threads.pauseCustomHatBlocks) {this.stage.threads.pauseCustomHatBlocks = false; this.controlBar.stopButton.refresh();}; this.stage.fireGreenFlagEvent(
+);}; IDE_Morph.prototype.togglePauseResume = function () {if (this.stage.threads.isPaused()) {world.children.filter(function (child) {if (child instanceof DialogBoxMorph) {return child.key === 'debug';} else {
+return false;}}).forEach(function (child) {child.destroy();}); this.stage.timerProcedure.resumeNow(); this.stage.threads.resumeAll(this.stage);} else {this.stage.threads.pauseAll(this.stage); if (
+this.stage.threads.processes.length > 0) {this.stage.timerProcedure.pauseNow();} else {if (this.stage.timerProcedure.state === 'paused') {this.stage.timerProcedure.resumeNow();} else {
+this.stage.timerProcedure.pauseNow();};};}; this.controlBar.pauseButton.refresh();}; IDE_Morph.prototype.isPaused = function () {if (!this.stage) {return false;}; return this.stage.threads.isPaused();};
+IDE_Morph.prototype.stopAllScripts = function () {var ide = this; if (this.world().currentKey === 16) {this.scenes.map(scn => scn.stop(true));} else {this.scene.stop();}; var dialog = world.children.filter(
+child => child instanceof DialogBoxMorph).filter(child => child.key === 'screenshotMaker'); if (dialog.length > 0) {dialog = dialog[0]; if ((dialog.button2.labelString.color.g > 0) && (
 dialog.button1.labelString.name === 'circleSolid')) {dialog.button1.action(); dialog.button1.fixLayout();};};};
 
 IDE_Morph.prototype.selectSprite = function (sprite, noEmptyRefresh) {
@@ -4052,8 +4048,7 @@ IDE_Morph.prototype.settingsMenu = function () {
         on = new SymbolMorph(
             'checkedBox',
             MorphicPreferences.menuFontSize * 0.75
-        ),
-        off = new SymbolMorph(
+        ), off = new SymbolMorph(
             'rectangle',
             MorphicPreferences.menuFontSize * 0.75
         );
@@ -4066,13 +4061,11 @@ IDE_Morph.prototype.settingsMenu = function () {
                     localize(label)
                 ],
                 toggle,
-                test ? onHint : offHint,
+                localize(test ? onHint : offHint),
                 hide ? new Color(100, 0, 0) : null
             );
-        }
-    }
-
-    function addSubPreference(label, toggle, test, onHint, offHint, hide) {
+        };
+    }; function addSubPreference(label, toggle, test, onHint, offHint, hide) {
         if (!hide || shiftClicked) {
             menu.addItem(
                 [
@@ -4080,13 +4073,11 @@ IDE_Morph.prototype.settingsMenu = function () {
                     '  ' + localize(label)
                 ],
                 toggle,
-                test ? onHint : offHint,
+                localize(test ? onHint : offHint),
                 hide ? new Color(100, 0, 0) : null
             );
-        }
-    }
-
-    menu = new MenuMorph(this);
+        };
+    }; menu = new MenuMorph(this);
     menu.addPair(
         [
             new SymbolMorph(
@@ -4116,20 +4107,17 @@ IDE_Morph.prototype.settingsMenu = function () {
             'specify the distance the hand has to move\n' +
                 'before it picks up an object',
             new Color(100, 0, 0)
-        );
-        menu.addItem(
+        );  menu.addItem(
             'Value-depth colors...',
             'value_depthMenu',
             'customize value-depth colors\n' +
                 '\(doing this restarts Super-Snap!\)',
             new Color(100, 0, 0)
         );
-    };
-    menu.addItem(
+    }; menu.addItem(
         'Microphone resolution...',
         'microphoneMenu'
-    );
-    menu.addLine();
+    ); menu.addLine();
     menu.addItem('Desktop mode...', (() => {sessionStorage['-snap-setting-isDesktopMode'] = true; location.reload();}));
     menu.addLine();
     menu.addItem('Themes...', 'themesMenu');
@@ -11856,8 +11844,8 @@ SoundRecorderDialogMorph.uber = DialogBoxMorph.prototype;
 
 function SoundRecorderDialogMorph (onAccept) {this.init(onAccept);};
 
-SoundRecorderDialogMorph.prototype.init = function (onAccept) {var myself = this; this.padding = 10; this.accept = onAccept; this.mediaRecorder = null; this.audioElement = document.createElement('audio');
-this.audioElement.hidden = true; this.audioElement.onended = function (event) { myself.stop();}; document.body.appendChild(this.audioElement); this.recordButton = null; this.stopButton = null;
+SoundRecorderDialogMorph.prototype.init = function (onAccept) {var myself = this; this.padding = 10; this.accept = onAccept; this.mediaRecorder = null; this.audioElement = document.createElement('audio'
+); this.audioElement.hidden = true; this.audioElement.onended = function (event) {myself.stop();}; document.body.appendChild(this.audioElement); this.recordButton = null; this.stopButton = null;
 this.playButton = null; this.progressBar = new BoxMorph(); SoundRecorderDialogMorph.uber.init.call(this); this.labelString = 'Sound Recorder'; this.createLabel(); this.buildContents();};
 
 SoundRecorderDialogMorph.prototype.buildContents = function () {var audioChunks = []; this.recordButton = new PushButtonMorph(this, 'record', new SymbolMorph('circleSolid', 10)); this.stopButton = new
@@ -11875,15 +11863,14 @@ this.progressBar.indicator.setCenter(line.leftCenter()); this.progressBar.add(th
 this.progressBar.setPercentage = function (percentage) {this.indicator.setLeft(line.left() + (line.width() / 100 * percentage) - this.indicator.width() / 2);};
 this.progressBar.step = function () {if (myself.audioElement.duration) {this.setPercentage(myself.audioElement.currentTime / myself.audioElement.duration * 100);} else {this.setPercentage(0);}};};
 
-SoundRecorderDialogMorph.prototype.record = function anonymous () {if (this.mediaRecorder && this.mediaRecorder.state !== 'inactive') {
-this.stop(); return;}; this.mediaRecorder.start(); this.recordButton.label.setColor(new Color(255, 0, 0)); this.playButton.label.setColor(new Color(0, 0, 0));};
+SoundRecorderDialogMorph.prototype.record = function anonymous () {if (this.mediaRecorder && this.mediaRecorder.state !== 'inactive') {this.stop();
+return;}; this.mediaRecorder.start(); this.recordButton.label.setColor(new Color(255, 0, 0)); this.playButton.label.setColor(new Color(0, 0, 0));};
 
-SoundRecorderDialogMorph.prototype.stop = function () {if (this.mediaRecorder && this.mediaRecorder.state !== 'inactive') {
-this.mediaRecorder.stop();}; this.audioElement.pause(); this.audioElement.currentTime = 0;
-this.recordButton.label.setColor(BLACK); this.playButton.label.setColor(BLACK);};
+SoundRecorderDialogMorph.prototype.stop = function () {if (this.mediaRecorder && this.mediaRecorder.state !== 'inactive') {this.mediaRecorder.stop(
+);}; this.audioElement.pause(); this.audioElement.currentTime = 0; this.recordButton.label.setColor(BLACK); this.playButton.label.setColor(BLACK);};
 
-SoundRecorderDialogMorph.prototype.play = function () {this.stop(); this.audioElement.oncanplaythrough = function anonymous () {
-this.play(); this.oncanplaythrough = nop;}; this.playButton.label.setColor(new Color(0, 255, 0));};
+SoundRecorderDialogMorph.prototype.play = function () {this.stop(); this.audioElement.oncanplaythrough = function (
+) {this.play(); this.oncanplaythrough = nop;}; this.playButton.label.setColor(new Color(0, 255, 0));};
 
 SoundRecorderDialogMorph.prototype.ok = function () {var myself = this; this.stop(); this.audioElement.oncanplaythrough = function anonymous () {if (this.duration && (this.duration !== Infinity
 )) {myself.accept(this); this.oncanplaythrough = nop; myself.destroy();} else {myself.buttons.children.forEach(button => button.disable()); this.play();};};};
