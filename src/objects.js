@@ -4632,8 +4632,7 @@ SpriteMorph.prototype.doPlaySound = function (name) {
         ctx = this.audioContext(),
         gain =  this.getGainNode(),
         pan = this.getPannerNode(),
-        aud,
-        source;
+        aud, source;
     if (sound) {
         aud = document.createElement('audio');
         aud.src = sound.audio.src;
@@ -4648,18 +4647,14 @@ SpriteMorph.prototype.doPlaySound = function (name) {
             gain.connect(ctx.destination);
         }; this.setVolume(this.getVolume()); // probably redundant as well
         aud.onended = function anonymous () {
-        world.childThatIsA(StageMorph).activeSounds.splice(
-        world.childThatIsA(StageMorph).activeSounds.indexOf(
+        stage.activeSounds.splice(
+        stage.activeSounds.indexOf(
         aud), 1); this.currentSrc = null; this.src = "";
-        this.srcObject = null; this.terminated = true;};
-        aud.play();
-        if (stage) {
-            stage.activeSounds.push(aud);
-            stage.activeSounds = stage.activeSounds.filter(snd =>
-                !snd.ended && !snd.terminated
-            );
-        };
-        return aud;
+        this.srcObject = null; this.terminated = true;
+        this.remove();}; aud.onpause = aud.onended;
+        aud.play(); if (stage) {
+        stage.activeSounds.push(
+        aud);}; return aud;
     };
 };
 
@@ -9972,7 +9967,7 @@ StageMorph.prototype.doPlaySound
 StageMorph.prototype.stopAllActiveSounds = function (
 restarting) {this.activeSounds.forEach(audio => (((
 typeof audio.stop) === 'function') ? audio.stop(
-) : ((asABool(restarting) && ((typeof audio.pause
+) : ((asABool(restarting) || ((typeof audio.pause
 ) === 'function')) ? audio.pause() : nop())));
 this.activeSounds.forEach(audio => (isNil(
 audio.remove) ? nop() : audio.remove())); if (

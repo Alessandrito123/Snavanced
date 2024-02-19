@@ -183,8 +183,8 @@ Localizer.prototype.languages = function () {
     return arr.sort();
 };
 
-Localizer.prototype.languageName = function (lang
-) {return this.dict[lang].language_name || lang;};
+Localizer.prototype.languageName = function (lang) {
+return localize(this.dict[lang].language_name || lang);};
 
 Localizer.prototype.credits = function () {
     var txt = '';
@@ -274,7 +274,8 @@ SnapTranslator.dict.en = {
         '(sounds and images) or that you are using an older browser.' +
         'Please try using a recent version of Chrome, Firefox, or Safari.',
 
-
+'Español' : 'Spanish',
+'toki pona' : 'toki pona',
 'IDIOM MENU STRING' : 'Idiom',
 'ZOOM MENU STRING' : 'Zoom blocks',
 'ZOOM 1 SIZE' : 'normal (1x)',

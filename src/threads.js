@@ -3060,7 +3060,7 @@ Process.prototype.reportGetSoundAttribute = function (choice, soundName) {
                 var buf = sound.audioBuffer,
                     result, i;
                 if (buf.numberOfChannels > 1) {
-                    result = new List();
+                    result = new List;
                     for (i = 0; i < buf.numberOfChannels; i += 1) {
                         result.add(new List(untype(buf.getChannelData(i))));
                     }
@@ -3068,8 +3068,7 @@ Process.prototype.reportGetSoundAttribute = function (choice, soundName) {
                 }
                 return new List(untype(buf.getChannelData(0)));
             } (sound, this.untype);
-        }
-        return sound.cachedSamples;
+        }; return sound.cachedSamples;
     case 'sample rate':
         return sound.audioBuffer.sampleRate;
     case 'duration':
@@ -3150,9 +3149,8 @@ Process.prototype.encodeSound = function (samples, rate) {
                 i,
                 0
             );
-        }
-    }
-    source = ctx.createBufferSource();
+        };
+    };  source = ctx.createBufferSource();
     source.buffer = arrayBuffer;
     source.audioBuffer = source.buffer;
     return source;
@@ -3169,8 +3167,7 @@ Process.prototype.reportNewSoundFromSamples = function (samples, rate) {
         this.assertType(samples, 'list'); // check only the first time
         this.context.accumulator = {
             audio: null
-        };
-        audio = new Audio;
+        };  audio = new Audio;
         blob = new Blob(
             [
                 this.audioBufferToWav(
@@ -3183,16 +3180,13 @@ Process.prototype.reportNewSoundFromSamples = function (samples, rate) {
         reader.onload = () => {
             audio.src = reader.result;
             this.context.accumulator.audio = audio;
-        };
-        reader.readAsDataURL(blob);
-    };
-    if (this.context.accumulator.audio) {
+        };  reader.readAsDataURL(blob);
+    };  if (this.context.accumulator.audio) {
         return new Sound(
             this.context.accumulator.audio,
             this.blockReceiver().newSoundName(localize('sound'))
         );
-    };
-    this.pushContext('doYield');
+    };  this.pushContext('doYield');
     this.pushContext();
 };
 
@@ -3213,19 +3207,15 @@ Process.prototype.audioBufferToWav = function (buffer, opt) {
             result[index++] = inputL[inputIndex];
             result[index++] = inputR[inputIndex];
             inputIndex += 1;
-        }
-        return result;
-    }
-
-    if (numChannels === 2) {
+        };  return result;
+    };  if (numChannels === 2) {
         result = interleave(
             buffer.getChannelData(0),
             buffer.getChannelData(1)
         );
     } else {
         result = buffer.getChannelData(0);
-    }
-    return this.encodeWAV(result, format, sampleRate, numChannels, bitDepth);
+    };  return this.encodeWAV(result, format, sampleRate, numChannels, bitDepth);
 };
 
 Process.prototype.encodeWAV = function (
