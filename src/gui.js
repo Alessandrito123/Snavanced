@@ -3527,7 +3527,7 @@ IDE_Morph.prototype.applySavedSettings = function () {
     solidshadow = this.getSetting('solidshadow');
 
     // global font setting
-    MorphicPreferences.globalFontFamily = ((language === 'tok') ? 'Helvetica,sitelen seli kiwen asuki,Helvetica' : 'Helvetica,Verdana,Helvetica');
+    MorphicPreferences.globalFontFamily = ((language === 'tok') ? 'morphicRegularFont,blockTokiPonaFont,morphicBoldFont' : 'morphicRegularFont,blockGlobalFont,morphicBoldFont');
 
     MorphicPreferences.isFlat = asABool(this.getSetting('isFlat'));
 
@@ -4589,14 +4589,14 @@ if (storage.key(i).startsWith('-snap-file-')) {anArray.push([storage.getItem(sto
             }
         };
     };
-}); menu.addItem('Save As...', 'saveProjectsBrowser');}; menu.addItem('Reload', function () {location.reload();});
-menu.addItem('Quit', function () {window.close();}); if (backup) {menu.addItem('Open Backup', 'restore', backup, new Color(100, 0, 0)); menu.addItem(
-'Delete Backup', 'clearBackup', backup, new Color(100, 0, 0));}; menu.addLine(); menu.addItem('Open Snapinator', () => {window.open(window.location.toString().split('index.html')[0] + 'src/snapinator/index.html',
-'Snapinator', "width=1025, height=775");}); menu.addItem('Open Tetris', function () {window.open(window.location.toString().split('index.html')[0] + 'src/tetris/index.html', 'JsTetris - javascript tetris game',
-"width=302, height=312");}); menu.addItem('Open Colors', function () {window.open(window.location.toString().split('index.html')[0] + 'src/colors.html', 'Colors v1.0', "width=572, height=447");});
-menu.addItem('Open Alonzweeper', function () {window.open(window.location.toString().split('index.html')[0] + 'src/alonzweeper/index.html', 'Alonzweeper', "width=1440, height=990");});
-menu.addLine(); menu.addItem('Import...', 'importLocalFile', 'file menu import hint'); menu.addItem('Export project...', () => {var pn = this.getProjectName(); if (pn) {
-this.exportProject(pn);} else {this.prompt('Export Project As...', name => this.exportProject(name), null, 'exportProject');};}, 'save project data as XML\nto your downloads folder');
+}); menu.addItem('Save As...', 'saveProjectsBrowser');}; menu.addItem('Reload', function () {location.reload();}); menu.addItem('Quit', function () {window.close();}); if (backup) {menu.addItem('Open Backup',
+'restore', backup, new Color(100, 0, 0)); menu.addItem('Delete Backup', 'clearBackup', backup, new Color(100, 0, 0));}; menu.addLine(); menu.addItem('Open Snapinator', () => {window.open(
+(window.location.toString().split('snap.html')[0]).concat('src/snapinator/index.html'), 'Snapinator', "width=1025, height=775");}); menu.addItem('Open Tetris', function () {window.open(
+window.location.toString().split('index.html')[0] + 'src/tetris/index.html', 'JsTetris - javascript tetris game', "width=302, height=312");}); menu.addItem('Open Colors', function () {
+window.open(window.location.toString().split('index.html')[0] + 'src/colors.html', 'Colors v1.0', "width=572, height=447");}); menu.addItem('Open Alonzweeper', function () {window.open(
+window.location.toString().split('index.html')[0] + 'src/alonzweeper/index.html', 'Alonzweeper', "width=1440, height=990");}); menu.addLine(); menu.addItem('Import...', 'importLocalFile',
+'file menu import hint'); menu.addItem('Export project...', () => {var pn = this.getProjectName(); if (pn) {this.exportProject(pn);} else {this.prompt('Export Project As...',
+name => this.exportProject(name), null, 'exportProject');};}, 'save project data as XML\nto your downloads folder');
         menu.addItem(
             'Export project media only...',
             () => {

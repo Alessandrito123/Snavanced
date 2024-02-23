@@ -233,9 +233,9 @@ SyntaxElementMorph.uber = Morph.prototype;
 
         labelFontName       - <string> specific font family name
         labelFontStyle      - <string> generic font family name, cascaded
-        fontSize            - duh
+        fontSize            - <number> duh, obviously the font's own size
         embossing           - <Point> offset for embossing effect
-        labelWidth          - column width, used for word wrapping
+        labelWidth          - <number> column width, used for word wrapping
         labelWordWrap       - <bool> if true labels can break after each word
         dynamicInputLabels  - <bool> if true inputs can have dynamic labels
 
@@ -273,11 +273,10 @@ this.typeInPadding = scale; this.labelPadding = 4 * scale;
 this.labelFontName = (MorphicPreferences.globalFontFamily
 ).split(',')[1]; this.labelFontStyle = 'sans-serif';
 this.fontSize = 11 * scale; this.labelSize = (11 + (
-contains(['Verdana', 'sitelen seli kiwen asuki'],
-this.labelFontName) ? ({'Verdana' : 1,
-'sitelen seli kiwen asuki' : 5})[
-this.labelFontName] : 0)) * scale;
-this.embossing = new Point(
+contains(['blockGlobalFont', 'blockTokiPonaFont'],
+this.labelFontName) ? ({'blockGlobalFont' : 1,
+'blockTokiPonaFont' : 5})[this.labelFontName
+] : 0)) * scale; this.embossing = new Point(
 -1 * Math.max(scale / 2, 1),
 -1 * Math.max(scale / 2, 1));
 this.labelWidth = 450 * scale;
@@ -2101,20 +2100,16 @@ SyntaxElementMorph.prototype.labelPart = function (spec) {
             break;
         case 'input':
             part = new InputSlotMorph(null, null, info.menu);
-            part.contents().fontName = (MorphicPreferences.globalFontFamily).split(',')[2];
             part.onSetContents = (info.react || null);
             break;
         case 'default number':
             part = new InputSlotMorph(1, true);
-            part.contents().fontName = (MorphicPreferences.globalFontFamily).split(',')[2];
             break;
         case 'second number':
             part = new InputSlotMorph(2, true);
-            part.contents().fontName = (MorphicPreferences.globalFontFamily).split(',')[2];
             break;
         case 'zero number':
             part = new InputSlotMorph(0, true);
-            part.contents().fontName = (MorphicPreferences.globalFontFamily).split(',')[2];
             break;
         case 'degrees number':
             part = new InputSlotMorph(90, true, 
@@ -2130,11 +2125,9 @@ SyntaxElementMorph.prototype.labelPart = function (spec) {
             ).split(',')[2]; break;
         case 'another number':
             part = new InputSlotMorph(50, true);
-            part.contents().fontName = (MorphicPreferences.globalFontFamily).split(',')[2];
             break;
         case 'text entry':
             part = new TextSlotMorph;
-            part.contents().fontName = (MorphicPreferences.globalFontFamily).split(',')[2];
             break;
         case 'slot':
             switch (info.kind) {
@@ -8235,11 +8228,12 @@ RingMorph.prototype.vanishForSimilar = function anonymous () {
 
 RingMorph.prototype.blockSlot = function anonymous () {var slots = this.parts().filter(part => ((part instanceof CommandSlotMorph) || (part instanceof FunctionSlotMorph
 ))); if (slots.length > 0) {return slots[0];} else {return null;};}; RingMorph.prototype.contents = function anonymous () {var thatSlot = this.blockSlot(); return ((
-thatSlot instanceof Morph) ? thatSlot.nestedBlock() : null);}; RingMorph.prototype.inputNames = function anonymous () {var inputs = this.children.filter(part => (
-part instanceof MultiArgMorph))[0]; if (inputs instanceof MultiArgMorph) {return inputs.evaluate();} else {return [];};
-}; RingMorph.prototype.dataType = function anonymous () {return contains(['reportScript', 'reifyScript'], this.selector
+thatSlot instanceof Morph) ? thatSlot.nestedBlock() : null);}; RingMorph.prototype.inputNamesElement = function () {var inputs = this.children.filter(part => (
+part instanceof MultiArgMorph))[0]; if (inputs instanceof MultiArgMorph) {return inputs;} else {return null;};}; RingMorph.prototype.inputNames = function (
+) {var inputs = this.inputNamesElement(); if (inputs instanceof MultiArgMorph) {return inputs.evaluate();} else {return [];
+};}; RingMorph.prototype.dataType = function anonymous () {return contains(['reportScript', 'reifyScript'], this.selector
 ) ? 'command' : ((this.contents() instanceof ReporterBlockMorph) ? (this.contents().isPredicate ? 'predicate' : 'reporter'
-) : (this.blockSlot().isPredicate ? 'predicate' : 'reporter'));}; RingMorph.prototype.isEmptySlot = function anonymous (
+) : (this.blockSlot().isPredicate ? 'predicate' : 'reporter'));}; RingMorph.prototype.isEmptySlot = function (
 ) {return ((this.contents() === null) && (this.getSlotSpec().indexOf('Ring') > 0));};
 
 // ScriptsMorph ////////////////////////////////////////////////////////
@@ -12059,18 +12053,15 @@ function InputSlotStringMorph(
         shadowColor,
         color,
         fontName
-    );
-}
-
-InputSlotStringMorph.prototype.getRenderColor = function () {
+    ); this.fontName = 'inputGlobalFont';
+    this.fixLayout();
+};  InputSlotStringMorph.prototype.getRenderColor = function () {
     if (MorphicPreferences.isFlat) {
         if (this.isEditable) {
             return this.color;
         };  return this.parent.alpha > 0.5 ? this.color : BLACK;
     };  return this.parent.alpha > 0.25 ? this.color : WHITE;
-};
-
-InputSlotStringMorph.prototype.getShadowRenderColor = function () {
+};  InputSlotStringMorph.prototype.getShadowRenderColor = function () {
     return this.parent.alpha > 0.25 ? this.shadowColor : CLEAR;
 };
 
@@ -12107,11 +12098,13 @@ function InputSlotTextMorph(
         width,
         fontName,
         shadowOffset,
-        shadowColor);
-}; InputSlotTextMorph.prototype.getRenderColor =
-   InputSlotStringMorph.prototype.getRenderColor;
-   InputSlotTextMorph.prototype.getShadowRenderColor =
-   InputSlotStringMorph.prototype.getShadowRenderColor;
+        shadowColor
+    ); this.fontName = 'inputGlobalFont';
+    this.fixLayout();
+};  InputSlotTextMorph.prototype.getRenderColor =
+    InputSlotStringMorph.prototype.getRenderColor;
+    InputSlotTextMorph.prototype.getShadowRenderColor =
+    InputSlotStringMorph.prototype.getShadowRenderColor;
 
 // TemplateSlotMorph ///////////////////////////////////////////////////
 
@@ -15436,7 +15429,7 @@ CommentMorph.prototype.init = function (contents) {
     false,
     null,
     null,
-    SyntaxElementMorph.prototype.labelFontName,
+    'inputGlobalFont',
     0,
     null
     ); this.contents.isEditable = true;
@@ -15557,7 +15550,7 @@ CommentMorph.prototype.fixLayout = function () {
          0,
         null,
         BLACK,
-        SyntaxElementMorph.prototype.labelFontName
+        'inputGlobalFont'
         );
         label.rootForGrab = () => this;
         this.title.add(label);

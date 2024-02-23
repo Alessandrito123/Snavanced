@@ -966,11 +966,6 @@ SpriteMorph.prototype.blocks = {
             category: 'control',
             spec: 'all at once %c'
         },
-        reportWarp: {
-            type: 'reporter',
-            category: 'control',
-            spec: 'all at once %c'
-        },
         compileFast: {
             type: 'command',
             category: 'control',
@@ -5595,7 +5590,7 @@ SpriteMorph.prototype.write = function (text, size) {
         size = Math.max(size, 0);
 
     context.save();
-    context.font = size + 'px Candara';
+    context.font = (size.toString()).concat('px turtlePenFont');
     context.textAlign = 'left';
     context.textBaseline = 'alphabetic';
     context.fillStyle = this.color.toString();
@@ -5614,10 +5609,9 @@ SpriteMorph.prototype.write = function (text, size) {
     pos = new Point(
         len * Math.sin(radians(this.direction())),
         len * Math.cos(radians(this.direction()))
-    );
-    pos = pos.add(new Point(this.xPosition(), this.yPosition()));
-    this.gotoXY(pos.x, pos.y, false);
-    this.changed();
+    ); pos = pos.add(new Point(this.xPosition(),
+    this.yPosition())); this.gotoXY(pos.x,
+    pos.y, false); this.changed();
     stage.changed();
 };
 

@@ -1203,11 +1203,9 @@ return (args.fullCopy().asArray())[0];} else {return context;};};};
     };
 };
 
-Process.prototype.fork = function anonymous (context, args) {if (context instanceof Context) {if (context.expression instanceof BlockMorph) {if (context.expression.selector === 'fork') {if (
-context.expression.inputs()[0] instanceof BlockMorph) {if (context.expression.inputs()[0].selector === 'reportThisContext') {throw Error(localize('Calling the selected script in this manner isn\'t fair.'
-));};};};}; if (this.readyToTerminate) {return;}; var proc = new Process, stage = this.homeContext.receiver.parentThatIsA(StageMorph); proc.instrument = this.instrument; proc.receiver = this.receiver;
-proc.initializeFor(context, args); stage.threads.processes.push(proc);} else if (context instanceof Function) {throw Error('Forking JS functions are not available.\nIf do you wanna to launch a JS' +
-' function,\nplease put the JS function in a run %cmd block\nand put them in the launch %cmd block.');};};
+Process.prototype.fork = function anonymous (context, args) {if (context instanceof Context) {if (this.readyToTerminate) {return;}; var proc = new Process, stage = this.homeContext.receiver.parentThatIsA(
+StageMorph); proc.instrument = this.instrument; proc.receiver = this.receiver; proc.initializeFor(context, args); stage.threads.processes.push(proc);} else if (context instanceof Function) {throw Error(
+'Forking JavaScript functions is not available.\nIf do you wanna to launch one,\nplease put it in a \"\[run\] %cmd\" block\nand put them in the launch %cmd block.');};};
 
 Process.prototype.initializeFor = function (context, args) {
     // used by Process.fork() and global invoke()
@@ -1316,12 +1314,11 @@ Process.prototype.reportThisContinuation = function anonymous () {
             null,
             'popContext'
         );
-    };
-    cont.isContinuation = true;
+    }; cont.isContinuation = true;
     return cont;
 };
 
-Process.prototype.reportThisInputs = function anonymous () {
+Process.prototype.reportThisInputs = function () {
     var sym = Symbol.for('arguments'),
         frame = this.context.variables.silentFind(sym);
     return (frame ? frame.vars[sym].value : new List);
@@ -7356,7 +7353,8 @@ if (name.length > 0) {this.blockReceiver().bubble(name + '! Nice talking to you 
     accumulator     slot for collecting data from reentrant visits
 */
 
-function Context(parentContext, expression, outerContext, receiver) {this.selector = 'reify'; this.outerContext = (
+function Context(parentContext, expression, outerContext, receiver) {/* :~) */ this.selector = ('reify'
+).concat(asABool(localStorage['-snap-setting-oldLambdaOn']) ? '' : 'Reporter'); this.outerContext = (
 outerContext || null); this.parentContext = (parentContext || null); this.expression = (expression || [
 SpriteMorph.prototype.blockForSelector(this.selector)]); this.receiver = (receiver || null); this.origin =
 (receiver || null); this.variables = new VariableFrame; if (this.outerContext) {this.variables.parentFrame =
@@ -7377,8 +7375,8 @@ this.inputs.forEach(function anonymous (name) {aBlock.add((function anonymous (s
 aVar.category = 'variables'; aVar.fixBlockColor(); aVar.setSpec(spec); return aVar;})(name));});
 aBlock.fixBlockColor(); var otherBlock = SpriteMorph.prototype.blockForSelector('doReport');
 otherBlock.fixLayout(); aBlock.add(otherBlock);} else if (this.expression instanceof InputSlotMorph) {
-var aBlock = this.beDraggable().children[3].nestedBlock().fullCopy();} else if (
-this.expression instanceof BooleanSlotMorph) {var aBlock = this.beDraggable().children[1].nestedBlock(
+var aBlock = this.beDraggable().blockSlot().nestedBlock().fullCopy();} else if (
+this.expression instanceof BooleanSlotMorph) {var aBlock = this.beDraggable().blockSlot().nestedBlock(
 ).fullCopy();} else if (this.expression instanceof ReporterBlockMorph) {if (this.inputs.length > 0) {
 var aBlock = new CommandBlockMorph; aBlock.setSpec('input names:'); this.inputs.forEach(
 function anonymous (name) {aBlock.add((function anonymous (spec) {var aVar = new ReporterBlockMorph;
@@ -7390,13 +7388,12 @@ var aBlock = SpriteMorph.prototype.blockForSelector('doReport'); aBlock.children
 aBlock.add(this.expression.fullCopy()); aBlock.children[1].fixBlockColor();
 } else {var aBlock = this.expression.fullCopy(); aBlock.fixBlockColor();};
 } else if (this.expression instanceof CommandBlockMorph) {if (this.inputs.length > 0) {
-var aBlock = new CommandBlockMorph; aBlock.setSpec('input names:');
-this.inputs.forEach(function anonymous (name) {aBlock.add((function anonymous (spec) {
-var aVar = new ReporterBlockMorph(); aVar.category = 'variables'; aVar.fixBlockColor();
-aVar.setSpec(spec); return aVar;})(name));}); aBlock.fixBlockColor();
-aBlock.add(this.expression.fullCopy());} else {if (this.expression.selector === 'doReport') {
-if (this.expression.children[1] instanceof ReporterBlockMorph) {
-var aBlock = this.expression.children[1].fullCopy();} else {var aBlock = this.expression.fullCopy();};
+var aBlock = new CommandBlockMorph; aBlock.setSpec('input names:'); this.inputs.forEach(
+function (name) {aBlock.add((function (spec) {var aVar = new ReporterBlockMorph;
+aVar.category = 'variables'; aVar.fixBlockColor(); aVar.setSpec(spec); return aVar;
+})(name));}); aBlock.fixBlockColor(); aBlock.add(this.expression.fullCopy());} else {if (
+this.expression.selector === 'doReport') {if (this.expression.children[1] instanceof ReporterBlockMorph
+) {var aBlock = this.expression.children[1].fullCopy();} else {var aBlock = this.expression.fullCopy();};
 } else {var aBlock = this.expression.fullCopy();};};} else {var aBlock = this.beDraggable().fullCopy();};
 aBlock.highlight = function (color, blur, border) {var highlight = new BlockHighlightMorph;
 border = border * SyntaxElementMorph.prototype.scale; var fb = this.fullBounds(); var edge = border;
@@ -7410,35 +7407,35 @@ return this.beDraggable();};}; Context.prototype.image = function () {return thi
 if (this.expression instanceof Array) {if (this.isContinuation) {var aBlock = SpriteMorph.prototype.blockForSelector(
 (this.expression[this.pc] instanceof CommandBlockMorph) ? 'reportScript' : 'reify');} else {
 var aBlock = SpriteMorph.prototype.blockForSelector(this.selector);}; if (aBlock.selector === 'reportScript'
-) {var thatParameters = aBlock.children[2]; var thatC = aBlock.children[3];} else {var thatParameters = aBlock.children[3];
-var thatC = aBlock.children[1];}; this.inputs.forEach(function (input) {thatParameters.addInput(input);}); if ((
+) {var thatParameters = aBlock.inputNamesElement(); var thatC = aBlock.blockSlot();} else {var thatParameters = aBlock.inputNamesElement();
+var thatC = aBlock.blockSlot();}; this.inputs.forEach(function (input) {thatParameters.addInput(input);}); if ((
 this.expression[this.pc] instanceof Morph) && this.isContinuation) {thatC.nestedBlock(this.expression[this.pc
 ].fullCopy());};} else if (!(this.expression instanceof Morph)) {var aBlock = SpriteMorph.prototype.blockForSelector(
-'reportScript'); var thatParameters = aBlock.children[2]; this.inputs.forEach(function (input) {thatParameters.addInput(
+'reportScript'); var thatParameters = aBlock.inputNamesElement(); this.inputs.forEach(function (input) {thatParameters.addInput(
 input);});} else if (this.expression instanceof InputSlotMorph) {var aBlock = SpriteMorph.prototype.blockForSelector('reportScript');
-var thatParameters = aBlock.children[2]; this.inputs.forEach(function (input) {thatParameters.addInput(input);});
+var thatParameters = aBlock.inputNamesElement(); this.inputs.forEach(function (input) {thatParameters.addInput(input);});
 var otherBlock = SpriteMorph.prototype.blockForSelector('doReport'); otherBlock.children.pop().parent = null;
-otherBlock.add(this.expression.fullCopy()); otherBlock.fixLayout(); aBlock.children[3].nestedBlock(otherBlock);
+otherBlock.add(this.expression.fullCopy()); otherBlock.fixLayout(); aBlock.blockSlot().nestedBlock(otherBlock);
 aBlock.fixLayout();} else if (this.expression instanceof BooleanSlotMorph) {var aBlock = SpriteMorph.prototype.blockForSelector(
-'reify'); var thatParameters = aBlock.children[2]; this.inputs.forEach(function (input) {thatParameters.addInput(input);});
+'reify'); var thatParameters = aBlock.inputNamesElement(); this.inputs.forEach(function (input) {thatParameters.addInput(input);});
 if (this.expression.evaluate() === true) {var otherBlock = SpriteMorph.prototype.blockForSelector('reportTrue', true);
 } else if (this.expression.evaluate() === false) {var otherBlock = SpriteMorph.prototype.blockForSelector('reportFalse', true);
-} else {var otherBlock = SpriteMorph.prototype.blockForSelector('reportBoolean');}; aBlock.children[1].nestedBlock(otherBlock);
-aBlock.children[1].children[0].fixBlockColor(); aBlock.fixLayout();} else if (this.expression instanceof CommandBlockMorph) {
+} else {var otherBlock = SpriteMorph.prototype.blockForSelector('reportBoolean');}; aBlock.blockSlot().nestedBlock(otherBlock);
+aBlock.blockSlot().nestedBlock().fixBlockColor(); aBlock.fixLayout();} else if (this.expression instanceof CommandBlockMorph) {
 if (this.expression.selector === 'doReport') {if (this.expression.children[1] instanceof ReporterBlockMorph) {
-var aBlock = SpriteMorph.prototype.blockForSelector('reify'); var thatSlot = aBlock.children[1];
-var thatParameters = aBlock.children[3]; this.inputs.forEach(function (input) {thatParameters.addInput(input);});
+var aBlock = SpriteMorph.prototype.blockForSelector('reify'); var thatSlot = aBlock.blockSlot();
+var thatParameters = aBlock.inputNamesElement(); this.inputs.forEach(function (input) {thatParameters.addInput(input);});
 thatSlot.nestedBlock(this.expression.children[1]);} else {var aBlock = SpriteMorph.prototype.blockForSelector(
-'reportScript'); var thatC = aBlock.children[3]; var thatParameters = aBlock.children[2]; this.inputs.forEach(
+'reportScript'); var thatC = aBlock.blockSlot(); var thatParameters = aBlock.inputNamesElement(); this.inputs.forEach(
 function (input) {thatParameters.addInput(input);}); if (this.expression instanceof Morph) {thatC.nestedBlock(
 this.expression.fullCopy());};};} else {var aBlock = SpriteMorph.prototype.blockForSelector('reportScript');
-var thatC = aBlock.children[3]; var thatParameters = aBlock.children[2]; this.inputs.forEach(function (input) {
+var thatC = aBlock.blockSlot(); var thatParameters = aBlock.inputNamesElement(); this.inputs.forEach(function (input) {
 thatParameters.addInput(input);}); if (this.expression instanceof Morph) {thatC.nestedBlock(this.expression.fullCopy());};};
-} else {var aBlock = SpriteMorph.prototype.blockForSelector('reify'); var thatSlot = aBlock.children[1];
-var thatParameters = aBlock.children[3]; this.inputs.forEach(function (input) {thatParameters.addInput(
+} else {var aBlock = SpriteMorph.prototype.blockForSelector('reify'); var thatSlot = aBlock.blockSlot();
+var thatParameters = aBlock.inputNamesElement(); this.inputs.forEach(function (input) {thatParameters.addInput(
 input);}); if (this.expression instanceof Morph) {thatSlot.nestedBlock(this.expression.fullCopy());};
 }; aBlock.fixLayout(); aBlock.isDraggable = true; if (this.expression instanceof ReporterBlockMorph) {
-if (aBlock.selector === 'reify') {aBlock.children[1].children[0].fixBlockColor();};}; return aBlock;
+if (aBlock.selector === 'reify') {aBlock.blockSlot().nestedBlock().fixBlockColor();};}; return aBlock;
 } else {if (this.expression instanceof Array) {return (this.expression)[this.pc].fullCopy();} else {
 var aBlock = SpriteMorph.prototype.blockForSelector(this.selector); if (this.expression instanceof Morph
 ) {var block = this.expression.fullCopy(); if (block instanceof BooleanSlotMorph) {
