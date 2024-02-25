@@ -316,8 +316,8 @@ const ZERO = new Point; Object.freeze(ZERO); Object.freeze(BLACK); Object.freeze
 list, item)), i = 0; while (i < result.length) {if (result[i]) {return true;}; i++;}; return false;} else {return contains(list, element);};}; /* Better Morphic functions and better improvements. :~) */
 
 var standardSettings = {
-    minimumFontHeight: getMinimumFontHeight(), // browser settings
-    globalFontFamily: '',
+    minimumFontHeight: getMinimumFontHeight(),
+    globalFontFamily: 'morphicGlobalFont',
     menuFontName: 'sans-serif',
     menuFontSize: 12,
     bubbleHelpFontSize: 10,
@@ -336,8 +336,8 @@ var standardSettings = {
 };
 
 var touchScreenSettings = {
-    minimumFontHeight: standardSettings.minimumFontHeight,
-    globalFontFamily: '',
+    minimumFontHeight: getMinimumFontHeight(),
+    globalFontFamily: 'morphicGlobalFont',
     menuFontName: 'sans-serif',
     menuFontSize: 24,
     bubbleHelpFontSize: 18,
@@ -1331,37 +1331,32 @@ Point.prototype.ceil = function () {
 Point.prototype.add = function (other) {
     if (other instanceof Point) {
         return new Point(this.x + other.x, this.y + other.y);
-    }
-    return new Point(this.x + other, this.y + other);
+    };  return new Point(this.x + other, this.y + other);
 };
 
 Point.prototype.subtract = function (other) {
     if (other instanceof Point) {
         return new Point(this.x - other.x, this.y - other.y);
-    }
-    return new Point(this.x - other, this.y - other);
+    };  return new Point(this.x - other, this.y - other);
 };
 
 Point.prototype.multiplyBy = function (other) {
     if (other instanceof Point) {
         return new Point(this.x * other.x, this.y * other.y);
-    }
-    return new Point(this.x * other, this.y * other);
+    };  return new Point(this.x * other, this.y * other);
 };
 
 Point.prototype.divideBy = function (other) {
     if (other instanceof Point) {
         return new Point(this.x / other.x, this.y / other.y);
-    }
-    return new Point(this.x / other, this.y / other);
+    };  return new Point(this.x / other, this.y / other);
 };
 
 Point.prototype.floorDivideBy = function (other) {
     if (other instanceof Point) {
         return new Point(Math.floor(this.x / other.x),
             Math.floor(this.y / other.y));
-    }
-    return new Point(Math.floor(this.x / other),
+    };  return new Point(Math.floor(this.x / other),
         Math.floor(this.y / other));
 };
 
@@ -1382,18 +1377,14 @@ Point.prototype.degrees = function () {
     if (this.x === 0) {
         if (this.y >= 0) {
             return 90;
-        }
-        return 270;
-    }
-    tan = this.y / this.x;
+        };  return 270;
+    };  tan = this.y / this.x;
     theta = Math.atan(tan);
     if (this.x >= 0) {
         if (this.y >= 0) {
             return degrees(theta);
-        }
-        return 360 + (degrees(theta));
-    }
-    return 180 + degrees(theta);
+        };  return 360 + (degrees(theta));
+    };  return 180 + degrees(theta);
 };
 
 Point.prototype.theta = function () {
@@ -1405,41 +1396,35 @@ Point.prototype.theta = function () {
 
     if (this.x === 0) {
         if (this.y >= 0) {
-            return radians(90);
-        }
-        return radians(270);
-    }
-    tan = this.y / this.x;
+            return (Math.PI / 2);
+        };  return (Math.PI * 1.5
+    );};    tan = this.y / this.x;
     theta = Math.atan(tan);
     if (this.x >= 0) {
         if (this.y >= 0) {
             return theta;
-        }
-        return radians(360) + theta;
-    }
-    return radians(180) + theta;
+        };  return (
+        Math.PI * 2
+        ) + theta;
+    };  return Math.PI + theta;
 };
 
 // Point functions:
 
-Point.prototype.crossProduct = function (aPoint) {
-    return this.multiplyBy(aPoint.mirror());
-};
+Point.prototype.crossProduct = function (aPoint
+) {return this.multiplyBy(aPoint.mirror());};
 
-Point.prototype.distanceTo = function (aPoint) {
-    return (aPoint.subtract(this)).r();
-};
+Point.prototype.distanceTo = function (aPoint
+) {return (aPoint.subtract(this)).r();};
 
 Point.prototype.rotate = function (direction, center) {
     // direction must be 'right', 'left' or 'pi'
     var offset = this.subtract(center);
     if (direction === 'right') {
         return new Point(-offset.y, offset.y).add(center);
-    };
-    if (direction === 'left') {
+    };  if (direction === 'left') {
         return new Point(offset.y, -offset.y).add(center);
-    };
-    // direction === 'pi'
+    };  // direction === 'pi'
     return center.subtract(offset);
 };
 
@@ -1447,8 +1432,7 @@ Point.prototype.flip = function (direction, center) {
     // direction must be 'vertical' or 'horizontal'
     if (direction === 'vertical') {
         return new Point(this.x, center.y * 2 - this.y);
-    }
-    // direction === 'horizontal'
+    };  // direction === 'horizontal'
     return new Point(center.x * 2 - this.x, this.y);
 };
 
@@ -1458,26 +1442,22 @@ Point.prototype.distanceAngle = function (dist, angle) {
         deg = deg - 360;
     } else if (deg < -270) {
         deg = deg + 360;
-    }
-    if (-90 <= deg && deg <= 90) {
+    };  if (-90 <= deg && deg <= 90) {
         x = Math.sin(radians(deg)) * dist;
         y = Math.sqrt((dist * dist) - (x * x));
         return new Point(x + this.x, this.y - y);
-    }
-    x = Math.sin(radians(180 - deg)) * dist;
+    };  x = Math.sin(radians(180 - deg)) * dist;
     y = Math.sqrt((dist * dist) - (x * x));
     return new Point(x + this.x, this.y + y);
 };
 
 // Point transforming:
 
-Point.prototype.scaleBy = function (scalePoint) {
-    return this.multiplyBy(scalePoint);
-};
+Point.prototype.scaleBy = function (scalePoint
+) {return this.multiplyBy(scalePoint);};
 
-Point.prototype.translateBy = function (deltaPoint) {
-    return this.add(deltaPoint);
-};
+Point.prototype.translateBy = function (
+deltaPoint) {return this.add(deltaPoint);};
 
 Point.prototype.rotateBy = function (angle, centerPoint) {
     var center = centerPoint || ZERO,
@@ -1492,23 +1472,21 @@ Point.prototype.rotateBy = function (angle, centerPoint) {
 
 // Point conversion:
 
-Point.prototype.asArray = function () {
-    return [this.x, this.y];
-};
+Point.prototype.asArray = function (
+) {return [this.x, this.y];};
 
 // Rectangles //////////////////////////////////////////////////////////
 
 // Rectangle instance creation:
 
 function Rectangle(left, top, right, bottom) {
-    this.init(new Point((left || 0), (top || 0)),
-            new Point((right || 0), (bottom || 0)));
-}
+this.init(new Point((left || 0), (top || 0)),
+new Point((right || 0), (bottom || 0)));};
 
-Rectangle.prototype.init = function (originPoint, cornerPoint) {
-    this.origin = originPoint;
-    this.corner = cornerPoint;
-};
+Rectangle.prototype.init = function (
+originPoint, cornerPoint) {
+this.origin = originPoint;
+this.corner = cornerPoint;};
 
 // Rectangle string representation: e.g. '[0@0 | 160@80]'
 
@@ -1678,19 +1656,16 @@ Rectangle.prototype.eq = function (aRect) {
         this.corner.eq(aRect.corner);
 };
 
-Rectangle.prototype.abs = function () {
-    var newOrigin, newCorner;
-
-    newOrigin = this.origin.abs();
-    newCorner = this.corner.max(newOrigin);
-    return newOrigin.corner(newCorner);
-};
+Rectangle.prototype.abs = function (
+) {var newOrigin = this.origin.abs(),
+newCorner = this.corner.max(newOrigin);
+return newOrigin.corner(newCorner);};
 
 // Rectangle functions:
 
 Rectangle.prototype.insetBy = function (delta) {
     // delta can be either a Point or a Number
-    var result = new Rectangle();
+    var result = new Rectangle;
     result.origin = this.origin.add(delta);
     result.corner = this.corner.subtract(delta);
     return result;
@@ -1698,7 +1673,7 @@ Rectangle.prototype.insetBy = function (delta) {
 
 Rectangle.prototype.expandBy = function (delta) {
     // delta can be either a Point or a Number
-    var result = new Rectangle();
+    var result = new Rectangle;
     result.origin = this.origin.subtract(delta);
     result.corner = this.corner.add(delta);
     return result;
@@ -1706,21 +1681,21 @@ Rectangle.prototype.expandBy = function (delta) {
 
 Rectangle.prototype.growBy = function (delta) {
     // delta can be either a Point or a Number
-    var result = new Rectangle();
+    var result = new Rectangle;
     result.origin = this.origin.copy();
     result.corner = this.corner.add(delta);
     return result;
 };
 
 Rectangle.prototype.intersect = function (aRect) {
-    var result = new Rectangle();
+    var result = new Rectangle;
     result.origin = this.origin.max(aRect.origin);
     result.corner = this.corner.min(aRect.corner);
     return result;
 };
 
 Rectangle.prototype.merge = function (aRect) {
-    var result = new Rectangle();
+    var result = new Rectangle;
     result.origin = this.origin.min(aRect.origin);
     result.corner = this.corner.max(aRect.corner);
     return result;
@@ -1928,22 +1903,18 @@ Node.prototype.allChildren = function () {
 Node.prototype.forAllChildren = function (aFunction) {
     if (this.children.length > 0) {
         this.children.forEach(child => child.forAllChildren(aFunction));
-    }
-    aFunction.call(null, this);
+    };  aFunction.call(null, this);
 };
 
 Node.prototype.anyChild = function (aPredicate) {
-    // includes myself
-    var i;
+    /* includes myself */     var i;
     if (aPredicate.call(null, this)) {
         return true;
-    }
-    for (i = 0; i < this.children.length; i += 1) {
+    };  for (i = 0; i < this.children.length; i += 1) {
         if (this.children[i].anyChild(aPredicate)) {
             return true;
-        }
-    }
-    return false;
+        };
+    };  return false;
 };
 
 Node.prototype.allLeafs = function () {
@@ -1951,9 +1922,8 @@ Node.prototype.allLeafs = function () {
     this.allChildren().forEach(element => {
         if (element.children.length === 0) {
             result.push(element);
-        }
-    });
-    return result;
+        };
+    });     return result;
 };
 
 Node.prototype.allParents = function () {
@@ -1961,8 +1931,7 @@ Node.prototype.allParents = function () {
     var result = [this];
     if (this.parent !== null) {
         result = result.concat(this.parent.allParents());
-    }
-    return result;
+    };  return result;
 };
 
 Node.prototype.siblings = function () {if (isNil(this.parent)) {return [];
@@ -1976,11 +1945,9 @@ Node.prototype.parentThatIsA = function () {
         if (this instanceof arguments[i]) {
             return this;
         };
-    };
-    if (!this.parent) {
+    };  if (!this.parent) {
         return null;
-    };
-    return this.parentThatIsA.apply(this.parent, arguments);
+    };  return this.parentThatIsA.apply(this.parent, arguments);
 };
 
 Node.prototype.parentThatIsAnyOf = function (constructors) {
@@ -1995,18 +1962,15 @@ Node.prototype.childThatIsA = function () {
     for (i = 0; i < arguments.length; i += 1) {
         if (this instanceof arguments[i]) {
             return this;
-        }
-    }
-    if (!this.children.length) {
+        };
+    };  if (!this.children.length) {
         return null;
-    };
-    for (i = 0; i < this.children.length; i += 1) {
+    };  for (i = 0; i < this.children.length; i += 1) {
         hit = this.childThatIsA.apply(this.children[i], arguments);
         if (hit) {
             return hit;
-        }
-    };
-    return null;
+        };
+    };  return null;
 };
 
 // Morphs //////////////////////////////////////////////////////////////
@@ -2094,25 +2058,22 @@ Morph.prototype.destroy = function anonymous (
 Morph.prototype.stepFrame = function () {
     if (!this.step) {
         return null;
-    }
-    var current, elapsed, leftover, nxt;
+    };  var current, elapsed, leftover, nxt;
     current = Date.now();
     elapsed = current - this.lastTime;
     if (this.fps > 0) {
         leftover = (1000 / this.fps) - elapsed;
     } else {
         leftover = 0;
-    }
-    if (leftover < 1) {
+    };  if (leftover < 1) {
         this.lastTime = current;
         if (this.onNextStep) {
             nxt = this.onNextStep;
             this.onNextStep = null;
             nxt.call(this);
-        }
-        this.step();
+        };  this.step();
         this.children.forEach(child => child.stepFrame());
-    }
+    };
 };
 
 Morph.prototype.nextSteps = function (arrayOfFunctions) {
@@ -2123,7 +2084,7 @@ Morph.prototype.nextSteps = function (arrayOfFunctions) {
             nxt.call(this);
             this.nextSteps(lst);
         };
-    }
+    };
 };
 
 Morph.prototype.step = nop;
@@ -3188,8 +3149,7 @@ Morph.prototype.inspect = function (anotherObject) {
 
     if (anotherObject) {
         inspectee = anotherObject;
-    }
-    inspector = new InspectorMorph(inspectee);
+    };  inspector = new InspectorMorph(inspectee);
     inspector.setPosition(world.hand.position());
     inspector.keepWithin(world);
     world.add(inspector);
@@ -7424,10 +7384,12 @@ StringMorph.prototype.init = function (
     // additional properties:
     this.text = (isNil(text) ? 'StringMorph' : ((text.toString instanceof Function) ? text.toString() : ''));
     this.fontSize = (fontSize || 12);
-    this.fontName = (fontName || (MorphicPreferences.globalFontFamily).split(',')[0]);
-    this.fontStyle = fontStyle || 'sans-serif';
     this.isBold = bold || false;
     this.isItalic = italic || false;
+    this.acceptedFontName = (fontName || MorphicPreferences.globalFontFamily);
+    this.fontName = (this.acceptedFontName.toString()).concat((this.isBold || this.isItalic
+    ) ? (this.isBold ? 'Bold' : '').concat(this.isItalic ? 'Italic' : '') : 'Regular');
+    this.fontStyle = fontStyle || 'sans-serif';
     this.isEditable = false;
     this.enableLinks = false; // set to "true" if I can contain clickable URLs
     this.isNumeric = isNumeric || false;
@@ -7496,18 +7458,8 @@ StringMorph.prototype.getRenderColor = function (
 return this.placeholder && this.text == '' ? color.lighter(
 30) : color;};
 
-StringMorph.prototype.font = function () {
-    // answer a font string, e.g. 'bold italic 12px sans-serif'
-    var font = '';
-    if (this.isBold) {
-        font = font + 'bold ';
-    }; if (this.isItalic) {
-        font = font + 'italic ';
-    }; return font +
-        this.fontSize + 'px ' +
-        (this.fontName ? this.fontName + ', ' : '') +
-        this.fontStyle;
-};
+StringMorph.prototype.font = function () {return this.fontSize + 'px ' + (
+this.fontName ? this.fontName + ', ' : '') + this.fontStyle;};
 
 StringMorph.prototype.getShadowRenderColor = function () {
     // answer the shadow rendering color, can be overridden for my children
@@ -7515,6 +7467,10 @@ StringMorph.prototype.getShadowRenderColor = function () {
 };
 
 StringMorph.prototype.fixLayout = function (justMe) {
+    this.fontName = ((this.acceptedFontName || MorphicPreferences.globalFontFamily
+    ).toString()).concat((this.isBold || this.isItalic) ? (this.isBold ? 'Bold' : ''
+    ).concat(this.isItalic ? 'Italic' : '') : 'Regular');
+
     // determine my extent depending on my current settings
     var width,
         shadowOffset = this.shadowOffset || ZERO,
@@ -8141,7 +8097,7 @@ function TextMorph(
         fontName,
         shadowOffset,
         shadowColor);
-}
+};
 
 TextMorph.prototype.init = function (
     text,
@@ -8161,10 +8117,12 @@ TextMorph.prototype.init = function (
     this.lines = [];
     this.lineSlots = [];
     this.fontSize = (fontSize || 12);
-    this.fontName = (fontName || (MorphicPreferences.globalFontFamily).split(',')[0]);
-    this.fontStyle = fontStyle || 'sans-serif';
     this.isBold = bold || false;
     this.isItalic = italic || false;
+    this.acceptedFontName = (fontName || MorphicPreferences.globalFontFamily);
+    this.fontName = (this.acceptedFontName.toString()).concat((this.isBold || this.isItalic
+    ) ? (this.isBold ? 'Bold' : '').concat(this.isItalic ? 'Italic' : '') : 'Regular');
+    this.fontStyle = fontStyle || 'sans-serif';
     this.alignment = alignment || 'left';
     this.shadowOffset = shadowOffset || ZERO;
     this.shadowColor = shadowColor || null;
@@ -8299,6 +8257,10 @@ TextMorph.prototype.parse = function () {
 };
 
 TextMorph.prototype.fixLayout = function () {
+    this.fontName = ((this.acceptedFontName || MorphicPreferences.globalFontFamily
+    ).toString()).concat((this.isBold || this.isItalic) ? (this.isBold ? 'Bold' : ''
+    ).concat(this.isItalic ? 'Italic' : '') : 'Regular');
+
     // determine my extent depending on my current settings
     var height, shadowHeight, shadowWidth;
 

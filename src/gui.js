@@ -898,25 +898,19 @@ IDE_Morph.prototype.openIn = function (world) {var hash, myself = this; this.bui
             applyFlags(dict);
         } else if (location.hash.substr(0, 7) === '#signup') {
             this.createCloudAccount();
-        }
-        this.loadNewProject = false;
-    }
-
-    function launcherLangSetting() {
+        };  this.loadNewProject = false;
+    };  function launcherLangSetting() {
         var langSetting = null;
         if (location.hash.substr(0, 6) === '#lang:') {
             if (location.hash.charAt(8) === '_') {
                 langSetting = location.hash.slice(6,11);
             } else {
                 langSetting = location.hash.slice(6,8);
-            }
-        }
-        // lang-flag wins lang-anchor setting
+            };
+        };  // lang-flag wins lang-anchor setting
         langSetting = myself.cloud.parseDict(location.hash).lang || langSetting;
         return langSetting;
-    }
-
-    if (launcherLangSetting()) {
+    };  if (launcherLangSetting()) {
         this.loadNewProject = true;
         this.setLanguage(launcherLangSetting(), interpretUrlAnchors);
     } else if (this.userLanguage) {
@@ -924,9 +918,7 @@ IDE_Morph.prototype.openIn = function (world) {var hash, myself = this; this.bui
         this.setLanguage(this.userLanguage, interpretUrlAnchors, true);
     } else {
         interpretUrlAnchors.call(this);
-    };
-
-    world.keyboardFocus = this.stage;
+    };  world.keyboardFocus = this.stage;
     if (localStorage['-snap-newProjectFile']) {
     this.openProjectString(localStorage['-snap-newProjectFile'
     ]); localStorage['-snap-newProjectFile'] = '';
@@ -940,11 +932,9 @@ IDE_Morph.prototype.buildPanes = function () {this.createLogo(); this.createCont
 this.createCorralBar(); this.createCorral();}; IDE_Morph.prototype.createLogo = function () {var myself = this; if (this.logo) {this.logo.destroy();}; this.logo = new Morph; this.logo.texture = snapLogoTexture;
 this.logo.render = function (ctx) {var gradient = ctx.createLinearGradient(0, 0, this.width(), 0); gradient.addColorStop(0, IDE_Morph.prototype.frameColor.darker(25).toString()); gradient.addColorStop(0.5,
 myself.frameColor.toString()); ctx.fillStyle = (MorphicPreferences.isFlat ? myself.frameColor.toString() : gradient); ctx.fillRect(0, 0, this.width(), this.height()); if (this.cachedTexture) {
-this.renderCachedTexture(ctx);} else if (this.texture) {this.renderTexture(this.texture, ctx);}}; this.logo.renderCachedTexture = function (ctx) {ctx.drawImage(this.cachedTexture, 5,
-Math.round((this.height() - this.cachedTexture.height) / 2)); this.changed();}; this.logo.mouseClickLeft = function () {myself.snapMenu();}; this.logo.color = BLACK;
-this.logo.setExtent(new Point(200, 28)); this.add(this.logo);};
-
-IDE_Morph.prototype.createControlBar = function () {
+this.renderCachedTexture(ctx);} else if (this.texture) {this.renderTexture(this.texture, ctx);}}; this.logo.renderCachedTexture = function (ctx) {ctx.drawImage(this.cachedTexture, 2, Math.round(
+(this.height() - this.cachedTexture.height) / 2)); this.changed();}; this.logo.mouseClickLeft = function () {myself.snapMenu();}; this.logo.color = BLACK; this.logo.setExtent(new Point(200, 28));
+this.add(this.logo);}; IDE_Morph.prototype.createControlBar = function () {
     var padding = 5,
         button,
         slider,
@@ -1429,7 +1419,6 @@ button.fixLayout();
         cloudButton.setCenter(myself.controlBar.center());
         cloudButton.setRight(settingsButton.left() - padding);
         projectButton.setRight(cloudButton.left() - padding);
-
         this.refreshSlider();
         this.updateLabel();
     };
@@ -1441,22 +1430,16 @@ button.fixLayout();
             slider.show();
         } else {
             slider.hide();
-        }
-        this.refreshResumeSymbol();
-    };
-
-    this.controlBar.refreshResumeSymbol = function () {
-    };
-
-    this.controlBar.updateLabel = function () {
+        };  this.refreshResumeSymbol();
+    };  this.controlBar.refreshResumeSymbol = function () {
+    };  this.controlBar.updateLabel = function () {
         var prefix = '',
             suffix = (myself.hasUnsavedEdits() ? ' ' + ('\(' + localize('Unsaved') + '\)') : ''),
             name, scene, txt;
-
         if (this.label) {this.label.destroy();}; if (myself.isAppMode) {return;};
         scene = myself.scenes.at(1) !== myself.scene ? ' (' + myself.scene.name + ')' : '';
         name = (myself.getProjectName() || localize('Untitled'));
-        document.title = (myself.getProjectName() ? name : 'Super-Snap! \(Programming Mode\)') + ' - BYOB';
+        document.title = (myself.getProjectName() ? name : 'Snavanced!').concat(' - BYOB Advanced');
         txt = new StringMorph(
             prefix + name +  scene + suffix,
             14,
@@ -1468,7 +1451,6 @@ button.fixLayout();
             myself.frameColor.darker(myself.buttonContrast)
         );
         txt.color = myself.buttonLabelColor;
-
         this.label = new FrameMorph;
         this.label.acceptsDrops = false;
         this.label.alpha = 0;
@@ -1479,8 +1461,7 @@ button.fixLayout();
                 steppingButton.left() - settingsButton.right() - padding * 2,
                 txt.height()
             )
-        );
-        this.label.setCenter(this.center());
+        );  this.label.setCenter(this.center());
         this.label.setLeft(this.settingsButton.right() + padding);
         this.add(this.label);
     };
@@ -2153,8 +2134,7 @@ IDE_Morph.prototype.createPalette = function (forSearching) {
 
     } else {
         this.palette = this.currentSprite.palette(this.currentCategory);
-    }
-    this.palette.isDraggable = false;
+    };  this.palette.isDraggable = false;
     this.palette.acceptsDrops = true;
     this.palette.enableAutoScrolling = false;
     this.palette.contents.acceptsDrops = false;
@@ -2165,25 +2145,28 @@ IDE_Morph.prototype.createPalette = function (forSearching) {
         this.palette.adjustScrollBars = function () {
             ScrollFrameMorph.prototype.adjustScrollBars.call(this);
             myself.categories.refresh();
-        };
-
-        vScrollAction = this.palette.vBar.action;
+        };  vScrollAction = this.palette.vBar.action;
         this.palette.vBar.action = function (num) {
             vScrollAction(num);
             myself.categories.buttons.forEach(each => each.refresh());
         };
-    }
-
-    this.palette.reactToDropOf = (droppedMorph, hand) => {
+    };  this.palette.reactToDropOf = (droppedMorph, hand) => {
         if (droppedMorph instanceof DialogBoxMorph) {
             this.world().add(droppedMorph);
+        } else if (droppedMorph instanceof WatcherMorph) {
+            droppedMorph.perish((myself.isAnimating ? 200 : 0),
+            function () {var selectedVariableCategory = Object.keys(
+            SpriteMorph.prototype.blockColor)[Object.values(
+            SpriteMorph.prototype.blockColor).indexOf(
+            droppedMorph.readoutColor)]; myself.flushBlocksCache(
+            selectedVariableCategory); myself.refreshPalette();});
         } else if (droppedMorph instanceof SpriteMorph) {
-            this.removeSprite(droppedMorph);
+            droppedMorph.perish((myself.isAnimating ? 200 : 0),
+            function () {myself.removeSprite(droppedMorph);});
         } else if (droppedMorph instanceof SpriteIconMorph) {
-            droppedMorph.destroy();
-            this.removeSprite(droppedMorph.object);
+            droppedMorph.perish((myself.isAnimating ? 200 : 0),
+            function () {myself.removeSprite(droppedMorph.object);});
         } else if (droppedMorph instanceof CostumeIconMorph) {
-            // this.currentSprite.wearCostume(null); // do we need this?
             droppedMorph.perish(myself.isAnimating ? 200 : 0);
         } else if (droppedMorph instanceof BlockMorph) {
             this.stage.threads.stopAllForBlock(droppedMorph);
@@ -2191,21 +2174,18 @@ IDE_Morph.prototype.createPalette = function (forSearching) {
                 hand.grabOrigin.origin.clearDropInfo();
                 hand.grabOrigin.origin.lastDroppedBlock = droppedMorph;
                 hand.grabOrigin.origin.recordDrop(hand.grabOrigin);
-            }
-            droppedMorph.perish(myself.isAnimating ? 200 : 0);
+            };  droppedMorph.perish(myself.isAnimating ? 200 : 0);
         } else {
             droppedMorph.perish(myself.isAnimating ? 200 : 0);
-        }
+        };
     };
 
     this.palette.contents.reactToDropOf = (droppedMorph) => {
         // for "undrop" operation
         if (droppedMorph instanceof BlockMorph) {
             droppedMorph.destroy();
-        }
-    };
-
-    this.palette.setWidth(this.logo.width());
+        };
+    };  this.palette.setWidth(this.logo.width());
     this.add(this.palette);
     return this.palette;
 };
@@ -2220,8 +2200,7 @@ IDE_Morph.prototype.createPaletteHandle = function () {
 IDE_Morph.prototype.createStage = function () {
     if (this.stage) {
         this.stage.destroy();
-    }
-    this.add(this.scene.stage);
+    };  this.add(this.scene.stage);
     this.stage = this.scene.stage;
 };
 
@@ -3321,7 +3300,7 @@ IDE_Morph.prototype.droppedText = function (aString, name, fileType) {
 };
 
 IDE_Morph.prototype.droppedBinary = function (anArrayBuffer, name) {
-    // dynamically load BYOB->Super-Snap!
+    // dynamically load BYOB->Snavanced!
     var ypr = document.getElementById('ypr'),
         myself = this,
         suffix = name.split('.')[1];
@@ -3439,25 +3418,13 @@ child => child instanceof DialogBoxMorph).filter(child => child.key === 'screens
 dialog.button1.labelString.name === 'circleSolid')) {dialog.button1.action(); dialog.button1.fixLayout();};};};
 
 IDE_Morph.prototype.selectSprite = function (sprite, noEmptyRefresh) {
-    if (
-        detect(
-            this.world().children,
-            morph => morph instanceof BlockEditorMorph ||
-                morph instanceof BlockDialogMorph ||
-                morph instanceof BlockVisibilityDialogMorph
-        )
-    ) {
-        return;
-    }
     if (this.currentSprite && this.currentSprite.scripts.focus) {
         this.currentSprite.scripts.focus.stopEditing();
-    }
-    this.currentSprite = sprite;
+    };  this.currentSprite = sprite;
     this.scene.currentSprite = sprite;
     if (!noEmptyRefresh) {
         this.categories.refreshEmpty();
-    }
-    this.createPalette();
+    };  this.createPalette();
     this.createSpriteBar();
     this.createSpriteEditor();
     this.corral.refresh();
@@ -3472,43 +3439,21 @@ IDE_Morph.prototype.toggleRetina = function () {
         disableRetinaSupport();
     } else {
         enableRetinaSupport();
-    }
-    this.world().fillPage();
+    };  this.world().fillPage();
     if (!MorphicPreferences.isFlat) {
         IDE_Morph.prototype.scriptsPaneTexture = this.scriptsTexture();
-    }
-    this.stage.clearPenTrails();
+    };  this.stage.clearPenTrails();
     this.refreshIDE();
 };
 
 // IDE_Morph refreshing
 
-IDE_Morph.prototype.refreshIDE = function () {
-    var projectData;
-
-    this.scene.captureGlobalSettings();
-    if (Process.prototype.isCatchingErrors) {
-        try {
-            projectData = this.serializer.serialize(
-                new Project(this.scenes, this.scene)
-            );
-        } catch (err) {
-            this.showMessage('Serialization failed: ' + err);
-        }
-    } else {
-        projectData = this.serializer.serialize(
-            new Project(this.scenes, this.scene)
-        );
-    }
-    SpriteMorph.prototype.initBlocks();
-    this.buildPanes();
-    this.fixLayout();
-    if (this.loadNewProject) {
-        this.newProject();
-    } else {
-        this.openProjectString(projectData);
-    };
-};
+IDE_Morph.prototype.refreshIDE = function () {var projectData; this.scene.captureGlobalSettings(
+); if (Process.prototype.isCatchingErrors) {try {projectData = this.serializer.serialize(new Project(
+this.scenes, this.scene));} catch (err) {this.showMessage(('Serialization failed: ').concat(
+err.toString()));};} else {projectData = this.serializer.serialize(new Project(this.scenes,
+this.scene));};  SpriteMorph.prototype.initBlocks(); this.buildPanes(); this.fixLayout();
+if (this.loadNewProject) {this.newProject();} else {this.openProjectString(projectData);};};
 
 // IDE_Morph settings persistance
 
@@ -3526,12 +3471,8 @@ IDE_Morph.prototype.applySavedSettings = function () {
     autoWrapping = this.getSetting('autowrapping'),
     solidshadow = this.getSetting('solidshadow');
 
-    // global font setting
-    MorphicPreferences.globalFontFamily = ((language === 'tok') ? 'morphicRegularFont,blockTokiPonaFont,morphicBoldFont' : 'morphicRegularFont,blockGlobalFont,morphicBoldFont');
-
-    MorphicPreferences.isFlat = asABool(this.getSetting('isFlat'));
-
     // design
+    MorphicPreferences.isFlat = asABool(this.getSetting('isFlat'));
     if (design === 'simple') {
         this.setSimpleDesign();
     } else if (design === 'old') {
@@ -3542,78 +3483,57 @@ IDE_Morph.prototype.applySavedSettings = function () {
         this.setLightDesign();
     } else {
         this.setDefaultDesign();
-    };
-
-    // blocks zoom
-    SyntaxElementMorph.prototype.setScale(isNil(zoom) ? 1 : zoom);
-    CommentMorph.prototype.refreshScale();
-    SpriteMorph.prototype.initBlocks();
-
-    // blocks fade
+    };  // blocks fade
     if (!isNil(fade)) {
         this.setBlockTransparency(+fade);
-    };
-
-    // language
+    };  // language
     if (language && language !== 'en') {
         this.userLanguage = language;
     } else {
         this.userLanguage = null;
-    };
-
-    //  click
+    };  //  click
     if (click && !BlockMorph.prototype.snapSound) {
         BlockMorph.prototype.toggleSnapSound();
-    };
-
-    // long form
+    };  // long form
     if (longform) {
         InputSlotDialogMorph.prototype.isLaunchingExpanded = true;
-    };
-
-    // keyboard editing
+    };  // keyboard editing
     ScriptsMorph.prototype.enableKeyboard = asABool(keyboard);
-
     // tables
     if (tables === 'false') {
         List.prototype.enableTables = false;
     } else {
         List.prototype.enableTables = true;
-    };
-
-    // tableLines
+    };  // tableLines
     if (tableLines) {
         TableMorph.prototype.highContrast = true;
     } else {
         TableMorph.prototype.highContrast = false;
-    };
-
-    // nested auto-wrapping
+    };  // nested auto-wrapping
     if (autoWrapping === 'false') {
         ScriptsMorph.prototype.enableNestedAutoWrapping = false;
     } else {
         ScriptsMorph.prototype.enableNestedAutoWrapping = true;
-    };
-
-    // plain prototype labels
+    };  // plain prototype labels
     if (plainprototype) {
         BlockLabelPlaceHolderMorph.prototype.plainLabel = true;
-    };
-
-    // solid shadow
+    };  // solid shadow
     if (solidshadow) {
         window.useBlurredShadows = false;
         this.rerender();
-    };
+    };  // blocks zoom
+    SyntaxElementMorph.prototype.setScale(
+    isNil(zoom) ? 1 : asANum(zoom));
+    CommentMorph.prototype.refreshScale();
+    SpriteMorph.prototype.initBlocks();
 };
 
 IDE_Morph.prototype.saveSetting = function (key, value) {
     if (!this.savingPreferences) {
         return;
-    }
-    if (this.hasLocalStorage()) {
+    };  if (this.hasLocalStorage()) {
         localStorage['-snap-setting-' + key] = value;
-    }
+    };
 };
 
 IDE_Morph.prototype.getSetting = function (key) {
@@ -3980,10 +3900,10 @@ IDE_Morph.prototype.newName = function (name, elements) {var count = 1, newName 
 
 /* IDE_Morph menus */ IDE_Morph.prototype.userMenu = function () {var menu = new MenuMorph(this); return menu;}; IDE_Morph.prototype.snapMenu = function () {var menu = new MenuMorph(this),
 wrld = this.world(); menu.addItem('About...', 'aboutSnap'); menu.addLine(); menu.addItem('Thanks to...', 'certificate'); menu.addLine(); menu.addItem('Reference manual', () => window.open(
-'src/SnapManual.pdf')); menu.addItem('See our GitHub', () => window.open('https://github.com/Alessandrito123/Super-Snap')); if (world.isDevMode) {menu.addLine(); menu.addItem(
-'Switch back to user mode', 'switchToUserMode', 'disable deep-Morphic\ncontext menus\nand show user-friendly ones', new Color(0, 100, 0));} else if (world.currentKey === 16) {
-menu.addLine(); menu.addItem('Switch to dev mode', 'switchToDevMode', 'enable Morphic\ncontext menus\nand inspectors,\nnot user-friendly!', new Color(100, 0, 0));};
-menu.popup(world, this.logo.bottomLeft());}; /* You can now be happy with being developers. :~) */
+'src/SnapManual.pdf')); menu.addItem('See our GitHub', () => window.open('https://github.com/Alessandrito123/Snavanced')); if (world.isDevMode) {menu.addLine(); menu.addItem(localize(
+'Switch back to user mode'), 'switchToUserMode', 'disable deep-Morphic\ncontext menus\nand show user-friendly ones', new Color(0, 100, 0));} else if (world.currentKey === 16) {menu.addLine(
+); menu.addItem(localize('Switch to dev mode'), 'switchToDevMode', 'enable Morphic\ncontext menus\nand inspectors,\nnot user-friendly!', new Color(100, 0, 0));}; menu.popup(world,
+this.logo.bottomLeft());}; /* You can now be happy with being developers. :~) */
 
 IDE_Morph.prototype.switchToDevMode = function () {
     var world = this.world();
@@ -4111,7 +4031,7 @@ IDE_Morph.prototype.settingsMenu = function () {
             'Value-depth colors...',
             'value_depthMenu',
             'customize value-depth colors\n' +
-                '\(doing this restarts Super-Snap!\)',
+                '\(doing this restarts Snavanced!\)',
             new Color(100, 0, 0)
         );
     }; menu.addItem(
@@ -4322,8 +4242,8 @@ IDE_Morph.prototype.settingsMenu = function () {
     );
     addPreference(
         'Show blanks in input slots', () => {if (asABool(this.getSetting('isShowingBlanks'))) {this.saveSetting('isShowingBlanks', false);} else {this.saveSetting('isShowingBlanks', true);};
-        location.reload();}, asABool(this.getSetting('isShowingBlanks')), 'don\'t show blanks in input slots \(warning\) \(doing this restarts Super-Snap!\)',
-        'show the blanks in input slots, use them forever. \:\-\) \(doing this restarts Super-Snap!\)', true
+        location.reload();}, asABool(this.getSetting('isShowingBlanks')), 'don\'t show blanks in input slots \(warning\) \(doing this restarts Snavanced!\)',
+        'show the blanks in input slots, use them forever. \:\-\) \(doing this restarts Snavanced!\)', true
     );
     addPreference(
         'Better timer crono-values', () => {if (asABool(this.getSetting('betterTimer'))) {this.saveSetting('betterTimer', false);} else {this.saveSetting('betterTimer', true);};},
@@ -4966,12 +4886,12 @@ ctx = certificate.getContext('2d'); ctx.drawImage(pic, 0, 0); new DialogBoxMorph
 pic.src = 'src/certificate.svg';}; /* The certificate is here to see the persons that I'm inspired to make my mod. Thanks! :-) */
 
 IDE_Morph.prototype.aboutSnap = function () {var dlg, aboutTxt, noticeTxt, creditsTxt, versions = '', translations, module, btn1, btn2, btn3, btn4, licenseBtn, translatorsBtn, world = this.world();
-    aboutTxt = 'Super-Snap! ' + SuperSnapVersion + ' - Programming Mode (' + LastUpdated + ') \nBuild Your Own Blocks - a reimplementation of Scratch.\n'
+    aboutTxt = 'Snavanced! ' + SnavancedVersion + ' - Programming Mode (' + LastUpdated + ') \nBuild Your Own Blocks - a reimplementation of Scratch.\n'
         + 'Alessandrito123 \(Alessandro Moisés\)\n'
         + 'aless01pime@gmail.com\n'
         + '\nBrian Harvey & Jens Moenig\n'
         + 'bh@cs.berkeley.edu, jens@moenig.org\n'
-        + '\nSuper-Snap! is an extension of Snap!\n'
+        + '\nSnavanced! is an extension of Snap!\n'
         + '\n      Snap! is developed by the University of California at Berkeley, '
         + 'and SAP      \n'
         + 'with support from the National Science Foundation (NSF),\n'
@@ -5043,7 +4963,7 @@ IDE_Morph.prototype.aboutSnap = function () {var dlg, aboutTxt, noticeTxt, credi
     }
     translations = localize('Translations') + '\n' + SnapTranslator.credits();
 
-    dlg = new DialogBoxMorph();
+    dlg = new DialogBoxMorph;
 
     function txt(textString) {
         var tm = new TextMorph(
@@ -5073,7 +4993,7 @@ IDE_Morph.prototype.aboutSnap = function () {var dlg, aboutTxt, noticeTxt, credi
         return tm;
     }
 
-    dlg.inform('About Super-Snap!', aboutTxt, world, this.logo.cachedTexture);
+    dlg.inform('About Snavanced!', aboutTxt, world, this.logo.cachedTexture);
     btn1 = dlg.buttons.children[0]; btn1.hint = (new Context).getBYOB();
     translatorsBtn = dlg.addButton(
         () => {
@@ -7518,8 +7438,8 @@ IDE_Morph.prototype.getUser = function anonymous () {var thisUser = this.getSett
 
 IDE_Morph.prototype.isNonWebStandardBrowser = function anonymous () {var ua = navigator.userAgent; return ua.indexOf("MSIE ") > -1 || ua.indexOf("Trident/") > -1;};
 
-IDE_Morph.prototype.getRandomTip = function anonymous () {var numberOfTip = Math.round(Math.random() * 29); var aRandomTip = ''; if (this.isNonWebStandardBrowser()) {
-aRandomTip = 'If do you wanna to run Super-Snap!\nto the best graphics and speed,\nrun this with Google Chrome, Firefox,\nor another browser which it\'s a web-standards. 🤨';
+IDE_Morph.prototype.getRandomTip = function anonymous () {var numberOfTip = Math.round(Math.random() * 30); var aRandomTip = ''; if (this.isNonWebStandardBrowser()) {
+aRandomTip = 'If do you wanna to run Snavanced!\nto the best graphics and speed,\nrun this with Google Chrome, Firefox,\nor another browser which it\'s a web-standards. 🤨';
 } else if (numberOfTip === 0) {aRandomTip = 'Snap! is a broadly\ninviting programming language\nfor kids and adults that\'s also a platform\nfor serious study of computer science. 🙂';
 } else if (numberOfTip === 1) {aRandomTip = '\"Anything you can do from the GUI,\nyou should be able to do from\nthe programming language\nand viceversa.\"\nMike Eisenberg, d. 3/12/2019 Rest In Peace. 😭';
 } else if (numberOfTip === 2) {aRandomTip = 'BYOB is Build Your Own Blocks.\nA mod for Scratch 1.4. Too old! 🙂';
@@ -7529,26 +7449,26 @@ aRandomTip = 'If do you wanna to run Super-Snap!\nto the best graphics and speed
 } else if (numberOfTip === 6) {aRandomTip = 'If do you wanna to edit\nthe random tips.\nPlease search \"getRandomTip\(\)\"\nin \"src/gui.js\". 🙂';
 } else if (numberOfTip === 7) {aRandomTip = '\u0049\u0020\u0064\u006F\u006E\u0027\u0074\u0020\u006B\u006E\u006F\u0077\u0020\u0077\u0068\u0061\u0074\u0020\u0069\u0074\u0027\u0073\u0020\u0073\u0075\u0070\u0070\u006F\u0073\u0065\u0064\u0020\u0074\u006F\u0020\u006D\u0065\u0061\u006E\u000A\u0074\u0068\u0061\u0074\u0020\u0049\u0027\u006D\u0020\u0073\u006F\u0020\u0073\u0061\u0064\u002C\u0020\u0061\u0020\u0066\u0061\u0069\u0072\u0079\u0020\u0074\u0061\u006C\u0065\u0020\u0066\u0072\u006F\u006D\u0020\u0061\u006E\u0063\u0069\u0065\u006E\u0074\u0020\u0074\u0069\u006D\u0065\u0073\u002C\u000A\u0049\u0020\u0063\u0061\u006E\u0027\u0074\u0020\u0067\u0065\u0074\u0020\u0074\u0068\u0061\u0074\u0020\u006F\u0075\u0074\u0020\u006F\u0066\u0020\u006D\u0079\u0020\u006D\u0069\u006E\u0064\u002E\u000A\u0054\u0068\u0065\u0020\u0061\u0069\u0072\u0020\u0069\u0073\u0020\u0063\u006F\u006F\u006C\u0020\u0061\u006E\u0064\u0020\u0069\u0074\u0020\u0069\u0073\u0020\u0067\u0065\u0074\u0074\u0069\u006E\u0067\u0020\u0064\u0061\u0072\u006B\u002C\u0020\u0061\u006E\u0064\u0020\u0074\u0068\u0065\u0020\u0052\u0068\u0069\u006E\u0065\u0020\u0066\u006C\u006F\u0077\u0073\u0020\u0063\u0061\u006C\u006D\u006C\u0079\u003B\u000A\u0074\u0068\u0065\u0020\u0070\u0065\u0061\u006B\u0020\u006F\u0066\u0020\u0074\u0068\u0065\u0020\u006D\u006F\u0075\u006E\u0074\u0061\u0069\u006E\u0020\u0073\u0070\u0061\u0072\u006B\u006C\u0065\u0073\u0020\u0069\u006E\u0020\u0074\u0068\u0065\u0020\u0065\u0076\u0065\u006E\u0069\u006E\u0067\u0020\u0073\u0075\u006E\u0073\u0068\u0069\u006E\u0065\u002E\u000A\u0054\u0068\u0065\u0020\u006D\u006F\u0073\u0074\u0020\u0062\u0065\u0061\u0075\u0074\u0069\u0066\u0075\u006C\u0020\u006D\u0061\u0069\u0064\u0065\u006E\u0020\u0073\u0069\u0074\u0073\u0020\u0077\u006F\u006E\u0064\u0065\u0072\u0066\u0075\u006C\u006C\u0079\u0020\u0075\u0070\u0020\u0074\u0068\u0065\u0072\u0065\u002C\u000A\u0068\u0065\u0072\u0020\u0067\u006F\u006C\u0064\u0065\u006E\u0020\u006A\u0065\u0077\u0065\u006C\u0072\u0079\u0020\u0066\u006C\u0061\u0073\u0068\u0065\u0073\u002C\u0020\u0073\u0068\u0065\u0020\u0063\u006F\u006D\u0062\u0073\u0020\u0068\u0065\u0072\u0020\u0067\u006F\u006C\u0064\u0065\u006E\u0020\u0068\u0061\u0069\u0072\u002C\u000A\u0073\u0068\u0065\u0020\u0063\u006F\u006D\u0062\u0073\u0020\u0069\u0074\u0020\u0077\u0069\u0074\u0068\u0020\u0061\u0020\u0067\u006F\u006C\u0064\u0065\u006E\u0020\u0063\u006F\u006D\u0062\u002C\u0020\u0061\u006E\u0064\u0020\u0073\u0069\u006E\u0067\u0073\u0020\u0061\u0020\u0073\u006F\u006E\u0067\u0020\u0077\u0068\u0069\u006C\u0065\u0020\u0064\u006F\u0069\u006E\u0067\u0020\u0069\u0074\u003B\u000A\u0069\u0074\u0020\u0068\u0061\u0073\u0020\u0061\u0020\u0077\u006F\u006E\u0064\u0072\u006F\u0075\u0073\u002C\u0020\u0070\u006F\u0077\u0065\u0072\u0066\u0075\u006C\u0020\u006D\u0065\u006C\u006F\u0064\u0079\u002E\u000A\u0054\u0068\u0065\u0020\u0073\u0061\u0069\u006C\u006F\u0072\u0020\u0069\u006E\u0020\u0074\u0068\u0065\u0020\u006C\u0069\u0074\u0074\u006C\u0065\u0020\u0073\u0068\u0069\u0070\u0020\u0069\u0073\u0020\u0073\u0065\u0069\u007A\u0065\u0064\u0020\u0077\u0069\u0074\u0068\u0020\u0077\u0069\u006C\u0064\u0020\u0070\u0061\u0069\u006E\u003B\u000A\u0068\u0065\u0020\u0064\u006F\u0065\u0073\u006E\u0027\u0074\u0020\u006C\u006F\u006F\u006B\u0020\u0061\u0074\u0020\u0074\u0068\u0065\u0020\u0063\u006C\u0069\u0066\u0066\u0073\u002C\u0020\u0068\u0065\u0020\u006A\u0075\u0073\u0074\u0020\u006C\u006F\u006F\u006B\u0073\u0020\u0075\u0070\u0020\u0069\u006E\u0074\u006F\u0020\u0074\u0068\u0065\u0020\u0073\u006B\u0079\u002E\u000A\u0049\u0020\u0074\u0068\u0069\u006E\u006B\u0020\u0069\u006E\u0020\u0074\u0068\u0065\u0020\u0065\u006E\u0064\u0020\u0074\u0068\u0065\u0020\u0077\u0061\u0076\u0065\u0073\u0020\u0077\u0069\u006C\u006C\u0020\u0073\u0077\u0061\u006C\u006C\u006F\u0077\u0020\u0075\u0070\u0020\u0074\u0068\u0065\u0020\u0073\u006B\u0069\u0070\u0070\u0065\u0072\u0020\u0061\u006E\u0064\u0020\u0062\u0061\u0072\u0067\u0065\u002C\u000A\u0061\u006E\u0064\u0020\u0074\u0068\u0061\u0074\u0020\u0068\u0061\u0073\u0020\u0062\u0065\u0065\u006E\u0020\u0064\u006F\u006E\u0065\u0020\u0077\u0069\u0074\u0068\u0020\u0068\u0065\u0072\u0020\u0073\u0069\u006E\u0067\u0069\u006E\u0067\u002C\u0020\u0074\u0068\u0065\u0020\u004C\u006F\u0072\u0065\u006C\u0065\u0069\u002E';}
 else if (numberOfTip === 8) {aRandomTip = 'There\'s a mod of Snap! called NetsBlox. 🙂\nIf do you wanna to try it, go to:\nhttps://editor.netsblox.org';}
-else if (numberOfTip === 9) {aRandomTip = 'Did you know what, Super-Snap!\nit\'s called that because SNES,\nis an upgrade for the NES. 🙂';}
-else if (numberOfTip === 10) {aRandomTip = 'Did you know what, Super-Snap!\nit\'s the succesor of Snap Advanced!\nand the self Snap!. 🙂';}
-else if (numberOfTip === 11) {aRandomTip = 'Did you know what, Super-Snap!\nis based too much of BYOB. 🙂';}
-else if (numberOfTip === 12) {aRandomTip = 'Did you know what, Super-Snap!\nis a bit slow. It\'s not intentional. 😕';}
-else if (numberOfTip === 13) {aRandomTip = 'Did you know what, Super-Snap!\nhave to say \"Hi, everyblock!\"\nto the new non-ring \"λ blocks\". 😄';}
+else if (numberOfTip === 9) {aRandomTip = 'Did you know what, Snavanced!\nit\'s called that because the GameBoy Advance,\nis the next generation of GameBoy. 🙂';}
+else if (numberOfTip === 10) {aRandomTip = 'Did you know what, Snavanced!\nit\'s the succesor of Snap Advanced!\nand the self Snap!. 🙂';}
+else if (numberOfTip === 11) {aRandomTip = 'Did you know what, Snavanced!\nis based too much of BYOB. 🙂';}
+else if (numberOfTip === 12) {aRandomTip = 'Did you know what, Snavanced!\nis a bit slow. It\'s not intentional. 😕';}
+else if (numberOfTip === 13) {aRandomTip = 'Did you know what, Snavanced!\nhas the new and the old \n\"λ blocks\" in the same mod. 😄';}
 else if (numberOfTip === 14) {if (this.getSetting('user') === undefined) {
 aRandomTip = 'If you don\'t wanna to have a username yet,\n you simply leave your username\nin blank, and you will be a \"Guest\". 🙂';
 } else {aRandomTip = 'Did you know what, your username\nis only to you, to have your identity. 🙂';};
 } else if (numberOfTip === 15) {aRandomTip = 'The Snap!\'s mascot, Alonzo,\nhave a \"λ type\" of haircut. 🙂';}
 else if (numberOfTip === 16) {aRandomTip = 'Brian Harvey loves the Animaniacs,\nprincipally, Wakko. 😄';}
 else if (numberOfTip === 17) {aRandomTip = 'The names foo, bar, baz and garply,\nare used for programming examples. 🙂';}
-else if (numberOfTip === 18) {aRandomTip = 'Super-Snap! is a Snap! mod, but Snap!\nis based of Scratch, Lisp, Scheme and Squeak. 🙂';}
-else if (numberOfTip === 19) {aRandomTip = 'If we have to pay some money to get Super-Snap!...\nTHIS IS NOT FUNNY, THIS IS SERIOUS!!! 😡';}
+else if (numberOfTip === 18) {aRandomTip = 'Snavanced! is a Snap! mod, but Snap!\nis based of Scratch, Lisp, Scheme and Squeak. 🙂';}
+else if (numberOfTip === 19) {aRandomTip = 'If we have to pay some money to get Snavanced!...\nTHIS IS NOT FUNNY, THIS IS SERIOUS!!! 😡';}
 else if (numberOfTip === 20) {aRandomTip = 'The Snap!\'s mascot, Alonzo,\nhave the name of Alonzo Church. 🙂';}
-else if (numberOfTip === 21) {aRandomTip = 'Snap Advanced! was a cancelled mod,\nbut, I love the 2 mods for equal,\n and the Snap! self. 🥰';}
-else if (numberOfTip === 22) {aRandomTip = 'The Snap Advanced!\'s source code\nincludes this dialog system. 🙂';}
-else if (numberOfTip === 23) {aRandomTip = 'Like the code said, Super-Snap! is compatible\nin the >80% of the actual Snap!. 🙂';}
-else if (numberOfTip === 24) {aRandomTip = 'In the old BYOB 3.1.1, Super-Snap! is compatible\nat the >90% in that. 🙂';}
-else if (numberOfTip === 25) {aRandomTip = 'Wanna to modify this mod?\nIt\'s too easy, just change this. 😄';}
-else if (numberOfTip === 26) {aRandomTip = 'Super-Snap! is working on the\nLEGO WeDo 1.0 and 2.0 motors,\nit\'s just on progress. 🙂';}
+else if (numberOfTip === 21) {aRandomTip = 'Jens Mönig, the creator of Snap!, BYOB, Chirp, GP and Microblocks\nwas a Scratch Team member in some point. 😲';}
+else if (numberOfTip === 22) {aRandomTip = 'Our partner @bluebaritone21 is the user\nwho give to us the name of the mod. 🙂';}
+else if (numberOfTip === 23) {aRandomTip = 'Like the code said, Snavanced! is compatible\nin the >80% of the actual Snap!. 🙂';}
+else if (numberOfTip === 24) {aRandomTip = 'In the old BYOB 3.1.1,\nSnavanced! is compatible\nat the >90% in that. 🙂';}
+else if (numberOfTip === 25) {aRandomTip = 'Do you want to modify this mod?\nIt\'s too easy, just change this. 😄';}
+else if (numberOfTip === 26) {aRandomTip = 'Snavanced! is working on the\nLEGO WeDo 1.0 and 2.0 motors,\nit\'s just on progress. 🙂';}
 else if (numberOfTip === 27) {aRandomTip = 'Any tip will not be offensive,\nplease send or make good tips. 😕';}
 else if (numberOfTip === 28) {aRandomTip = '\"the script > {\n\n} \"\n\n and the \"the () block >\" are just \"λ\". 🙂';}
 else if (numberOfTip === 29) {aRandomTip = 'The \"λ blocks\" are in the operators category. 🙂';}

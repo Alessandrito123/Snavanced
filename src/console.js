@@ -1,21 +1,9 @@
-var localFonts = []; async function loadASourceFont (
-name, url) {var newFont = new FontFace(name, ('url\('
-).concat(window.location.toString().split('snap.html'
-)[0], url, '\)')); try {/* :~) */ await newFont.load(
-); document.fonts.add(newFont); localFonts.push(url);
-} catch (error) {localFonts.push(url); console.error(
-error);}; /* I'm waiting, I need your own fonts. */
-if (!(localFonts.length < 8)) {initSnavanced();};};
-
-function initSnavanced () {
-
-if (asABool(sessionStorage['-snap-setting-isDesktopMode'])) {
-
-MorphicPreferences.globalFontFamily = 'morphicRegularFont,blockGlobalFont,morphicBoldFont';
-/* world.add(new LoginUIMorph(world)); */ world.add(desk); if (isNil(
-BlockMorph.prototype.snapSound)) {BlockMorph.prototype.toggleSnapSound();};
-document.title = 'Super-Snap! \(Desktop Mode\)';
-
+var localFonts = [], snavancedIsRunning = false; async function loadASourceFont (name, url) {var newFont = new FontFace(name, (
+'url\(').concat(window.location.toString().split('snap.html')[0], url, '\)')); try {/* :~) */ await newFont.load(); document.fonts.add(
+newFont); localFonts.push([url, name, newFont]);} catch (error) {console.error(error); localFonts.push([url, name, newFont]);}; if (!(
+localFonts.length < 14) && !snavancedIsRunning) {initSnavanced();};}; function initSnavanced () {snavancedIsRunning = true; if (
+asABool(sessionStorage['-snap-setting-isDesktopMode'])) {/* world.add(new LoginUIMorph(world)); */ world.add(desk); if (isNil(
+BlockMorph.prototype.snapSound)) {BlockMorph.prototype.toggleSnapSound();}; document.title = 'Snavanced! - Desktop Mode';
 if (true || asABool(localStorage['-snap-notification-newFile'])) {localStorage['-snap-notification-newFile'] = false; (function anonymous () {var i = 0; deskItems.forEach(
 function anonymous (aDeskItem) {aDeskItem.destroy();});})(); deskItems = []; ((function anonymous () {var anArray = [], i = 0, j = 1, storage = window.localStorage; while (i < storage.length) {if (storage.key(i
 ).startsWith('-snap-file-')) {anArray.push([storage['-snap-file-project-' + j], j]); j++;}; i++;}; return anArray;}).apply(this)).forEach(function anonymous (pair) {deskItems.push(new FileMorph(pair[0], pair[1]));

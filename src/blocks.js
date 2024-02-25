@@ -260,7 +260,6 @@ SyntaxElementMorph.prototype.rfColor = new Color(127.5,
 127.5, 127.5); SyntaxElementMorph.prototype.contrast = 65;
 SyntaxElementMorph.prototype.listOfContractives = ['%rcv',
 '%scndN']; /* The contractives are inside of multiargs. */
-
 SyntaxElementMorph.prototype.setScale = function anonymous (num) {
 var scale = Math.min(Math.max(num, 1), 10); this.scale = scale;
 this.corner = 3 * scale; this.rounding = 9 * scale;
@@ -270,13 +269,14 @@ this.hatWidth = 70 * scale; this.rfBorder = 3 * scale;
 this.edge = scale; this.minWidth = 0; this.dent = 8 * scale;
 this.bottomPadding = 3 * scale; this.cSlotPadding = 4 * scale;
 this.typeInPadding = scale; this.labelPadding = 4 * scale;
-this.labelFontName = (MorphicPreferences.globalFontFamily
-).split(',')[1]; this.labelFontStyle = 'sans-serif';
-this.fontSize = 11 * scale; this.labelSize = (11 + (
-contains(['blockGlobalFont', 'blockTokiPonaFont'],
-this.labelFontName) ? ({'blockGlobalFont' : 1,
-'blockTokiPonaFont' : 5})[this.labelFontName
-] : 0)) * scale; this.embossing = new Point(
+this.labelFontName = ((localStorage['-snap-setting-language'
+] === 'tok') ? 'blockTokiPonaFont' : 'blockGlobalFont');
+this.labelFontStyle = 'sans-serif'; this.fontSize = 11 * scale;
+this.labelSize = (11 + (contains(['blockGlobalFont',
+'blockTokiPonaFont'], this.labelFontName) ? ({
+'blockGlobalFont' : 1, 'blockTokiPonaFont' : 5
+})[this.labelFontName] : 0)) * scale;
+this.embossing = new Point(
 -1 * Math.max(scale / 2, 1),
 -1 * Math.max(scale / 2, 1));
 this.labelWidth = 450 * scale;
@@ -2120,9 +2120,7 @@ SyntaxElementMorph.prototype.labelPart = function (spec) {
                '(0) up' : 0,
                '(180) down' : 180,
                'random' : ['random']
-            }); part.contents().fontName = (
-            MorphicPreferences.globalFontFamily
-            ).split(',')[2]; break;
+            }); break;
         case 'another number':
             part = new InputSlotMorph(50, true);
             break;
@@ -2255,8 +2253,7 @@ SyntaxElementMorph.prototype.labelPart = function (spec) {
                             cnts = part.contents();
                             cnts.shadowOffset = new Point(1, 1);
                             cnts.fixLayout();
-                        }
-                        break;
+                        };  break;
                     case 'unevaluated':
                         part.isUnevaluated = true;
                         break;
@@ -2267,8 +2264,8 @@ SyntaxElementMorph.prototype.labelPart = function (spec) {
                         part.minWidth = part.height() * 2;
                         break;
                     case 'monospace':
-                        part.contents().fontName = 'monospace';
-                        part.contents().fontStyle = 'monospace';
+                        part.contents().acceptedFontName = 'morphicGlobalCodeScript';
+                        part.contents().fixLayout();
                         break;
                     case 'fading':
                         part.isFading = true;
@@ -2287,14 +2284,10 @@ SyntaxElementMorph.prototype.labelPart = function (spec) {
                         part.canBeEmpty = false;
                         break;
                     default:
-                        throw new Error(
-                            'unknown label part tag: "' + tag + '"'
-                        );
-                    }
-                }
-            });
-            part.fixLayout();
-        }
+                    };
+                };
+            });  part.fixLayout();
+        };
 
         // apply the default value
         // -----------------------
@@ -2319,14 +2312,13 @@ SyntaxElementMorph.prototype.labelPart = function (spec) {
         tokens = spec.slice(1).split('-');
         if (!contains(SymbolMorph.prototype.names, tokens[0])) {
             part = new StringMorph(tokens[0]);
-            part.fontName = this.labelFontName;
+            part.acceptedFontName = this.labelFontName;
             part.fontStyle = this.labelFontStyle;
             part.fontSize = this.fontSize * (+tokens[1] || 1);
         } else {
             part = new BlockSymbolMorph(tokens[0]);
             part.size = this.fontSize * (+tokens[1] || 1.2);
-        }
-        part.color = new Color(
+        };  part.color = new Color(
             +tokens[2] === 0 ? 0 : +tokens[2] || 255,
             +tokens[3] === 0 ? 0 : +tokens[3] || 255,
             +tokens[4] === 0 ? 0 : +tokens[4] || 255
@@ -3796,7 +3788,7 @@ BlockMorph.prototype.userMenu = function anonymous () {
         menu.addItem(
             "add comment",
             () => {
-                var comment = new CommentMorph();
+                var comment = new CommentMorph;
                 this.comment = comment;
                 comment.block = this;
                 comment.layoutChanged();
@@ -12052,9 +12044,8 @@ function InputSlotStringMorph(
         shadowOffset,
         shadowColor,
         color,
-        fontName
-    ); this.fontName = 'inputGlobalFont';
-    this.fixLayout();
+        'blockGlobalFont'
+    );
 };  InputSlotStringMorph.prototype.getRenderColor = function () {
     if (MorphicPreferences.isFlat) {
         if (this.isEditable) {
@@ -12096,11 +12087,10 @@ function InputSlotTextMorph(
         italic,
         alignment,
         width,
-        fontName,
+        'blockGlobalFont',
         shadowOffset,
         shadowColor
-    ); this.fontName = 'inputGlobalFont';
-    this.fixLayout();
+    );
 };  InputSlotTextMorph.prototype.getRenderColor =
     InputSlotStringMorph.prototype.getRenderColor;
     InputSlotTextMorph.prototype.getShadowRenderColor =
@@ -12237,8 +12227,7 @@ BooleanSlotMorph.prototype.toggleValue = function () {
     if (ide) {
         if (!block.isTemplate) {
             ide.recordUnsavedChanges();
-        };
-        if (!ide.isAnimating) {
+        };  if (!ide.isAnimating) {
             this.rerender();
             return;
         };
@@ -12562,10 +12551,12 @@ this.progress < 0)) {return;}; if (this.isStatic) {
             ctx.shadowOffsetY = -shift;
             ctx.shadowBlur = shift;
             ctx.shadowColor = this.value ? 'rgb(0, 100, 0)' : 'rgb(100, 0, 0)';
-        }; ctx.font = new StringMorph(null, this.fontSize, null, true).font();
+        }; ctx.font = new StringMorph('', this.fontSize, null, true, false,
+        false, null, null, null, language = ((localStorage['-snap-setting-language'
+        ] === 'tok') ? 'blockTokiPonaFont' : 'blockGlobalFont')).font();
         ctx.textAlign = 'left';
         ctx.textBaseline = 'bottom';
-        ctx.fillStyle = 'rgb(255, 255, 255';
+        ctx.fillStyle = WHITE.toString();
         ctx.fillText(
             localize(this.value ? 'TRUE' : 'FALSE'),
             x, y); ctx.restore();
@@ -12711,9 +12702,9 @@ BooleanSlotMorph.prototype.drawKnob = function (ctx, progress) {
     ctx.globalAlpha = 1;
 };
 
-BooleanSlotMorph.prototype.textLabelExtent = function anonymous () {var t = new StringMorph(localize(
-'TRUE'), this.fontSize, null, true), f = new StringMorph(localize('FALSE'), this.fontSize, null, true
-); return new Point(Math.max(t.width(), f.width()), t.height());};
+BooleanSlotMorph.prototype.textLabelExtent = function () {var font = ((localStorage['-snap-setting-language'] === 'tok') ? 'blockTokiPonaFont' : 'blockGlobalFont'
+), t = new StringMorph(localize('TRUE'), this.fontSize, null, true, false, false, null, null, WHITE, font), f = new StringMorph(localize('FALSE'
+), this.fontSize, null, true, false, false, null, null, WHITE, font); return new Point(Math.max(t.width(), f.width()), t.height());};
 
 // ArrowMorph //////////////////////////////////////////////////////////
 
@@ -13620,8 +13611,7 @@ MultiArgMorph.prototype.removeInput = function () {
         ) {
             this.removeChild(this.children[this.children.length - 2]);
         };
-    };
-    this.fixLayout();
+    };  this.fixLayout();
 };
 
 MultiArgMorph.prototype.showThatInput = function () {
@@ -13646,8 +13636,7 @@ MultiArgMorph.prototype.hideThatInput = function () {
     this.hiddenInput.hide(); this.fixLayout();
     if (len > 0) {
         this.removePostfix(len);
-    };
-    if (this.infix ||
+    };  if (this.infix ||
         (this.labelText instanceof Array && this.inputs().length)
     ) {
         if (this.children.length > 1 &&
@@ -13657,19 +13646,15 @@ MultiArgMorph.prototype.hideThatInput = function () {
         ) {
             this.removeChild(this.children[this.children.length - 2]);
         };
-    };
-    this.fixLayout();
+    };  this.fixLayout();
 };
 
 MultiArgMorph.prototype.collapseAll = function () {
-    var len = this.inputs().length,
-        i;
-    for (i = 0; i < len; i+= 1) {
-        this.removeInput();
-    }
-};
+var len = this.inputs().length, i; for (i = 0;
+i < len; i+= 1) {this.removeInput();};};
 
-MultiArgMorph.prototype.isVertical = (() => contains(['%cmd', '%r', '%p', '%cmdRing', '%repRing', '%predRing'], this.slotSpec));
+MultiArgMorph.prototype.isVertical = function () {return contains(['%p',
+'%r', '%cmd', '%cmdRing', '%repRing', '%predRing'], this.slotSpec);};
 
 MultiArgMorph.prototype.is3ArgRingInHOF = function () {
     var ring = this.parent,
@@ -15415,23 +15400,23 @@ CommentMorph.prototype.init = function (contents) {
         scale,
         new Color(255, 255, 180)
     ); this.titleBar.color = new Color(255, 255, 180);
-    this.titleBar.setHeight(fontHeight(SyntaxElementMorph.prototype.labelSize) + this.padding);
-    this.title = null;
+    this.titleBar.setHeight(fontHeight(
+    SyntaxElementMorph.prototype.fontSize
+    ) + this.padding); this.title = null;
     this.arrow = new ArrowMorph(
         'down',
         this.fontSize
     ); this.arrow.mouseClickLeft = () => this.toggleExpand();
     this.contents = new TextMorph(
         contents || localize('Please edit\nthis comment.'),
-        SyntaxElementMorph.prototype.labelSize,
+        SyntaxElementMorph.prototype.fontSize,
     'sans-serif',
     false,
     false,
     null,
     null,
-    'inputGlobalFont',
-    0,
-    null
+    'blockGlobalFont',
+    0,  null
     ); this.contents.isEditable = true;
     this.contents.enableSelecting();
     this.contents.maxWidth = 90 * scale;
@@ -15442,9 +15427,9 @@ CommentMorph.prototype.init = function (contents) {
         this.fontSize * 2,
         -2,
         -2
-    );
-    this.handle.setExtent(new Point(11 * scale, 11 * scale));
-    this.anchor = null;
+    );  this.handle.setExtent(
+    new Point(11 * scale, 11 * scale
+    )); this.anchor = null;
 
     CommentMorph.uber.init.call(
         this,
@@ -15474,8 +15459,7 @@ CommentMorph.prototype.fullCopy = function () {
     cpy.setTextWidth(this.textWidth());
     if (this.selectionID) { // for copy on write
         cpy.selectionID = true;
-    }
-    return cpy;
+    };  return cpy;
 };
 
 CommentMorph.prototype.setTextWidth = function (pixels) {
@@ -15484,35 +15468,23 @@ CommentMorph.prototype.setTextWidth = function (pixels) {
     this.fixLayout();
 };
 
-CommentMorph.prototype.textWidth = function () {
-    return this.contents.maxWidth;
-};
+CommentMorph.prototype.textWidth = function (
+) {return this.contents.maxWidth;};
 
-CommentMorph.prototype.text = function () {
-    return this.contents.text;
-};
+CommentMorph.prototype.text = function (
+) {return this.contents.text;};
 
 CommentMorph.prototype.toggleExpand = function () {
-    this.isCollapsed = !this.isCollapsed;
-    this.fixLayout();
-    this.align();
-    if (!this.isCollapsed) {
-        this.comeToFront();
-    }
-};
+this.isCollapsed = !this.isCollapsed; this.fixLayout();
+this.align(); if (!this.isCollapsed) {this.comeToFront();};};
 
-CommentMorph.prototype.comeToFront = function () {
-    if (this.parent) {
-        this.parent.add(this);
-        this.changed();
-    }
-};
+CommentMorph.prototype.comeToFront = function () {if (
+this.parent) {this.parent.add(this); this.changed();};};
 
 // CommentMorph events:
 
-CommentMorph.prototype.mouseClickLeft = function () {
-    this.comeToFront();
-};
+CommentMorph.prototype.mouseClickLeft = function (
+) {this.comeToFront();};
 
 // CommentMorph layout:
 
@@ -15524,7 +15496,7 @@ CommentMorph.prototype.layoutChanged = function () {
     this.comeToFront();
     if (ide) {
         ide.recordUnsavedChanges();
-    }
+    };
 };
 
 CommentMorph.prototype.fixLayout = function () {
@@ -15534,15 +15506,14 @@ CommentMorph.prototype.fixLayout = function () {
     if (this.title) {
         this.title.destroy();
         this.title = null;
-    }
-    if (this.isCollapsed) {
+    };  if (this.isCollapsed) {
         this.contents.hide();
-        this.title = new FrameMorph();
+        this.title = new FrameMorph;
         this.title.alpha = 0;
         this.title.acceptsDrops = false;
         label = new StringMorph(
             this.contents.text,
-            SyntaxElementMorph.prototype.labelSize,
+            SyntaxElementMorph.prototype.fontSize,
             'sans-serif',
             true,
            false,
@@ -15550,19 +15521,16 @@ CommentMorph.prototype.fixLayout = function () {
          0,
         null,
         BLACK,
-        'inputGlobalFont'
-        );
-        label.rootForGrab = () => this;
+        'blockGlobalFont'
+        );  label.rootForGrab = () => this;
         this.title.add(label);
         this.title.setHeight(label.height());
         this.title.setWidth(
             tw - this.arrow.width() - this.padding * 2 - this.rounding
-        );
-        this.add(this.title);
+        );  this.add(this.title);
     } else {
         this.contents.show();
-    }
-    this.titleBar.setWidth(tw);
+    };  this.titleBar.setWidth(tw);
     this.contents.setLeft(this.titleBar.left() + this.padding);
     this.contents.setTop(this.titleBar.bottom() + this.padding);
     this.arrow.direction = this.isCollapsed ? 'right' : 'down';
@@ -15573,16 +15541,14 @@ CommentMorph.prototype.fixLayout = function () {
         this.title.setPosition(
             this.arrow.topRight().add(new Point(this.padding, 0))
         );
-    }
-    this.changed();
+    };  this.changed();
     this.bounds.setHeight(
         this.titleBar.height()
             + (this.isCollapsed ? 0 :
                     this.padding
                         + this.contents.height()
                         + this.padding)
-    );
-    this.bounds.setWidth(this.titleBar.width());
+    );  this.bounds.setWidth(this.titleBar.width());
     this.rerender();
     this.handle.fixLayout();
 };
@@ -15966,18 +15932,14 @@ ScriptFocusMorph.prototype.trigger = function () {
         if (current.arrows().children[1].isVisible) {
             current.addInput();
             this.fixLayout();
-        }
-        return;
-    }
-    if (current.parent instanceof TemplateSlotMorph) {
+        };  return;
+    };  if (current.parent instanceof TemplateSlotMorph) {
         current.mouseClickLeft();
         return;
-    }
-    if (current instanceof BooleanSlotMorph) {
+    };  if (current instanceof BooleanSlotMorph) {
         current.toggleValue();
         return;
-    }
-    if (current instanceof InputSlotMorph) {
+    };  if (current instanceof InputSlotMorph) {
         if (!current.isReadOnly) {
             delete this.fps;
             delete this.step;
@@ -15991,8 +15953,8 @@ ScriptFocusMorph.prototype.trigger = function () {
             delete this.fps;
             delete this.step;
             this.hide();
-        }
-    }
+        };
+    };
 };
 
 ScriptFocusMorph.prototype.menu = function () {

@@ -77,18 +77,6 @@
 
 */
 
-// Global settings /////////////////////////////////////////////////////
-
-/*global TriggerMorph, modules, Color, Point, BoxMorph, radians, ZERO, Note,
-StringMorph, Morph, TextMorph, nop, detect, StringFieldMorph, ColorPaletteMorph,
-HTMLCanvasElement, fontHeight, SymbolMorph, localize, SpeechBubbleMorph, isNil,
-ArrowMorph, MenuMorph, isString, SliderMorph, MorphicPreferences, BLACK, WHITE,
-ScrollFrameMorph, MenuItemMorph, useBlurredShadows, getDocumentPositionOf*/
-
-/*jshint esversion: 6*/
-
-modules.widgets = '2023-December-11';
-
 var PushButtonMorph;
 var ToggleButtonMorph;
 var TabMorph;
@@ -1715,7 +1703,7 @@ DialogBoxMorph.prototype.promptCode = function (
     pic,
     instructions
 ) {
-    var frame = new ScrollFrameMorph(),
+    var frame = new ScrollFrameMorph,
         text = new TextMorph(defaultString || ''),
         bdy = new AlignmentMorph('column', this.padding),
         size = pic ? Math.max(pic.width, 400) : 400;
@@ -1737,19 +1725,14 @@ DialogBoxMorph.prototype.promptCode = function (
             MorphicPreferences.isFlat ? null : new Point(1, 1),
             WHITE // shadowColor
         );
-    }
-
-    frame.padding = 6;
+    };  frame.padding = 6;
     frame.setWidth(size);
     frame.acceptsDrops = false;
     frame.contents.acceptsDrops = false;
 
-    text.fontName = 'monospace';
-    text.fontStyle = 'monospace';
-    text.fontSize = 11;
+    text.acceptedFontName = 'morphicGlobalCodeScript'; text.fontSize = 11;
     text.setPosition(frame.topLeft().add(frame.padding));
-    text.enableSelecting();
-    text.isEditable = true;
+    text.enableSelecting(); text.isEditable = true;
 
     frame.setHeight(size / 4);
     frame.fixLayout = nop;
@@ -1770,16 +1753,12 @@ DialogBoxMorph.prototype.promptCode = function (
 
     if (!this.key) {
         this.key = 'promptCode' + title + defaultString;
-    }
-
-    bdy.setColor(this.color);
+    };  bdy.setColor(this.color);
     bdy.add(frame);
     if (instructions) {
         bdy.add(remarkText(instructions));
-    }
-    bdy.fixLayout();
+    };  bdy.fixLayout();
     this.addBody(bdy);
-
     this.addButton('ok', 'OK');
     this.addButton('cancel', 'Cancel');
     this.fixLayout();

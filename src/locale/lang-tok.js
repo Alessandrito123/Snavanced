@@ -15,8 +15,8 @@ SnapTranslator.dict.tok = {
 
 
 
-'TRUE' : 'lon pona',
-'FALSE' : 'lon ike',
+'TRUE' : '\(,..,\)',
+'FALSE' : '\(,ala,\)',
 
 
 

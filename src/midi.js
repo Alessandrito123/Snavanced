@@ -2,12 +2,12 @@
 
     midi.js
 
-    a midi for Super-BYOB
+    a midi for BYOB Advanced
 
     written by Alessandro Moisés
     aless01pime@gmail.com
 
-    Copyleft (Ɔ) 2023 by Alessandro Moisés
+    Copyleft (Ɔ) 2024 by Alessandro Moisés
 
     This file is part of Snap!.
 
@@ -45,14 +45,6 @@
     Melodii or any rhythm game are wanting to obtain this.)
 
 */
-
-/*global modules, MIDSoundData, MIDVoiceData, MIDSoundSystem*/
-
-/*jshint esversion: 11*/
-
-// Global stuff ////////////////////////////////////////////////////////
-
-modules.midi = '2024-January-20';
 
 // Declarations
 

@@ -2,7 +2,7 @@
 
     desktop.js
 
-    a desktop gui for Super-BYOB
+    a desktop gui for BYOB Advanced
 
     written by Alessandro Moisés
     aless01pime@gmail.com
@@ -48,7 +48,7 @@
 
     credits
     -------
-    Alessandro Moisés contributed to create the desktop of Super-Snap!
+    Alessandro Moisés contributed to create the desktop of Snavanced!
     and developed its functions. Please use it to manage your own BYOB.
 
 */
@@ -56,10 +56,6 @@
 /*global modules, MIDSoundData*/
 
 /*jshint esversion: 11*/
-
-// Global stuff ////////////////////////////////////////////////////////
-
-modules.desktop = '2023-September-05';
 
 // Declarations
 
@@ -76,17 +72,16 @@ LoginUIMorph.prototype.constructor = LoginUIMorph; LoginUIMorph.uber = Morph.pro
 LoginUIMorph.prototype.init = function anonymous (world) {FileMorph.uber.init.call(this);
 this.setExtent(world.bounds.corner);if (false) {
 this.add(new TextMorph('\nLogin\n', 75, 'sans-serif',
-false, false, 'center', null, 'Arial', null, null)); this.children[0].setCenter(
+false, false, 'center')); this.children[0].setCenter(
 this.bounds.center()); this.children[0].setTop(this.bounds.top()); this.add(
-new TextMorph('Password:', 15, 'sans-serif', false, false, 'center', null, 'Arial',
-null, null)); this.children[1].setCenter(this.bounds.center());
+new TextMorph('Password:', 15, 'sans-serif', false, false, 'center'));
+this.children[1].setCenter(this.bounds.center());
 this.children[1].setTop(this.children[0].bounds.bottom());
-this.add(new PushButtonMorph);
-this.add(new StringFieldMorph); this.children[3].text.fontName = 'Arial';
+this.add(new PushButtonMorph); this.add(new StringFieldMorph);
 this.children[3].step = function () {if (this.text instanceof StringMorph) {
 this.text.isPassword = true;};};} else {
 this.add(new TextMorph('Sorry, the registered users only\ncan access to the local storage.', 75, 'sans-serif',
-false, false, 'center', null, 'Arial', null, null));
+false, false, 'center'));
 this.children[0].setCenter(this.bounds.center());};
 }; LoginUIMorph.prototype.step = function anonymous () {
 if (this.world() instanceof WorldMorph) {
@@ -171,7 +166,7 @@ this.init(extent, position, titleText, type, icon, fullIcon, optionalData);}; No
 NormalWindowMorph.prototype.constructor = NormalWindowMorph; NormalWindowMorph.uber = Morph.prototype;
 NormalWindowMorph.prototype.init = function anonymous (extent, position, titleText, type, icon, fullIcon, optionalData) {
 NormalWindowMorph.uber.init.call(this); this.cursorStyle = 'move'; this.cursorGrabStyle = 'move'; this.icon = icon || (
-new StringMorph('λ', 20, 'sans-serif', false, false, false, null, null, new Color(255, 184, 0), 'Candara')).fullImage(
+new StringMorph('λ', 20, 'sans-serif', false, false, false, null, null, new Color(255, 184, 0))).fullImage(
 ); this.type = type; this.isDraggable = true; this.noDropShadow = true; this.fullShadowSource = false;
 this.defaultExtent = extent.copy(); this.defaultPosition = position.copy(); this.titleText = titleText;
 this.isMaximized = false; this.setExtent(extent); this.setCenter(position); this.fixShadow();
@@ -232,11 +227,11 @@ menu.addItem('about...', function () {(this.parentThatIsA(DesktopMorph)).add(new
 this.ui.setExtent(new Point(this.bounds.width(), this.bounds.height() - 20));
 this.ui.setCenter(this.bounds.center()); this.ui.setBottom(this.bounds.bottom());
 if (type === 'aboutSnap') {this.ui.color = new Color(191.25, 191.25, 191.25);
-this.ui.add(new Morph); this.ui.children[0].setExtent(new Point(84, 24));
+this.ui.add(new Morph); this.ui.children[0].setExtent(new Point(102, 28));
 this.ui.children[0].color = new Color(0, 0, 0, 0); this.ui.children[0].texture = snapLogoTexture;
 this.ui.children[0].setCenter(this.ui.bounds.center()); this.ui.children[0].setTop(this.ui.bounds.top() + 6);
-this.ui.add(new TextMorph('Super-Snap! ' + SuperSnapVersion + ' - Desktop Mode (' + LastUpdated + ') \nBuild Your Own Blocks - a reimplementation of Scratch.\nAlessandrito123 '
-+ '\(Alessandro Moisés\)\naless01pime@gmail.com\n\nBrian Harvey & Jens Moenig\nbh@cs.berkeley.edu, jens@moenig.org\n\nSuper-Snap! is an extension of Snap!\n\n      Snap! is '
+this.ui.add(new TextMorph('Snavanced! ' + SnavancedVersion + ' - Desktop Mode (' + LastUpdated + ') \nBuild Your Own Blocks - a reimplementation of Scratch.\nAlessandrito123 '
++ '\(Alessandro Moisés\)\naless01pime@gmail.com\n\nBrian Harvey & Jens Moenig\nbh@cs.berkeley.edu, jens@moenig.org\n\nSnavanced! is an extension of Snap!\n\n      Snap! is '
 + 'developed by the University of California at Berkeley and SAP      \nwith support from the National Science Foundation (NSF),\nMIOsoft and YC Research. Public Domain, all lefts.\nThe design of Snap! '
 + 'is influenced and inspired by Scratch,\n from the Lifelong Kindergarten group at the MIT Media Lab\n\nFor more information, see https://snap.berkeley.edu\nhttps://scratch.mit.edu '
 + 'and https://archive.glitch.pizza\nfor the license, see the license.txt in the main folder.\n If you see a bug, contact to me at aless01pime@gmail.com', 15, 'sans-serif', false,
@@ -347,9 +342,9 @@ this.updateLogo(); if (fullIcon) {this.fullLogo = new Morph();
 this.fullLogo.cachedTexture = fullIcon; this.fullLogo.setExtent(
 new Point(fullIcon.width, fullIcon.height)); this.fullLogo.color = new Color(
 0, 0, 0, 0);} else {this.fullLogo = new StringMorph('λ', 30, 'sans-serif',
-false, false, false, null, null, new Color(255, 184, 0), 'Candara');
-this.fullLogo.setExtent(new Point(30, 30));}; this.title = new StringMorph(this.titleText,
-15, 'sans-serif', true, false, false, null, null, new Color(255, 255, 255), 'Arial');
+false, false, false, null, null, new Color(255, 184, 0)); this.fullLogo.setExtent(
+new Point(30, 30));}; this.title = new StringMorph(this.titleText, 15, 'sans-serif',
+true, false, false, null, null, new Color(255, 255, 255), 'morphicGlobalFont');
 this.add(this.title); this.title.rerender(); this.title.setTop(this.bounds.top());
 this.resizer = new HandleMorph(this, this.width(), this.height());
 this.resizer.mouseDownLeft = function (pos) {
@@ -457,7 +452,7 @@ this.logo = minimizedWindow.logo.fullCopy(); this.add(this.logo);
 this.logo.setCenter(this.normalizeButton.bounds.center());
 this.logo.setRight(this.bounds.right() - ((20 - this.logo.width()) / 2));
 this.title = new StringMorph((minimizedWindow.titleText + ' \(Minimized\)'), 15, 'sans-serif',
-true, false, false, null, null, new Color(255, 255, 255), 'Arial');
+true, false, false, null, null, new Color(255, 255, 255), 'morphicGlobalFont');
 this.add(this.title); this.title.rerender(); this.title.setTop(this.bounds.top());
 this.title.setLeft(this.normalizeButton.bounds.right() + 2.5);};
 MinimizedWindowMorph.prototype.contextMenu = function () {
@@ -505,19 +500,17 @@ this.logo = aWindow.logo.fullCopy(); this.add(this.logo);
 this.logo.setCenter(this.closeButton.bounds.center());
 this.logo.setRight(this.bounds.right() - ((20 - this.logo.width()) / 2));
 this.titleText = ('About ' + aWindow.titleText); this.title = new StringMorph(this.titleText,
-15, 'sans-serif', true, false, false, null, null, new Color(255, 255, 255), 'Arial');
+15, 'sans-serif', true, false, false, null, null, new Color(255, 255, 255));
 this.add(this.title); this.title.rerender(); this.title.setTop(this.bounds.top());
 this.title.setLeft(this.minimizeButton.bounds.right() + 2.5);
 this.ui.add(new TextMorph((function anonymous (aWindow) {
-var aboutWindowText = aWindow.titleText.concat(' ', SuperSnapVersion);
+var aboutWindowText = aWindow.titleText.concat(' ', SnavancedVersion);
 aboutWindowText = aboutWindowText.concat(' - \(', LastUpdated, '\)');
 if (aWindow.type === 'finder') {
-aboutWindowText = aboutWindowText.concat('\nSuper-Snap!\'s File Explorer\nTM and \u24B8 1983-2022', ' Apple Inc.');
-} else {
-};
-return aboutWindowText;}).apply(this, [aWindow]), 15, 'sans-serif', false, false, 'center')); this.ui.children[1].parse();
-this.ui.children[1].setCenter(this.ui.bounds.center()); this.ui.children[1].setTop(this.ui.children[0].bottom() + 5);
-}; AboutWindowMorph.prototype.contextMenu = function () {var menu = new MenuMorph(this, ''); return menu;};
+aboutWindowText = aboutWindowText.concat('\nSnavanced!\'s File Explorer\nTM and \u24B8 1983-2022', ' Apple Inc.');
+} else {}; return aboutWindowText;}).apply(this, [aWindow]), 15, 'sans-serif', false, false, 'center')); this.ui.children[
+1].parse(); this.ui.children[1].setCenter(this.ui.bounds.center()); this.ui.children[1].setTop(this.ui.children[0].bottom(
+) + 5);}; AboutWindowMorph.prototype.contextMenu = function () {var menu = new MenuMorph(this, ''); return menu;};
 
 // NotificationWindowMorph ////////////////////////////////////////////////
 
@@ -546,7 +539,7 @@ ctx.lineWidth = (((this.height() + this.width()) / 2) / 30) * 2.5;
 ctx.strokeStyle = (new Color(255, 0, 0)).toString(); ctx.beginPath();
 ctx.moveTo(0, 0); ctx.lineTo(this.width(), this.height());
 ctx.moveTo(0, this.height()); ctx.lineTo(this.width(), 0); ctx.stroke();};
-this.title = new StringMorph(title, 15, 'sans-serif', true, false, false, null, null, new Color(255, 255, 255), 'Arial');
+this.title = new StringMorph(title, 15, 'sans-serif', true, false, false, null, null, new Color(255, 255, 255));
 this.add(this.title); this.title.rerender(); this.title.setTop(this.bounds.top());
 this.title.setLeft(this.bounds.left() + 2.5);
 this.ui.add(new TextMorph(body, 15, 'sans-serif', false, false, 'center'));
@@ -671,9 +664,8 @@ aBubble.fixLayout = function () {
         false,
         false,
         'center'
-    ); this.contentsMorph.fontName = 'SF Pro Text';
-    this.contentsMorph.color = new Color(40, 40, 40);
-    this.contentsMorph.parse();
+    );  this.contentsMorph.color = new Color(40, 40, 40);
+    this.contentsMorph.fixLayout(); this.contentsMorph.parse();
 
     this.add(this.contentsMorph);
 
@@ -715,8 +707,7 @@ new FrameMorph; DesktopMorph.prototype.constructor = DesktopMorph; DesktopMorph.
 FrameMorph.prototype; DesktopMorph.prototype.init = function anonymous (world) {
 if (isNil(localStorage['snap-desktopStorage'])) {localStorage['snap-desktopStorage'] =
 ('\{ \"type\"\:\"folder\", \"name\"\:\"Desktop\", \"firstTime\"\:\"').concat( Date.now().toString(), '\", \"lastTime\"\:\"', Date.now().toString(), '\", \"contents\"\:\{\}\}');};
-MorphicPreferences.globalFontFamily = 'Helvetica, Arial'; DesktopMorph.uber.init.call(this);
-this.isDraggable = false; this.step(); this.color = world.color; this.cachedTexture = (function anonymous () {
+DesktopMorph.uber.init.call(this); this.isDraggable = false; this.step(); this.color = world.color; this.cachedTexture = (function anonymous () {
 var pic = newCanvas(new Point(100, 100)), ctx = pic.getContext('2d'), i; for (i = 0; i < 100; i += 4) {
 ctx.fillStyle = this.color.toString(); ctx.fillRect(i, 0, 1, 100); ctx.fillStyle = this.color.lighter(2).toString();
 ctx.fillRect(i + 1, 0, 1, 100); ctx.fillRect(i + 3, 0, 1, 100); ctx.fillStyle = this.color.darker(2).toString();
@@ -764,17 +755,16 @@ this.startButton.render = function anonymous (ctx) {
     ctx.fill();
     this.color = colorBak;
     ctx.fillStyle = (new Color(255, 184, 0)).toString();
-    ctx.font = '20px Candara, sans-serif';
+    ctx.font = '20px morphicGlobalFontRegular, sans-serif';
     ctx.textAlign = 'left';
     ctx.fillText('λ', 5, 17);
-};
-this.startButton.setExtent(new Point(20, 20)); this.add(this.startButton);
+}; this.startButton.setExtent(new Point(20, 20)); this.add(this.startButton);
 this.startButton.action = function () {var menu = new MenuMorph(this);
 menu.addItem('about...', function anonymous () {desk.add(new NormalWindowMorph(new Point(
-500, 420), world.bounds.center(), 'About Super-Snap! (Desktop Mode)', 'aboutSnap'));});
+500, 420), world.bounds.center(), 'About Snavanced! - Desktop Mode', 'aboutSnap'));});
 menu.popup(this.world(), this.bottomLeft());}; this.startButton.target = this;
 this.startButton.setCenter(this.bounds.center()); this.startButton.setLeft(this.bounds.left());
-this.digitalClock = new StringMorph('', 12.5, 'sans-serif', false, false, false, null, null, WHITE, 'SF Pro Display');
+this.digitalClock = new StringMorph('', 12.5, 'sans-serif', false, false, false, null, null, WHITE, 'desktopGlobalTimeFont');
 this.digitalClock.updateTime = function () {this.text = ('').concat(
 localize(['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][(new Date)['getDay']()]), ' ',
 (function (num) {return num >= 10 ? num.toString() : '0'.concat(num.toString());})((new Date)['getDate']()), ' ',

@@ -1163,13 +1163,11 @@ SnapSerializer.prototype.loadScriptsArray = function (model, object) {
             element = this.loadComment(child);
             if (!element) {
                 return;
-            }
-            element.setPosition(new Point(
+            };  element.setPosition(new Point(
                 (+child.attributes.x || 0) * scale,
                 (+child.attributes.y || 0) * scale
-            ));
-            scripts.push(element);
-        }
+            )); scripts.push(element);
+        };
     });
     return scripts;
 };
@@ -1193,9 +1191,7 @@ SnapSerializer.prototype.loadScript = function (model, object) {
     if (!this.scene.stage) {
         this.scene.stage = object.parentThatIsA(StageMorph);
         this.scene.targetStage = this.scene.stage;
-    }
-
-    model.children.forEach(child => {
+    };  model.children.forEach(child => {
         nextBlock = this.loadBlock(child, false, object);
         if (!nextBlock) {
             return;
@@ -1205,16 +1201,15 @@ SnapSerializer.prototype.loadScript = function (model, object) {
                 block.nextBlock(nextBlock);
             } else {
                 console.log(
-                    'Super-Snap!: expecting a command but getting a reporter:\n' +
+                    'Expecting a command but getting a reporter:\n' +
                         '  ' + block.blockSpec + '\n' +
                         '  ' + nextBlock.blockSpec
                 );
                 return topBlock;
-            }
+            };
         } else {
             topBlock = nextBlock;
-        }
-        block = nextBlock;
+        };  block = nextBlock;
     });
     return topBlock;
 };

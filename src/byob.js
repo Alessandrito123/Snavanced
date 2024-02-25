@@ -1940,7 +1940,7 @@ BlockDialogMorph.prototype.fixCategoriesLayout = function () {
 BlockDialogMorph.prototype.createTypeButtons = function () {var block, clr = SpriteMorph.prototype.blockColorFor(this.category); block = new CommandBlockMorph; block.setColor(clr); block.setSpec(localize(
 'Command')); this.addBlockTypeButton(() => this.setType('command'), block, () => this.blockType === 'command'); block = new ReporterBlockMorph; block.setColor(clr); block.setSpec(localize('Reporter')); this.addBlockTypeButton(() => this.setType('reporter'), block, () => this.blockType === 'reporter'); block = new ReporterBlockMorph(true); block.setColor(clr); block.setSpec(localize('Predicate'));
 this.addBlockTypeButton(() => this.setType('predicate'), block, () => this.blockType === 'predicate'); block = new ReporterBlockMorph(null, true); block.setColor(clr); block.setSpec(localize('Arrow'
-)); this.addBlockTypeButton(() => this.setType('arrow'), block, () => this.blockType === 'arrow');}; /* Create in the block types selector, the types of blocks most useful in Super-Snap! :) */
+)); this.addBlockTypeButton(() => this.setType('arrow'), block, () => this.blockType === 'arrow');}; /* Create in the block types selector, the types of blocks most useful in Snavanced! :) */
 
 BlockDialogMorph.prototype.addBlockTypeButton = function (
     action,

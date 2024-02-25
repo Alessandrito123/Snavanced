@@ -171,19 +171,14 @@ Localizer.prototype.translate = function (string) {
     translateWithIdiom = ((language) => (isNil(myself.dict[language]) ? string : (
     isNil(myself.dict[language][string]) ? string : myself.dict[language][string])));
     return translateWithIdiom(this.language);
-};
-
-Localizer.prototype.languages = function () {
+};  Localizer.prototype.languages = function () {
     var property, arr = [];
     for (property in this.dict) {
         if (Object.prototype.hasOwnProperty.call(this.dict, property)) {
             arr.push(property);
         };
-    };
-    return arr.sort();
-};
-
-Localizer.prototype.languageName = function (lang) {
+    };  return arr.sort();
+};  Localizer.prototype.languageName = function (lang) {
 return localize(this.dict[lang].language_name || lang);};
 
 Localizer.prototype.credits = function () {
@@ -194,8 +189,7 @@ Localizer.prototype.credits = function () {
             + ' (' + lang + ') - '
             + this.dict[lang].language_translator
             + ' - ' + this.dict[lang].last_changed;
-    });
-    return txt;
+    }); return txt;
 };
 
 Localizer.prototype.unload = function () {
@@ -219,28 +213,6 @@ var SnapTranslator = new Localizer;
 
 // SnapTranslator initialization
 
-SnapTranslator.dict.es = {
-    'language_name':
-        'Español',
-    'language_translator':
-        'Víctor Manuel Muratalla Morales / Cristián Rizzi Iribarren / Alfonso Ruzafa',
-    'translator_e-mail':
-        'victor.muratalla@yahoo.com / rizzi.cristian@gmail.com',
-    'last_changed':
-        '2023-01-22',
-};
-
-SnapTranslator.dict.tok = {
-    'language_name':
-        'toki pona',
-    'language_translator':
-        'Sonja Lang / Alessandro Pinedo',
-    'translator_e-mail':
-        'aless01pime@gmail.com',
-    'last_changed':
-        '2023-05-18',
-};
-
 SnapTranslator.dict.en = {
     // meta information
     'language_name':
@@ -250,7 +222,7 @@ SnapTranslator.dict.en = {
     'translator_e-mail':
         'jens@moenig.org',
     'last_changed':
-        '2024-02-03',
+        '2024-02-24',
 
     // long strings look-up only
     'file menu import hint':
@@ -336,4 +308,22 @@ SnapTranslator.dict.en = {
 
 
 
+}; SnapTranslator.dict.es = {
+    'language_name':
+        'Español',
+    'language_translator':
+        'Víctor Manuel Muratalla Morales / Cristián Rizzi Iribarren / Alfonso Ruzafa',
+    'translator_e-mail':
+        'victor.muratalla@yahoo.com / rizzi.cristian@gmail.com',
+    'last_changed':
+        '2023-01-22',
+}; SnapTranslator.dict.tok = {
+    'language_name':
+        'toki pona',
+    'language_translator':
+        'Sonja Lang / Alessandro Pinedo',
+    'translator_e-mail':
+        'aless01pime@gmail.com',
+    'last_changed':
+        '2023-05-18',
 };

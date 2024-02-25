@@ -70,7 +70,7 @@ ComplexNumber = function anonymous (real, imag) {try {var number = new Number(as
 } catch (error) {number.i = 0;}; var imaginaryRepresentation = ((Math.abs(number.i) == 1) ? ((number.i > 0) ? 'i' : '-i') : (number.i).toString().concat('i')); number.textRepresentation = (
 (number == 0) ? ((number.i == 0) ? '0' : imaginaryRepresentation) : number.toString().concat(((number.i > 0) ? '+' : ''), ((number.i == 0) ? '' : imaginaryRepresentation))); if ((+(number.i
 ) == 0) && (+number < Infinity)) {number.enableEditing = true;}; return number;}, asAComplexNum = function anonymous (n) {var real = +(asANum(n)); try {var imag = (isNil(n.i) ? 0 : +(asANum(
-n.i)));} catch (error) {var imag = 0;}; return (new ComplexNumber(real, imag));}; ThreadManager, Process, Context, Variable, VariableFrame; /* I did this very super high effort to the Super-Snap! mod. :~) */
+n.i)));} catch (error) {var imag = 0;}; return (new ComplexNumber(real, imag));}; ThreadManager, Process, Context, Variable, VariableFrame; /* I did this very super high effort to the Snavanced! mod. :~) */
 const NONNUMBERS = [true, false, '']; (function () {for (var i = 9; i <= 13; i += 1) {NONNUMBERS.push(String.fromCharCode(i));}; NONNUMBERS.push(
 String.fromCharCode(160)); /* "zum Schneckengang verdorben, was Adlerflug geworden wäre" collecting edge-cases that somebody complained about on
 Github. Folks, take it easy and keep it fun, okay? This type of things like this is patently ugly and slows Snap!. Thanks, for this. :-( */})();
@@ -1780,25 +1780,24 @@ Process.prototype.reportListAttribute = function (choice, list) {
     switch (option) {
     case 'length':
         this.assertType(list, 'list');
-        return list.length();
-        break;
+        return list.length(); break;
     case 'size':
         this.assertType(list, 'list');
-        return list.size();
-        break;
+        return list.size(); break;
     case 'rank':
-        return (list instanceof List) ? list.rank() : 0;
-        break;
+        return (list instanceof List
+        ) ? list.rank() : 0; break;
     case 'dimensions':
-        return (list instanceof List) ? list.shape() : new List;
+        return (list instanceof List
+        ) ? list.shape() : new List;
         break;
     case 'flatten':
-        return (list instanceof List) ? list.ravel() : new List([list]);
+        return (list instanceof List
+        ) ? list.ravel() : new List([list]);
         break;
     case 'columns':
         this.assertType(list, 'list');
-        return list.columns();
-        break;
+        return list.columns(); break;
     case 'no copies':
     case 'uniques':
     case 'values':
@@ -1815,8 +1814,7 @@ Process.prototype.reportListAttribute = function (choice, list) {
         break;
     case 'reverse':
         this.assertType(list, 'list');
-        return list.reversed();
-        break;
+        return list.reversed(); break;
     case 'sorted':
         this.assertType(list, 'list');
         return this.reportSorted(list);
@@ -1829,55 +1827,40 @@ Process.prototype.reportListAttribute = function (choice, list) {
         this.assertType(list, 'list');
         if (list.canBeTXT()) {
             return list.asTXT();
-        }
-        throw new Error(
+        };  throw new Error(
             localize('unable to convert to') + ' ' + localize('lines')
-        );
-        break;
+        );  break;
     case 'csv':
         this.assertType(list, 'list');
         if (list.canBeCSV()) {
             return list.asCSV();
-        }
-        throw new Error(
+        };  throw new Error(
             localize('unable to convert to') + ' ' + localize('CSV')
-        );
-        break;
+        );  break;
     case 'json':
         this.assertType(list, 'list');
         if (list.canBeJSON()) {
             return list.asJSON();
-        }
-        throw new Error(
+        };  throw new Error(
             localize('unable to convert to') + ' ' + localize('JSON')
-        );
-        break;
+        );  break;
     case 'xml':
         this.assertType(list, 'list');
         if (list.canBeXML()) {
             return list.asXML();
-        }
-        throw new Error(
+        };  throw new Error(
             localize('unable to convert to') + ' ' + localize('XML')
-        );
-        break;
+        );  break;
     case 'blocks':
         this.assertType(list, 'list');
         if (list.canBeBlocks()) {
             return this.reify(list.blockify(), new List);
-        }
-        throw new Error(
+        };  throw new Error(
             localize('unable to convert to') + ' ' + localize('blocks')
-        );
-        break;
+        );  break;
     default:
         return 0;
     };
-};
-
-Process.prototype.reportListLength = function (list) {
-    this.assertType(list, 'list');
-    return list.length();
 };
 
 Process.prototype.reportListIndexFixed = function anonymous (option, element, list) {
@@ -1886,29 +1869,19 @@ this.assertType(list, 'list'); return list[(this.inputOption(option)).concat('Of
 Process.prototype.reportListContainsItem = function (list, element) {
     this.assertType(list, 'list');
     return list.contains(element);
-};
-
-Process.prototype.reportListOnlyHasItem = function (list, element) {
+};  Process.prototype.reportListOnlyHasItem = function (list, element) {
     this.assertType(list, 'list');
     return list.onlyHas(element);
-};
-
-Process.prototype.reportListIsEmpty = function (list) {
+};  Process.prototype.reportListIsEmpty = function (list) {
     this.assertType(list, 'list');
     return list.isEmpty();
-};
-
-Process.prototype.doShowTable = function (list) {
-    // experimental
+};  Process.prototype.doShowTable = function (list) {
     this.assertType(list, 'list');
-    new TableDialogMorph(list).popUp(this.blockReceiver().world());
-};
-
-Process.prototype.reportSorted = function (data) {
-    return new List(data.itemsArray().slice().sort((a, b) =>
-        this.sortingLessThan(a, b) ? - 1 : 1
-    ));
-};
+    new TableDialogMorph(list).popUp(
+    this.blockReceiver().world());
+};  Process.prototype.reportSorted = function (data) {
+return new List(data.itemsArray().slice().sort((a,
+b) => this.sortingLessThan(a, b) ? - 1 : 1));};
 
 Process.prototype.sortingLessThan = function (a, b) {
     // private - this is an elaborate version of reportBasicLessThan()
@@ -1933,10 +1906,9 @@ Process.prototype.sortingLessThan = function (a, b) {
             'stage',
             'nothing',
             'undefined'
-        ],
-        typeA = this.reportTypeOf(a),
-        typeB = this.reportTypeOf(b),
-        lenA, lenB;
+        ], typeA = this.reportTypeOf(
+        a), typeB = this.reportTypeOf(
+        b), lenA, lenB;
 
     if (typeA !== typeB) {
         return order.indexOf(typeA) < order.indexOf(typeB);
@@ -1966,11 +1938,11 @@ Process.prototype.sortingLessThan = function (a, b) {
     case 'stage':
         return a.name < b.name;
     case 'color':
-        return (a.r + a.g + a.b + a.a) < (a.r + a.g + a.b + a.a);
+        return (a.r + a.g + a.b + a.a) < (b.r + b.g + b.b + b.a);
     default:
         // number, Boolean, text or other
         return this.reportBasicLessThan(a, b);
-    }
+    };
 };
 
 Process.prototype.reportShuffled = function (data) {
@@ -1987,7 +1959,7 @@ Process.prototype.reportShuffled = function (data) {
 
 Process.prototype.reportRemoveDuplicates = function anonymous (list) {var sourceList = list.fullCopy(), result = [], i = 0;
 while (i < sourceList.length()) {if (sourceList.indexOf(sourceList.at(i + 1)) === (i + 1)) {result.push(sourceList.at(i + 1
-));}; i++;}; return new List(result);}; /* This algorithm have the possibility to remove the duplicated items on a list. */
+));}; i++;}; return new List(result);}; /* This algorithm have the possibility to remove the duplicated items of a list. */
 
 // Process non-HOF list primitives
 
@@ -2031,7 +2003,6 @@ Process.prototype.reportBasicNumbers = function (start, end) {
 };
 
 Process.prototype.reportListCombination = function (choice, lists) {
-    // experimental, currently not in use
     var option = this.inputOption(choice);
     switch (option) {
     case 'append':
@@ -2039,7 +2010,7 @@ Process.prototype.reportListCombination = function (choice, lists) {
     case 'cross product':
         return this.reportCrossproduct(lists);
     default:
-        return 0;
+        return lists;
     };
 };
 
@@ -2197,12 +2168,11 @@ Process.prototype.reportIfElse = function (block) {
                 );
                 this.popContext();
                 return;
-            }
+            };
         } else if (inputs.length > 1) {
             // retrieve & remember previous result & remove it from the inputs
             this.context.accumulator.results.push(inputs.pop());
-        }
-        accumulator = this.context.accumulator;
+        };  accumulator = this.context.accumulator;
         if (accumulator.results.length === inputs[0].length()) {
             // done with all the conditions in the current list
             this.returnValueToParentContext(
@@ -2210,44 +2180,35 @@ Process.prototype.reportIfElse = function (block) {
             );
             this.popContext();
             return;
-        }
-        condition = inputs[0].at(accumulator.results.length + 1);
-
+        };  condition = inputs[0].at(accumulator.results.length + 1);
         // optimize single literal true-/false- cases for atomic conditions:
         if (!(condition instanceof List)) {
             if (condition && accumulator.trueIsLiteral) {
                 accumulator.results.push(accumulator.trueCase);
                 return;
-            }
-            if (!condition && accumulator.falseIsLiteral) {
+            };  if (!condition && accumulator.falseIsLiteral) {
                 accumulator.results.push(accumulator.falseCase);
                 return;
-            }
-        }
-
-        this.pushContext(block); // recursive call
+            };
+        };  this.pushContext(block); // recursive call
         this.context.addInput(condition);
         // optimize evaluation of literals:
         this.context.accumulator = copy(accumulator);
         this.context.accumulator.results = [];
         return;
-    }
-
-    // handle a scalar condition
+    };  // handle a scalar condition
     if (inputs.length > 1) {
         // done with evaluating a case, retrieve and return its result
         if (this.flashContext()) {return; }
         this.returnValueToParentContext(inputs.pop());
         this.popContext();
         return;
-    }
-    // this.assertType(inputs[0], ['Boolean']);
+    };  // this.assertType(inputs[0], ['Boolean']);
     if (inputs[0]) {
         expression = block.inputs()[1]; // true block
     } else {
         expression = block.inputs()[2]; // false block
-    }
-    this.pushContext(expression);
+    };  this.pushContext(expression);
 }; // Processing related primitives
 
 Process.prototype.doStopThis = function (choice) {var ide = world.children[0]; switch (this.inputOption(choice)) {case 'this scene': case 'all': ide.scene.stop();
@@ -2263,15 +2224,14 @@ action instanceof CommandBlockMorph) {if (!this.context.startTime) {this.context
 
 // Atomic Functions: The atomic functions are functions that are running all of the blocks inside them all at once. In BYOB, only appears as an option menu for the custom blocks.
 
-Process.prototype.doWarp = function anonymous (body) {var outer = this.context.outerContext, isCustomBlock = this.context.isCustomBlock, stage; this.popContext(); if (body) {if (this.homeContext.receiver) {if (
-this.homeContext.receiver.startWarp) {this.homeContext.receiver.startWarp();}; stage = this.homeContext.receiver.parentThatIsA(StageMorph);}; this.pushContext('popContext'); if (this.context) {
+Process.prototype.doWarp = function anonymous (body) {var outer = this.context.outerContext, isCustomBlock = this.context.isCustomBlock, stage; this.popContext(); if (body) {if (this.homeContext.receiver
+) {if (this.homeContext.receiver.startWarp) {this.homeContext.receiver.startWarp();}; stage = this.homeContext.receiver.parentThatIsA(StageMorph);}; this.pushContext('popContext'); if (this.context) {
 this.context.isCustomBlock = isCustomBlock;}; if (!this.isAtomic) {this.pushContext('doStopWarping');}; this.pushContext(body.blockSequence(), outer); this.isAtomic = true;}; this.pushContext();};
-Process.prototype.reportWarp = function anonymous (input) {if (input instanceof BlockMorph) {return this.doWarp(input.fullCopy());} else {return null;};}; Process.prototype.doStopWarping = function () {var stage;
-this.popContext(); this.isAtomic = false; if (this.homeContext.receiver) {if (this.homeContext.receiver.endWarp) {this.homeContext.receiver.endWarp();}; stage = this.homeContext.receiver.parentThatIsA(StageMorph);
-}}; Process.prototype.doSetFastTracking = function (bool) {var ide; if (this.homeContext.receiver) {ide = this.homeContext.receiver.parentThatIsA(IDE_Morph); if (ide) {if (asABool(bool)) {ide.startFastTracking();
-} else {ide.stopFastTracking();}}}}; Process.prototype.reportIsFastTracking = function () {var ide = world.childThatIsA(IDE_Morph); return ((ide instanceof IDE_Morph) ? ide.stage.isFastTracked : false);};
-Process.prototype.compileFast = function anonymous (action) {/* window.alert(reportBasicToJS(action)); */ reportBasicToJS(action).apply(this.blockReceiver(), [this]);};
-/* The "compile fast %cl" block runs the compiled script to JS that is inside. :-) */
+Process.prototype.doStopWarping = function () {var stage; this.popContext(); this.isAtomic = false; if (this.homeContext.receiver) {if (this.homeContext.receiver.endWarp) {
+this.homeContext.receiver.endWarp();}; stage = this.homeContext.receiver.parentThatIsA(StageMorph);};}; Process.prototype.doSetFastTracking = function (bool) {var ide; if (
+this.homeContext.receiver) {ide = this.homeContext.receiver.parentThatIsA(IDE_Morph); if (ide) {if (asABool(bool)) {ide.startFastTracking();} else {ide.stopFastTracking();
+};};};}; Process.prototype.reportIsFastTracking = function () {var ide = world.childThatIsA(IDE_Morph); return ((ide instanceof IDE_Morph) ? ide.stage.isFastTracked : false
+);}; Process.prototype.compileFast = function anonymous (action) {/* window.alert(reportBasicToJS(action)); */ reportBasicToJS(action).apply(this.blockReceiver(), [this]);};
 
 // Statement Functions: Are for managing scripts more than expected. :-)
 
@@ -2737,7 +2697,7 @@ Process.prototype.reportCombine = function (list, reporter) {
 };
 
 Process.prototype.reportListAggregation = function (list, selector) {var len = list.length(), result, i, op = {reportVariadicSum: 'reportSum', reportVariadicProduct: 'reportProduct',
-reportVariadicMax: 'reportMax', reportVariadicMin: 'reportMin'}[selector] || selector; if (len === 0) {switch (op) {case 'reportProduct': return 0; case 'reportMin': return Infinity;
+reportVariadicMax: 'reportMax', reportVariadicMin: 'reportMin'}[selector] || selector; if (len === 0) {switch (op) {case 'reportProduct': return 1; case 'reportMin': return Infinity;
 case 'reportMax': return -Infinity; default: return 0;};}; result = list.at(1); if (len > 1) {for (i = 2; i <= len; i += 1) {result = this[op](result, list.at(i));};}; return result;};
 
 Process.prototype.canRunOptimizedForCombine = function (aContext) {
@@ -3750,7 +3710,7 @@ Process.prototype.reportRadical = function anonymous (a, b, c) {result = ((c ===
 Process.prototype.reportComplexNumAttrs(new List([result.at(1), (result.at(2) + (360 * ((i + 1) / a)))]), ['complex'])); i++;};}; return new List(variants);} else {return result;};};
 
 Process.prototype.reportComplexRadical = function anonymous (a, b) {a = asAComplexNum(a); b = asAComplexNum(b); return (((Math.abs(+(a.i)) > 0) || ((Math.abs(+(b.i)) > 0)) ? Process.prototype.reportComplexPower(b,
-Process.prototype.reportComplexQuotient(1, a)) : Process.prototype.reportBasicRadical(+a, +b)));}; /* The reciprocal exponentiation is here to take the place of the basic radication operation in Super-Snap!. :) */
+Process.prototype.reportComplexQuotient(1, a)) : Process.prototype.reportBasicRadical(+a, +b)));}; /* The reciprocal exponentiation is here to take the place of the basic radication operation in Snavanced! :) */
 
 Process.prototype.reportBasicRadical = function anonymous (a, b) {return ((+a === 2) ? ((+b < 0) ? new ComplexNumber(0, Process.prototype.fixSimpleNumber(Math.sqrt(-b))) : Process.prototype.fixSimpleNumber(
 Math.sqrt(+b))) : ((+a === 3) ? ((+b < 0) ? -(Process.prototype.fixSimpleNumber(Math.cbrt(-b))) : Process.prototype.fixSimpleNumber(Math.cbrt(+b))) : Process.prototype.reportComplexPower(+b,
@@ -3770,7 +3730,7 @@ b < Process.prototype.reportBasicPower(+a, -320)) ? 2 : ((b < Process.prototype.
 b < Process.prototype.reportBasicPower(+a, -225)) ? 12 : ((b < Process.prototype.reportBasicPower(+a, -22)) ? 13 : (((b < Process.prototype.reportBasicPower(+a, -1)) ? 14 : ((
 b < Process.prototype.reportBasicPower(+a, 5)) ? 15 : ((b < Process.prototype.reportBasicPower(+a, 46)) ? 14 : 13))))))))))))))])))));}; if (!contains([2, Math.E, 10], +a)) {
 result = Process.prototype.fixSimpleNumber(+result, 12);}; return ((+a === 0) ? Infinity : (isNaN(result) ? 0 : result
-));}; /* Super-Snap! is the only mod that have customizable logarithms. Try them, they are useful in everything! :) */
+));}; /* Snavanced! is the only mod that have customizable logarithms. Try them, they are useful in everything! :) */
 
 Process.prototype.reportAverage = function anonymous (option, numbers) {switch (this.inputOption(option)) {case 'median': numbers = new List(numbers.asArray().sort((a, b) => (asANum(a) - asANum(b))));
 return ((this.reportBasicModulus(numbers.length(), 2) > 0) ? numbers.at(this.reportRound(this.reportBasicQuotient(numbers.length(), 2), new List)) : this.reportBasicQuotient(this.reportBasicSum(numbers.at(
@@ -6415,7 +6375,7 @@ var stage = this.homeContext.receiver.parentThatIsA(StageMorph);
 switch (this.inputOption(mode)) {case 'on': case 'on flipped':
 this.startVideo(stage); stage.mirrorVideo = (!(this.inputOption(
 mode) === 'on flipped')); break; default: stage.stopProjection(
-); break;};}; /* Like in Scratch 3.0, Super-Snap! is great. */
+); break;};}; /* Like in Scratch 3.0, Snavanced! is great. */
 
 Process.prototype.reportVideo = function (attribute, name) {
     // hyper-monadic

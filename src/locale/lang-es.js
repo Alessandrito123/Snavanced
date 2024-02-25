@@ -31,7 +31,8 @@ SnapTranslator.dict.es = {
 'block' : 'bloque', 'block.' : 'bloque.',
 'Input names:' : 'Nombres de entrada:',
 
-
+'Remove viewer from stage' : 'Remove viewer from...',
+'View on stage' : 'View on...'
 
 
 
