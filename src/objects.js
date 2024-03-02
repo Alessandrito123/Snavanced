@@ -438,10 +438,7 @@ SpriteMorph.prototype.blocks = {
             spec: 'go back %n layers',
             defaults: [1]
         },
-
-        // Looks - Debugging primitives for development mode
         doScreenshot: {
-            dev: true,
             type: 'command',
             category: 'looks',
             spec: 'save %imgsource as costume named %s',
@@ -1208,25 +1205,21 @@ SpriteMorph.prototype.blocks = {
             defaults: [['hue'], ['mouse-pointer']]
         },
         reportStackSize: {
-            dev: true,
             type: 'reporter',
             category: 'sensing',
             spec: 'stack size'
         },
         reportFrameCount: {
-            dev: true,
             type: 'reporter',
             category: 'sensing',
             spec: 'frames'
         },
         reportYieldCount: {
-            dev: true,
             type: 'reporter',
             category: 'sensing',
             spec: 'yields'
         },
         reportThreadCount: {
-            dev: true,
             type: 'reporter',
             category: 'sensing',
             spec: 'processes'
@@ -1718,7 +1711,6 @@ SpriteMorph.prototype.blocks = {
             defaults: [['encode URI'], "Abelson & Sussman"]
         },
         reportCompiled: {
-            dev: true,
             type: 'reporter',
             category: 'operators',
             spec: 'compile %r for %n args',
@@ -1914,7 +1906,7 @@ SpriteMorph.prototype.blocks = {
             spec: 'map %r over %l'
         },
         reportAtomicMap: {
-            dev: true, // not shown in palette, only accessible via relabelling
+            dev: true,
             type: 'reporter',
             category: 'lists',
             spec: '$flash map %r over %l'
@@ -1925,7 +1917,7 @@ SpriteMorph.prototype.blocks = {
             spec: 'keep items %p from %l'
         },
         reportAtomicKeep: {
-            dev: true, // not shown in palette, only accessible via relabelling
+            dev: true,
             type: 'reporter',
             category: 'lists',
             spec: '$flash keep items %p from %l'
@@ -1948,7 +1940,7 @@ SpriteMorph.prototype.blocks = {
             spec: 'combine %l using %r'
         },
         reportAtomicCombine: {
-            dev: true, // not shown in palette, only accessible via relabelling
+            dev: true,
             type: 'reporter',
             category: 'lists',
             spec: '$flash combine %l using %r'
@@ -5586,8 +5578,9 @@ SpriteMorph.prototype.write = function (text, size) {
         size = Math.max(size, 0);
 
     context.save();
-    context.font = (size.toString()).concat('px turtlePenFont');
-    context.textAlign = 'left';
+    context.font = (size.toString()
+    ).concat('px morphicGlobalCodeScriptRegular'
+    );  context.textAlign = 'left';
     context.textBaseline = 'alphabetic';
     context.fillStyle = this.color.toString();
     if (text.split('\n').length > 0) {
@@ -6309,7 +6302,7 @@ SpriteMorph.prototype.bubble = function (data, isThought, isQuestion, isShouted,
         stage = this.parentThatIsA(StageMorph);
 
     this.stopTalking();
-    if (data === '' || isNil(data)) {return; }
+    if (data === '' || isNil(data)) {return;};
     bubble = new SpriteBubbleMorph(
         data,
         stage,
@@ -6317,8 +6310,7 @@ SpriteMorph.prototype.bubble = function (data, isThought, isQuestion, isShouted,
         isQuestion,
         isShouted,
         isWhispered
-    );
-    this.add(bubble);
+    );  this.add(bubble);
     this.positionTalkBubble();
 };
 
@@ -10288,9 +10280,7 @@ SpriteBubbleMorph.prototype.init = function (
         null,
         isThought,
         true // no shadow
-    );
-
-    this.isCachingImage = true;
+    );  this.isCachingImage = true;
     this.rerender();
 };
 
@@ -10314,7 +10304,8 @@ SpriteBubbleMorph.prototype.dataAsMorph = function (data) {
             contents.version = data.version;
             contents.step = function () {
                 if (this.version !== data.version) {
-                    img = data.thumbnail(new Point(40, 40), this.cachedImage);
+                    img = data.thumbnail(new Point(
+                    40, 40), this.cachedImage);
                     this.cachedImage = img;
                     this.version = data.version;
                     this.changed();
@@ -10322,16 +10313,21 @@ SpriteBubbleMorph.prototype.dataAsMorph = function (data) {
             };
         } else {
             contents = data;
-        }
+        };
     } else if (isString(data)) {
         isText = true;
         contents = new TextMorph(data,
-            (this.isShouted ? (sprite.bubbleFontSize * this.scale * 2) : (sprite.bubbleFontSize * this.scale)),
+            (this.isShouted ? (sprite.bubbleFontSize * this.scale * 1.5) : (sprite.bubbleFontSize * this.scale)),
             null, // fontStyle
             !this.isWhispered, // bold
             this.isWhispered, // italic
-            'left' // position
-        );
+            'center' // position
+        );  contents.acceptedFontName = ((localStorage['-snap-setting-language'
+        ] === 'tok') ? 'blockTokiPonaFont' : 'blockGlobalFont');
+        contents.fontSize = (contents.fontSize + (contains(['blockGlobalFont',
+        'blockTokiPonaFont'], contents.acceptedFontName) ? ({
+        'blockGlobalFont' : 1, 'blockTokiPonaFont' : 5})[
+         contents.acceptedFontName] : 0)); contents.fixLayout();
 
         // support exporting text / numbers directly from speech balloons:
         contents.userMenu = function () {
@@ -10339,7 +10335,8 @@ SpriteBubbleMorph.prototype.dataAsMorph = function (data) {
                 ide = this.parentThatIsA(IDE_Morph)||
                     this.world().childThatIsA(IDE_Morph);
 
-            if (ide.isAppMode) {return; }
+            if (ide.isAppMode
+            ) {return;};
             menu.addItem(
                 'export',
                 () => ide.saveFileAs(
@@ -10347,8 +10344,7 @@ SpriteBubbleMorph.prototype.dataAsMorph = function (data) {
                     'text/plain;charset=utf-8',
                     localize('data')
                 )
-            );
-            return menu;
+            );  return menu;
         };
 
     } else if (data instanceof Color) {
@@ -10407,11 +10403,8 @@ SpriteBubbleMorph.prototype.dataAsMorph = function (data) {
                     hand.grabOrigin = {
                         origin: ide.palette,
                         position: ide.palette.center()
-                    };
-                    this.prepareToBeGrabbed = prepare;
-                };
-
-                if (ide.isAppMode) {return; }
+                    };  this.prepareToBeGrabbed = prepare;
+                };  if (ide.isAppMode) {return;};
                 script.setPosition(this.position());
                 return script;
         };
@@ -10423,7 +10416,8 @@ SpriteBubbleMorph.prototype.dataAsMorph = function (data) {
         this.contentsMorph.bounds.setHeight(img.height);
         this.contentsMorph.cachedImage = img;
     } else if (data instanceof Costume) {
-        img = data.thumbnail(new Point(40, 40));
+        img = data.thumbnail(
+        new Point(40, 40));
         contents = new Morph;
         contents.isCachingImage = true;
         contents.bounds.setWidth(img.width);
@@ -10448,11 +10442,10 @@ SpriteBubbleMorph.prototype.dataAsMorph = function (data) {
                 hand.grabOrigin = {
                     origin: ide.palette,
                     position: ide.palette.center()
-                };
-                this.prepareToBeGrabbed = prepare;
+                };  this.prepareToBeGrabbed = prepare;
             };
 
-            if (ide.isAppMode) {return; }
+            if (ide.isAppMode) {return;};
             icon.setCenter(this.center());
             return icon;
         };
@@ -10463,12 +10456,11 @@ SpriteBubbleMorph.prototype.dataAsMorph = function (data) {
                 ide = this.parentThatIsA(IDE_Morph)||
                     this.world().childThatIsA(IDE_Morph);
 
-            if (ide.isAppMode) {return; }
+            if (ide.isAppMode) {return;};
             menu.addItem(
                 'export',
                 () => {
                     if (data instanceof SVG_Costume) {
-                        // don't show SVG costumes in a new tab (shows text)
                         ide.saveFileAs(
                             data.contents.src,
                             'text/svg',
@@ -10476,10 +10468,9 @@ SpriteBubbleMorph.prototype.dataAsMorph = function (data) {
                         );
                     } else { // rasterized Costume
                         ide.saveCanvasAs(data.contents, data.name);
-                    }
+                    };
                 }
-            );
-            return menu;
+            );  return menu;
         };
 
     } else if (data instanceof Sound) {
@@ -10503,11 +10494,8 @@ SpriteBubbleMorph.prototype.dataAsMorph = function (data) {
                 hand.grabOrigin = {
                     origin: ide.palette,
                     position: ide.palette.center()
-                };
-                this.prepareToBeGrabbed = prepare;
-            };
-
-            if (ide.isAppMode) {return; }
+                };  this.prepareToBeGrabbed = prepare;
+            };  if (ide.isAppMode) {return;};
             icon.setCenter(this.center());
             return icon;
         };
@@ -10518,17 +10506,18 @@ SpriteBubbleMorph.prototype.dataAsMorph = function (data) {
                 ide = this.parentThatIsA(IDE_Morph)||
                     this.world().childThatIsA(IDE_Morph);
 
-            if (ide.isAppMode) {return; }
+            if (ide.isAppMode
+            ) {return;};
             menu.addItem(
                 'export',
-                () => ide.saveAudioAs(data.audio, data.name)
-            );
-            return menu;
+                () => ide.saveAudioAs(
+                data.audio, data.name)
+            );  return menu;
         };
 
     } else if (data instanceof HTMLCanvasElement) {
         img = data;
-        contents = new Morph();
+        contents = new Morph;
         contents.isCachingImage = true;
         contents.bounds.setWidth(img.width);
         contents.bounds.setHeight(img.height);
@@ -10540,7 +10529,7 @@ SpriteBubbleMorph.prototype.dataAsMorph = function (data) {
                 contents.expand(this.stage.extent().translateBy(
                     -2 * (this.edge + this.border + this.padding)
                 ));
-            }
+            };
         } else {
             contents = new ListWatcherMorph(data);
             contents.update(true);
@@ -10549,9 +10538,8 @@ SpriteBubbleMorph.prototype.dataAsMorph = function (data) {
                 contents.expand(this.stage.extent().translateBy(
                     -2 * (this.edge + this.border + this.padding)
                 ));
-            }
-        }
-        contents.isDraggable = false;
+            };
+        };  contents.isDraggable = false;
     } else if (data instanceof Context) {
         img = data.image();
         contents = new Morph;
@@ -10578,18 +10566,23 @@ SpriteBubbleMorph.prototype.dataAsMorph = function (data) {
                 this.prepareToBeGrabbed = prepare;
             };
 
-            if (ide.isAppMode) {return; }
+            if (ide.isAppMode) {return;};
             script.setPosition(this.position());
             return script;
         };
     } else {
         contents = new TextMorph((isNil(data) ? '' : ((data.textRepresentation === undefined) ? data.toString() : data.textRepresentation)),
-            (this.isShouted ? (sprite.bubbleFontSize * this.scale * 2) : (sprite.bubbleFontSize * this.scale)),
+            (this.isShouted ? (sprite.bubbleFontSize * this.scale * 1.5) : (sprite.bubbleFontSize * this.scale)),
             null, // fontStyle
             !this.isWhispered, // bold
             this.isWhispered, // italic
             'center' // position
-        );
+        );  contents.acceptedFontName = ((localStorage['-snap-setting-language'
+        ] === 'tok') ? 'blockTokiPonaFont' : 'blockGlobalFont');
+        contents.fontSize = (contents.fontSize + (contains(['blockGlobalFont',
+        'blockTokiPonaFont'], contents.acceptedFontName) ? ({
+        'blockGlobalFont' : 1, 'blockTokiPonaFont' : 5})[
+         contents.acceptedFontName] : 0)); contents.fixLayout();
 
         // support exporting text / numbers directly from speech balloons:
         contents.userMenu = function () {
@@ -10597,7 +10590,8 @@ SpriteBubbleMorph.prototype.dataAsMorph = function (data) {
                 ide = this.parentThatIsA(IDE_Morph)||
                     this.world().childThatIsA(IDE_Morph);
 
-            if (ide.isAppMode) {return; }
+            if (ide.isAppMode
+            ) {return;};
             menu.addItem(
                 'export',
                 () => ide.saveFileAs(
@@ -10605,12 +10599,10 @@ SpriteBubbleMorph.prototype.dataAsMorph = function (data) {
                     'text/plain;charset=utf-8',
                     localize('data')
                 )
-            );
-            return menu;
+            );  return menu;
         };
 
-    }
-    if (contents instanceof TextMorph) {
+    };  if (contents instanceof TextMorph) {
         // reflow text boundaries
         width = Math.max(
             contents.width(),
@@ -10618,8 +10610,7 @@ SpriteBubbleMorph.prototype.dataAsMorph = function (data) {
         );
         if (isText) {
             width = Math.min(width, sprite.bubbleMaxTextWidth * this.scale);
-        }
-        contents.setWidth(width);
+        };  contents.setWidth(width);
     } else if (!(data instanceof List)) {
         // scale contents image
         scaledImg = newCanvas(contents.extent().multiplyBy(this.scale));
@@ -10629,11 +10620,9 @@ SpriteBubbleMorph.prototype.dataAsMorph = function (data) {
             0,
             scaledImg.width,
             scaledImg.height
-        );
-        contents.cachedImage = scaledImg;
+        );  contents.cachedImage = scaledImg;
         contents.bounds = contents.bounds.scaleBy(this.scale);
-    }
-    return contents;
+    };  return contents;
 };
 
 // SpriteBubbleMorph scaling

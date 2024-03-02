@@ -2321,9 +2321,9 @@ this.context.accumulator.source = this.context.accumulator.source.cdr();} else {
 this.context.outerContext.variables.setVar(upvar, next);}; /* This block is revamped with changing a little bit its processing function to make it more faster to run for now. :-) */
 
 Process.prototype.doFor = function (upvar, start, end, script) {var vars = this.context.outerContext.variables, dta = this.context.accumulator; if (dta === null) {this.assertType(start, 'number'
-); this.assertType(end, 'number'); dta = this.context.accumulator = {test : +start < +end ? (() => vars.getVar(upvar) > +end) : (() => vars.getVar(upvar) < +end), step : +start < +end ? 1 : -1};
-vars.addVar(upvar); vars.setVar(upvar, Math.floor(+start));} else {vars.changeVar(upvar, dta.step);}; if (!dta.test()) {if (script instanceof BlockMorph) {this.pushContext('doYield'); this.pushContext(
-script.blockSequence()); this.pushContext();};};}; /* This block is revamped with changing a little bit its processing function to make it more faster to run for now. :-) */
+); this.assertType(end, 'number'); dta = this.context.accumulator = {test : +start < +end ? (() => vars.getVar(upvar) > +end) : (() => vars.getVar(upvar) < +end), step : +start < +end ? 1 : -1
+}; vars.addVar(upvar); vars.setVar(upvar, Math.floor(+start));} else {vars.changeVar(upvar, dta.step);}; if (!dta.test()) {if (script instanceof BlockMorph) {this.pushContext('doYield');
+this.pushContext(script.blockSequence()); this.pushContext();};};}; /* This block is revamped with changing a little bit its processing function to make it more faster to run for now. :-) */
 
 // Process interpolated HOF primitives
 
@@ -2369,8 +2369,7 @@ Process.prototype.reportMap = function (reporter, list) {
             );  this.context.accumulator.end = this.context.accumulator.end.rest;
             this.context.accumulator.idx += 1;
             this.context.accumulator.remaining -= 1;
-        }
-        if (this.context.accumulator.remaining === 0) {
+        };  if (this.context.accumulator.remaining === 0) {
             this.context.accumulator.end.rest = list.cons(
                 this.context.inputs[2]
             ).cdr();
@@ -2389,31 +2388,26 @@ Process.prototype.reportMap = function (reporter, list) {
         };  if (this.context.accumulator.length === list.length()) {
             this.returnValueToParentContext(
                 new List(this.context.accumulator)
-            );
-            return;
-        }
-        index = this.context.accumulator.length + 1;
+            );  return;
+        };  index = this.context.accumulator.length + 1;
         next = list.at(index);
-    }
-    this.pushContext();
+    };  this.pushContext();
     parms = [next];
     if (reporter.constructor.name === 'Function') {
         if (reporter.length > 1) {
             parms.push(index);
-        };
-        if (reporter.length > 2) {
+        };  if (reporter.length > 2) {
             parms.push(list);
         };
-    };
-    if (reporter instanceof Context) { // can also be a list of rings
+    };  if (reporter instanceof Context) {
+        // can also be a list of rings
         if (reporter.inputs.length > 1) {
             parms.push(index);
         };
         if (reporter.inputs.length > 2) {
             parms.push(list);
         };
-    };
-    return this.evaluate(reporter, new List(parms));
+    };  return this.evaluate(reporter, new List(parms));
 };
 
 Process.prototype.reportKeep = function (predicate, list) {
@@ -2493,16 +2487,15 @@ Process.prototype.reportKeep = function (predicate, list) {
         if (predicate.length > 2) {
             parms.push(list);
         };
-    };
-    if (predicate instanceof Context) { // can also be a list of rings
+    };  if (predicate instanceof Context) {
+        // can also be a list of rings
         if (predicate.inputs.length > 1) {
             parms.push(index);
         };
         if (predicate.inputs.length > 2) {
             parms.push(list);
         };
-    };
-    return this.evaluate(predicate, new List(parms));
+    };  return this.evaluate(predicate, new List(parms));
 };
 
 Process.prototype.reportFindFirstFixed = function (option, predicate, list) {
@@ -2526,20 +2519,17 @@ Process.prototype.reportFindFirstFixed = function (option, predicate, list) {
         } else if (this.context.inputs.length > 2) {
             if (this.context.inputs.pop() === true) {
                 this.returnValueToParentContext(
-                    (Process.prototype.inputOption(option) === 'index') ? this.context.accumulator.idx : this.context.accumulator.source.at(1)
-                );
-                return;
-            }
-            this.context.accumulator.remaining -= 1;
+                    (Process.prototype.inputOption(option) === 'index'
+                    ) ? this.context.accumulator.idx : this.context.accumulator.source.at(1)
+                );  return;
+            };  this.context.accumulator.remaining -= 1;
             this.context.accumulator.idx += 1;
             this.context.accumulator.source =
                 this.context.accumulator.source.cdr();
-        }
-        if (this.context.accumulator.remaining === 0) {
-            this.returnValueToParentContext((Process.prototype.inputOption(option) === 'index') ? 0 : '');
-            return;
-        }
-        index = this.context.accumulator.idx;
+        };  if (this.context.accumulator.remaining === 0) {
+            this.returnValueToParentContext((Process.prototype.inputOption(
+            option) === 'index') ? 0 : '');          return;
+        };  index = this.context.accumulator.idx;
         next = this.context.accumulator.source.at(1);
     } else { // arrayed
         if (this.context.accumulator === null) {
@@ -2551,39 +2541,33 @@ Process.prototype.reportFindFirstFixed = function (option, predicate, list) {
         } else if (this.context.inputs.length > 2) {
             if (this.context.inputs.pop() === true) {
                 this.returnValueToParentContext(
-                    (Process.prototype.inputOption(option) === 'index') ? this.context.accumulator.idx : this.context.accumulator.current
-                );
-                return;
-            }
-        }
-        if (this.context.accumulator.idx === list.length()) {
-            this.returnValueToParentContext((Process.prototype.inputOption(option) === 'index') ? 0 : '');
-            return;
-        }
-        this.context.accumulator.idx += 1;
+                    (Process.prototype.inputOption(option) === 'index'
+                    ) ? this.context.accumulator.idx : this.context.accumulator.current
+                );  return;
+            };
+        };  if (this.context.accumulator.idx === list.length()) {
+            this.returnValueToParentContext((
+            Process.prototype.inputOption(option
+            ) === 'index') ? 0 : '');  return;
+        };  this.context.accumulator.idx += 1;
         index = this.context.accumulator.idx;
         next = list.at(index);
         this.context.accumulator.current = next;
-    }
-    this.pushContext();
-    parms = [next];
+    };  this.pushContext();       parms = [next];
     if (predicate.constructor.name === 'Function') {
         if (predicate.length > 1) {
             parms.push(index);
-        };
-        if (predicate.length > 2) {
+        };  if (predicate.length > 2) {
             parms.push(list);
         };
-    };
-    if (predicate instanceof Context) { // can also be a list of rings
+    };  if (predicate instanceof Context) {
+        // can also be a list of rings
         if (predicate.inputs.length > 1) {
             parms.push(index);
-        };
-        if (predicate.inputs.length > 2) {
+        };  if (predicate.inputs.length > 2) {
             parms.push(list);
         };
-    };
-    return this.evaluate(predicate, new List(parms));
+    };  return this.evaluate(predicate, new List(parms));
 };
 
 Process.prototype.reportCombine = function (list, reporter) {
@@ -2606,8 +2590,7 @@ Process.prototype.reportCombine = function (list, reporter) {
                     list,
                     reporter.expression.selector
                 );
-            }
-            // test for base cases
+            };  // test for base cases
             if (list.length() < 2) {
                 this.returnValueToParentContext(
                     list.length() ?
@@ -2615,10 +2598,8 @@ Process.prototype.reportCombine = function (list, reporter) {
                         : (reporter.expression.selector === 'reportJoinWords' ?
                             ''
                             : 0)
-                );
-                return;
-            }
-            // initialize the accumulator
+                );  return;
+            };  // initialize the accumulator
             this.context.accumulator = {
                 source : list.cdr(),
                 idx : 1,
@@ -2631,12 +2612,10 @@ Process.prototype.reportCombine = function (list, reporter) {
             this.context.accumulator.idx += 1;
             this.context.accumulator.source =
                 this.context.accumulator.source.cdr();
-        }
-        if (this.context.accumulator.remaining === 0) {
+        };  if (this.context.accumulator.remaining === 0) {
             this.returnValueToParentContext(this.context.accumulator.target);
             return;
-        }
-        next = this.context.accumulator.source.at(1);
+        };  next = this.context.accumulator.source.at(1);
     } else { // arrayed
         if (this.context.accumulator === null) {
             // check for special cases to speed up
@@ -2646,8 +2625,7 @@ Process.prototype.reportCombine = function (list, reporter) {
                     list,
                     reporter.expression.selector
                 );
-            }
-            // test for base cases
+            };  // test for base cases
             if (list.length() < 2) {
                 this.returnValueToParentContext(
                     list.length() ?
@@ -2657,43 +2635,36 @@ Process.prototype.reportCombine = function (list, reporter) {
                             : 0)
                 );
                 return;
-            }
-            // initialize the accumulator
+            };  // initialize the accumulator
             this.context.accumulator = {
                 idx : 1,
                 target : list.at(1)
             };
         } else if (this.context.inputs.length > 2) {
             this.context.accumulator.target = this.context.inputs.pop();
-        }
-        if (this.context.accumulator.idx === list.length()) {
+        };  if (this.context.accumulator.idx === list.length()) {
             this.returnValueToParentContext(this.context.accumulator.target);
             return;
-        }
-        this.context.accumulator.idx += 1;
+        };  this.context.accumulator.idx += 1;
         next = list.at(this.context.accumulator.idx);
-    }
-    index = this.context.accumulator.idx;
+    };  index = this.context.accumulator.idx;
     current = this.context.accumulator.target;
     this.pushContext();
     parms = [current, next];
     if (reporter.constructor.name === 'Function') {
         if (reporter.length > 1) {
             parms.push(index);
-        };
-        if (reporter.length > 2) {
+        };  if (reporter.length > 2) {
             parms.push(list);
         };
-    };
-    if (reporter instanceof Context) { // can also be a list of rings
+    };  if (reporter instanceof Context) {
+        // can also be a list of rings
         if (reporter.inputs.length > 1) {
             parms.push(index);
-        };
-        if (reporter.inputs.length > 2) {
+        };  if (reporter.inputs.length > 2) {
             parms.push(list);
         };
-    };
-    this.evaluate(reporter, new List(parms));
+    };  this.evaluate(reporter, new List(parms));
 };
 
 Process.prototype.reportListAggregation = function (list, selector) {var len = list.length(), result, i, op = {reportVariadicSum: 'reportSum', reportVariadicProduct: 'reportProduct',
@@ -2894,7 +2865,7 @@ this.context.activeAudio.pause();
 this.context.activeAudio = null;};
     if (name instanceof List) {
         return this.doPlaySoundAtRate(name, 44100);
-    }; return this.blockReceiver().doPlaySound(name);
+    };  return this.blockReceiver().doPlaySound(name);
 };
 
 Process.prototype.doPlaySoundUntilDone = function (name) {
@@ -2925,7 +2896,7 @@ this.context.activeAudio), 1); this.context.activeAudio = null;
             this.context.activeAudio.remove();
             this.context.activeAudio = null;
         }; return null;
-    }; this.pushContext('doYield');
+    };  this.pushContext('doYield');
     this.pushContext();
 };};};
 
@@ -2937,10 +2908,9 @@ Process.prototype.doStopAllSounds = function () {
                 thread.context.stopMusic();
                 if (thread.context.activeAudio) {
                     thread.popContext();
-                }
-            }
-        });
-        stage.stopAllActiveSounds(true);
+                };
+            };
+        }); stage.stopAllActiveSounds(true);
     };
 };
 
@@ -2958,14 +2928,11 @@ Process.prototype.doPlaySoundAtRate = function (name, rate) {
         if (!sound.audioBuffer) {
             this.decodeSound(sound);
             return;
-        }
-        samples = this.reportGetSoundAttribute('samples', sound);
+        };  samples = this.reportGetSoundAttribute('samples', sound);
     } else {
         samples = name;
-    }
-
-    rcvr = this.blockReceiver();
-    ctx = rcvr.audioContext();
+    };  rcvr = this.blockReceiver(
+    );  ctx = rcvr.audioContext();
     gain = rcvr.getGainNode();
     pan = rcvr.getPannerNode();
     source = this.encodeSound(samples, rate);
@@ -3003,9 +2970,7 @@ Process.prototype.reportGetSoundAttribute = function (choice, soundName) {
 
     if (option === 'name') {
         return sound.name;
-    };
-
-    if (!sound.audioBuffer) {
+    };  if (!sound.audioBuffer) {
         this.decodeSound(sound);
         return;
     };
@@ -3013,18 +2978,16 @@ Process.prototype.reportGetSoundAttribute = function (choice, soundName) {
     switch (option) {
     case 'samples':
         if (!sound.cachedSamples) {
-            sound.cachedSamples = function (sound, untype) {
+            sound.cachedSamples = (function (sound, untype) {
                 var buf = sound.audioBuffer,
                     result, i;
                 if (buf.numberOfChannels > 1) {
                     result = new List;
                     for (i = 0; i < buf.numberOfChannels; i += 1) {
                         result.add(new List(untype(buf.getChannelData(i))));
-                    }
-                    return result;
-                }
-                return new List(untype(buf.getChannelData(0)));
-            } (sound, this.untype);
+                    };  return result;
+                };  return new List(untype(buf.getChannelData(0)));
+            })(sound, this.untype);
         }; return sound.cachedSamples;
     case 'sample rate':
         return sound.audioBuffer.sampleRate;
@@ -3045,16 +3008,14 @@ Process.prototype.decodeSound = function (sound, callback) {
 
     if (sound.audioBuffer) {
         return (callback || nop)(sound);
-    }
-    if (!sound.isDecoding) {
+    };  if (!sound.isDecoding) {
         base64 = sound.audio.src.split(',')[1];
         binaryString = window.atob(base64);
         len = binaryString.length;
         bytes = new Uint8Array(len);
         for (i = 0; i < len; i += 1)        {
             bytes[i] = binaryString.charCodeAt(i);
-        }
-        arrayBuffer = bytes.buffer;
+        };  arrayBuffer = bytes.buffer;
         audioCtx = Note.prototype.getAudioContext();
         sound.isDecoding = true;
         audioCtx.decodeAudioData(
@@ -3068,8 +3029,7 @@ Process.prototype.decodeSound = function (sound, callback) {
                 this.handleError(err);
             }
         );
-    }
-    this.pushContext('doYield');
+    };  this.pushContext('doYield');
     this.pushContext();
 };
 
@@ -3119,7 +3079,7 @@ Process.prototype.reportNewSoundFromSamples = function (samples, rate) {
 // this method inspired by: https://github.com/Jam3/audiobuffer-to-wav
 // https://www.russellgood.com/how-to-convert-audiobuffer-to-audio-file
 
-    var audio, blob, reader;
+    var audio, blob, reader, myself = this;
     if (isNil(this.context.accumulator)) {
         this.assertType(samples, 'list'); // check only the first time
         this.context.accumulator = {
@@ -3136,7 +3096,7 @@ Process.prototype.reportNewSoundFromSamples = function (samples, rate) {
         reader = new FileReader;
         reader.onload = () => {
             audio.src = reader.result;
-            this.context.accumulator.audio = audio;
+            myself.context.accumulator.audio = audio;
         };  reader.readAsDataURL(blob);
     };  if (this.context.accumulator.audio) {
         return new Sound(
@@ -3228,8 +3188,7 @@ Process.prototype.encodeWAV = function (
         floatTo16BitPCM(view, 44, samples);
     } else {
         writeFloat32(view, 44, samples);
-    }
-    return buffer;
+    };  return buffer;
 };
 
 // Process audio input (interpolated)
@@ -7571,11 +7530,50 @@ VariableFrame.prototype.fullCopy = function () {
     var frame;
     if (this.parentFrame) {
         frame = new VariableFrame(this.parentFrame.fullCopy());
-    } else {
-        frame = new VariableFrame();
+    } else {frame = new VariableFrame;
     }; frame.vars = copy(this.vars);
     return frame;
 };
+
+// Variable Frame forking and merging for libraries
+
+VariableFrame.prototype.fork = function (names = []) {
+    // answer a copy that only has entries for the given array of variable names
+    // and only has values for primitive data.
+    // used for including data dependencies in libraries.
+    var frame = new VariableFrame;
+    this.names(true).forEach(vName => {
+        var v, val, typ;
+        if (names.includes(vName)) {
+            v = this.vars[vName];
+            if (v.isTransient) {
+                val = '';
+            } else {
+                typ = Process.prototype.reportTypeOf(v.value);
+                if (['text', 'number', 'Boolean'].includes(typ) ||
+                    (v.value instanceof List &&
+                        (v.value.canBeCSV() || v.value.canBeJSON()))
+                ) {
+                    val = v.value;
+                } else {
+                    val = '';
+                };
+            };  frame.vars[vName] = new Variable(val, v.isTransient, v.isHidden);
+        };
+    }); return frame;
+};
+
+VariableFrame.prototype.merge = function (otherFrame) {
+    // add another frame's variables overwriting existing values and
+    // settings (transient, hidden) if any. Merge only replaces and
+    // adds to the frame, does not delete any entries.
+    // used for handling data dependencies in libraries.
+    otherFrame.names(true).forEach(vName =>
+        this.vars[vName] = otherFrame.vars[vName]
+    );
+};
+
+// Variable Frame ops
 
 VariableFrame.prototype.root = function () {
     if (this.parentFrame) {

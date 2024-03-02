@@ -53,10 +53,6 @@
 
 */
 
-/*global modules, MIDSoundData*/
-
-/*jshint esversion: 11*/
-
 // Declarations
 
 var LoginUIMorph, FileMorph, AppMorph, NormalWindowMorph,
@@ -166,8 +162,8 @@ this.init(extent, position, titleText, type, icon, fullIcon, optionalData);}; No
 NormalWindowMorph.prototype.constructor = NormalWindowMorph; NormalWindowMorph.uber = Morph.prototype;
 NormalWindowMorph.prototype.init = function anonymous (extent, position, titleText, type, icon, fullIcon, optionalData) {
 NormalWindowMorph.uber.init.call(this); this.cursorStyle = 'move'; this.cursorGrabStyle = 'move'; this.icon = icon || (
-new StringMorph('λ', 20, 'sans-serif', false, false, false, null, null, new Color(255, 184, 0))).fullImage(
-); this.type = type; this.isDraggable = true; this.noDropShadow = true; this.fullShadowSource = false;
+new StringMorph('λ', 20, 'sans-serif', false, false, false, null, null, new Color(255, 184, 0), 'ogSnapFontInFileEffort'
+)).fullImage(); this.type = type; this.isDraggable = true; this.noDropShadow = true; this.fullShadowSource = false;
 this.defaultExtent = extent.copy(); this.defaultPosition = position.copy(); this.titleText = titleText;
 this.isMaximized = false; this.setExtent(extent); this.setCenter(position); this.fixShadow();
 this.closeButton = new TriggerMorph; this.closeButton.color = new Color(200, 0, 0);
@@ -231,7 +227,7 @@ this.ui.add(new Morph); this.ui.children[0].setExtent(new Point(102, 28));
 this.ui.children[0].color = new Color(0, 0, 0, 0); this.ui.children[0].texture = snapLogoTexture;
 this.ui.children[0].setCenter(this.ui.bounds.center()); this.ui.children[0].setTop(this.ui.bounds.top() + 6);
 this.ui.add(new TextMorph('Snavanced! ' + SnavancedVersion + ' - Desktop Mode (' + LastUpdated + ') \nBuild Your Own Blocks - a reimplementation of Scratch.\nAlessandrito123 '
-+ '\(Alessandro Moisés\)\naless01pime@gmail.com\n\nBrian Harvey & Jens Moenig\nbh@cs.berkeley.edu, jens@moenig.org\n\nSnavanced! is an extension of Snap!\n\n      Snap! is '
++ '\(Alessandro Moisés\)\naless01pime@gmail.com\n\nBrian Harvey & Jens Mönig\nbh@cs.berkeley.edu, jens@moenig.org\n\nSnavanced! is an extension of Snap!\n\n      Snap! is '
 + 'developed by the University of California at Berkeley and SAP      \nwith support from the National Science Foundation (NSF),\nMIOsoft and YC Research. Public Domain, all lefts.\nThe design of Snap! '
 + 'is influenced and inspired by Scratch,\n from the Lifelong Kindergarten group at the MIT Media Lab\n\nFor more information, see https://snap.berkeley.edu\nhttps://scratch.mit.edu '
 + 'and https://archive.glitch.pizza\nfor the license, see the license.txt in the main folder.\n If you see a bug, contact to me at aless01pime@gmail.com', 15, 'sans-serif', false,
@@ -338,13 +334,13 @@ this.ui.children[0].adjustScrollBars();
 }; this.logo = new Morph(); this.logo.cachedTexture = this.icon;
 this.logo.setExtent(new Point(this.icon.width, this.icon.height));
 this.logo.color = new Color(0, 0, 0, 0); this.add(this.logo);
-this.updateLogo(); if (fullIcon) {this.fullLogo = new Morph();
+this.updateLogo(); if (fullIcon) {this.fullLogo = new Morph;
 this.fullLogo.cachedTexture = fullIcon; this.fullLogo.setExtent(
 new Point(fullIcon.width, fullIcon.height)); this.fullLogo.color = new Color(
 0, 0, 0, 0);} else {this.fullLogo = new StringMorph('λ', 30, 'sans-serif',
-false, false, false, null, null, new Color(255, 184, 0)); this.fullLogo.setExtent(
-new Point(30, 30));}; this.title = new StringMorph(this.titleText, 15, 'sans-serif',
-true, false, false, null, null, new Color(255, 255, 255), 'morphicGlobalFont');
+false, false, false, null, null, new Color(255, 184, 0), 'ogSnapFontInFileEffort'
+); this.fullLogo.setExtent(new Point(30, 30));}; this.title = new StringMorph(
+this.titleText, 15, 'sans-serif', true, false, false, null, null, WHITE);
 this.add(this.title); this.title.rerender(); this.title.setTop(this.bounds.top());
 this.resizer = new HandleMorph(this, this.width(), this.height());
 this.resizer.mouseDownLeft = function (pos) {
@@ -755,7 +751,7 @@ this.startButton.render = function anonymous (ctx) {
     ctx.fill();
     this.color = colorBak;
     ctx.fillStyle = (new Color(255, 184, 0)).toString();
-    ctx.font = '20px morphicGlobalFontRegular, sans-serif';
+    ctx.font = '20px ogSnapFontInFileEffortRegular, sans-serif';
     ctx.textAlign = 'left';
     ctx.fillText('λ', 5, 17);
 }; this.startButton.setExtent(new Point(20, 20)); this.add(this.startButton);

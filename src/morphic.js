@@ -10,7 +10,7 @@
 
     Copyright (C) 2010-2023 by Jens Mönig
 
-    This documentation last changed: Febraury 10, 2023
+    This documentation last changed: February 29, 2024
 
     This file is part of Snap!.
 
@@ -40,7 +40,6 @@
     VIII. minifying morphic.js
     IX. acknowledgements
     X. contributors
-
 
     I. hierarchy
     -------------
@@ -82,7 +81,6 @@
                 MenuItemMorph
     Point
     Rectangle
-
 
     II. toc
     -------
@@ -129,17 +127,14 @@
 
     * included only for demo purposes
 
-
     III. yet to implement
     ---------------------
     - keyboard support for scroll frames and lists
     - virtual keyboard support for Android
 
-
     IV. open issues
     ----------------
     - clipboard support (copy & paste) for non-textual data
-
 
     V. browser compatibility
     ------------------------
@@ -147,20 +142,12 @@
     runnable and appearing exactly the same on all current browsers
     available to me:
 
-    - Firefox for Windows
-    - Firefox for Mac
-    - Firefox for Android (mobile)
-    - Chrome for Windows
-    - Chrome for Mac
-    - Chrome for Android (mobile)
-    - Safari for Windows (deprecated)
-    - safari for Mac
-    - Safari for iOS (mobile)
-    - IE for Windows (partial support)
-    - Edge for Windows
-    - Opera for Windows
-    - Opera for Mac
-
+    - Firefox for Windows, Mac, Android
+    - Chrome for Windows, Mac, Android
+    - Safari for Windows (deprecated), Mac, iOS
+    - IE for Windows, Mac (partial support)
+    - Edge for Windows, Mac, Android
+    - Opera for Windows, Mac
 
     VI. the big picture
     -------------------
@@ -191,9 +178,8 @@
     the purpose of morphic.js is to provide a malleable framework that
     will let me experiment with lively GUIs for my hobby horse, which
     is drag-and-drop, blocks based programming languages. Those things
-    (SNAP!9 - https://snap.berkeley.edu) will be written using morphic.js
-    as a library.
-
+    (SNAP!10 - https://snap.berkeley.edu) are written using
+    morphic.js as a library.
 
     VII. programming guide
     ----------------------
@@ -220,7 +206,6 @@
     each shape is processed for redisplay it gets the chance to perform
     a "step" procedure, thus allowing for an illusion of concurrency.
 
-
     VIII. minifying morphic.js
     -------------------------
     Coming from Smalltalk and being a Squeaker at heart I am a huge fan
@@ -237,7 +222,6 @@
     me with rabulistic nitpickings about free software licenses. I'm
     releasing morphic.js under an AGPL license. Therefore please make
     sure to adhere to that license in any minified or compressed version.
-
 
     IX. acknowledgements
     ----------------------
@@ -270,7 +254,6 @@
     Crockford's JSLint and later the JSHint project, as well as on
     Mozilla's Firebug and Google's Chrome to get it right.
 
-
     X. contributors
     ----------------------
     Joe Otto found and fixed many early bugs and taught me some tricks.
@@ -297,7 +280,7 @@
 
 /*jshint esversion: 6*/
 
-var morphicVersion = '2023-December-11'; var useBlurredShadows = true;
+var morphicVersion = '2024-February-29'; var useBlurredShadows = true;
 
 // Global Functions ////////////////////////////////////////////////////
 
@@ -333,9 +316,7 @@ var standardSettings = {
     isFlat: false,
     grabThreshold: 0,
     showHoles: false
-};
-
-var touchScreenSettings = {
+};  var touchScreenSettings = {
     minimumFontHeight: getMinimumFontHeight(),
     globalFontFamily: 'morphicGlobalFont',
     menuFontName: 'sans-serif',
@@ -353,37 +334,7 @@ var touchScreenSettings = {
     isFlat: false,
     grabThreshold: 0,
     showHoles: false
-};
-
-var MorphicPreferences = standardSettings;
-
-// first, try enabling support for retina displays - can be turned off later
-
-/*
-    Support for retina displays has been pioneered and contributed by
-    Bartosz Leper.
-
-    NOTE: this will make changes to the HTMLCanvasElement that - mostly -
-    make Morphic usable on retina displays in very high resolution mode
-    with crisp fonts and clear fine lines without you (the programmer)
-    needing to know any specifics, provided both the display and the browser
-    support these (Safari currently doesn't), otherwise these utilities will
-    not be installed.
-    If you don't want your Morphic application to support retina resolutions
-    you don't have to edit this morphic.js file to comment out the next line
-    of code, instead you can simply call
-
-        disableRetinaSupport();
-
-    before you create your World(s) in the html page. Disabling retina
-    support also will simply do nothing if retina support is not possible
-    or already disabled, so it's equally safe to call.
-
-    For an example how to make retina support user-specifiable refer to
-    User Interface >> src >> gui.js >> toggleRetina()
-*/
-
-enableRetinaSupport();
+};  var MorphicPreferences = standardSettings;
 
 function newCanvas(extentPoint, nonRetina, recycleMe) {
     // answer a new empty instance of Canvas, don't display anywhere
@@ -446,8 +397,7 @@ function getMinimumFontHeight() {
     canvas.height = size;
     ctx = canvas.getContext("2d", {
          willReadFrequently: true
-    });
-    ctx.font = '1px serif';
+    });  ctx.font = '1px serif';
     maxX = ctx.measureText(str).width;
     ctx.fillStyle = 'black';
     ctx.textBaseline = 'bottom';
@@ -457,11 +407,10 @@ function getMinimumFontHeight() {
             data = ctx.getImageData(x, y, 1, 1);
             if (data.data[3] !== 0) {
                 return size - y + 1;
-            }
-        }
-    }
-    return 0;
-}
+            };
+        };
+    };  return 0;
+};
 
 function getDocumentPositionOf(aDOMelement) {
     // answer the relative coordinates of a DOM element in the viewport
@@ -469,19 +418,17 @@ function getDocumentPositionOf(aDOMelement) {
     scrollLeft = window.pageXOffset || document.documentElement.scrollLeft,
     scrollTop = window.pageYOffset || document.documentElement.scrollTop;
     return {x: rect.left + scrollLeft, y:rect.top + scrollTop};
-}
+};
 
 function copy(target) {
     // answer a shallow copy of target
     var value, c, property, keys, l, i;
     if (typeof target !== 'object') {
         return target;
-    }
-    value = target.valueOf();
+    };  value = target.valueOf();
     if (target !== value) {
         return new target.constructor(value);
-    }
-    if (target instanceof target.constructor &&
+    };  if (target instanceof target.constructor &&
             target.constructor !== Object) {
         c = Object.create(target.constructor.prototype);
         keys = Object.keys(target);
@@ -501,10 +448,35 @@ function copy(target) {
         c = {};
         for (property in target) {
             c[property] = target[property];
-        }
-    }
-    return c;
-}
+        };
+    };  return c;
+};
+
+// first, try enabling support for retina displays - can be turned off later
+
+/*
+    Support for retina displays has been pioneered and contributed by
+    Bartosz Leper.
+
+    NOTE: this will make changes to the HTMLCanvasElement that - mostly -
+    make Morphic usable on retina displays in very high resolution mode
+    with crisp fonts and clear fine lines without you (the programmer)
+    needing to know any specifics, provided both the display and the browser
+    support these (Safari currently doesn't), otherwise these utilities will
+    not be installed.
+    If you don't want your Morphic application to support retina resolutions
+    you don't have to edit this morphic.js file to comment out the next line
+    of code, instead you can simply call
+
+        disableRetinaSupport();
+
+    before you create your World(s) in the html page. Disabling retina
+    support also will simply do nothing if retina support is not possible
+    or already disabled, so it's equally safe to call.
+
+    For an example how to make retina support user-specifiable refer to
+    User Interface >> src >> gui.js >> toggleRetina()
+*/
 
 // Retina Display Support //////////////////////////////////////////////
 
@@ -835,7 +807,7 @@ function isRetinaSupported () {
             return prop.hasOwnProperty('configurable') && (!prop.configurable);
         })
     );
-}
+};
 
 function isRetinaEnabled () {return HTMLCanvasElement.prototype.hasOwnProperty('_isRetinaEnabled');};
 
@@ -872,7 +844,7 @@ function normalizeCanvas(aCanvas, getCopy) {
     aCanvas.height = cpy.height;
     aCanvas.getContext('2d').drawImage(cpy, 0, 0);
     return aCanvas;
-};
+};  enableRetinaSupport();
 
 // Animations //////////////////////////////////////////////////////////////
 
@@ -4850,10 +4822,8 @@ BoxMorph.prototype.developersMenu = function () {
                 100,
                 true
             );
-        },
-        'set the border\'s\nline size'
-    );
-    menu.addItem(
+        },  'set the border\'s\nline size'
+    );  menu.addItem(
         "border color...",
         () => {
             this.pickColor(
@@ -4862,10 +4832,8 @@ BoxMorph.prototype.developersMenu = function () {
                 this,
                 this.borderColor
             );
-        },
-        'set the border\'s\nline color'
-    );
-    menu.addItem(
+        },  'set the border\'s\nline color'
+    );  menu.addItem(
         "corner size...",
         () => {
             this.prompt(
@@ -4878,10 +4846,8 @@ BoxMorph.prototype.developersMenu = function () {
                 100,
                 true
             );
-        },
-        'set the corner\'s\nradius'
-    );
-    return menu;
+        },  'set the corner\'s\nradius'
+    );  return menu;
 };
 
 BoxMorph.prototype.setBorderWidth = function (size) {
@@ -4893,9 +4859,8 @@ BoxMorph.prototype.setBorderWidth = function (size) {
         newSize = parseFloat(size);
         if (!isNaN(newSize)) {
             this.border = Math.max(newSize, 0);
-        }
-    }
-    this.changed();
+        };
+    };  this.changed();
 };
 
 BoxMorph.prototype.setBorderColor = function (color) {
@@ -4903,7 +4868,7 @@ BoxMorph.prototype.setBorderColor = function (color) {
     if (color) {
         this.borderColor = color;
         this.changed();
-    }
+    };
 };
 
 BoxMorph.prototype.setCornerSize = function (size) {
@@ -4915,9 +4880,8 @@ BoxMorph.prototype.setCornerSize = function (size) {
         newSize = parseFloat(size);
         if (!isNaN(newSize)) {
             this.edge = Math.max(newSize, 0);
-        }
-    }
-    this.changed();
+        };
+    };  this.changed();
 };
 
 BoxMorph.prototype.colorSetters = function () {
@@ -4997,8 +4961,7 @@ SpeechBubbleMorph.prototype.init = function (
         edge || 6,
         border || ((border === 0) ? 0 : 1),
         borderColor || new Color(140, 140, 140)
-    );
-    this.hasShadow = noShadow !== true;
+    );  this.hasShadow = noShadow !== true;
     this.noDropShadow = true;
     this.fullShadowSource = false;
     this.color = color || new Color(230, 230, 230);
@@ -5020,7 +4983,7 @@ SpeechBubbleMorph.prototype.popUp = function (world, pos, isClickable) {
         this.mouseEnter = this.destroy;
     } else {
         this.isClickable = true;
-    }
+    };
 };
 
 // SpeechBubbleMorph drawing:
@@ -5030,8 +4993,7 @@ SpeechBubbleMorph.prototype.fixLayout = function () {
 
     if (this.contentsMorph) {
         this.contentsMorph.destroy();
-    };
-    if (this.contents instanceof Morph) {
+    };  if (this.contents instanceof Morph) {
         this.contentsMorph = this.contents;
     } else if (this.contents instanceof Context) {
         this.contentsMorph = new Morph;
@@ -5059,7 +5021,7 @@ SpeechBubbleMorph.prototype.fixLayout = function () {
             'center'
         );
     } else if (this.contents instanceof HTMLCanvasElement) {
-        this.contentsMorph = new Morph();
+        this.contentsMorph = new Morph;
         this.contentsMorph.setExtent(new Point(
             this.contents.width,
             this.contents.height
@@ -5074,8 +5036,7 @@ SpeechBubbleMorph.prototype.fixLayout = function () {
             true,
             'center'
         );
-    }
-    this.add(this.contentsMorph);
+    };  this.add(this.contentsMorph);
 
     // adjust my layout
     this.bounds.setExtent(
@@ -5102,50 +5063,32 @@ SpeechBubbleMorph.prototype.fixLayout = function () {
     if (this.hasShadow) {
         this.removeShadow();
         this.addShadow(new Point(2, 2), 80);
-    }
+    };
 };
 
 SpeechBubbleMorph.prototype.outlinePath = function (ctx, radius, inset) {
     var offset = radius + inset,
         w = this.width(),
         h = this.height(),
-        rad;
+        rad, jags, delta,
+        pos = this.position(),
+        y = 0, i;
 
     function circle(x, y, r) {
         ctx.moveTo(x + r, y);
         ctx.arc(x, y, r, radians(0), radians(360));
-    };
-
-    if (asABool(this.isShouted)) {
-    var jags,
-        delta,
-        pos = this.position(),
-        y = 0,
-        i;
-
+    };  if (asABool(this.isShouted)) {
     ctx.moveTo(inset, inset);
     ctx.lineTo(w - inset, inset);
-
     h = this.height() - y - inset;
     jags = Math.round(h / 10);
     delta = h / jags;
-
     for (i = 0; i < (jags - 1); i += 1) {
         y += delta / 2;
-        ctx.lineTo(w - 5 - inset, y);
+        ctx.lineTo(w - ((5 + inset) * (Math.random() + 1)), y);
         y += delta / 2;
-        ctx.lineTo(w - inset, y);
-    };
-
-    ctx.moveTo(inset, inset);
-    y = 0;
-    for (i = 0; i < (jags - 1); i += 1) {
-        y += delta / 2;
-        ctx.lineTo(5 + inset, y);
-        y += delta / 2;
-        ctx.lineTo(inset, y);
-    };
-    } else {
+        ctx.lineTo(w - (inset * (Math.random() + 1)), y);
+    };} else {
     // top left:
     ctx.arc(
         offset,
@@ -5172,8 +5115,7 @@ SpeechBubbleMorph.prototype.outlinePath = function (ctx, radius, inset) {
         radians(0),
         radians(90),
         false
-    );};
-    if (!asABool(this.isThought)) { // draw speech bubble hook
+    );};if (!asABool(this.isThought)) {
         if (this.isPointingRight) {
             ctx.lineTo(
                 offset + radius,
@@ -5193,13 +5135,17 @@ SpeechBubbleMorph.prototype.outlinePath = function (ctx, radius, inset) {
                 h - offset
             );
         };
-    };
-    if (asABool(this.isShouted)) {
-    ctx.lineTo(this.isPointingRight ? (w - (
-    offset + radius)) : (radius / 2 + inset),
-    h - offset); ctx.lineTo(w, h - offset);
-    } else {
-    // bottom left:
+    };  // bottom left:
+    if (this.isShouted) {
+    ctx.lineTo(offset, h - inset - radius);
+    ctx.lineTo(0, h - inset - radius);
+    y = h - inset - radius; 
+    for (i = 0; i < (jags - 1); i += 1) {
+        y -= delta / 2;
+        ctx.lineTo(((5 + inset) * (Math.random() + 1)), y);
+        y -= delta / 2;
+        ctx.lineTo((inset * (Math.random() + 1)), y);
+    };} else {
     ctx.arc(
         offset,
         h - offset - radius,
@@ -5207,14 +5153,12 @@ SpeechBubbleMorph.prototype.outlinePath = function (ctx, radius, inset) {
         radians(90),
         radians(180),
         false
-    );};
-    if (asABool(this.isThought)) { // use anything but "true" to draw nothing
+    );};if (asABool(this.isThought)) {
         // close large bubble:
         ctx.lineTo(
             inset,
             offset
-        );
-        // draw thought bubbles:
+        );  // draw thought bubbles:
         if (this.isPointingRight) {
             // tip bubble:
             rad = radius / 4;
@@ -5259,8 +5203,8 @@ SpeechBubbleMorph.prototype.outlinePath = function (ctx, radius, inset) {
                 h - rad - inset * 4,
                 rad
             );
-        }
-    }
+        };
+    };
 };
 
 // SpeechBubbleMorph shadow
@@ -11390,8 +11334,7 @@ menu = new MenuMorph(this, this.constructor.name || this.constructor.toString().
                 'togglePreferences',
                 'smaller menu fonts\nand sliders'
             );
-        }
-        if (MorphicPreferences.showHoles) {
+        };  if (MorphicPreferences.showHoles) {
             menu.addItem(
                 'hide holes',
                 'toggleHolesDisplay',
@@ -11403,10 +11346,8 @@ menu = new MenuMorph(this, this.constructor.name || this.constructor.toString().
                 'toggleHolesDisplay',
                 'debug untouchable regions'
             );
-        }
-        menu.addLine();
-    }
-    if (this.isDevMode) {
+        };  menu.addLine();
+    };  if (this.isDevMode) {
         menu.addItem(
             "user mode...",
             'toggleDevMode',
@@ -11414,8 +11355,7 @@ menu = new MenuMorph(this, this.constructor.name || this.constructor.toString().
         );
     } else {
         menu.addItem("development mode...", 'toggleDevMode');
-    }
-    menu.addItem("about morphic.js...", 'about');
+    };  menu.addItem("about morphic.js...", 'about');
     return menu;
 };
 
@@ -11426,9 +11366,7 @@ WorldMorph.prototype.userCreateMorph = function () {
         var cpy = aMorph.fullCopy();
         cpy.isDraggable = true;
         cpy.pickUp(myself);
-    }
-
-    menu = new MenuMorph(this, 'make a morph');
+    };  menu = new MenuMorph(this, 'make a morph');
     menu.addItem('rectangle', () => create(new Morph));
     menu.addItem('box', () => create(new BoxMorph));
     menu.addItem('circle box', () => create(new CircleBoxMorph));
@@ -11638,7 +11576,7 @@ WorldMorph.prototype.slide = function (aStringOrTextMorph) {
     if (isNaN(val)) {
         val = 0;
     }
-    menu = new MenuMorph();
+    menu = new MenuMorph;
     slider = new SliderMorph(
         val - 25,
         val + 25,
@@ -11666,8 +11604,7 @@ WorldMorph.prototype.slide = function (aStringOrTextMorph) {
             'reactToSliderEdit',
             aStringOrTextMorph
         );
-    };
-    menu.items.push(slider);
+    };  menu.items.push(slider);
     menu.popup(this, aStringOrTextMorph.bottomLeft().add(new Point(0, 5)));
 };
 
@@ -11677,14 +11614,13 @@ WorldMorph.prototype.stopEditing = function () {
         this.cursor.target.clearSelection();
         this.cursor.destroy();
         this.cursor = null;
-    }
-    if (this.keyboardFocus && this.keyboardFocus.stopEditing) {
-    	this.keyboardFocus.stopEditing();
-    }
-    this.keyboardFocus = null;
+    };  if (this.keyboardFocus && this.keyboardFocus.stopEditing) {
+        this.keyboardFocus.stopEditing();
+    };  this.keyboardFocus = null;
     this.lastEditedText = null;
 };
 
-WorldMorph.prototype.toggleBlurredShadows = function anonymous () {useBlurredShadows = !useBlurredShadows;}; WorldMorph.prototype.toggleHolesDisplay = function anonymous () {
-MorphicPreferences.showHoles = !MorphicPreferences.showHoles; this.rerender();}; WorldMorph.prototype.togglePreferences = function anonymous () {
-if (MorphicPreferences === standardSettings) {MorphicPreferences = touchScreenSettings;} else {MorphicPreferences = standardSettings;};};
+WorldMorph.prototype.toggleBlurredShadows = function anonymous () {useBlurredShadows = !useBlurredShadows;};
+WorldMorph.prototype.toggleHolesDisplay = function () {MorphicPreferences.showHoles = !MorphicPreferences.showHoles;
+this.rerender();}; WorldMorph.prototype.togglePreferences = function () {if (MorphicPreferences === standardSettings
+) {MorphicPreferences = touchScreenSettings;} else {MorphicPreferences = standardSettings;};}; /* Check this file out! */

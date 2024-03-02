@@ -1474,7 +1474,7 @@ SyntaxElementMorph.prototype.labelParts = {
     '%exp': {
         type: 'multi',
         slots: '%s',
-        label: 'with items:',
+        label: '',
         tags: 'static widget'
     },
     '%sum': {

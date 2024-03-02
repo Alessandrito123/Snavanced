@@ -3668,7 +3668,7 @@ VariableDialogMorph.prototype.fixLayout = function () {
 
 // BlockExportDialogMorph inherits from DialogBoxMorph:
 
-BlockExportDialogMorph.prototype = new DialogBoxMorph();
+BlockExportDialogMorph.prototype = new DialogBoxMorph;
 BlockExportDialogMorph.prototype.constructor = BlockExportDialogMorph;
 BlockExportDialogMorph.uber = DialogBoxMorph.prototype;
 
@@ -3680,7 +3680,7 @@ BlockExportDialogMorph.prototype.key = 'blockExport';
 
 function BlockExportDialogMorph(serializer, blocks, target) {
     this.init(serializer, blocks, target);
-}
+};
 
 BlockExportDialogMorph.prototype.init = function (serializer, blocks, target) {
     // additional properties:
@@ -3705,10 +3705,10 @@ BlockExportDialogMorph.prototype.init = function (serializer, blocks, target) {
 };
 
 BlockExportDialogMorph.prototype.buildContents = function () {
-    var palette, x, y, block, checkBox, lastCat,
+    var palette, x, y, block, checkBox, lastCat, catCheckBox
         padding = 4;
 
-    // create plaette
+    // create palette
     palette = new ScrollFrameMorph(
         null,
         null,
@@ -3726,8 +3726,60 @@ BlockExportDialogMorph.prototype.buildContents = function () {
     SpriteMorph.prototype.allCategories().forEach(category => {
         this.blocks.forEach(definition => {
             if (definition.category === category) {
-                if (lastCat && (category !== lastCat)) {
+                if (category !== lastCat) {
                     y += padding;
+                    catCheckBox = new ToggleMorph(
+                        'checkbox',
+                        this,
+                        () => {
+                            var blocks = [];
+                            if (contains(this.blocks.map(b => b.category), category)) {
+                                this.blocks.forEach(block => {
+                                    if (block.category != category) {
+                                        blocks.push(block)
+                                    };
+                                });
+                                this.blocks = blocks;
+                            }   else {
+                                this.body.contents.children.forEach(block => {
+                                    if (block instanceof ToggleMorph) {
+                                        if (block.element instanceof CustomReporterBlockMorph || block.element instanceof CustomCommandBlockMorph) {
+                                            if (block.element.category == category) {
+                                                if (!contains(this.blocks, block.element.definition)) {
+                                                    block.trigger()
+                                                };
+                                            };
+                                        };
+                                    };
+                                });
+                            };  this.body.contents.children.forEach(checkBox => {
+                                    if (checkBox instanceof ToggleMorph) {
+                                        checkBox.refresh();
+                                    };
+                                });
+                        },
+                        // category,
+                        null,
+                        () => contains(this.blocks.map(b => b.category), category),
+                        null,
+                        null                        
+                    )
+                    // catCheckBox.label.color = new Color(255, 255, 255, 1)
+                    // catCheckBox.label.fontSize = 12
+                    // catCheckBox.label.setWidth()
+                    // catCheckBox.label.setTop()
+                    // catCheckBox.element.setTop(-(catCheckBox.fullBounds().height()/2))
+                    catCheckBox.setPosition(new Point(
+                        x,
+                        y + (catCheckBox.top())
+                    ));
+                    palette.addContents(catCheckBox);
+                    txt = SpriteMorph.prototype.categoryText(category);
+                    txt.setPosition(new Point(x + catCheckBox.fullBounds().width() + padding, y));
+                    txt.refresh = function() {};
+                    palette.addContents(txt);
+                    y += catCheckBox.fullBounds().height()
+                    y += padding
                 }
                 lastCat = category;
                 block = definition.templateInstance();
@@ -3840,7 +3892,7 @@ BlockExportDialogMorph.prototype.fixLayout
 // BlockImportDialogMorph inherits from DialogBoxMorph
 // and pseudo-inherits from BlockExportDialogMorph:
 
-BlockImportDialogMorph.prototype = new DialogBoxMorph();
+BlockImportDialogMorph.prototype = new DialogBoxMorph;
 BlockImportDialogMorph.prototype.constructor = BlockImportDialogMorph;
 BlockImportDialogMorph.uber = DialogBoxMorph.prototype;
 
@@ -3852,7 +3904,7 @@ BlockImportDialogMorph.prototype.key = 'blockImport';
 
 function BlockImportDialogMorph(blocks, target, name) {
     this.init(blocks, target, name);
-}
+};
 
 BlockImportDialogMorph.prototype.init = function (blocks, target, name) {
     // additional properties:
@@ -3949,7 +4001,7 @@ BlockRemovalDialogMorph.prototype.key = 'blockRemove';
 
 function BlockRemovalDialogMorph(blocks, target) {
     this.init(blocks, target);
-}
+};
 
 BlockRemovalDialogMorph.prototype.init = function (blocks, target) {
     // additional properties:
@@ -4041,7 +4093,7 @@ BlockVisibilityDialogMorph.prototype.key = 'blockVisibility';
 
 function BlockVisibilityDialogMorph(target) {
     this.init(target);
-}
+};
 
 BlockVisibilityDialogMorph.prototype.init = function (target) {
     // additional properties:
@@ -4071,7 +4123,7 @@ BlockVisibilityDialogMorph.prototype.buildContents = function () {
     var palette, x, y, checkBox, lastCat,
         padding = 4;
 
-    // create plaette
+    // create palette
     palette = new ScrollFrameMorph(
         null,
         null,
@@ -4090,8 +4142,7 @@ BlockVisibilityDialogMorph.prototype.buildContents = function () {
     this.blocks.forEach(block => {
         if (lastCat && (block.category !== lastCat)) {
             y += padding;
-        }
-        lastCat = block.category;
+        };  lastCat = block.category;
 
         block.isToggleLabel = true; // mark block as unrefreshable toggle label
         checkBox = new ToggleMorph(
