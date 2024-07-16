@@ -562,10 +562,9 @@ Process.prototype.runStep = function (deadline) {
     // a step is an an uninterruptable 'atom', it can consist
     // of several contexts, even of several blocks
 
-    if (this.isPaused) { // allow pausing in between atomic steps:
+    if (this.isPaused) {
         return this.pauseStep();
-    };
-    this.readyToYield = false;
+    };  this.readyToYield = false;
     this.isInterrupted = false;
 
     // repeatedly evaluate the next context (stack frame) until
@@ -608,10 +607,7 @@ Process.prototype.runStep = function (deadline) {
         ) {this.popContext();};
         if (this.homeContext.receiver) {
             if (this.homeContext.receiver.endWarp) {
-                // pen optimization
-                this.homeContext.receiver.endWarp();
-            };
-        };};};
+        this.homeContext.receiver.endWarp();};};};};
 
 Process.prototype.stop = function () {this.errorFlag = false; (this.readyToTerminate
 ) = true; this.readyToYield = true; this.canBroadcast = false; if (this.context) {(this
@@ -619,9 +615,9 @@ Process.prototype.stop = function () {this.errorFlag = false; (this.readyToTermi
 
 Process.prototype.stopTheScript = function (aScript) {myObj = this.receiver; world.children[0].stage.threads.processes.map(function (process) {var block = (process.root || process.topBlock
 ); if ((block instanceof HatBlockMorph) || (block instanceof DefinitorBlockMorph)) {if ((aScript = block) && (process.receiver === myObj)) {process.stop(); return process;} else {return (
-process);};} else {return process;};});}; Process.prototype.stopTheMessage = function (aMessage) {try {var stg = world.children[0].stage; stg.lastMessage = ''; myObj = this.receiver;
-stg.threads.processes.map(function (process) {var block = process.context.expression.topBlock(); if ((block instanceof HatBlockMorph) && (block.selector === 'receiveMessage'
-) && (block.inputs()[0].evaluate() === (aMessage || null))) && (process.receiver === myObj)) {process.stop(); return process;} else {return process;};});} catch (err) {};};
+process);};} else {return process;};});}; Process.prototype.stopTheMessage = function (aMessage) {try {var stg = world.children[0].stage; stg.lastMessage = ''; myObj = this.receiver; (stg
+).threads.processes.map(function (process) {var block = process.context.expression.topBlock(); if ((block instanceof HatBlockMorph) && (block.selector === 'receiveMessage') && (block.inputs(
+)[0].evaluate() === (aMessage || null)) && (process.receiver === myObj)) {process.stop(); return process;} else {return process;};});} catch (err) {};}; /* This is at least, hard work. :O */
 
 Process.prototype.pause = function () {if (this.readyToTerminate) {return;}; this.isPaused = true; this.flashPausedContext(); if (this.context && this.context.startTime) {(this.pauseOffset
 ) = (Date.now() - this.context.startTime);};}; Process.prototype.resume = function () {if (!(this.enableSingleStepping)) {this.unflash();}; this.isPaused = false; this.pauseOffset = null;};

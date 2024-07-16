@@ -7,30 +7,30 @@ if ('language' in navigator) {var selectedLanguage = ((navigator.language).split
 '-snap-setting-language'] = detectPreferredLanguage();}; snavancedIsRunning = true; if (asABool(sessionStorage['-snap-setting-isDesktopMode'
 ])) {/* world.add(new LoginUIMorph(world)); */ world.add(desk); if (isNil(BlockMorph.prototype.snapSound)) {BlockMorph.prototype.toggleSnapSound(
 );}; document.title = 'Snavanced! - Desktop Mode'; if (true || asABool(localStorage['-snap-notification-newFile'])) {localStorage[
-'-snap-notification-newFile'] = false; (function () {var i = 0; deskItems.forEach(function (aDeskItem) {aDeskItem.destroy();});})();
-deskItems = []; ((function anonymous () {var anArray = [], i = 0, j = 1, storage = window.localStorage; while (i < storage.length) {
-if (storage.key(i).startsWith('-snap-file-')) {anArray.push([storage['-snap-file-project-' + j], j]); j++;}; i++;}; return anArray;
-}).apply(this)).forEach(function (pair) {deskItems.push(new FileMorph(pair[0], pair[1]));}); (function () {var i = 0; (deskItems
+'-snap-notification-newFile'] = false; (function () {var i = 0; deskItems.forEach(function (aDeskItem) {aDeskItem.destroy();});})(
+); deskItems = []; ((function () {var anArray = [], i = 0, j = 1, storage = window.localStorage; while (i < storage.length) {if (
+storage.key(i).startsWith('-snap-file-')) {anArray.push([storage['-snap-file-project-' + j], j]); j++;}; i++;}; return anArray;}
+).apply(this)).forEach(function (pair) {deskItems.push(new FileMorph(pair[0], pair[1]));}); (function () {var i = 0; (deskItems
 ).forEach(function (aDeskItem) {desk.add(aDeskItem); aDeskItem.bounds.origin = new Point(15 + ((i % 19) * 75), 15 + (Math.floor(
 i / 19) * 75)); aDeskItem.bounds.corner = new Point(aDeskItem.bounds.origin.x + 60, aDeskItem.bounds.origin.y + 60); i++;});})(
 );}; function loop () {requestAnimationFrame(loop); world.doOneCycle(); world.rerender();};} else {(new IDE_Morph).openIn(world
 ); function loop () {requestAnimationFrame(loop); world.doOneCycle();};}; loop();}; /* Load all the fonts and init Snavanced! */
 
 IDE_Morph.prototype.doLog = function (
-object) {this.console.push(['log', object]);
-this.newLogs = (this.newLogs + 1);};
+object) {this.console.push(['log', object
+]); this.newLogs = (this.newLogs + 1);};
 IDE_Morph.prototype.doWarn = function (
-object) {this.console.push(['warn', object]);
-this.newLogs = (this.newLogs + 1);};
+object) {this.console.push(['warn', object
+]); this.newLogs = (this.newLogs + 1);};
 IDE_Morph.prototype.doError = function (
-object) {this.console.push(['error', object]);
-this.newLogs = (this.newLogs + 1);};
+object) {this.console.push(['error', object
+]); this.newLogs = (this.newLogs + 1);};
 IDE_Morph.prototype.doInform = function (
-object) {this.console.push(['information', object]);
-this.newLogs = (this.newLogs + 1);};
-IDE_Morph.prototype.doDebug = function (
-object) {this.console.push(['debug', object]);
-this.newLogs = (this.newLogs + 1);};
+object) {this.console.push(['information',
+object]); this.newLogs = (this.newLogs + 1);
+}; IDE_Morph.prototype.doDebug = function (
+object) {this.console.push(['debug', object
+]); this.newLogs = (this.newLogs + 1);};
 IDE_Morph.prototype.doClear = function (
 ) {this.newLogs = 0; this.console = [];};
 
@@ -84,7 +84,7 @@ center.doClear();}; console._clear(
 );}; /* Modifies the JS. */} catch (
 error) {console.error(error);};
 
-/* WTF is the cloud here? >:-( */
+/* Why is the cloud here? */
 
 /*
 
@@ -119,9 +119,7 @@ var Cloud;
 
 // Cloud /////////////////////////////////////////////////////////////
 
-function Cloud() {
-    this.init();
-}
+function Cloud() {this.init();};
 
 Cloud.prototype.init = function () {
     this.apiBasePath = '/api/v1';

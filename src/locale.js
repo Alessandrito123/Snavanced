@@ -156,8 +156,7 @@
 
 */
 
-localize = function anonymous (string) {
-return SnapTranslator.translate(string);};
+localize = function (string) {return SnapTranslator.translate(string);};
 
 var Localizer;
 
@@ -222,7 +221,7 @@ SnapTranslator.dict.en = {
     'translator_e-mail':
         'jens@moenig.org',
     'last_changed':
-        '2024-02-24',
+        '15-07-2024',
 
     // long strings look-up only
     'file menu import hint':
