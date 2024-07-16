@@ -112,11 +112,11 @@ function isSnapObject (thing) {return asABool((thing instanceof SpriteMorph) || 
 
 /* Values to morphs */
 
-function ColorImageMorph (aColor) {var result = new SymbolMorph('square', MorphicPreferences.menuFontSize * 1.25,
+function ColorImageMorph (aColor) {var result = new SymbolMorph('square', MorphicPreferences.menuFontSize * 5/4,
 aColor); result.addBack(new TextMorph('     RGBA (' + Math.round(aColor.r) + ', ' + Math.round(aColor.g) + ', ' +
 Math.round(aColor.b) + ', ' + (Math.round(aColor.a * 100) / 100) + ')')); result.add(new SymbolMorph('rectangle',
 MorphicPreferences.menuFontSize * 1.25)); return result;}; function BooleanImageMorph (bool) {return new SymbolMorph(
-(bool ? 'tick' : 'crok'), (MorphicPreferences.menuFontSize * SyntaxElementMorph.prototype.scale * 1.5), (
+(bool ? 'tick' : 'crok'), (MorphicPreferences.menuFontSize * SyntaxElementMorph.prototype.scale * 3/2), (
 bool ? new Color(0, 200, 0) : new Color(200, 0, 0)));}; /* These morphs represent some important objects. */
 
 // SpriteMorph /////////////////////////////////////////////////////////
@@ -131,21 +131,20 @@ SpriteMorph.uber = PenMorph.prototype;
 
 // SpriteMorph settings
 
-SpriteMorph.prototype.attributes = ['x position', 'y position', 'direction', 'size', 'costumes', 'costume #', 'volume', 'balance', 'sounds', 'shown?', 'pen down?', 'scripts'];
-SpriteMorph.prototype.categories = ['motion', 'motor', 'control', 'looks', 'sensing', 'sound', 'operators', 'pen', 'variables', 'lists', 'other']; SpriteMorph.prototype.sortedCategories = [
-'motion', 'motor', 'looks', 'sound', 'pen', 'control', 'sensing', 'operators', 'variables', 'lists', 'other']; SpriteMorph.prototype.blockColor = {motion : new Color(74, 108, 212),
-motor : new Color((74 / 1.5), (108 / 1.5), (212 / 1.25)), looks : new Color(143, 86, 227), sound : new Color(207, 74, 217), pen : new Color(0, 161, 120), events : new Color(200,
-131, 48), control : new Color(230, 168, 0), sensing : new Color(4, 148, 220), operators : new Color(98, 194, 19), variables : new Color(243, 118, 29), lists : new Color(217,
-77, 17), other: (SyntaxElementMorph.prototype.rfColor).lighter().lighter(10), custom : new Color(243, 118, 29).darker().darker().darker().darker(), undefined: new Color(200,
-0, 0)}; SpriteMorph.prototype.customCategories = new Map; SpriteMorph.prototype.allCategories = function () {return this.categories.concat(Array.from((this.customCategories
-).keys()));}; SpriteMorph.prototype.allSortedCategories = function () {return this.sortedCategories.concat(Array.from(this.customCategories.keys()));}; (SpriteMorph.prototype
-).blockColorFor = function (category) {return ((this.blockColor[category]) || (this.customCategories.get(category)) || (this.blockColor.other));}; (SpriteMorph.prototype
-).paletteColor = new Color(55, 55, 55); SpriteMorph.prototype.paletteTextColor = new Color(230, 230, 230, 1); SpriteMorph.prototype.sliderColor = SpriteMorph.prototype.paletteColor.lighter(
-30); SpriteMorph.prototype.isCachingPrimitives = true; SpriteMorph.prototype.enableNesting = true; SpriteMorph.prototype.enableFirstClass = true; SpriteMorph.prototype.showingExtensions = false;
-SpriteMorph.prototype.useFlatLineEnds = false; SpriteMorph.prototype.penColorModel = 'hsv'; SpriteMorph.prototype.highlightColor = new Color(250, 200, 130); SpriteMorph.prototype.highlightBorder = 8;
-SpriteMorph.prototype.bubbleColor = WHITE; SpriteMorph.prototype.bubbleFontSize = 14; SpriteMorph.prototype.bubbleCorner = 10; SpriteMorph.prototype.bubbleBorder = 3; (SpriteMorph
-).prototype.bubbleBorderColor = new Color(190, 190, 190); SpriteMorph.prototype.bubbleMaxTextWidth = 130; SpriteMorph.prototype.initBlocks = function () {
-SpriteMorph.prototype.blocks = {
+SpriteMorph.prototype.attributes = ['x position', 'y position', 'direction', 'size', 'costumes', 'costume #', 'volume', 'balance', 'sounds', 'shown?', 'pen down?', 'scripts']; (SpriteMorph
+).prototype.categories = ['motion', 'motor', 'control', 'looks', 'sensing', 'sound', 'operators', 'pen', 'variables', 'lists', 'other']; SpriteMorph.prototype.sortedCategories = ['motion',
+'motor', 'looks', 'sound', 'pen', 'control', 'sensing', 'operators', 'variables', 'lists', 'other']; SpriteMorph.prototype.blockColor = {motion : new Color(74, 108, 212), motor : new Color(
+(74 / 1.5), (108 / 1.5), (212 / 1.25)), looks : new Color(143, 86, 227), sound : new Color(207, 74, 217), pen : new Color(0, 161, 120), events : new Color(200, 131, 48), control : new Color(
+230, 168, 0), sensing : new Color(4, 148, 220), operators : new Color(98, 194, 19), variables : new Color(243, 118, 29), lists : new Color(217, 77, 17), other: ((SyntaxElementMorph.prototype
+).rfColor.lighter()).lighter(10), custom : new Color(243, 118, 29).darker().darker().darker().darker(), undefined: new Color(200, 0, 0)}; SpriteMorph.prototype.customCategories = new Map;
+SpriteMorph.prototype.allCategories = function () {return this.categories.concat(Array.from((this.customCategories).keys()));}; SpriteMorph.prototype.allSortedCategories = function () {
+return this.sortedCategories.concat(Array.from(this.customCategories.keys()));}; SpriteMorph.prototype.blockColorFor = function (category) {return ((this.blockColor[category]) || ((this
+).customCategories.get(category)) || (this.blockColor.other));}; SpriteMorph.prototype.paletteColor = new Color(55, 55, 55); SpriteMorph.prototype.paletteTextColor = new Color(230, 230,
+230); SpriteMorph.prototype.sliderColor = SpriteMorph.prototype.paletteColor.lighter(30); SpriteMorph.prototype.isCachingPrimitives = true; SpriteMorph.prototype.enableNesting = true;
+SpriteMorph.prototype.enableFirstClass = true; SpriteMorph.prototype.showingExtensions = false; SpriteMorph.prototype.useFlatLineEnds = false; SpriteMorph.prototype.penColorModel = (
+'hsv'); SpriteMorph.prototype.highlightColor = new Color(250, 200, 130); SpriteMorph.prototype.highlightBorder = 8; SpriteMorph.prototype.bubbleColor = WHITE; (SpriteMorph.prototype
+).bubbleFontSize = 14; SpriteMorph.prototype.bubbleCorner = 10; SpriteMorph.prototype.bubbleBorder = 3; SpriteMorph.prototype.bubbleBorderColor = new Color(190, 190, 190);
+SpriteMorph.prototype.bubbleMaxTextWidth = 130; SpriteMorph.prototype.initBlocks = function () {SpriteMorph.prototype.blocks = {
 
         // Motion - Sprite
         forward: {
@@ -2951,8 +2950,8 @@ SpriteMorph.prototype.blockForSelector = function (selector, setDefaults) {
     return block;
 };
 
-SpriteMorph.prototype.variableBlock = function (varName, isLocalTemplate) {var block = new ReporterBlockMorph; block.selector = 'reportGetVar'; block.color = this.blockColor.variables;
-block.category = 'variables'; block.isLocalVarTemplate = isLocalTemplate; block.setSpec(varName); block.isDraggable = true; return block;};
+SpriteMorph.prototype.variableBlock = function (varName, isLocalTemplate) {var block = new ReporterBlockMorph; block.selector = 'reportGetVar'; block.color = (this
+).blockColor.variables; block.category = 'variables'; block.isLocalVarTemplate = isLocalTemplate; block.setSpec(varName); block.isDraggable = true; return block;};
 
 // SpriteMorph block templates
 

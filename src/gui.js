@@ -1954,13 +1954,11 @@ IDE_Morph.prototype.createCategories = function () {
         );  myself.categories.add(button);
         myself.categories.buttons.push(button);
         return button;
-    };  function addCustomCategoryButton(category, color) {
-        var labelWidth = 75,
-            colors = [
-                myself.frameColor,
-                myself.frameColor.darker((1 + (MorphicPreferences.isFlat * 9)) * 5),
-                SpriteMorph.prototype.blockColor[category]
-            ],  button;
+    };  function addCustomCategoryButton(category, color
+        )  {var labelWidth = 75, colors = [myself.frameColor,
+                myself.frameColor.darker((1 + ((MorphicPreferences
+                ).isFlat * 9)) * 5), (SpriteMorph.prototype
+                ).blockColorFor(category)], button;
 
         button = new ToggleButtonMorph(
             colors,
@@ -2071,7 +2069,7 @@ IDE_Morph.prototype.createPalette = function (forSearching) {
         };
     };  this.palette.reactToDropOf = (droppedMorph, hand) => {
         if (droppedMorph instanceof DialogBoxMorph) {
-            this.world().add(droppedMorph);
+            world.add(droppedMorph);
         } else if (droppedMorph instanceof WatcherMorph) {
             droppedMorph.perish((myself.isAnimating ? 200 : 0),
             function () {var selectedVariableCategory = Object.keys(

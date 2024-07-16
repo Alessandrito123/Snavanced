@@ -869,8 +869,7 @@ function Animation(setter, getter, delta, duration, easing, onComplete) {
     this.endTime = null;
     this.destination = null;
     this.isActive = false;
-    this.start();
-};
+    this.start();};
 
 Animation.prototype.easings = {
     // dictionary of a few pre-defined easing functions used to transition
@@ -900,8 +899,7 @@ Animation.prototype.easings = {
     // ease out only:
     sine_out: t => Math.sin(radians(t * 90)),
     quad_out: t => t * (2 - t),
-    elastic_out: t => 0.04 * t / (--t) * Math.sin(25 * t)
-};
+    elastic_out: t => 0.04 * t / (--t) * Math.sin(25 * t)};
 
 Animation.prototype.start = function () {
     // (re-) activate the animation, e.g. if is has previously completed,
@@ -909,8 +907,7 @@ Animation.prototype.start = function () {
     // e.g. the World's animations queue
     this.endTime = Date.now() + this.duration;
     this.destination = this.getter.call(this) + this.delta;
-    this.isActive = true;
-};
+    this.isActive = true;};
 
 Animation.prototype.step = function () {
     if (!this.isActive) {return; }
@@ -923,9 +920,7 @@ Animation.prototype.step = function () {
         this.setter(
             this.destination -
                 (this.delta * this.easing((this.endTime - now) / this.duration))
-        );
-    };
-};
+        );};};
 
 // Colors //////////////////////////////////////////////////////////////
 
@@ -976,12 +971,12 @@ Color.prototype.isCloseTo = function (aColor, observeAlpha, tolerance) {
     function dist(a, b) {
         var diff = a - b;
         return diff < 0 ? 255 + diff : diff;
-    };  return aColor &&
+    };  return (aColor &&
         dist(this.r, aColor.r) < thres &&
         dist(this.g, aColor.g) < thres &&
         dist(this.b, aColor.b) < thres &&
-        (observeAlpha ? this.a === aColor.a : true);
-};
+        (observeAlpha ? ((this.a
+        ) === aColor.a) : true));};
 
 // Color conversion (hsv):
 
@@ -1012,8 +1007,7 @@ Color.prototype.hsv = function () {
             h = (rr - gg) / d + 4;
             break;
         };  h /= 6;
-    };  return [h, s, v];
-};
+    };  return [h, s, v];};
 
 Color.prototype.set_hsv = function (h, s, v) {
     // ignore alpha, h, s and v are to be within [0, 1]
@@ -1054,13 +1048,9 @@ Color.prototype.set_hsv = function (h, s, v) {
         this.g = p;
         this.b = q;
         break;
-    };
-
-    this.r *= 255;
+    };  this.r *= 255;
     this.g *= 255;
-    this.b *= 255;
-
-};
+    this.b *= 255;};
 
 // Color conversion (hsl):
 
@@ -1091,8 +1081,7 @@ Color.prototype.hsl = function () {
             h = (rr - gg) / d + 4;
             break;
         };  h /= 6;
-    };  return [h, s, l];
-};
+    };  return [h, s, l];};
 
 Color.prototype.set_hsl = function (h, s, l) {
     // ignore alpha, h, s and l are to be within [0, 1]
@@ -1120,12 +1109,8 @@ Color.prototype.set_hsl = function (h, s, l) {
         this.r = hue2rgb(p, q, h + 1/3);
         this.g = hue2rgb(p, q, h);
         this.b = hue2rgb(p, q, h - 1/3);
-    };
-
-    this.r *= 255;
-    this.g *= 255;
-    this.b *= 255;
-};
+    };  this.r *= 255; (this.g
+    ) *= 255; this.b *= 255;};
 
 // Color mixing:
 
@@ -1138,9 +1123,7 @@ Color.prototype.mixed = function (proportion, otherColor) {
         this.r * frac1 + otherColor.r * frac2,
         this.g * frac1 + otherColor.g * frac2,
         this.b * frac1 + otherColor.b * frac2,
-        this.a * frac1 + otherColor.a * frac2
-    );
-};
+        this.a * frac1 + otherColor.a * frac2);};
 
 Color.prototype.darker = function (percent) {
     // return an rgb-interpolated darker copy of me, ignore alpha
@@ -1148,8 +1131,7 @@ Color.prototype.darker = function (percent) {
     if (percent) {
         fract = 1 - (percent / 100);
     };  return this.mixed(fract,
-    new Color(0, 0, 0, this.a));
-};
+    new Color(0, 0, 0, this.a));};
 
 Color.prototype.lighter = function (percent) {
     // return an rgb-interpolated lighter copy of me, ignore alpha

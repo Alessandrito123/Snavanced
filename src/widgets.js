@@ -524,10 +524,9 @@ ToggleButtonMorph.prototype.init = function (
 
     // override default colors if others are specified
     if (colors) {this.color = colors[0
-        ];  this.pressColor = colors[2];
+        ]; this.pressColor = colors[2];
         this.highlightColor = colors[1];
-    };  this.refresh(); this.rerender();
-};
+    };  this.refresh(); this.rerender();};
 
 // ToggleButtonMorph events
 
@@ -713,7 +712,7 @@ ToggleButtonMorph.prototype.drawEdges = function (
         );
         gradient.addColorStop(0, (isFlat ? this.pressColor : this.pressColor.lighter(40)).toString());
         gradient.addColorStop(1, (isFlat ? this.pressColor : this.pressColor.darker(40)).toString());
-        ctx.fillStyle = gradient; // this.pressColor.toString();
+        ctx.fillStyle = gradient;
         ctx.beginPath();
         this.previewPath(
             ctx,
