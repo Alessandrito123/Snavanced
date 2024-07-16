@@ -6,7 +6,7 @@
 
     written by Jens Mönig
 
-    Copyright (C) 2022 by Jens Mönig
+    Copyright (C) 2024 by Jens Mönig
 
     This file is part of Snap!.
 
@@ -25,22 +25,9 @@
 
 */
 
-// Global settings /////////////////////////////////////////////////////
-
-/*global modules, List, StageMorph, Costume, SpeechSynthesisUtterance, Sound,
-IDE_Morph, CamSnapshotDialogMorph, SoundRecorderDialogMorph, isSnapObject, nop,
-Color, Process, contains*/
-
-/*jshint esversion: 11*/
-
-modules.extensions = '2022-December-19';
-
-// Global stuff
-
-var SnapExtensions = {primitives: new Map(),
-menus: new Map(), buttons: {palette: []},
+var SnapExtensions = {primitives: new Map,
+menus: new Map, buttons: {palette: []},
 scripts: [], urls: [// allow-list of trusted servers
-        'libraries/',
         'https://snap.berkeley.edu/',
         'https://ecraft2learn.github.io/ai/', // Uni-Oxford, Ken Kahn
         'https://microworld.edc.org' // EDC, E. Paul Goldenberg

@@ -95,23 +95,6 @@
 
 */
 
-/*global modules, CommandBlockMorph, SpriteMorph, TemplateSlotMorph, Map, Morph,
-StringMorph, Color, DialogBoxMorph, ScriptsMorph, ScrollFrameMorph, WHITE, copy,
-Point, HandleMorph, HatBlockMorph, BlockMorph, detect, List, Process, isString,
-AlignmentMorph, ToggleMorph, InputFieldMorph, ReporterBlockMorph, StringMorph,
-nop, radians, BoxMorph, ArrowMorph, PushButtonMorph, contains, InputSlotMorph,
-ToggleButtonMorph, IDE_Morph, MenuMorph, ToggleElementMorph, fontHeight, isNil,
-StageMorph, SyntaxElementMorph, CommentMorph, localize, CSlotMorph, Variable,
-MorphicPreferences, SymbolMorph, CursorMorph, VariableFrame, BooleanSlotMorph,
-WatcherMorph, XML_Serializer, SnapTranslator, SnapExtensions, MultiArgMorph,
-ArgLabelMorph*/
-
-/*jshint esversion: 6*/
-
-// Global stuff ////////////////////////////////////////////////////////
-
-modules.byob = '2023-October-22';
-
 // Declarations
 
 var CustomBlockDefinition;
@@ -171,10 +154,10 @@ CustomBlockDefinition.prototype.blockInstance = function (storeTranslations) {
             false,
             this.type === 'arrow'
         );
-    }; block.isDraggable = true;
+    };  block.isDraggable = true;
     if (storeTranslations) { // only for "wishes"
-    	block.storedTranslations = this.translationsAsText();
-    }; return block;
+        block.storedTranslations = this.translationsAsText();
+    };  return block;
 };
 
 CustomBlockDefinition.prototype.templateInstance = function () {
@@ -216,15 +199,13 @@ CustomBlockDefinition.prototype.prototypeInstance = function () {
     part.fragment.separator = slot[5] || null;
             };
         };
-    });
-
-    return block;
+    }); return block;
 };
 
 // CustomBlockDefinition duplicating
 
-CustomBlockDefinition.prototype.copyAndBindTo = function (sprite, headerOnly) {
-    var c = copy(this);
+CustomBlockDefinition.prototype.copyAndBindTo = (
+function (sprite, headerOnly) {var c = copy(this);
 
     delete c[XML_Serializer.prototype.idProperty];
     c.receiver = sprite; // only for (kludgy) serialization
@@ -233,34 +214,28 @@ CustomBlockDefinition.prototype.copyAndBindTo = function (sprite, headerOnly) {
     c.declarations = new Map;
     for (var [key, val] of this.declarations) {
         c.declarations.set(key, val);
-    }
-
-    if (headerOnly) { // for serializing inherited method signatures
+    };  if (headerOnly) {// for serializing inherited method signatures
         c.body = null;
         return c;
-    }
-    if (c.body) {
+    };  if (c.body) {
         c.body = Process.prototype.reify.call(
             null,
             this.body.expression,
             new List(this.inputNames())
-        );
-        c.body.outerContext = null;
-    }
-    return c;
-};
+        );  c.body.outerContext = null;
+    };  // deep copy scripts
+    c.scripts = (this.scripts).map(
+    each => each.fullCopy()); return c;
+});
 
 // CustomBlockDefinition accessing
 
-CustomBlockDefinition.prototype.blockSpec = function () {
-	if (this.storedSemanticSpec) {
- 		return this.storedSemanticSpec; // for "wishes"
- 	}
-
-    var ans = [],
+CustomBlockDefinition.prototype.blockSpec = function (
+        ) {if (this.storedSemanticSpec) {
+            return this.storedSemanticSpec;
+        /* for "wishes" */}; var ans = [],
         parts = this.parseSpec(this.spec),
-        spec;
-    parts.forEach(part => {
+        spec;   parts.forEach(part => {
         if (part[0] === '%' && part.length > 1
         ) {spec = this.typeOf(part.slice(1));
         } else if (part.includes('$nl')) {
@@ -270,29 +245,22 @@ CustomBlockDefinition.prototype.blockSpec = function () {
 };
 
 CustomBlockDefinition.prototype.helpSpec = function () {
-    var ans = [],
-        parts = this.parseSpec(this.spec);
+    var ans = [],    parts = this.parseSpec(this.spec);
     parts.forEach(part => {
         if (part[0] !== '%') {
-            ans.push(part);
-        }
-    });
-    return ''.concat.apply('', ans).replace(/\?/g, '');
+            ans.push(part);};
+    }); return ''.concat.apply(
+    '', ans).replace(/\?/g, '');
 };
 
 CustomBlockDefinition.prototype.typeOf = function (inputName) {
     if (this.declarations.has(inputName)) {
-        return this.declarations.get(inputName)[0];
-    }
-    return '%s';
+        return this.declarations.get(
+        inputName)[0];}; return '%s';
 };
 
-CustomBlockDefinition.prototype.defaultValueOf = function (inputName) {
-    if (this.declarations.has(inputName)) {
-        return this.declarations.get(inputName)[1];
-    }
-    return '';
-};
+CustomBlockDefinition.prototype.defaultValueOf = function (inputName) {return (
+this.declarations.has(inputName) ? this.declarations.get(inputName)[1] : '');};
 
 CustomBlockDefinition.prototype.defaultValueOfInputIdx = function (idx) {
     var inputName = this.inputNames()[idx];
@@ -333,7 +301,7 @@ CustomBlockDefinition.prototype.dropDownMenuOf = function (inputName) {
             if (contains(
                 [
                     'messagesMenu',
-                    'messagesReceivedMenu',    //for backward (5.0.0 - 5.0.3) support
+                    'messagesReceivedMenu',
                     'objectsMenu',
                     'costumesMenu',
                     'soundsMenu',
@@ -344,11 +312,12 @@ CustomBlockDefinition.prototype.dropDownMenuOf = function (inputName) {
                     'midsMenu'
                 ],
                 fname
-            ) || fname.indexOf('ext_') === 0) {
-                return fname;
-            };
-        }; return this.parseChoices(this.declarations.get(inputName)[2]);
-    }; return null;
+            ) || fname.indexOf(
+            'ext_') === 0) {
+            return fname;};
+        };  return this.parseChoices(
+        this.declarations.get(inputName
+        )[2]);}; return null;
 };
 
 CustomBlockDefinition.prototype.parseChoices = function (string) {
@@ -505,12 +474,10 @@ CustomBlockDefinition.prototype.localizedSpec = function () {
 			if (str === '_') {
   				i += 1;
   				return inputs[i];
-  			}
-    		return str;
-		});
- 		this.cachedTranslation = locParts.join(' ');
-   	}
-  	return this.cachedTranslation;
+			};
+		return str;
+		});   this.cachedTranslation = locParts.join(' ');
+   	};	return this.cachedTranslation;
 };
 
 CustomBlockDefinition.prototype.abstractBlockSpec = function () {
@@ -525,8 +492,7 @@ CustomBlockDefinition.prototype.translationsAsText = function () {
 	var txt = '';
 	Object.keys(this.translations).forEach(lang =>
  		txt += (lang + ':' + this.translations[lang] + '\n')
-    );
-    return txt;
+    );  return txt;
 };
 
 CustomBlockDefinition.prototype.updateTranslations = function (text) {
@@ -538,7 +504,7 @@ CustomBlockDefinition.prototype.updateTranslations = function (text) {
       		val = txt.slice(idx + 1).trim();
     	if (idx) {
      		this.translations[key] = val;
-     	}
+     	};
     });
 };
 
@@ -565,11 +531,9 @@ CustomBlockDefinition.prototype.scriptsModel = function () {
         comment = this.comment.fullCopy();
         proto.comment = comment;
         comment.block = proto;
-    }
-    if (this.body !== null) {
+    };  if (!isNil(this.body)) {
         proto.nextBlock(this.body.expression.fullCopy());
-    }
-    scripts.add(proto);
+    };  scripts.add(proto);
     proto.fixBlockColor(null, true);
     this.scripts.forEach(element => {
         block = element.fullCopy();
@@ -579,13 +543,11 @@ CustomBlockDefinition.prototype.scriptsModel = function () {
             block.allComments().forEach(comment =>
                 comment.align(block)
             );
-        }
-    });
-    proto.allComments().forEach(comment =>
+        };
+    }); proto.allComments().forEach(comment =>
         comment.align(proto)
-    );
-    template = proto.parts()[1];
-    template.fixLayout();
+    );  template = proto.parts(
+    )[1];   template.fixLayout();
     template.forceNormalColoring();
     template.fixBlockColor(proto, true);
     scripts.fixMultiArgs();
@@ -662,7 +624,7 @@ CustomCommandBlockMorph.prototype.isCustomBlock = true;
 
 function CustomCommandBlockMorph(definition, isProto) {
     this.init(definition, isProto);
-}
+};
 
 CustomCommandBlockMorph.prototype.init = function (definition, isProto) {
     this.definition = definition;
@@ -1030,15 +992,11 @@ CustomCommandBlockMorph.prototype.labelPart = function (spec) {
     );
 };
 
-CustomCommandBlockMorph.prototype.placeHolder = function () {
-    var part;
-
-    part = new BlockLabelPlaceHolderMorph();
-    part.fontSize = this.fontSize * 1.4;
-    part.color = new Color(45, 45, 45);
-    part.fixLayout();
-    return part;
-};
+CustomCommandBlockMorph.prototype.placeHolder = function (
+) {var part = new BlockLabelPlaceHolderMorph;
+part.fontSize = this.fontSize * 1.4;
+part.color = new Color(45, 45, 45);
+part.fixLayout(); return part;};
 
 CustomCommandBlockMorph.prototype.attachTargets = function () {
     if (this.isPrototype) {
@@ -1353,11 +1311,11 @@ menu.addItem(
        if (this.isGlobal) {
           let newPos = ide.stage.globalBlocks.indexOf(def);
           ide.stage.globalBlocks = ide.stage.globalBlocks.filter(item => item !== def);
-          ide.stage.globalBlocks.splice(newPos-1,0,def);
+          ide.stage.globalBlocks.splice(newPos - 1, 0, def);
        } else {
           let newPos = rcvr.customBlocks.indexOf(def);
           rcvr.customBlocks = rcvr.customBlocks.filter(item => item !== def);
-          rcvr.customBlocks.splice(newPos-1,0,def);
+          rcvr.customBlocks.splice(newPos - 1, 0, def);
        }
 
        ide.flushPaletteCache();
@@ -1377,11 +1335,11 @@ menu.addItem(
        if (this.isGlobal) {
           let newPos = ide.stage.globalBlocks.indexOf(def);
           ide.stage.globalBlocks = ide.stage.globalBlocks.filter(item => item !== def);
-          ide.stage.globalBlocks.splice(newPos+1,0,def);
+          ide.stage.globalBlocks.splice(newPos + 1, 0, def);
        } else {
           let newPos = rcvr.customBlocks.indexOf(def);
           rcvr.customBlocks = rcvr.customBlocks.filter(item => item !== def);
-          rcvr.customBlocks.splice(newPos+1,0,def);
+          rcvr.customBlocks.splice(newPos + 1, 0, def);
           rcvr.customBlocks.shift(def);
        }
 
@@ -1714,17 +1672,10 @@ if (contains(['%cl', '%c', '%cs', '%cla', '%loop', '%ca'], spec)) {this.minWidth
 
 // JaggedBlockMorph drawing:
 
-JaggedBlockMorph.prototype.outlinePath = function (ctx, inset) {
-    var w = this.width(),
-        h,
-        jags,
-        delta,
-        pos = this.position(),
-        y = 0,
-        i;
-
-    ctx.moveTo(inset, inset);
-    ctx.lineTo(w - inset, inset);
+JaggedBlockMorph.prototype.outlinePath = function (
+ctx, inset) {var w = this.width(), h, jags, delta,
+i, pos = this.position(), y = 0; ctx.moveTo(inset,
+inset); ctx.lineTo(w - inset, inset);
 
     // C-Slots
     this.cSlots().forEach(slot => {
@@ -1786,8 +1737,7 @@ JaggedBlockMorph.prototype.drawEdges = function (ctx) {
     ctx.lineTo(w - shift, shift);
     ctx.stroke();
 
-    if (!this.cSlots().length) { // omit right jagged outline for c-slots
-        y = 0;
+    if (!(this.clearSlots().length)) {y = 0;
         for (i = 0; i < jags; i += 1) {
             ctx.strokeStyle = this.cachedClrDark;
             ctx.beginPath();
@@ -2559,154 +2509,90 @@ PrototypeHatBlockMorph.uber = HatBlockMorph.prototype;
 
 function PrototypeHatBlockMorph(definition) {this.init(definition);};
 
-PrototypeHatBlockMorph.prototype.init = function (definition) {
-    var proto = definition.prototypeInstance(),
-        vars;
+PrototypeHatBlockMorph.prototype.init = function (definition
+) {var proto = definition.prototypeInstance(), vars; (this
+).definition = definition; this.blockCategory = ((definition
+) ? definition.category : null); this.type = (definition ? (
+definition.type) : null); this.isHelper = (definition ? (
+definition.isHelper) : false); (PrototypeHatBlockMorph.uber
+).init.call(this, true); this.category = 'custom'; (this
+).setSpec(localize('define')); this.add(proto); if (
+definition.variableNames.length) {vars = this.labelPart(
+'%blockVars'); this.add(this.labelPart('%br')); this.add(
+vars); definition.variableNames.forEach(name => (vars.addInput(
+name)));}; proto.refreshPrototypeSlotTypes(); this.fixLayout();
+this.fixBlockColor(); proto.fixBlockColor(this, true); (this
+).cursorStyle = 'default'; this.cursorGrabStyle = null;};
 
-    this.definition = definition;
+PrototypeHatBlockMorph.prototype.outlinePath = function (
+ctx, inset) {var indent = this.corner * 2 + this.inset,
+bottom = this.height() - this.corner, bottomCorner = (
+this.height() - (this.corner * 2)), radius = Math.max(
+this.corner - inset, 0), s = this.hatWidth, h = (this
+).hatHeight, r = ((4 * h * h) + (s * s)) / (8 * h),
+a = degrees(4 * Math.atan(2 * h / s)), sa = a / 2,
+x = this.width(), gradient, sp = Math.min(s * 1.7,
+this.width() - this.corner), pos = this.position(
+), shift = this.edge / 2; ctx.lineJoin = 'round';
+ctx.lineCap = 'round'; ctx.strokeStyle = (this.color
+).toString(); ctx.lineWidth = this.edge * 5; (ctx
+).beginPath(); ctx.moveTo(0, (h * 3/2) + this.corner
+); ctx.bezierCurveTo((x / 6), 0, (x * 5/6), 0, x, (
+h * 3/2) + this.corner); ctx.stroke(); (ctx.strokeStyle
+) = (SpriteMorph.prototype.blockColor.control.lighter(
+)).toString(); ctx.lineWidth = this.edge * 5/2; (ctx
+).beginPath(); ctx.moveTo(0, (h * 3/2) + this.corner);
+ctx.bezierCurveTo((x / 6), 0, (x * 5/6), 0, x, (h * 3/2
+) + this.corner); ctx.stroke(); ctx.arc(x - this.corner,
+bottomCorner, radius, 0, Math.PI / 2, false); if (!((this
+).isStop())) {ctx.lineTo(this.width() - this.corner,
+bottom - inset); ctx.lineTo(this.corner * 3 + (this
+).inset + this.dent, bottom - inset); ctx.lineTo(
+indent + this.dent, bottom + this.corner - inset);
+ctx.lineTo(indent, bottom + this.corner - inset);
+ctx.lineTo(this.corner + this.inset, bottom - inset
+);}; ctx.arc(this.corner, bottomCorner, radius,
+Math.PI / 2, Math.PI, false);};
 
-    // additional attributes to store edited data
-    this.blockCategory = definition ? definition.category : null;
-    this.type = definition ? definition.type : null;
-    this.isHelper = definition ? definition.isHelper : false;
-
-    // init inherited stuff
-    PrototypeHatBlockMorph.uber.init.call(this, false);
-    this.category = 'custom'; this.setSpec(localize('define'));
-    this.add(proto); if (definition.variableNames.length) {
-        vars = this.labelPart('%blockVars');
-        this.add(this.labelPart('%br'));
-        this.add(vars);
-        definition.variableNames.forEach(name =>
-            vars.addInput(name)
-        );
-    }; proto.refreshPrototypeSlotTypes(); // show slot type indicators
-    this.fixLayout(); this.fixBlockColor();
-    proto.fixBlockColor(this, true);
-
-    this.cursorStyle = 'default';
-    this.cursorGrabStyle = null;
-};
-
-PrototypeHatBlockMorph.prototype.outlinePath = function (ctx, inset) {
-    var indent = this.corner * 2 + this.inset,
-        bottom = this.height() - this.corner,
-        bottomCorner = this.height() - this.corner * 2,
-        radius = Math.max(this.corner - inset, 0),
-        s = this.hatWidth,
-        h = this.hatHeight,
-        r = ((4 * h * h) + (s * s)) / (8 * h),
-        a = degrees(4 * Math.atan(2 * h / s)),
-        sa = a / 2,
-        sp = Math.min(s * 1.7, this.width() - this.corner),
-        pos = this.position();
-
-    // top left:
-    ctx.moveTo(0, (h * 1.5) + this.corner);
-
-    // top arc:
-    ctx.bezierCurveTo(this.width() * (0.5 / 3), 0, this.width() * (2.5 / 3), 0, this.width(), (h * 1.5) + this.corner);
-    this.drawTopLeftEdge(ctx, true);
-
-    // bottom right:
-    ctx.arc(
-        this.width() - this.corner,
-        bottomCorner,
-        radius,
-        radians(0),
-        radians(90),
-        false
-    );
-
-    if (!this.isStop()) {
-        ctx.lineTo(this.width() - this.corner, bottom - inset);
-        ctx.lineTo(this.corner * 3 + this.inset + this.dent, bottom - inset);
-        ctx.lineTo(indent + this.dent, bottom + this.corner - inset);
-        ctx.lineTo(indent, bottom + this.corner - inset);
-        ctx.lineTo(this.corner + this.inset, bottom - inset);
-    };
-
-    // bottom left:
-    ctx.arc(
-        this.corner,
-        bottomCorner,
-        radius,
-        radians(90),
-        radians(180),
-        false
-    );
-};
-
-PrototypeHatBlockMorph.prototype.drawLeftEdge = function (ctx) {
-    var shift = this.edge * 0.5,
-        gradient = ctx.createLinearGradient(0, 0, this.edge, 0);
-
-    gradient.addColorStop(0, this.cachedClrBright);
-    gradient.addColorStop(1, this.cachedClr);
+PrototypeHatBlockMorph.prototype.drawEdges = function (ctx) {
+    var shift = this.edge / 2, x = this.width(),
+    y = 0, indent = this.corner * 2 + this.inset,
+    top = this.top(), bump = -(1.5 * this.edge),
+    r = ((4 * (this.hatHeight ** 2)) + ((this
+    ).hatWidth ** 2)) / (8 * this.hatHeight),
+    cslots = this.clearSlots(), lgx = (
+    this.corner + this.inset);
 
     ctx.lineWidth = this.edge;
     ctx.lineJoin = 'round';
-    ctx.lineCap = 'round';
+    ctx.lineCap = 'butt';
 
-    ctx.strokeStyle = gradient;
-    ctx.beginPath();
-    ctx.moveTo(shift, (this.hatHeight * 1.5) + this.corner);
-    ctx.lineTo(shift, this.height() - this.corner * 2 - shift);
-    ctx.stroke();
-};
+    ctx.strokeStyle = this.cachedClrBright;  ctx.beginPath();
+    ctx.moveTo(shift, this.height() - this.corner * 2 - shift
+    );  ctx.lineTo(shift, 35 * shift);
+    ctx.bezierCurveTo((x / 6), bump, ((5 * x) / 6
+    ), bump, x, 35 * shift); ctx.stroke();
 
-PrototypeHatBlockMorph.prototype.drawTopLeftEdge = function (ctx, flag) {
-if (asABool(flag)) {
-    var shift = this.edge * 0.5,
-        x = this.width(),
-        y,
-        gradient;
-
-    ctx.lineJoin = 'round';
-    ctx.lineCap = 'round';
-
-    gradient = ctx.createLinearGradient(x - this.edge, 0, x, 0);
-    gradient.addColorStop(0, this.color.toString());
-    gradient.addColorStop(1, this.color.darker().toString());
-    ctx.strokeStyle = gradient;
-    ctx.lineWidth = this.edge * 5;
-
-    ctx.beginPath();
-    ctx.moveTo(0, (this.hatHeight * 1.5) + this.corner);
-    ctx.bezierCurveTo(this.width() * (0.5 / 3), 0, this.width() * (2.5 / 3), 0, this.width(), (this.hatHeight * 1.5) + this.corner);
-    ctx.stroke();
-
-    gradient = ctx.createLinearGradient(x - this.edge, 0, x, 0);
-    gradient.addColorStop(0, SpriteMorph.prototype.blockColor.control.lighter().toString());
-    gradient.addColorStop(1, this.color.toString());
-    ctx.strokeStyle = gradient;
-    ctx.lineWidth = this.edge * 2.5;
-
-    ctx.moveTo(0, (this.hatHeight * 1.5) + this.corner);
-    ctx.bezierCurveTo(this.width() * (0.5 / 3), 0, this.width() * (2.5 / 3), 0, this.width(), (this.hatHeight * 1.5) + this.corner);
-    ctx.stroke();
-};};
-
-PrototypeHatBlockMorph.prototype.drawRightEdge = function (ctx) {
-    var shift = this.edge * 0.5,
-        x = this.width(),
-        y,
-        gradient;
-
-    gradient = ctx.createLinearGradient(x - this.edge, 0, x, 0);
-    gradient.addColorStop(0, this.cachedClr);
-    gradient.addColorStop(1, this.cachedClrDark);
-
-    ctx.lineWidth = this.edge;
-    ctx.lineJoin = 'round';
-    ctx.lineCap = 'round';
-    ctx.strokeStyle = gradient;
-
-    ctx.beginPath();
-    ctx.moveTo(x - shift, this.corner + (this.hatHeight * 1.5) + shift);
-    ctx.lineTo(x - shift, this.height() - this.corner * 2);
-    ctx.stroke();
-};
+    ctx.strokeStyle = this.cachedClrDark; ctx.beginPath();
+    ctx.moveTo(x - shift, (this.corner + this.hatHeight
+    ) + (this.edge * 3)); if (cslots.length > 0
+        ) {cslots.forEach(slot => {
+            y = slot.top() - top;
+            ctx.lineTo(x - shift,
+            y); ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(x - shift, y + slot.height(
+    ));});};   y = this.height() - this.corner;
+    ctx.arc(this.width() - this.corner,
+        this.height() - this.corner * 2,
+        this.corner - shift, 0, Math.PI / 2
+    );  if (!(this.isStop())) {ctx.lineTo(
+        this.corner * 3 + this.inset + this.dent,
+        y - shift );  ctx.lineTo(indent + this.dent,
+    y + this.corner - shift); ctx.lineTo(indent + shift,
+    y + this.corner - shift); ctx.stroke(); ctx.beginPath(
+    );  ctx.moveTo(this.corner + this.inset - shift, y - shift
+);};    ctx.lineTo(this.corner, y - shift); ctx.stroke();};
 
 PrototypeHatBlockMorph.prototype.mouseClickLeft = function () {if (this.world().currentKey === 16) {return this.focus();}; this.parts()[1].mouseClickLeft();};
 

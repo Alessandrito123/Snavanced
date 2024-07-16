@@ -7,7 +7,7 @@
     written by Jens Mönig and Brian Harvey
     jens@moenig.org, bh@cs.berkeley.edu
 
-    Copyright (C) 2023 by Jens Mönig and Brian Harvey
+    Copyright (C) 2024 by Jens Mönig and Brian Harvey
 
     This file is part of Snap!.
 
@@ -54,21 +54,7 @@
 
 */
 
-/*global modules, BoxMorph, HandleMorph, PushButtonMorph, SyntaxElementMorph,
-Color, Point, WatcherMorph, StringMorph, SpriteMorph, ScrollFrameMorph, isNil,
-CellMorph, ArrowMorph, MenuMorph, snapEquals, localize, isString, IDE_Morph,
-MorphicPreferences, TableDialogMorph, SpriteBubbleMorph, SpeechBubbleMorph,
-TableFrameMorph, TableMorph, Variable, isSnapObject, Costume, contains, detect,
-ZERO, WHITE*/
-
-/*jshint esversion: 6*/
-
-// Global settings /////////////////////////////////////////////////////
-
-modules.lists = '2023-July-24';
-
-var List;
-var ListWatcherMorph;
+var List, ListWatcherMorph;
 
 // List ////////////////////////////////////////////////////////////////
 
@@ -144,11 +130,12 @@ List.prototype.enableTables = true;
 
 // List printing
 
-List.prototype.toString = function anonymous () {return 'a List [' + this.length() + ' elements]';};
+List.prototype.toString = function () {return 'a List [' + this.length() + ' elements]';};
 
 // List updating:
 
-List.prototype.changed = function anonymous () {this.lastChanged = Date.now();};
+List.prototype.changed = function (
+) {this.lastChanged = Date.now();};
 
 // Linked List ops:
 
@@ -156,8 +143,7 @@ List.prototype.cons = function (car, cdr) {
     var answer = new List();
     if (!(cdr instanceof List || isNil(cdr))) {
         throw new Error("cdr isn't a list: " + cdr);
-    }
-    answer.first = isNil(car) ? null : car;
+    };  answer.first = isNil(car) ? null : car;
     answer.rest = cdr || null;
     answer.isLinked = true;
     return answer;
@@ -167,16 +153,12 @@ List.prototype.cdr = function () {
     var result, i;
     if (this.isLinked) {
         return this.rest || new List();
-    }
-    if (this.contents.length < 2) {
-        return new List();
-    }
-
-    result = new List();
+    };  if (this.contents.length < 2) {
+        return new List;
+    };  result = new List;
     for (i = this.contents.length; i > 1; i -= 1) {
         result = this.cons(this.at(i), result);
-    }
-    return result;
+    };  return result;
 };
 
 // List array setters:
@@ -204,8 +186,8 @@ List.prototype.put = function (element, index) {
     this.becomeArray();
     if (idx < 1 || idx > this.contents.length) {
         return;
-    }
-    this.contents[idx - 1] = data;
+    };  this.contents[
+    idx - 1] = data;
     this.changed();
 };
 
@@ -226,9 +208,12 @@ List.prototype.clear = function () {
 
 // List utilities
 
-List.prototype.map = function (callback) {return new List(this.itemsArray().map(callback));};
+List.prototype.map = function (callback
+) {return new List(this.itemsArray(
+).map(callback));};
 
-List.prototype.deepMap = function (callback) {return this.map(item => ((item instanceof List) ? item.deepMap(callback) : callback(item)));};
+List.prototype.deepMap = function (callback) {return this.map(item => (
+(item instanceof List) ? item.deepMap(callback) : callback(item)));};
 
 // List getters (all hybrid):
 
@@ -239,10 +224,9 @@ List.prototype.length = function () {
         while (pair && pair.isLinked) {
             result += 1;
             pair = pair.rest;
-        }
-        return result + (pair ? pair.contents.length : 0);
-    }
-    return this.contents.length;
+        };  return result + (
+        pair ? pair.contents.length : 0);
+    };  return this.contents.length;
 };
 
 List.prototype.at = function (index) {
@@ -262,15 +246,17 @@ List.prototype.at = function (index) {
     return isNil(value) ? '' : value;
 };
 
-List.prototype.contains = function anonymous (element) {
-return (this.indexOf(element) > 0);}; /* Now is fast. */
+List.prototype.contains = function (element
+) {return (this.indexOf(element) > 0);};
 
-List.prototype.onlyHas = function anonymous (element) {var result = [], i = 0; if (this.isEmpty()) {
-return false;}; while (i < this.length()) {result.push((this.at(i + 1) instanceof List) ? snapEquals(
-this.at(i + 1), element) : Process.prototype.reportIsIdentical(this.at(i + 1), element)); i++;}; i = 0;
-while (i < result.length) {if (!(result[i])) {return false;}; i++;}; return true;}; /* Exclusive true. */
+List.prototype.onlyHas = function (element) {var result = [], i = 0;
+if (this.isEmpty()) {return false;}; while (i < this.length()) {
+result.push((this.at(i + 1) instanceof List) ? snapEquals(
+this.at(i + 1), element) : Process.prototype.reportIsIdentical(
+this.at(i + 1), element)); i++;}; i = 0; while (i < result.length
+) {if (!(result[i])) {return false;}; i++;}; return true;};
 
-List.prototype.isEmpty = function anonymous () {
+List.prototype.isEmpty = function () {
 if (this.isLinked) {return isNil(this.first
 );}; return !(this.contents.length);};
 
@@ -283,7 +269,6 @@ pair.first instanceof Context
 Process.prototype.reportIsIdentical(
 pair.first, element)) {return idx;};
 pair = pair.rest; idx += 1;};
-/* in case I'm arrayed */
 len = pair.contents.length;
 for (i = 0; i < len; i += 1) {
 if (((pair.contents[i] instanceof Context

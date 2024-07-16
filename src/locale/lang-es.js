@@ -32,7 +32,7 @@ SnapTranslator.dict.es = {
 'Input names:' : 'Nombres de entrada:',
 
 'Remove viewer from stage' : 'Remove viewer from...',
-'View on stage' : 'View on...'
+'View on stage' : 'View on...',
 
 
 

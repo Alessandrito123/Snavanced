@@ -7,7 +7,7 @@
     written by Jens Mönig
     jens@moenig.org
 
-    Copyright (C) 2022 by Jens Mönig
+    Copyright (C) 2024 by Jens Mönig
 
     This file is part of Snap!.
 
@@ -29,25 +29,12 @@
     --------------
     needs gui.js, lists.js, objects.js, threads.js and morphic.js
 
-
-    documentation
-    -------------
-    along with this file you should have received a copy of the Snap! API
-    documentation. If not, see
-    https://github.com/jmoenig/Snap/blob/master/API.md
-    or https://snap.berkeley.edu/snap/API.md
-
 */
-
-/*global modules, IDE_Morph, isString, Map, List, world, isNil, Project,
-detect, isSnapObject, VariableFrame*/
-
-/*jshint esversion: 6*/
 
 /*
 # The Snap! API
 
-Jens Mönig, Bernat Romagosa, January 24, 2024
+Jens Mönig, Bernat Romagosa
 
 This document describes how Snap! can be accessed from an outside program to start scripts, send and retrieve information. The model use case is embedding interactive Snap! projects in other websites such as MOOCs or other adaptive learning platforms.
 
@@ -97,7 +84,7 @@ Currently the API consists of the following methods:
 Getting hold of an ide can usually be achieved by
 evaluating:
 
-    var ide = world.children[0];
+    var ide = world.childThatIsA(IDE_Morph);
 
 The model case in mind is embedding Snap! in an iframe:
 
@@ -161,7 +148,6 @@ The getScenes() method returns an array with the names of all scenes in the proj
 #### return value
 an Array of Strings, minimum length 1
 
-
 ### IDE_Morph.prototype.getCurrentScene()
 The getCurrentScene() method returns a string representing the name of the currently active scene in the project. If the scene is unnamed and empty string is returned.
 
@@ -170,7 +156,6 @@ The getCurrentScene() method returns a string representing the name of the curre
 
 #### return value
 a String, can be an empty String
-
 
 ### IDE_Morph.prototype.switchTo()
 The switchTo() method displays the specified scene. It suspends all processes and clones of the previously active scene and passes control to the new scene.
@@ -185,7 +170,6 @@ The switchTo() method displays the specified scene. It suspends all processes an
 #### return value
 undefined
 
-
 ### IDE_Morph.prototype.isRunning()
 The isRunning() method returns `true` if the active scene is currently running one or more threads, `false` if the scene is idle.
 
@@ -195,7 +179,6 @@ The isRunning() method returns `true` if the active scene is currently running o
 #### return value
 a Boolean
 
-
 ### IDE_Morph.prototype.stop()
 The stop() method immediately terminates all currently running threads in the active scene and removes all temporary clones. It does not trigger a "When I am stopped" event.
 
@@ -204,7 +187,6 @@ The stop() method immediately terminates all currently running threads in the ac
 
 #### return value
 undefined
-
 
 ### IDE_Morph.prototype.broadcast()
 The broadcast() method triggers all scripts whose hat block listens to the specified message. An optional callback can be added to be run after all triggered scripts have terminated.
@@ -221,7 +203,6 @@ The broadcast() method triggers all scripts whose hat block listens to the speci
 #### return value
 undefined
 
-
 ### IDE_Morph.prototype.addMessageListenerForAll()
 The addMessageListenerForAll() method sets up a function that will be called whenever a message is broadcast. The function takes one argument, the message being broadcast, and can be used to react to any message. Multiple message listeners can be set up, they all get executed in the order in which they were added.
 
@@ -234,7 +215,6 @@ The addMessageListenerForAll() method sets up a function that will be called whe
 
 #### return value
 undefined
-
 
 ### IDE_Morph.prototype.addMessageListener()
 The addMessageListener() method sets up a function that will be called whenever the specified message is broadcast. Multiple message listeners can be set up per message, they all the executed in the order in which they were added.
@@ -250,7 +230,6 @@ The addMessageListener() method sets up a function that will be called whenever 
 
 #### return value
 undefined
-
 
 #### IDE_Morph.prototype.getMessages()
 The getMessage() method returns a new Array that contains all the message strings that occur in the project, both in hat blocks and in broadcast blocks.
@@ -271,7 +250,6 @@ The getVarNames() method returns a new Array that contains all the global variab
 ### return value
 an Array of Strings, or an empty Array
 
-
 ### IDE_Morph.prototype.getVar()
 The getVar() method returns the value of the global variable indicated by the specified name.
 
@@ -280,7 +258,6 @@ The getVar() method returns the value of the global variable indicated by the sp
 
 #### return value
 whatever value the variable holds.
-
 
 ### IDE_Morph.prototype.setVar()
 The setVar() methods assigns a value to the a global variable specified by name.
@@ -291,7 +268,6 @@ The setVar() methods assigns a value to the a global variable specified by name.
 #### return value
 undefined
 
-
 ### IDE_Morph.prototype.newList()
 The newList() methods returns a new Snap! list. Optionally a source array containing the list elements can be specified.
 
@@ -301,7 +277,6 @@ The newList() methods returns a new Snap! list. Optionally a source array contai
 #### return value
 a new Snap! List
 
-
 ### IDE_Morph.prototype.getProjectXML()
 the getProjectXML() method returns a string in XML format representing the serialized project currently loaded into the IDE.
 
@@ -310,7 +285,6 @@ the getProjectXML() method returns a string in XML format representing the seria
 
 #### return value
 an XML String
-
 
 ### IDE_Morph.prototype.loadProjectXML()
 the loadProjectXML() method replaces the current project of the IDE with another serialized one encoded in a string in XML format. Note that no user acknowledgement is required, all unsaved edits to the prior project are lost.
@@ -325,7 +299,6 @@ the loadProjectXML() method replaces the current project of the IDE with another
 #### return value
 unefined
 
-
 ### IDE_Morph.prototype.unsavedChanges()
 the unsavedChanges() method return a Boolean value indicating whether the currently edited project has been modifed since it was last saved.
 
@@ -335,15 +308,10 @@ the unsavedChanges() method return a Boolean value indicating whether the curren
 #### return value
 a Boolean
 
-
 ## Manipulating Lists
 
 Snap! lists can be accessed and manipulated through a set of methods described in the file `lists.js`
 */
-
-// Global stuff ////////////////////////////////////////////////////////
-
-modules.api = '2022-December-24';
 
 // IDE_Morph external communication API - experimental
 
@@ -353,8 +321,8 @@ modules.api = '2022-December-24';
     global variables
 */
 
-window.onmessage = function (event) {if (world) {var ide = world.childThatIsA(IDE_Morph); if (!isNil(event.data.selector)) {window.top.postMessage(
-{selector: event.data.selector, response: ide[event.data.selector].apply(ide, event.data.params)}, '*');};};};
+window.onmessage = function (event) {if (world) {var ide = world.childThatIsA(IDE_Morph); if (!isNil(event.data.selector)) {
+window.top.postMessage({selector: event.data.selector, response: ide[event.data.selector].apply(ide, event.data.params)}, '*');};};};
 
 IDE_Morph.prototype.getScenes = function () {return this.scenes.itemsArray().map(each => each.name);};
 
@@ -365,8 +333,9 @@ if (scene === null) {throw new Error('cannot find scene ' + sceneName);}; this.s
 
 IDE_Morph.prototype.isRunning = function () {return this.stage.threads.processes.length > 0;};
 
-IDE_Morph.prototype.stop = function () {var stage = this.stage; stage.keysPressed = {}; stage.threads.stopAll(); stage.stopAllActiveSounds(); stage.children.forEach(
-morph => {if (morph.stopTalking) {morph.stopTalking();}}); stage.removeAllClones(); stage.stopProjection(); this.controlBar.pauseButton.refresh();};
+IDE_Morph.prototype.stop = function () {var stage = this.stage; stage.keysPressed = {}; stage.threads.stopAll();
+stage.stopAllActiveSounds(); stage.children.forEach(morph => {if (morph.stopTalking) {morph.stopTalking();}
+}); stage.removeAllClones(); stage.stopProjection(); this.controlBar.pauseButton.refresh();};
 
 IDE_Morph.prototype.broadcast = function(message, callback) {
     // same as using the broadcast block - launch all scripts

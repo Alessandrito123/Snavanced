@@ -70,13 +70,6 @@
         BPM_DataFlowMorph
 */
 
-/*global modules, WorldMorph, BoxMorph, TextMorph, Point, Color, MenuMorph,
-isNil, Morph, newCanvas, radians, nop, detect, StringMorph*/
-
-// Global stuff ////////////////////////////////////////////////////////
-
-modules.bpmn = '2021-February-22';
-
 var BPM_AnchorMorph;
 var BPM_EventMorph;
 var BPM_GatewayMorph;

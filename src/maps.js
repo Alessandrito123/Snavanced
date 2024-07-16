@@ -32,15 +32,8 @@
     credits:
     --------
     https://wiki.openstreetmap.org/wiki/Slippy_map_tilenames
+
 */
-
-/*global modules, Point, newCanvas, radians, StringMorph, normalizeCanvas*/
-
-// Global stuff ////////////////////////////////////////////////////////
-
-modules.maps = '2021-June-15';
-
-// WorldMap /////////////////////////////////////////////////////////////
 
 function WorldMap(host) {
     this.tileServers = {
@@ -255,8 +248,8 @@ WorldMap.prototype.render = function () {
             this.position.y % 1
         ).multiplyBy(size),
         tileOrigin = cntr.subtract(off),
-        tileDistance = tileOrigin.floorDivideBy(size).add(1),
-        tileGrid = this.extent.floorDivideBy(size).add(2),
+        tileDistance = tileOrigin.divideBy(size).add(1),
+        tileGrid = this.extent.divideBy(size).add(2),
         originTile = tile.subtract(tileDistance),
         mapOrigin = tileOrigin.subtract(
             tileDistance.multiplyBy(size)

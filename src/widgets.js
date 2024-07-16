@@ -77,16 +77,9 @@
 
 */
 
-var PushButtonMorph;
-var ToggleButtonMorph;
-var TabMorph;
-var ToggleMorph;
-var ToggleElementMorph;
-var DialogBoxMorph;
-var AlignmentMorph;
-var InputFieldMorph;
-var PianoMenuMorph;
-var PianoKeyMorph;
+var PushButtonMorph, ToggleElementMorph, ToggleButtonMorph,
+DialogBoxMorph, AlignmentMorph, InputFieldMorph, TabMorph,
+PianoMenuMorph, PianoKeyMorph, ToggleMorph;
 
 // PushButtonMorph /////////////////////////////////////////////////////
 
@@ -100,23 +93,20 @@ PushButtonMorph.uber = TriggerMorph.prototype;
 
 // PushButtonMorph preferences settings:
 
-PushButtonMorph.prototype.fontSize = 10;
-PushButtonMorph.prototype.fontStyle = 'sans-serif';
-PushButtonMorph.prototype.labelColor = BLACK;
-PushButtonMorph.prototype.labelShadowColor = WHITE;
-PushButtonMorph.prototype.labelShadowOffset = new Point(1, 1);
-
-PushButtonMorph.prototype.color = new Color(220, 220, 220);
-PushButtonMorph.prototype.pressColor = new Color(115, 180, 240);
-PushButtonMorph.prototype.highlightColor
-    = PushButtonMorph.prototype.pressColor.lighter(50);
-PushButtonMorph.prototype.outlineColor = new Color(30, 30, 30);
+PushButtonMorph.prototype.fontSize = 10; (PushButtonMorph
+).prototype.fontStyle = 'sans-serif'; (PushButtonMorph
+).prototype.labelColor = BLACK; (PushButtonMorph.prototype
+).labelShadowColor = WHITE; (PushButtonMorph.prototype
+).labelShadowOffset = new Point(1, 1); (PushButtonMorph
+).prototype.color = new Color(220, 220, 220); (PushButtonMorph
+).prototype.pressColor = new Color(115, 180, 240);
+PushButtonMorph.prototype.highlightColor = (
+PushButtonMorph).prototype.pressColor.lighter(50); 
 PushButtonMorph.prototype.outlineGradient = false;
-PushButtonMorph.prototype.contrast = 60;
-
-PushButtonMorph.prototype.edge = 2;
-PushButtonMorph.prototype.corner = 5;
-PushButtonMorph.prototype.outline = 1;
+PushButtonMorph.prototype.outlineColor = new Color(
+30, 30, 30, 0.5); PushButtonMorph.prototype.contrast = 60;
+PushButtonMorph.prototype.edge = 2; (PushButtonMorph.prototype
+).corner = 5; PushButtonMorph.prototype.outline = 1;
 PushButtonMorph.prototype.padding = 3;
 
 // PushButtonMorph instance creation:
@@ -135,15 +125,11 @@ function PushButtonMorph(
         environment,
         hint
     );
-}
+};
 
 PushButtonMorph.prototype.init = function (
-    target,
-    action,
-    labelString,
-    environment,
-    hint
-) {
+target, action, labelString, environment,
+hint) {
     // additional properties:
     this.is3D = false; // for "flat" design exceptions
     this.target = target || null;
@@ -160,11 +146,8 @@ PushButtonMorph.prototype.init = function (
 
     // override inherited properites:
     this.color = PushButtonMorph.prototype.color;
-    this.createLabel();
-    this.fixLayout();
-    this.rerender();
-
-    this.cursorStyle = 'pointer';
+    this.createLabel(); this.fixLayout(); (this
+    ).rerender();  this.cursorStyle = 'pointer';
 };
 
 // PushButtonMorph layout:
@@ -183,9 +166,8 @@ PushButtonMorph.prototype.fixLayout = function () {
                     this.label.rawHeight() : this.label.height(),
                 this.labelMinExtent.y
             ) + padding
-        );
-        this.label.setCenter(this.center());
-    }
+        );  this.label.setCenter(this.center());
+    };
 };
 
 // PushButtonMorph events
@@ -194,7 +176,7 @@ PushButtonMorph.prototype.mouseDownLeft = function () {
     PushButtonMorph.uber.mouseDownLeft.call(this);
     if (this.label) {
         this.label.setCenter(this.center().add(1));
-    }
+    };
 };
 
 PushButtonMorph.prototype.mouseClickLeft = function () {
@@ -202,31 +184,32 @@ PushButtonMorph.prototype.mouseClickLeft = function () {
     PushButtonMorph.uber.mouseClickLeft.call(this);
     if (this.label) {
         this.label.setCenter(this.center());
-    }
+    };
 };
 
 PushButtonMorph.prototype.mouseLeave = function () {
     PushButtonMorph.uber.mouseLeave.call(this);
     if (this.label) {
         this.label.setCenter(this.center());
-    }
+    };
 };
 
 // PushButtonMorph drawing:
 
-PushButtonMorph.prototype.render = function (ctx) {
-    if (this.userState === 'highlight') {
-        this.drawOutline(ctx);
-        this.drawBackground(ctx, this.highlightColor);
-        this.drawEdges(
-            ctx,
-            this.highlightColor,
+PushButtonMorph.prototype.render = function (
+    ctx) {var isFlat = MorphicPreferences.isFlat && !this.is3D;
+          if (this.userState === 'highlight'
+        )  {this.drawOutline(ctx
+        );  this.drawBackground(
+        ctx, (isFlat ? (this.highlightColor).lighter(this.contrast) : this.highlightColor)
+        );  this.drawEdges(
+            ctx, this.highlightColor,
             this.highlightColor.lighter(this.contrast),
             this.highlightColor.darker(this.contrast)
         );
     } else if (this.userState === 'pressed') {
         this.drawOutline(ctx);
-        this.drawBackground(ctx, this.pressColor);
+        this.drawBackground(ctx, (isFlat ? (this.pressColor).lighter(this.contrast) : this.pressColor));
         this.drawEdges(
             ctx,
             this.pressColor,
@@ -235,21 +218,20 @@ PushButtonMorph.prototype.render = function (ctx) {
         );
     } else {
         this.drawOutline(ctx);
-        this.drawBackground(ctx, this.color);
+        this.drawBackground(ctx, (isFlat ? (this.color).lighter(this.contrast) : this.color));
         this.drawEdges(
             ctx,
             this.color,
             this.color.lighter(this.contrast),
             this.color.darker(this.contrast)
         );
-    }
-};
+    };};
 
 PushButtonMorph.prototype.drawOutline = function (ctx) {
     var outlineStyle,
         isFlat = MorphicPreferences.isFlat && !this.is3D;
 
-    if (!this.outline) {return null; }
+    if (this.outline) {
     if (this.outlineGradient) {
         outlineStyle = ctx.createLinearGradient(
             0,
@@ -261,27 +243,23 @@ PushButtonMorph.prototype.drawOutline = function (ctx) {
         outlineStyle.addColorStop(1, (isFlat ? this.outlineColor.darker().toString() : 'white'));
     } else {
         outlineStyle = this.outlineColor.toString();
-    }
-    ctx.fillStyle = outlineStyle;
+    };  ctx.fillStyle = outlineStyle;
     ctx.beginPath();
     this.outlinePath(
         ctx,
-        this.corner,
-        0
-    );
-    ctx.closePath();
-    ctx.fill();
+        this.corner, 0
+    );  ctx.closePath();
+    ctx.fill();};
 };
 
 PushButtonMorph.prototype.drawBackground = function (ctx, color) {
     ctx.fillStyle = color.toString();
     ctx.beginPath();
-    this.outlinePath(
-        ctx,
-        Math.max(this.corner - this.outline, 0),
-        this.outline
-    );
-    ctx.closePath();
+    this.outlinePath(ctx,
+        Math.max((this.corner
+        ) - this.outline, 0
+        ),  this.outline);
+        ctx.closePath();
     ctx.fill();
     ctx.lineWidth = this.outline;
 };
@@ -291,8 +269,7 @@ PushButtonMorph.prototype.drawEdges = function (
     color,
     topColor,
     bottomColor
-) {
-    if (MorphicPreferences.isFlat && !this.is3D) {return;};
+)  {if (!(MorphicPreferences.isFlat && !(this.is3D))) {
     var minInset = Math.max(this.corner, this.outline + this.edge),
         w = this.width(),
         h = this.height(),
@@ -300,10 +277,8 @@ PushButtonMorph.prototype.drawEdges = function (
 
     // top:
     gradient = ctx.createLinearGradient(
-        0,
-        this.outline,
-        0,
-        this.outline + this.edge
+        0, this.outline,
+        0, this.outline + this.edge
     );
     gradient.addColorStop(0, topColor.toString());
     gradient.addColorStop(1, color.toString());
@@ -399,10 +374,9 @@ PushButtonMorph.prototype.drawEdges = function (
         h - this.corner,
         Math.max(this.corner - this.outline - this.edge / 2, 0),
         radians(0),
-        radians(90),
-        false
-    );
-    ctx.stroke();
+        radians(90
+        ), false
+    );  ctx.stroke();
 
     // right:
     gradient = ctx.createLinearGradient(
@@ -410,18 +384,14 @@ PushButtonMorph.prototype.drawEdges = function (
         0,
         w - this.outline - this.edge,
         0
-    );
-    gradient.addColorStop(0, bottomColor.toString());
-    gradient.addColorStop(1, color.toString());
+    );  gradient.addColorStop(0, bottomColor.toString(
+    )); gradient.addColorStop(1, color.toString());
 
-    ctx.strokeStyle = gradient;
-    ctx.lineCap = 'round';
-    ctx.lineWidth = this.edge;
-    ctx.beginPath();
-    ctx.moveTo(w - this.outline - this.edge / 2, minInset);
-    ctx.lineTo(w - this.outline - this.edge / 2, h - minInset);
-    ctx.stroke();
-};
+    ctx.strokeStyle = gradient; ctx.lineCap = 'round';
+    ctx.lineWidth = this.edge;  ctx.beginPath(
+    );  ctx.moveTo(w - this.outline - this.edge / 2,
+    minInset); ctx.lineTo(w - this.outline - this.edge / 2,
+    h - minInset); ctx.stroke();};};
 
 PushButtonMorph.prototype.outlinePath = BoxMorph.prototype.outlinePath;
 
@@ -430,14 +400,12 @@ PushButtonMorph.prototype.createLabel = function () {
 
     if (this.label !== null) {
         this.label.destroy();
-    }
-    if (this.labelString instanceof SymbolMorph) {
+    };  if (this.labelString instanceof SymbolMorph) {
         this.label = this.labelString.fullCopy();
         if (shading) {
             this.label.shadowOffset = this.labelShadowOffset;
             this.label.shadowColor = this.labelShadowColor;
-        }
-        this.label.color = this.labelColor;
+        };  this.label.color = this.labelColor;
     } else {
         this.label = new StringMorph(
             localize(this.labelString),
@@ -450,8 +418,7 @@ PushButtonMorph.prototype.createLabel = function () {
             this.labelShadowColor,
             this.labelColor
         );
-    }
-    this.add(this.label);
+    };  this.add(this.label);
 };
 
 PushButtonMorph.prototype.updateLabelColors = function () {
@@ -462,9 +429,8 @@ PushButtonMorph.prototype.updateLabelColors = function () {
         if (shading) {
             this.label.shadowOffset = this.labelShadowOffset;
             this.label.shadowColor = this.labelShadowColor;
-        }
-        this.label.fixLayout(true); // just me
-    }
+        };  this.label.fixLayout(true); // just me
+    };
 };
 
 // PushButtonMorph states
@@ -473,16 +439,14 @@ PushButtonMorph.prototype.disable = function () {
     this.isDisabled = true;
     this.forAllChildren(child =>
         child.alpha = 0.3
-    );
-    this.rerender();
+    );  this.rerender();
 };
 
 PushButtonMorph.prototype.enable = function () {
     this.isDisabled = false;
     this.forAllChildren(child =>
         child.alpha = 1
-    );
-    this.rerender();
+    );  this.rerender();
 };
 
 // ToggleButtonMorph ///////////////////////////////////////////////////////
@@ -555,57 +519,38 @@ ToggleButtonMorph.prototype.init = function (
 
     // initialize inherited properties:
     ToggleButtonMorph.uber.init.call(
-        this,
-        target,
-        action,
-        labelString,
-        environment,
-        hint
-    );
+    this, target, action, labelString,
+    environment, hint);
 
     // override default colors if others are specified
-    if (colors) {
-        this.color = colors[0];
+    if (colors) {this.color = colors[0
+        ];  this.pressColor = colors[2];
         this.highlightColor = colors[1];
-        this.pressColor = colors[2];
-    }
-
-    this.refresh();
-    this.rerender();
+    };  this.refresh(); this.rerender();
 };
 
 // ToggleButtonMorph events
 
 ToggleButtonMorph.prototype.mouseEnter = function () {
-    var contents = this.hint instanceof Function ? this.hint() : this.hint;
-    if (!this.state || this.hasNeutralBackground) {
-        this.userState = 'highlight';
-        this.rerender();
-    }
-    if (contents) {
-        this.bubbleHelp(contents);
-    }
-};
+var contents = this.hint instanceof Function ? this.hint(
+) : this.hint; if (!this.state || this.hasNeutralBackground
+) {this.userState = 'highlight'; this.rerender();
+}; if (contents) {this.bubbleHelp(contents);};};
 
 ToggleButtonMorph.prototype.mouseLeave = function () {
     if (!this.state || this.hasNeutralBackground) {
         this.userState = 'normal';
         this.rerender();
-    }
-    if (this.schedule) {
+    };  if (this.schedule) {
         this.schedule.isActive = false;
-    }
-    if (this.hint) {
-        this.world().hand.destroyTemporaries();
-    }
+    };  if (this.hint) {
+        (world.hand
+        ).destroyTemporaries();
+    };
 };
 
-ToggleButtonMorph.prototype.mouseDownLeft = function () {
-    if (!this.state) {
-        this.userState = 'pressed';
-        this.rerender();
-    }
-};
+ToggleButtonMorph.prototype.mouseDownLeft = function () {if (
+!this.state) {this.userState = 'pressed'; this.rerender();};};
 
 ToggleButtonMorph.prototype.mouseClickLeft = function () {
     if (!this.state) {
@@ -938,7 +883,7 @@ function TabMorph(
 // TabMorph layout:
 
 TabMorph.prototype.fixLayout = function () {
-    if (this.label !== null) {
+    if (!isNil(this.label)) {
         this.updateLabelColors();
         this.setExtent(new Point(
             this.label.width()
@@ -946,22 +891,17 @@ TabMorph.prototype.fixLayout = function () {
                 + this.corner * 3
                 + this.edge * 2,
             (this.label instanceof StringMorph ?
-                        this.label.rawHeight() : this.label.height())
-                + this.padding * 2
-                + this.edge
-        ));
-        this.label.setCenter(this.center());
-    }
-};
+             this.label.rawHeight() : this.label.height())
+                + (this.padding * 2) + this.edge
+        ));  this.label.setCenter(this.center());};};
 
 // TabMorph action:
 
 TabMorph.prototype.refresh = function () {
     if (this.state) { // bring to front
         if (this.parent) {
-            this.parent.add(this);
-        }
-    }
+            this.parent.add(
+            this);};};
     TabMorph.uber.refresh.call(this);
 };
 
@@ -1054,7 +994,7 @@ function ToggleMorph(
         element,
         builder
     );
-}
+};
 
 ToggleMorph.prototype.init = function (
     style,
@@ -1071,10 +1011,10 @@ ToggleMorph.prototype.init = function (
     this.padding = 1;
     style = style || 'checkbox';
     this.corner = (style === 'checkbox' ?
-            0 : fontHeight(this.fontSize) / 2 + this.outline + this.padding);
-    this.state = false;
-    this.query = query || (() => true);
-    this.tick = null;
+    0 : (fontHeight(this.fontSize) / 2
+    ) + this.outline + this.padding);
+    this.state = false; this.query = (
+    query || (() => true)); this.tick = null;
     this.captionString = labelString || null;
     this.labelAlignment = 'right';
     this.element = element || null;
@@ -1086,12 +1026,12 @@ ToggleMorph.prototype.init = function (
         this,
         target,
         action,
-        (style === 'checkbox' ? '\u2713' : '\u25CF'),
+        (style === 'checkbox'
+        ) ? '\u2713' : '\u25CF',
         environment,
         hint
-    );
-    this.fixLayout();
-    this.refresh();
+    );  this.fixLayout(
+    );  this.refresh();
 };
 
 // ToggleMorph layout:
@@ -1105,20 +1045,17 @@ ToggleMorph.prototype.fixLayout = function () {
         this.bounds.setWidth(Math.max(this.width(), this.height()));
         this.bounds.setHeight(Math.max(this.width(), this.height()));
         this.tick.setCenter(this.center());
-    }
-    if (this.state) {
+    };  if (this.state) {
         this.tick.show();
     } else {
         this.tick.hide();
-    }
-    if (this.toggleElement && (this.labelAlignment === 'right')) {
+    };  if (this.toggleElement && (this.labelAlignment === 'right')) {
         y = this.top() + (this.height() - this.toggleElement.height()) / 2;
         this.toggleElement.setPosition(new Point(
             this.right() + padding,
             y
         ));
-    }
-    if (this.label !== null) {
+    };  if (this.label !== null) {
         y = this.top() + (this.height() - this.label.height()) / 2;
         if (this.labelAlignment === 'right') {
             this.label.setPosition(new Point(
@@ -1134,8 +1071,8 @@ ToggleMorph.prototype.fixLayout = function () {
                 this.left() - this.label.width() - padding,
                 y
             ));
-        }
-    }
+        };
+    };
 };
 
 ToggleMorph.prototype.createLabel = function () {
@@ -1147,9 +1084,9 @@ ToggleMorph.prototype.createLabel = function () {
                 localize(this.captionString),
                 this.fontSize,
                 this.fontStyle,
-                true
-            );
-            this.add(this.label);
+                true);
+            this.add(
+            this.label);
         }
     }
     if (this.tick === null) {
@@ -1157,12 +1094,11 @@ ToggleMorph.prototype.createLabel = function () {
             localize(this.labelString),
             this.fontSize,
             this.fontStyle,
-            true,
-            false,
-            false,
-            shading ? new Point(1, 1) : null,
-            new Color(240, 240, 240)
-        );
+            true,    false,
+            false, (shading
+            ) ? new Point(1, 1
+            ) : null, new Color(
+            240, 240, 240));
         this.add(this.tick);
     }
     if (this.toggleElement === null) {
@@ -1194,16 +1130,15 @@ ToggleMorph.prototype.createLabel = function () {
                 this.toggleElement.cachedImage = this.element;
             }
             this.add(this.toggleElement);
-        }
-    }
+        };
+    };
 };
 
 // ToggleMorph action:
 
-ToggleMorph.prototype.trigger = function () {
-    ToggleMorph.uber.trigger.call(this);
-    this.refresh();
-};
+ToggleMorph.prototype.trigger = function (
+) {ToggleMorph.uber.trigger.call(this
+); this.refresh();};
 
 ToggleMorph.prototype.refresh = function () {
     /*
@@ -1219,16 +1154,14 @@ ToggleMorph.prototype.refresh = function () {
         this.state = this.query.call(this.target);
     } else { // assume it's a String
         this.state = this.target[this.query]();
-    }
-    if (this.state) {
+    };  if (this.state) {
         this.tick.show();
     } else {
         this.tick.hide();
-    }
-    if (this.toggleElement && this.toggleElement.refresh &&
+    };  if (this.toggleElement && this.toggleElement.refresh &&
             !this.toggleElement.isToggleLabel) {
         this.toggleElement.refresh();
-    }
+    };
 };
 
 // ToggleMorph events
@@ -1342,7 +1275,7 @@ ToggleElementMorph.prototype.render = function (ctx) {
                     this.shadowOffset,
                     this.userState === 'normal' ? 0 : this.shadowAlpha
                 );
-            }
+            };
         };
 
     this.color = this.element.color;
@@ -1361,19 +1294,16 @@ ToggleElementMorph.prototype.render = function (ctx) {
     if (this.element.doWithAlpha) {
         ctx.drawImage(
             this.element.doWithAlpha(
-                1,
-                () => {
+                1,  () => {
                     shadow();
                     return this.element.fullImage();
-                }
-            ),
-            0,
-            0
+                }), 0, 0
         );
-    } else {
-        shadow();
-        ctx.drawImage(this.element.fullImage(), 0, 0);
-    }
+    } else {shadow();
+        ctx.drawImage(
+        (this.element
+        ).fullImage(
+        ), 0, 0);};
 
     // reset element
     this.element.removeShadow();
@@ -1406,8 +1336,8 @@ ToggleElementMorph.prototype.createLabel = function () {
             this.fontSize,
             this.fontStyle,
             true
-        );
-        this.add(this.label);
+        );  this.add(
+        this.label);
         y = this.top() + (this.height() - this.label.height()) / 2;
         if (this.labelAlignment === 'right') {
             this.label.setPosition(new Point(
@@ -1419,8 +1349,8 @@ ToggleElementMorph.prototype.createLabel = function () {
                 this.left() - this.label.width(),
                 y
             ));
-        }
-    }
+        };
+    };
 };
 
 // ToggleElementMorph action
@@ -1493,9 +1423,9 @@ DialogBoxMorph.prototype.instances = {}; // prevent multiple instances
 
 // DialogBoxMorph instance creation:
 
-function DialogBoxMorph(target, action, environment) {
-    this.init(target, action, environment);
-};
+function DialogBoxMorph(target, action,
+environment) {this.init(target,
+action, environment);};
 
 DialogBoxMorph.prototype.init = function (target, action, environment) {
     // additional properties:
@@ -1817,7 +1747,7 @@ DialogBoxMorph.prototype.promptVector = function (
 
     if (msg) {
         bdy.add(labelText(msg));
-    }
+    };
 
     bdy.add(inp);
 
@@ -1967,7 +1897,7 @@ DialogBoxMorph.prototype.promptRGB = function (
 
     if (!this.key) {
         this.key = 'RGB' + title;
-    }
+    };
 
     this.popUp(world);
 }; DialogBoxMorph.prototype.promptRGBA = function (
@@ -2007,7 +1937,7 @@ DialogBoxMorph.prototype.promptRGB = function (
             MorphicPreferences.isFlat ? null : new Point(1, 1),
             WHITE // shadowColor
         );
-    }
+    };
 
     function constrainRGB (num) {return Math.max(0, Math.min(num, 255));};
     function constrainAlpha (num) {return Math.max(0, Math.min(num, 1));};
@@ -2074,17 +2004,14 @@ picker.mouseClickLeft = (() => picker.spawnRGBAEditorDialog(picker));
     bdy.fixLayout();
 
     this.labelString = title;
-    this.createLabel();
-    if (pic) {this.setPicture(pic); }
-
-    this.addBody(bdy);
-
-    this.addButton('ok', 'OK');
-
-    this.addButton('cancel', 'Cancel');
-    this.fixLayout();
-
-    this.edit = function () {field.edit();};
+    this.createLabel();  if (
+    pic) {this.setPicture(pic
+    );};  this.addBody(bdy);
+    this.addButton('ok', 'OK'
+    ); this.addButton('cancel',
+    'Cancel'); this.fixLayout();
+    this.edit = function (
+    ) {field.edit();};
 
     this.getInput = function () {
         return {
@@ -2093,363 +2020,8 @@ picker.mouseClickLeft = (() => picker.spawnRGBAEditorDialog(picker));
         };
     };
 
-    if (!this.key) {this.key = 'category' + title;};
-
-    this.popUp(world);
-};
-
-DialogBoxMorph.prototype.promptCredentials = function (
-    title,
-    purpose,
-    tosURL,
-    tosLabel,
-    prvURL,
-    prvLabel,
-    checkBoxLabel,
-    world,
-    pic,
-    msg
-) {
-    var usr = new InputFieldMorph,
-        bmn,
-        byr,
-        emlLabel,
-        eml = new InputFieldMorph,
-        pw1 = new InputFieldMorph,
-        pw2 = new InputFieldMorph,
-        opw = new InputFieldMorph,
-        agree = false,
-        chk,
-        dof = new AlignmentMorph('row', 4),
-        mCol = new AlignmentMorph('column', 2),
-        yCol = new AlignmentMorph('column', 2),
-        inp = new AlignmentMorph('column', 2),
-        lnk = new AlignmentMorph('row', 4),
-        bdy = new AlignmentMorph('column', this.padding),
-        years = {},
-        currentYear = new Date().getFullYear(),
-        firstYear = currentYear - 20,
-        myself = this;
-
-    function labelText(string) {
-        return new TextMorph(
-            localize(string),
-            10,
-            null, // style
-            false, // bold
-            null, // italic
-            null, // alignment
-            null, // width
-            null, // font name
-            MorphicPreferences.isFlat ? null : new Point(1, 1),
-            WHITE // shadowColor
-        );
-    }
-
-    function linkButton(label, url) {
-        var btn = new PushButtonMorph(
-            myself,
-            () => window.open(url),
-            '  ' + localize(label) + '  '
-        );
-        btn.fontSize = 10;
-        btn.corner = myself.buttonCorner;
-        btn.edge = myself.buttonEdge;
-        btn.outline = myself.buttonOutline;
-        btn.outlineColor = myself.buttonOutlineColor;
-        btn.outlineGradient = myself.buttonOutlineGradient;
-        btn.padding = myself.buttonPadding;
-        btn.contrast = myself.buttonContrast;
-        btn.fixLayout();
-        return btn;
-    }
-
-    function age() {
-        var today = new Date().getFullYear() + new Date().getMonth() / 12,
-            year = +byr.getValue() || 0,
-            monthName = bmn.getValue(),
-            month,
-            birthday;
-        if (monthName instanceof Array) { // translatable
-            monthName = monthName[0];
-        }
-        if (isNaN(year)) {
-            year = 0;
-        }
-        month = [
-            'January',
-            'February',
-            'March',
-            'April',
-            'May',
-            'June',
-            'July',
-            'August',
-            'September',
-            'October',
-            'November',
-            'December'
-        ].indexOf(monthName);
-        if (isNaN(month)) {
-            month = 0;
-        }
-        birthday = year + month / 12;
-        return today - birthday;
-    }
-
-    bmn = new InputFieldMorph(
-        null, // text
-        false, // numeric?
-        {
-            'January' : ['January'],
-            'February' : ['February'],
-            'March' : ['March'],
-            'April' : ['April'],
-            'May' : ['May'],
-            'June' : ['June'],
-            'July' : ['July'],
-            'August' : ['August'],
-            'September' : ['September'],
-            'October' : ['October'],
-            'November' : ['November'],
-            'December' : ['December']
-        },
-        true // read-only
-    );
-    for (currentYear; currentYear > firstYear; currentYear -= 1) {
-        years[currentYear.toString() + ' '] = currentYear;
-    }
-    years[firstYear + ' ' + localize('or before')] = '< ' + currentYear;
-    byr = new InputFieldMorph(
-        null, // text
-        false, // numeric?
-        years,
-        true // read-only
-    );
-
-    inp.alignment = 'left';
-    inp.setColor(this.color);
-    bdy.setColor(this.color);
-
-    mCol.alignment = 'left';
-    mCol.setColor(this.color);
-    yCol.alignment = 'left';
-    yCol.setColor(this.color);
-
-    usr.setWidth(200);
-    bmn.setWidth(100);
-    byr.contents().minWidth = 80;
-    byr.setWidth(80);
-    eml.setWidth(200);
-    pw1.setWidth(200);
-    pw2.setWidth(200);
-    opw.setWidth(200);
-    pw1.contents().text.toggleIsPassword();
-    pw2.contents().text.toggleIsPassword();
-    opw.contents().text.toggleIsPassword();
-
-    if (purpose === 'login') {
-        inp.add(labelText('User name:'));
-        inp.add(usr);
-    }
-
-    if (purpose === 'signup') {
-        inp.add(labelText('User name:'));
-        inp.add(usr);
-        mCol.add(labelText('Birth date:'));
-        mCol.add(bmn);
-        yCol.add(labelText('year:'));
-        yCol.add(byr);
-        dof.add(mCol);
-        dof.add(yCol);
-        inp.add(dof);
-        emlLabel = labelText('foo');
-        inp.add(emlLabel);
-        inp.add(eml);
-        inp.add(labelText('Password:'));
-        inp.add(pw1);
-        inp.add(labelText('Repeat Password:'));
-        inp.add(pw2);
-    }
-
-    if (purpose === 'login') {
-        inp.add(labelText('Password:'));
-        inp.add(pw1);
-    }
-
-    if (purpose === 'changePassword') {
-        inp.add(labelText('Old password:'));
-        inp.add(opw);
-        inp.add(labelText('New password:'));
-        inp.add(pw1);
-        inp.add(labelText('Repeat new password:'));
-        inp.add(pw2);
-    }
-
-    if (purpose === 'resetPassword' || purpose === 'resendVerification') {
-        inp.add(labelText('User name:'));
-        inp.add(usr);
-    }
-
-    if (msg) {
-        bdy.add(labelText(msg));
-    }
-
-    bdy.add(inp);
-
-    if (tosURL || prvURL) {
-        bdy.add(lnk);
-    }
-    if (tosURL) {
-        lnk.add(linkButton(tosLabel, tosURL));
-    }
-    if (prvURL) {
-        lnk.add(linkButton(prvLabel, prvURL));
-    }
-
-    if (checkBoxLabel) {
-        chk = new ToggleMorph(
-            'checkbox',
-            this,
-            () => agree = !agree, // action,
-            checkBoxLabel,
-            () => agree //query
-        );
-        chk.edge = this.buttonEdge / 2;
-        chk.outline = this.buttonOutline / 2;
-        chk.outlineColor = this.buttonOutlineColor;
-        chk.outlineGradient = this.buttonOutlineGradient;
-        chk.contrast = this.buttonContrast;
-        chk.fixLayout();
-        bdy.add(chk);
-    }
-
-    dof.fixLayout();
-    mCol.fixLayout();
-    yCol.fixLayout();
-    inp.fixLayout();
-    lnk.fixLayout();
-    bdy.fixLayout();
-
-    this.labelString = title;
-    this.createLabel();
-    if (pic) {this.setPicture(pic); }
-
-    this.addBody(bdy);
-
-    this.addButton('ok', 'OK');
-    this.addButton('cancel', 'Cancel');
-    this.fixLayout();
-
-    function validInputs() {
-        var checklist,
-            empty,
-            em = eml.getValue();
-
-        function indicate(morph, string) {
-            var bubble = new SpeechBubbleMorph(localize(string));
-            bubble.isPointingRight = false;
-            bubble.fixLayout();
-            bubble.popUp(
-                world,
-                morph.leftCenter().subtract(new Point(bubble.width() + 2, 0))
-            );
-            if (morph.edit) {
-                morph.edit();
-            }
-        }
-
-        if (purpose === 'login') {
-            checklist = [usr, pw1];
-        } else if (purpose === 'signup') {
-            checklist = [usr, bmn, byr, eml, pw1, pw2];
-        } else if (purpose === 'changePassword') {
-            checklist = [opw, pw1, pw2];
-        } else if (purpose === 'resetPassword' ||
-                purpose === 'resendVerification') {
-            checklist = [usr];
-        }
-
-        empty = detect(
-            checklist,
-            inp => !inp.getValue()
-        );
-        if (empty) {
-            indicate(empty, 'please fill out\nthis field');
-            return false;
-        }
-        if (purpose === 'signup') {
-            if (usr.getValue().length < 4) {
-                indicate(usr, 'User name must be four\ncharacters or longer');
-                return false;
-            }
-            if (em.indexOf(' ') > -1 || em.indexOf('@') === -1
-                    || em.indexOf('.') === -1 || em.length < 5) {
-                indicate(eml, 'please provide a valid\nemail address');
-                return false;
-            }
-        }
-        if (purpose === 'changePassword' || purpose === 'signup') {
-            if (pw1.getValue().length < 6) {
-                indicate(pw1, 'password must be six\ncharacters or longer');
-                return false;
-            }
-            if (pw1.getValue() !== pw2.getValue()) {
-                indicate(pw2, 'passwords do\nnot match');
-                return false;
-            }
-        }
-        if (purpose === 'signup') {
-            if (!agree) {
-                indicate(chk, 'please agree to\nthe TOS');
-                return false;
-            }
-        }
-        return true;
-    }
-
-    this.accept = function () {
-        if (validInputs()) {
-            DialogBoxMorph.prototype.accept.call(myself);
-        }
-    };
-
-    this.edit = function () {
-        if (purpose === 'changePassword') {
-            opw.edit();
-        } else { // 'signup', 'login', 'resetPassword', 'resendVerification'
-            usr.edit();
-        }
-    };
-
-    this.getInput = function () {
-        return {
-            username: usr.getValue(),
-            email: eml.getValue(),
-            oldpassword: opw.getValue(),
-            password: pw1.getValue(),
-            passwordRepeat: pw2.getValue(),
-            choice: agree
-        };
-    };
-
-    this.reactToChoice = function () {
-        if (purpose === 'signup') {
-            emlLabel.changed();
-            emlLabel.text = age() <= 13 ?
-                    'E-mail address of parent or guardian:'
-                        : 'E-mail address:';
-            emlLabel.text = localize(emlLabel.text);
-            emlLabel.fixLayout();
-            emlLabel.rerender();
-        }
-    };
-
-    this.reactToChoice(); // initialize e-mail label
-
-    if (!this.key) {
-        this.key = 'credentials' + title + purpose;
-    }
+    if (!this.key) {this.key = (
+    'category').concat(title);};
 
     this.popUp(world);
 };
@@ -2476,52 +2048,37 @@ DialogBoxMorph.prototype.accept = function () {
     if (this.action) {
         if (typeof this.target === 'function') {
             if (typeof this.action === 'function') {
-                this.target.call(this.environment, this.action.call());
-            } else {
-                this.target.call(this.environment, this.action);
-            }
+                this.target.call(this.environment,
+                this.action.call());} else {
+                this.target.call(this.environment,
+                this.action);};
         } else {
             if (typeof this.action === 'function') {
                 this.action.call(this.target, this.getInput());
             } else { // assume it's a String
                 this.target[this.action](this.getInput());
-            }
-        }
-    }
-    this.destroy();
+            };
+        };
+    };  this.destroy();
 };
 
-DialogBoxMorph.prototype.withKey = function (key) {
-    this.key = key;
-    return this;
-};
+DialogBoxMorph.prototype.withKey = function (
+key) {this.key = key; return this;};
 
-DialogBoxMorph.prototype.popUp = function (world) {
-    if (world) {
-        if (this.key) {
-            if (this.instances[world.stamp]) {
-                if (this.instances[world.stamp][this.key]) {
-                    this.instances[world.stamp][this.key].destroy();
-                }
-                this.instances[world.stamp][this.key] = this;
-            } else {
-                this.instances[world.stamp] = {};
-                this.instances[world.stamp][this.key] = this;
-            }
-        }
-        world.add(this);
-        world.keyboardFocus = this;
-        this.setCenter(world.center());
-        this.edit();
-    }
-};
+DialogBoxMorph.prototype.popUp = function (
+world) {if (world) {if (this.key) {if ((this
+).instances[0]) {if ((this.instances[0])[(
+this).key]) {(this.instances[0])[this.key
+].destroy();}; (this.instances[0])[(this
+).key] = this;} else {this.instances[
+0] = {}; (this.instances[0])[this.key
+] = this;};}; world.add(this); (world
+).keyboardFocus = this; this.setCenter(
+world.center()); this.edit();};};
 
-DialogBoxMorph.prototype.destroy = function () {
-    DialogBoxMorph.uber.destroy.call(this);
-    if (this.key) {
-        delete this.instances[this.key];
-    }
-};
+DialogBoxMorph.prototype.destroy = function (
+) {DialogBoxMorph.uber.destroy.call(this);
+if (this.key) {(this.instances).pop();};};
 
 DialogBoxMorph.prototype.ok = function () {
     this.accept();
@@ -2535,15 +2092,14 @@ DialogBoxMorph.prototype.edit = function () {
     this.children.forEach(c => {
         if (c.edit) {
             c.edit();
-        }
+        };
     });
 };
 
 DialogBoxMorph.prototype.getInput = function () {
     if (this.body instanceof InputFieldMorph) {
         return this.body.getValue();
-    }
-    return null;
+    };  return null;
 };
 
 DialogBoxMorph.prototype.justDropped = function (hand) {
@@ -2552,7 +2108,6 @@ DialogBoxMorph.prototype.justDropped = function (hand) {
 };
 
 DialogBoxMorph.prototype.destroy = function () {
-    var world = this.world();
     world.keyboardFocus = null;
     world.hand.destroyTemporaries();
     DialogBoxMorph.uber.destroy.call(this);
@@ -2567,13 +2122,12 @@ DialogBoxMorph.prototype.normalizeSpaces = function (string) {
             if (flag) {
                 ans += c;
                 flag = false;
-            }
+            };
         } else {
             ans += c;
             flag = true;
-        }
-    }
-    return ans.trim();
+        };
+    };  return ans.trim();
 };
 
 // DialogBoxMorph submorph construction
@@ -2583,39 +2137,32 @@ DialogBoxMorph.prototype.createLabel = function () {
 
     if (this.label) {
         this.label.destroy();
-    }
-    if (this.labelString) {
+    };  if (this.labelString) {
         this.label = new StringMorph(
-            localize(this.labelString),
-            this.titleFontSize,
-            this.fontStyle,
-            true,
-            false,
-            false,
+            localize(this.labelString
+            ),   this.titleFontSize,
+            this.fontStyle,  true,
+            false,   false,
             shading ? new Point(2, 1) : null,
             this.titleBarColor.darker(this.contrast)
-        );
-        this.label.color = this.titleTextColor;
+        );  this.label.color = this.titleTextColor;
         this.label.fixLayout();
         this.add(this.label);
-    }
+    };
 };
 
-DialogBoxMorph.prototype.createButtons = function () {
-    if (this.buttons) {
+DialogBoxMorph.prototype.createButtons = (
+    function () {if (this.buttons) {
         this.buttons.destroy();
-    }
-    this.buttons = new AlignmentMorph('row', this.padding);
-    this.add(this.buttons);
-};
+    };  this.buttons = new AlignmentMorph('row',
+    this.padding); this.add(this.buttons);
+});
 
 DialogBoxMorph.prototype.addButton = function (action, label) {
-    var button = new PushButtonMorph(
-        this,
-        action || 'ok',
-       ((label instanceof SymbolMorph) ? label :
-       '  ' + localize((label || 'OK')) + '  ')
-    ); button.fontSize = this.buttonFontSize;
+    var button = new PushButtonMorph(this,    (action || 'ok'
+        ),  ((label instanceof SymbolMorph) ? label : (
+        '  ' + localize((label || 'OK')) + '  '))
+    );  button.fontSize = this.buttonFontSize;
     button.corner = this.buttonCorner;
     button.edge = this.buttonEdge;
     button.outline = this.buttonOutline;
@@ -3237,7 +2784,7 @@ InputFieldMorph.prototype.dropDownMenu = function () {
         }
     }
     if (menu.items.length > 0) {
-        menu.popUpAtHand(this.world());
+        menu.popUpAtHand(world);
     } else {
         return null;
     }

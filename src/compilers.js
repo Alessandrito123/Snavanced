@@ -1,4 +1,4 @@
-modules.compilers = '2023-June-01'; var JSCompiler;
+var JSCompiler;
 
 // JSCompiler /////////////////////////////////////////////////////////////////
 
@@ -370,6 +370,9 @@ return ((contains(['number', 'Boolean'], (new Process).reportTypeOf(reportBasicT
 } else if (blocks.selector === 'reportJSFunction') {return '\(function anonymous \(' + blocks.inputs()[0].evaluate() + '\n\) \{\n' + blocks.inputs()[1].evaluate() + '\n\}\)';
 } else if (blocks.selector === 'reportScript') {return '\(' + (new Function(blocks.inputs()[0].evaluate(), reportBasicToJS(blocks.inputs()[1].nestedBlock()))) + '\)';
 } else if (blocks.selector === 'reify') {return '\(' + (new Function(blocks.inputs()[1].evaluate(), reportBasicToJS(blocks.inputs()[0].nestedBlock()))) + '\)';
+} else if (blocks.selector === 'reifyCommand') {return '\(' + (new Function(blocks.inputs()[1].evaluate(), reportBasicToJS(blocks.inputs()[0].nestedBlock()))) + '\)';
+} else if (blocks.selector === 'reifyReporter') {return '\(' + (new Function(blocks.inputs()[1].evaluate(), reportBasicToJS(blocks.inputs()[0].nestedBlock()))) + '\)';
+} else if (blocks.selector === 'reifyPredicate') {return '\(' + (new Function(blocks.inputs()[1].evaluate(), reportBasicToJS(blocks.inputs()[0].nestedBlock()))) + '\)';
 } else if (blocks.selector === 'reportNewList') {return 'new List\(' + reportBasicToJS(blocks.inputs()[0]) + '\)';
 } else if (blocks.selector === 'reportNumbers') {return '\(\(new Process\).reportNumbers\(' + reportBasicToJS(blocks.inputs()[0]) + ',' + reportBasicToJS(blocks.inputs()[1]) + '\)\)';
 } else if (blocks.selector === 'reportConcatenatedLists') {return '\(new List\(\[\].concat\(' + reportBasicToJS(blocks.inputs()[0]) + '\)\)\)';
@@ -377,66 +380,3 @@ return ((contains(['number', 'Boolean'], (new Process).reportTypeOf(reportBasicT
 } else if (blocks.selector === 'reportGetVar') {return blocks.blockSpec;} else {return '';};} else {return '';};};
 function reportToJS (input) {if (input instanceof List) {return new List(input.asArray().map(miniInput => reportToJS(miniInput)));}
 else if (input instanceof Context) {return reportBasicToJS(input);} else {return reportBasicToJS(new Context());};};
-
-function JSBlocksCompiler (morphs) {var result = '';
-if (morphs instanceof CommandBlockMorph) {
-if (morphs.selector === 'JSBlocksReturnStatement') {
-result = result.concat('return '.concat(JSBlocksCompiler(morphs.children[1]), '\;'));
-} else if (morphs.selector === 'JSBlocksSwitchStatement') {
-result = result.concat('switch \('.concat((JSBlocksCompiler(morphs.children[0]) === '' ? 'null' : JSBlocksCompiler(morphs.children[0])),
-'\) \{\n', JSBlocksCompiler(morphs.inputs()[1].nestedBlock()), '\}\;'));
-} else if (morphs.selector === 'JSBlocksCaseStatement') {
-result = result.concat('case \('.concat((JSBlocksCompiler(morphs.children[0]) === '' ? 'null' : JSBlocksCompiler(morphs.children[0])),
-'\) :\n', JSBlocksCompiler(morphs.inputs()[1].nestedBlock())));
-} else if (morphs.selector === 'JSBlocksBreakStatement') {
-result = result.concat('break'.concat((morphs.inputs()[0].inputs().length === 0 ? '' : (' ').concat(morphs.inputs()[0].inputs(
-)[0].blockSpec)), '\;'));
-} else if (morphs.selector === 'JSBlocksContinueStatement') {result = result.concat('continue'.concat(
-(morphs.inputs()[0].inputs().length === 0 ? '' : (' ').concat(morphs.inputs()[0].inputs()[0].blockSpec)), '\;'));
-} else if (morphs.selector === 'JSBlocksWithStatement') {
-result = result.concat('with \('.concat((JSBlocksCompiler(morphs.children[0]) === '' ? 'null' : JSBlocksCompiler(morphs.children[0])),
-'\) \{\n', JSBlocksCompiler(morphs.inputs()[1].nestedBlock()), '\}\;'));
-} else {
-result = result.concat((JSBlocksCompiler(morphs.children[0].nestedBlock()) === '' ? 'null' : JSBlocksCompiler(
-morphs.children[0].nestedBlock())).concat('\;'));
-}; if (morphs.nextBlock() instanceof CommandBlockMorph) {result = result.concat(
-'\n', JSBlocksCompiler(morphs.nextBlock()));}; return result;
-} else if (morphs instanceof ReporterBlockMorph) {
-if (morphs.selector === 'JSBlocksTraditionalFunction') {return ''.concat(morphs.inputs()[0].evaluate(), ((morphs.inputs(
-)[0].evaluate() === '') ? '' : ' '), morphs.inputs()[1].evaluate(), ' ', morphs.inputs()[2].contents().text, ((morphs.inputs(
-)[2].contents().text === '') ? '' : ' '), '\(', morphs.inputs()[3].evaluate(), '\) \{\n', JSBlocksCompiler(morphs.inputs(
-)[4].nestedBlock()), '\}');
-} else if (morphs.selector === 'JSBlocksArrowClosureFunction') {return '\('.concat(morphs.inputs(
-)[0].evaluate(), '\) \=\> \{', JSBlocksCompiler(morphs.inputs()[1].nestedBlock()), '\}');
-} else if (morphs.selector === 'JSBlocksArrowResultFunction') {
-return '\('.concat(morphs.inputs()[0].evaluate(), '\) \=\> ', '\(', (JSBlocksCompiler(
-morphs.inputs()[1]) === '' ? 'null' : JSBlocksCompiler(morphs.inputs()[1])), '\)');
-} else if (morphs.selector === 'reportGetVar') {return morphs.blockSpec;
-} else if (morphs.selector === 'reportBoolean') {return morphs.children[0].evaluate();
-} else if (morphs.selector === 'JSBlocksArray') {return ('\[').concat(JSBlocksCompiler(morphs.inputs()[0]), '\]');
-} else if (morphs.selector === 'JSBlocksCloser') {return ('\(').concat(JSBlocksCompiler(morphs.inputs()[0]), '\)');
-} else if (morphs.selector === 'JSBlocksString1') {return ('\'').concat(morphs.children[1].evaluate(), '\'');
-} else if (morphs.selector === 'JSBlocksString2') {return ('\"').concat(morphs.children[1].evaluate(), '\"');
-} else if (morphs.selector === 'JSBlocksString3') {return ('\`').concat(morphs.children[1].evaluate(), '\`');
-} else if (morphs.selector === 'JSBlocksObjectProp1') {return (JSBlocksCompiler(
-morphs.inputs()[0].nestedBlock())).concat('\[', JSBlocksCompiler(morphs.inputs()[1]), '\]');
-} else if (morphs.selector === 'JSBlocksObjectProp2') {return JSBlocksCompiler(morphs.inputs()[0]);
-} else if (morphs.selector === 'JSBlocksCall') {return '\('.concat(JSBlocksCompiler(morphs.inputs()[0].nestedBlock()),
-'\)\(', JSBlocksCompiler(morphs.inputs()[1]), '\)');
-} else if (morphs.selector === 'JSBlocksObjectDeclaration') {
-return ('\{').concat(JSBlocksCompiler(morphs.inputs()[0]), '\}');
-} else if (morphs.selector === 'JSBlocksObjectProperty') {
-return JSBlocksCompiler(morphs.inputs()[0]).concat(' \: ', JSBlocksCompiler(morphs.inputs()[1]));
-} else if (morphs.selector === 'JSBlocksNewObject') {
-return ('new ').concat(JSBlocksCompiler(morphs.children[1]));
-} else if (morphs.selector === 'JSBlocksNewTarget') {return 'new.target';
-} else if (morphs.selector === 'JSBlocksNotOperator') {
-return ('!').concat(JSBlocksCompiler(morphs.children[1]));
-} else {return '';};} else if (
-morphs instanceof MultiArgMorph) {return (function anonymous (morphs) {var theChildren = morphs.inputs(),
-i = 0, miniResult = ''; while (i < theChildren.length) {if (i === (theChildren.length - 1)) {
-miniResult = miniResult.concat(JSBlocksCompiler(theChildren[i]));} else {
-miniResult = miniResult.concat(JSBlocksCompiler(theChildren[i]), morphs.infix);
-}; i++;}; return miniResult;})(morphs);} else if (morphs instanceof TextSlotMorph) {
-return morphs.contents().text;} else if (morphs instanceof InputSlotMorph) {
-return morphs.contents().text;} else {return '';};};

@@ -66,22 +66,6 @@
 
 */
 
-/*global modules, Morph, SpriteMorph, SyntaxElementMorph, Color, Cloud, Audio,
-ListWatcherMorph, TextMorph, newCanvas, useBlurredShadows, Sound, Scene, Note,
-StringMorph, Point, MenuMorph, morphicVersion, DialogBoxMorph, BlockEditorMorph,
-ToggleButtonMorph, contains, ScrollFrameMorph, StageMorph, PushButtonMorph, sb,
-InputFieldMorph, FrameMorph, Process, nop, SnapSerializer, ListMorph, detect,
-AlignmentMorph, TabMorph, Costume, MorphicPreferences,BlockMorph, ToggleMorph,
-InputSlotDialogMorph, ScriptsMorph, isNil, SymbolMorph, fontHeight,  localize,
-BlockExportDialogMorph, BlockImportDialogMorph, SnapTranslator, List, ArgMorph,
-Uint8Array, HandleMorph, SVG_Costume, TableDialogMorph, CommentMorph, saveAs,
-CommandBlockMorph, BooleanSlotMorph, RingReporterSlotMorph, ScriptFocusMorph,
-BlockLabelPlaceHolderMorph, SpeechBubbleMorph, XML_Element, WatcherMorph, WHITE,
-BlockRemovalDialogMorph,TableMorph, isSnapObject, isRetinaEnabled, SliderMorph,
-disableRetinaSupport, enableRetinaSupport, isRetinaSupported, MediaRecorder,
-Animation, BoxMorph, BlockDialogMorph, Project, ZERO, BLACK,
-BlockVisibilityDialogMorph, ThreadManager*/
-
 // Declarations
 
 var IDE_Morph, ProjectDialogMorph, LibraryImportDialogMorph, SpriteIconMorph,
@@ -106,7 +90,7 @@ BackpackItemMorph.uber = BoxMorph.prototype;
 
 function BackpackItemMorph () {this.init();};
 
-BackpackItemMorph.prototype.init = function anonymous () {BackpackItemMorph.uber.init.call(this);
+BackpackItemMorph.prototype.init = function () {BackpackItemMorph.uber.init.call(this);
 this.setExtent(new Point(45, 45));}; BackpackItemMorph.prototype.fixLayout = function () {};
 
 // IDE_Morph ///////////////////////////////////////////////////////////
@@ -229,9 +213,9 @@ IDE_Morph.prototype.init = function (isAutoFill
                  index * rate) / 360) % 2) < 1) ? (((0 - ((((index * rate) + 90) / 360) % 2)) + 1) * 4) : (Process.prototype.reportMonadic(['sin'], (((((index * rate) % 720) * 0.25)) - 90)) - 1))) * (volume / 100
                  ); /* The sawtooth type of Rob Hubbard is a good legend. :') */})), new MIDSoundData('Vocoder', 100, (function anonymous (note, volume, length, index, optional) {var rate = Math.pow(2, ((note - 59
                  ) / 12)); return ((optional > 0) ? Process.prototype.reportMonadic(['sin'], (index * rate * 2)) : 0) * (volume / ((((Math.round(index / ((optional * 57.6) / rate)) % 2) + 2) * 50)));})),
-                 new MIDSoundData('False Voice', 50, (function anonymous (note, volume, length, index, optional) {var rate = Math.pow(2, ((note - 35) / 12)), value1 = Process.prototype.reportMonadic(['sin'], (
+                 new MIDSoundData('False Voice', 50, (function (note, volume, length, index, optional) {var rate = Math.pow(2, ((note - 35) / 12)), value1 = Process.prototype.reportMonadic(['sin'], (
                  index * rate)), sampleNumber = ((index * rate) % 720), value2 = (((sampleNumber > 90) && (sampleNumber < 450)) ? 1 : value1); return ((value1 * ((100 - optional) / 100)) + (value2 * (
-                 optional / 100))) * (volume / 100);})), new MIDSoundData('Circloid', 100, (function anonymous (note, volume, length, index, optional) {var rate = Math.pow(2, ((note - 59) / 12));
+                 optional / 100))) * (volume / 100);})), new MIDSoundData('Circloid', 100, (function (note, volume, length, index, optional) {var rate = Math.pow(2, ((note - 59) / 12));
                  return Process.prototype.reportMonadic(['circ'], index * rate * 2) * (volume / 100);})), new MIDSoundData('Ingenous String', 0, (function anonymous (note, volume, length, index, optional) {
                  var rate = Math.pow(2, ((note - 59) / 12)); return (((((index * rate) % 180) < 22.5) ? Process.prototype.reportMonadic(['circ'], (index * rate * 8)) : ((((index * rate) % 180) < 157.5) ? -(
                  Process.prototype.reportMonadic(['curve'], (((((index * rate) - 22.5) * 2) % 360) * (4 / 3))) / 2) : Process.prototype.reportMonadic(['curve'], (index * rate * 8)))) * ((Math.abs(
@@ -330,7 +314,7 @@ IDE_Morph.prototype.setOldDesign = function () {
     IDE_Morph.prototype.rotationStyleColors = IDE_Morph.prototype.tabColors;
     IDE_Morph.prototype.noPaddingForEditor = true;
     IDE_Morph.prototype.appModeColor = BLACK;
-    IDE_Morph.prototype.padding = 2.5;
+    IDE_Morph.prototype.padding = 2;
 
     SpriteIconMorph.prototype.labelColor
         = IDE_Morph.prototype.buttonLabelColor;
@@ -356,6 +340,11 @@ IDE_Morph.prototype.setOldDesign = function () {
     this.fpsViewer.fixLayoutAndPosition();};
     this.scriptsSpecialColors = [this.categoryColor.lighter(2), this.categoryColor.lighter(2)];
     IDE_Morph.prototype.scriptsPaneTexture = this.scriptsTexture();
+    PushButtonMorph.prototype.outlineColor = (IDE_Morph.prototype.frameColor).withAlpha(0.5);
+    ToggleButtonMorph.prototype.outlineColor = (IDE_Morph.prototype.frameColor).withAlpha(0.5);
+    TabMorph.prototype.outlineColor = (IDE_Morph.prototype.frameColor).withAlpha(0.5);
+    ToggleMorph.prototype.outlineColor = (IDE_Morph.prototype.frameColor).withAlpha(0.5);
+    ToggleElementMorph.prototype.outlineColor = (IDE_Morph.prototype.frameColor).withAlpha(0.5);
 };
 
 IDE_Morph.prototype.setSimpleDesign = function () {
@@ -416,6 +405,11 @@ IDE_Morph.prototype.setSimpleDesign = function () {
     this.fpsViewer.fixLayoutAndPosition();};
     this.scriptsSpecialColors = [this.categoryColor.lighter(6), this.categoryColor];
     IDE_Morph.prototype.scriptsPaneTexture = this.scriptsTexture();
+    PushButtonMorph.prototype.outlineColor = (IDE_Morph.prototype.frameColor).withAlpha(0.5);
+    ToggleButtonMorph.prototype.outlineColor = (IDE_Morph.prototype.frameColor).withAlpha(0.5);
+    TabMorph.prototype.outlineColor = (IDE_Morph.prototype.frameColor).withAlpha(0.5);
+    ToggleMorph.prototype.outlineColor = (IDE_Morph.prototype.frameColor).withAlpha(0.5);
+    ToggleElementMorph.prototype.outlineColor = (IDE_Morph.prototype.frameColor).withAlpha(0.5);
 };
 
 IDE_Morph.prototype.setDefaultDesign = function () {
@@ -432,9 +426,9 @@ IDE_Morph.prototype.setDefaultDesign = function () {
     IDE_Morph.prototype.frameColor = SpriteMorph.prototype.paletteColor;
 
     IDE_Morph.prototype.groupColor
-        = SpriteMorph.prototype.paletteColor.lighter(20);
-    IDE_Morph.prototype.categoryColor
         = SpriteMorph.prototype.paletteColor.lighter(5);
+    IDE_Morph.prototype.categoryColor
+        = IDE_Morph.prototype.groupColor;
     IDE_Morph.prototype.sliderColor = SpriteMorph.prototype.sliderColor;
     IDE_Morph.prototype.buttonLabelColor = WHITE;
     IDE_Morph.prototype.tabColors = [
@@ -443,9 +437,9 @@ IDE_Morph.prototype.setDefaultDesign = function () {
         IDE_Morph.prototype.categoryColor
     ];
     IDE_Morph.prototype.buttonColors = [
+        IDE_Morph.prototype.groupColor,
         IDE_Morph.prototype.groupColor.darker(50),
-        IDE_Morph.prototype.groupColor.darker(75),
-        IDE_Morph.prototype.groupColor.darker(75)
+        IDE_Morph.prototype.groupColor.darker(50)
     ];
     IDE_Morph.prototype.rotationStyleColors = IDE_Morph.prototype.tabColors;
     IDE_Morph.prototype.noPaddingForEditor = false;
@@ -474,12 +468,17 @@ IDE_Morph.prototype.setDefaultDesign = function () {
     if (this.fpsViewer instanceof IDE_FPSMorph) {
     this.fpsViewer.color = IDE_Morph.prototype.buttonLabelColor;
     this.fpsViewer.fixLayoutAndPosition();};
-    this.scriptsSpecialColors = [this.categoryColor.lighter(2), this.categoryColor.lighter(2)];
+    this.scriptsSpecialColors = [this.groupColor.lighter(2), this.groupColor.darker(2)];
     IDE_Morph.prototype.scriptsPaneTexture = this.scriptsTexture();
+    PushButtonMorph.prototype.outlineColor = (IDE_Morph.prototype.frameColor).withAlpha(0.5);
+    ToggleButtonMorph.prototype.outlineColor = (IDE_Morph.prototype.frameColor).withAlpha(0.5);
+    TabMorph.prototype.outlineColor = (IDE_Morph.prototype.frameColor).withAlpha(0.5);
+    ToggleMorph.prototype.outlineColor = (IDE_Morph.prototype.frameColor).withAlpha(0.5);
+    ToggleElementMorph.prototype.outlineColor = (IDE_Morph.prototype.frameColor).withAlpha(0.5);
 };
 
 IDE_Morph.prototype.setLightDesign = function () {
-    SpriteMorph.prototype.paletteColor = (new Color(249, 249, 249)).darker(5);
+    SpriteMorph.prototype.paletteColor = WHITE;
     SpriteMorph.prototype.paletteTextColor = new Color(70, 70, 70);
     StageMorph.prototype.paletteTextColor
         = SpriteMorph.prototype.paletteTextColor;
@@ -487,18 +486,17 @@ IDE_Morph.prototype.setLightDesign = function () {
     SpriteMorph.prototype.sliderColor = SpriteMorph.prototype.paletteColor;
 
     IDE_Morph.prototype.buttonContrast = 30;
-    IDE_Morph.prototype.backgroundColor = WHITE;
-    IDE_Morph.prototype.frameColor = SpriteMorph.prototype.paletteColor;
+    IDE_Morph.prototype.backgroundColor = new Color(220, 220, 230);
+    IDE_Morph.prototype.frameColor = new Color(240, 240, 245);
 
     IDE_Morph.prototype.groupColor = WHITE;
-    IDE_Morph.prototype.categoryColor
-        = SpriteMorph.prototype.paletteColor.darker(5);
+    IDE_Morph.prototype.categoryColor = WHITE;
     IDE_Morph.prototype.sliderColor = SpriteMorph.prototype.sliderColor;
-    IDE_Morph.prototype.buttonLabelColor = new Color((255 / 3), (255 / 3), (255 / 3));
+    IDE_Morph.prototype.buttonLabelColor = new Color(70, 70, 70);
     IDE_Morph.prototype.tabColors = [
-        IDE_Morph.prototype.groupColor,
-        IDE_Morph.prototype.groupColor.darker(10),
-        IDE_Morph.prototype.groupColor.darker(20)
+        IDE_Morph.prototype.frameColor,
+        IDE_Morph.prototype.frameColor.lighter(50),
+        IDE_Morph.prototype.groupColor
     ];
     IDE_Morph.prototype.buttonColors = IDE_Morph.prototype.tabColors;
     IDE_Morph.prototype.rotationStyleColors = IDE_Morph.prototype.tabColors;
@@ -523,13 +521,18 @@ IDE_Morph.prototype.setLightDesign = function () {
     SceneIconMorph.prototype.labelColor
         = IDE_Morph.prototype.buttonLabelColor;
 
-    SyntaxElementMorph.prototype.contrast = 65;
+    SyntaxElementMorph.prototype.contrast = 25;
     ScriptsMorph.prototype.feedbackColor = WHITE;
     if (this.fpsViewer instanceof IDE_FPSMorph) {
     this.fpsViewer.color = IDE_Morph.prototype.buttonLabelColor;
     this.fpsViewer.fixLayoutAndPosition();};
-    this.scriptsSpecialColors = [this.categoryColor.lighter(7), this.categoryColor.lighter(7)];
-    IDE_Morph.prototype.scriptsPaneTexture = this.scriptsTexture();
+    this.scriptsSpecialColors = [CLEAR, CLEAR];
+    IDE_Morph.prototype.scriptsPaneTexture = null;
+    PushButtonMorph.prototype.outlineColor = (IDE_Morph.prototype.frameColor).withAlpha(0.5);
+    ToggleButtonMorph.prototype.outlineColor = (IDE_Morph.prototype.frameColor).withAlpha(0.5);
+    TabMorph.prototype.outlineColor = (IDE_Morph.prototype.frameColor).withAlpha(0.5);
+    ToggleMorph.prototype.outlineColor = (IDE_Morph.prototype.frameColor).withAlpha(0.5);
+    ToggleElementMorph.prototype.outlineColor = (IDE_Morph.prototype.frameColor).withAlpha(0.5);
 };
 
 IDE_Morph.prototype.setAnimatedDesign = function () {
@@ -582,15 +585,20 @@ IDE_Morph.prototype.setAnimatedDesign = function () {
     if (this.fpsViewer instanceof IDE_FPSMorph) {
     this.fpsViewer.color = IDE_Morph.prototype.buttonLabelColor;
     this.fpsViewer.fixLayoutAndPosition();};
-    this.scriptsSpecialColors = [this.categoryColor.lighter(7), this.categoryColor.lighter(7)];
-    IDE_Morph.prototype.scriptsPaneTexture = this.scriptsTexture();
+    this.scriptsSpecialColors = [CLEAR, CLEAR];
+    IDE_Morph.prototype.scriptsPaneTexture = null;
+    PushButtonMorph.prototype.outlineColor = (IDE_Morph.prototype.frameColor).withAlpha(0.5);
+    ToggleButtonMorph.prototype.outlineColor = (IDE_Morph.prototype.frameColor).withAlpha(0.5);
+    TabMorph.prototype.outlineColor = (IDE_Morph.prototype.frameColor).withAlpha(0.5);
+    ToggleMorph.prototype.outlineColor = (IDE_Morph.prototype.frameColor).withAlpha(0.5);
+    ToggleElementMorph.prototype.outlineColor = (IDE_Morph.prototype.frameColor).withAlpha(0.5);
 };
 
 IDE_Morph.prototype.mathConstants = (() => [['π Pi', Math.PI], ['e Euler', Math.E], ['p Plastic', (Math.cbrt((9 + Math.sqrt(69)) / 18) + Math.cbrt((9 - Math.sqrt(69)) / 18))], ['φ Phi', ((1 + Math.sqrt(5)) / 2
 )], ['ψ Psi', ((1 + Math.cbrt((29 + Math.sqrt(837)) / 2) + Math.cbrt((29 - Math.sqrt(837)) / 2)) / 3)], ['ε Epsilon', Number.EPSILON], ['i Imaginary', new ComplexNumber(0, 1)]]); /*  | Okay, they are. :)  | */
 
-IDE_Morph.prototype.scriptsTexture = function anonymous () {
-    var w = 100, h = w, pic = newCanvas(new Point(w, h)),
+IDE_Morph.prototype.scriptsTexture = function () {
+    var w = 400, h = w, pic = newCanvas(new Point(w, h)),
         ctx = pic.getContext('2d'), i;
         for (i = 0; i < w; i += 4) {
         ctx.fillStyle = this.frameColor.toString();
@@ -928,49 +936,26 @@ IDE_Morph.prototype.openIn = function (world) {var hash, myself = this; this.bui
 
 // IDE_Morph construction
 
-IDE_Morph.prototype.buildPanes = function () {this.createLogo(); this.createControlBar(); this.createCategories(); this.createPalette(); this.createStage(); this.createSpriteBar(); this.createSpriteEditor();
-this.createCorralBar(); this.createCorral();}; IDE_Morph.prototype.createLogo = function () {var myself = this; if (this.logo) {this.logo.destroy();}; this.logo = new Morph; this.logo.texture = snapLogoTexture;
-this.logo.render = function (ctx) {var gradient = ctx.createLinearGradient(0, 0, this.width(), 0); gradient.addColorStop(0, IDE_Morph.prototype.frameColor.darker(25).toString()); gradient.addColorStop(0.5,
-myself.frameColor.toString()); ctx.fillStyle = (MorphicPreferences.isFlat ? myself.frameColor.toString() : gradient); ctx.fillRect(0, 0, this.width(), this.height()); if (this.cachedTexture) {
-this.renderCachedTexture(ctx);} else if (this.texture) {this.renderTexture(this.texture, ctx);}}; this.logo.renderCachedTexture = function (ctx) {ctx.drawImage(this.cachedTexture, 2, Math.round(
-(this.height() - this.cachedTexture.height) / 2)); this.changed();}; this.logo.mouseClickLeft = function () {myself.snapMenu();}; this.logo.color = BLACK; this.logo.setExtent(new Point(200, 28));
-this.add(this.logo);}; IDE_Morph.prototype.createControlBar = function () {
-    var padding = 5,
-        button,
-        slider,
-        stopButton,
-        pauseButton,
-        startButton,
-        projectButton,
-        settingsButton,
-        stageSizeButton,
-        appModeButton,
-        steppingButton,
-        cloudButton,
-        gradient, x,
-        colors = this.buttonColors,
-        activeColor = new Color(153, 255, 213),
-        activeColors = [
-            activeColor,
-            activeColor.lighter(40),
-            activeColor.lighter(40)
-        ],
-        myself = this;
+IDE_Morph.prototype.buildPanes = function () {this.createLogo(); this.createControlBar(); this.createCategories();
+this.createPalette(); this.createStage(); this.createSpriteBar(); this.createSpriteEditor(); this.createCorralBar(
+); this.createCorral();}; IDE_Morph.prototype.createLogo = function () {var myself = this; if (this.logo) {(this
+).logo.destroy();}; this.logo = new Morph; this.logo.texture = snapLogoTexture; this.logo.render = function (ctx) {
+ctx.fillStyle = myself.frameColor.toString(); ctx.fillRect(0, 0, this.width(), this.height()); if (this.cachedTexture
+) {this.renderCachedTexture(ctx);} else if (this.texture) {this.renderTexture(this.texture);};}; (this.logo
+).renderCachedTexture = function (ctx) {ctx.imageSmoothingEnabled = false; ctx.drawImage(this.cachedTexture,
+2, Math.round(this.height() - (this.cachedTexture.height)) / 2); this.changed();}; (this.logo.mouseClickLeft
+) = function () {myself.snapMenu();}; this.logo.setExtent(new Point(200, 28)); this.add(this.logo);};
+IDE_Morph.prototype.createControlBar = function () {var padding = 5, button, slider, stopButton,
+pauseButton, startButton, projectButton, settingsButton, stageSizeButton, appModeButton,
+steppingButton, cloudButton, gradient, x, colors = this.buttonColors, activeColor = (
+new Color(153, 255, 213)), activeColors = [activeColor, activeColor.lighter(40),
+activeColor.lighter(40)], myself = this; if (this.controlBar) {(this.controlBar
+).destroy();}; this.controlBar = new Morph; this.controlBar.color = (this
+).frameColor; this.controlBar.setHeight(this.logo.height()); (this
+).controlBar.mouseClickLeft = (() => world.fillPage()); this.add(
+this.controlBar);
 
-    if (this.controlBar) {
-        this.controlBar.destroy();
-    }
-
-    this.controlBar = new Morph;
-    this.controlBar.color = this.frameColor;
-    this.controlBar.setHeight(this.logo.height());
-    this.controlBar.mouseClickLeft = function () {
-        this.world().fillPage();
-    };
-
-    this.add(this.controlBar);
-
-    //smallStageButton
+    //  smallStageButton
     button = new ToggleButtonMorph(
         null, //colors,
         this, // the IDE is the target
@@ -991,9 +976,7 @@ this.add(this.logo);}; IDE_Morph.prototype.createControlBar = function () {
     button.padding = 0;
     button.labelShadowOffset = new Point(-1, -1);
     button.labelShadowColor = colors[1];
-    button.labelColor = MorphicPreferences.isFlat ?
-        WHITE
-        : this.buttonLabelColor;
+    button.labelColor = WHITE;
     button.contrast = this.buttonContrast;
     // button.hint = 'stage size\nsmall & normal';
     button.fixLayout();
@@ -1002,7 +985,7 @@ this.add(this.logo);}; IDE_Morph.prototype.createControlBar = function () {
     this.controlBar.add(stageSizeButton);
     this.controlBar.stageSizeButton = button; // for refreshing
 
-    //appModeButton
+    //  appModeButton
     button = new ToggleButtonMorph(
         null, //colors,
         this, // the IDE is the target
@@ -1032,17 +1015,15 @@ this.add(this.logo);}; IDE_Morph.prototype.createControlBar = function () {
     this.controlBar.add(appModeButton);
     this.controlBar.appModeButton = appModeButton; // for refreshing
 
-    //videoCaptureButton
+    //  videoCaptureButton
     button = new ToggleButtonMorph(
         null, //colors,
         this, // the IDE is the target
         'toggleScreenshotDialog',
-        [
-            new SymbolMorph('video', 14),
-            new SymbolMorph('videoOutline', 14)
-        ],
-        () => ((world.children.filter(child => child instanceof DialogBoxMorph).filter(child => child.key === 'screenshotMaker').length) > 0) // query
-    );
+        [new SymbolMorph('video', 14),
+        new SymbolMorph('videoOutline', 14)], () => (
+        (world.children.filter(child => child instanceof DialogBoxMorph
+        ).filter(child => child.key === 'screenshotMaker').length) > 0));
 
     button.hasNeutralBackground = true;
     button.corner = 12;
@@ -1062,19 +1043,15 @@ this.add(this.logo);}; IDE_Morph.prototype.createControlBar = function () {
     this.controlBar.add(videoCaptureButton);
     this.controlBar.videoCaptureButton = videoCaptureButton; // for refreshing
 
-    //steppingButton
+    //  steppingButton
     button = new ToggleButtonMorph(
         null, //colors,
         this, // the IDE is the target
         'toggleSingleStepping',
-        [
-            new SymbolMorph('footprints', 16),
-            new SymbolMorph('footprints', 16)
-        ],
-        () => Process.prototype.enableSingleStepping // query
-    );
-
-    button.corner = 12;
+        [new SymbolMorph('footprints', 16),
+        new SymbolMorph('footprints', 16)],
+        () => Process.prototype.enableSingleStepping
+    );  button.corner = 12;
     button.color = colors[0];
     button.highlightColor = colors[1];
     button.pressColor = activeColor;
@@ -1091,7 +1068,7 @@ this.add(this.logo);}; IDE_Morph.prototype.createControlBar = function () {
     this.controlBar.add(steppingButton);
     this.controlBar.steppingButton = steppingButton; // for refreshing
 
-// stopButton
+//  stopButton
 button = new TriggerMorph;
 button.cursorStyle = 'pointer';
 stopButton = button; button.target = button;
@@ -1134,13 +1111,14 @@ button.render = function (ctx) {
 button.refresh = button.rerender;
 button.setExtent(new Point(14, 14));
 button.color = new Color(200, 0, 0);
-button.highlightColor = new Color(255, 0, 0);
-button.pressColor = new Color(127.5, 0, 0);
-button.action = function () {this.parentThatIsA(IDE_Morph).stopAllScripts();};
-button.contrast = this.buttonContrast;
+button.highlightColor = new Color(255,
+0, 0); button.pressColor = new Color(
+127.5, 0, 0); button.action = function (
+) {this.parentThatIsA(IDE_Morph).stopAllScripts(
+);}; button.contrast = this.buttonContrast;
 button.fixLayout();
 
-// pauseButton
+//  pauseButton
 button = new TriggerMorph;
 button.cursorStyle = 'pointer';
 pauseButton = button; button.target = button;
@@ -1203,7 +1181,7 @@ button.action = function () {this.parentThatIsA(IDE_Morph).togglePauseResume();}
 button.contrast = this.buttonContrast;
 button.fixLayout();
 
-// startButton
+//  startButton
 button = new TriggerMorph;
 button.cursorStyle = 'pointer';
 startButton = button; button.target = button;
@@ -1273,12 +1251,10 @@ button.step = function () {
         var isRunning;
         if (!myself.stage) {
             return;
-        }
-        isRunning = !!myself.stage.threads.processes.length;
+        };  isRunning = !!myself.stage.threads.processes.length;
         if (isRunning === this.isActive) {
             return;
-        }
-        this.isActive = isRunning;
+        };  this.isActive = isRunning;
         if (isRunning) {
             this.color = activeColors[0];
             this.highlightColor = activeColors[1];
@@ -1287,26 +1263,21 @@ button.step = function () {
             this.color = new Color(0, 200, 0);
             this.highlightColor = new Color(0, 255, 0);
             this.pressColor = new Color(0, 127.5, 0);
-        }
-        this.rerender();
-};
+        };  this.rerender();};
 button.action = function () {this.parentThatIsA(IDE_Morph).pressStart();};
 button.contrast = this.buttonContrast;
 button.fixLayout();
 
-    // steppingSlider
+    //  steppingSlider
     slider = new SliderMorph(
-        61,
-        1,
-        Process.prototype.flashTime * 100 + 1,
-        6,
+        61, 1, (((Process
+        ).prototype.flashTime
+        ) * 100) + 1, 6,
         'horizontal'
-    );
-    slider.action = (num) => {
+    );  slider.action = (num) => {
         Process.prototype.flashTime = (num - 1) / 100;
         this.controlBar.refreshResumeSymbol();
-    };
-    slider.color = activeColor;
+    };  slider.color = activeColor;
     slider.alpha = MorphicPreferences.isFlat ? (1 / 4) : (1 / 8);
     slider.setExtent(new Point(50, 14));
     this.controlBar.add(slider);
@@ -1334,7 +1305,7 @@ button.fixLayout();
     this.controlBar.add(projectButton);
     this.controlBar.projectButton = projectButton;
 
-    // settingsButton
+    //  settingsButton
     button = new PushButtonMorph(
         this,
         'settingsMenu',
@@ -1356,10 +1327,10 @@ button.fixLayout();
     this.controlBar.add(settingsButton);
     this.controlBar.settingsButton = settingsButton;
 
-    // cloudButton
+    //  userButton
     button = new PushButtonMorph(
         this,
-        function anonymous () {/* var dialog = new DialogBoxMorph; dialog.popUp(world); */
+        function () {/* var dialog = new DialogBoxMorph; dialog.popUp(world); */
         var menu, pos = this.controlBar.cloudButton.bottomLeft(), shiftClicked = (world.currentKey === 16); menu = new MenuMorph(this);
         menu.addItem('Change your username...', function () {world.childThatIsA(IDE_Morph).prompt(localize('Where is your new username?'), function (output) {if (output ===
         '') {myself.removeSetting('user');} else {world.childThatIsA(IDE_Morph).saveSetting('user', output);};}, null, 'Changing Name');}); menu.popup(world, pos);},
@@ -1377,7 +1348,7 @@ button.fixLayout();
     button.labelShadowColor = colors[1];
     button.labelColor = this.buttonLabelColor;
     button.contrast = this.buttonContrast;
-    button.hint = 'This is your user-interface, ' + this.getUser() + '.';
+    button.hint = 'This is your user interface, ' + this.getUser() + '.';
     button.fixLayout();
     cloudButton = button;
     this.controlBar.add(cloudButton);
@@ -1391,22 +1362,15 @@ button.fixLayout();
                 button.setRight(x + (button.width() * 1.25));
                 x -= padding;
             }
-        );
-
-        x = Math.min(
+        );  x = Math.min(
             startButton.left() - (3 * padding + 2 * stageSizeButton.width()),
             myself.right() - myself.stage.dimensions.x *
                 (myself.isSmallStage ? myself.stageRatio : 1)
         );
         [stageSizeButton, appModeButton, videoCaptureButton].forEach(button => {
-                x += padding;
-                button.setCenter(myself.controlBar.center());
-                button.setLeft(x);
-                x += button.width();
-            }
-        );
-
-        slider.setCenter(myself.controlBar.center());
+                x += padding; button.setCenter(myself.controlBar.center());
+                button.setLeft(x); x += button.width();}
+        );  slider.setCenter(myself.controlBar.center());
         slider.setRight(stageSizeButton.left() - padding);
 
         steppingButton.setCenter(myself.controlBar.center());
@@ -1421,9 +1385,7 @@ button.fixLayout();
         projectButton.setRight(cloudButton.left() - padding);
         this.refreshSlider();
         this.updateLabel();
-    };
-
-    this.controlBar.refreshSlider = function () {
+    };  this.controlBar.refreshSlider = function () {
         if (Process.prototype.enableSingleStepping && !myself.isAppMode) {
             slider.fixLayout();
             slider.rerender();
@@ -1449,23 +1411,17 @@ button.fixLayout();
             false,
             MorphicPreferences.isFlat ? null : new Point(2, 1),
             myself.frameColor.darker(myself.buttonContrast)
-        );
-        txt.color = myself.buttonLabelColor;
+        );  txt.color = myself.buttonLabelColor;
         this.label = new FrameMorph;
         this.label.acceptsDrops = false;
         this.label.alpha = 0;
         txt.setPosition(this.label.position());
         this.label.add(txt);
         this.label.setExtent(
-            new Point(
-                steppingButton.left() - settingsButton.right() - padding * 2,
-                txt.height()
-            )
-        );  this.label.setCenter(this.center());
-        this.label.setLeft(this.settingsButton.right() + padding);
-        this.add(this.label);
-    };
-};
+        new Point(myself.logo.right(), txt.height(
+        ))); this.label.setCenter(this.center());
+        this.label.setLeft((settingsButton.right(
+        )) + 5); this.add(this.label);};};
 
 IDE_Morph.prototype.initializeBackpack = function () {var ide = this;
 if (ide.backpack) {
@@ -1510,17 +1466,11 @@ backpack.reactToDropOf = (droppedMorph, hand) => {
             ide.initializeBackpack();
 };
 
-backpack.fixLayout = function() {
-    var frame = this.parent.spriteEditor;
-    this.setLeft(frame.left());
-    this.setWidth(frame.width());
-    this.setBottom(frame.bottom());
-    this.setHeight((SyntaxElementMorph.prototype.scale || 1) * 80);
-    this.rerender();
-    this.toggleButton.fixLayout();
-    this.backButton.fixLayout();
-    this.nextButton.fixLayout();
-}
+backpack.fixLayout = function() {var frame = this.parent.spriteEditor;
+this.setLeft(frame.left()); this.setWidth(frame.width()); this.setBottom(
+frame.bottom()); this.setHeight(Math.round(((SyntaxElementMorph.prototype
+).scale || 1) * 80)); this.rerender(); this.toggleButton.fixLayout();
+this.backButton.fixLayout(); this.nextButton.fixLayout();};
 
 backpack.page = 0;
 backpack.pages = window.blockArrays;
@@ -1581,11 +1531,9 @@ button.fixLayout = function () {
         this.setTop(backpack.top());
     } else {
         this.setBottom(backpack.bottom());
-    };
-    this.label.setCenter(this.center().translateBy(new Point(0, -1)));
+    };  this.label.setCenter(this.center().translateBy(new Point(0, -1)));
     this.setWidth(ide.spriteEditor.width());
     if (ide.isAppMode) {this.isVisible = !ide.isAppMode;};
-   
 };
 
 button = new TriggerMorph;
@@ -1953,7 +1901,8 @@ IDE_Morph.prototype.createCategories = function () {
     this.categories.refreshEmpty = function () {
         var dict = myself.currentSprite.emptyCategories();
         this.buttons.forEach(cat => {
-            if (dict[cat.category]) {
+            if (dict[cat.category] || (
+                cat.category === 'other')) {
                 cat.enable();
             } else {
                 cat.disable();
@@ -1978,8 +1927,7 @@ IDE_Morph.prototype.createCategories = function () {
         var labelWidth = 75,
             colors = [
                 myself.frameColor,
-                myself.frameColor.darker((asANum(
-                !MorphicPreferences.isFlat) * 10) * 5),
+                myself.frameColor.darker((1 + (MorphicPreferences.isFlat * 9)) * 5),
                 SpriteMorph.prototype.blockColor[category]
             ],  button;
 
@@ -2001,22 +1949,17 @@ IDE_Morph.prototype.createCategories = function () {
         button.labelShadowOffset = new Point(-1, -1);
         button.labelShadowColor = colors[1];
         button.labelColor = myself.buttonLabelColor;
-        if (MorphicPreferences.isFlat) {
-            button.labelPressColor = WHITE;
-        }
-        button.fixLayout();
-        button.refresh();
-        myself.categories.add(button);
+        button.labelPressColor = WHITE;
+        button.fixLayout(); button.refresh(
+        );  myself.categories.add(button);
         myself.categories.buttons.push(button);
         return button;
-    }
-
-    function addCustomCategoryButton(category, color) {
+    };  function addCustomCategoryButton(category, color) {
         var labelWidth = 75,
             colors = [
                 myself.frameColor,
-                myself.frameColor.darker(MorphicPreferences.isFlat ? 5 : 50),
-                color
+                myself.frameColor.darker((1 + (MorphicPreferences.isFlat * 9)) * 5),
+                SpriteMorph.prototype.blockColor[category]
             ],  button;
 
         button = new ToggleButtonMorph(
@@ -2037,10 +1980,9 @@ IDE_Morph.prototype.createCategories = function () {
         button.labelShadowOffset = new Point(-1, -1);
         button.labelShadowColor = colors[1];
         button.labelColor = myself.buttonLabelColor;
-        if (MorphicPreferences.isFlat) {
-            button.labelPressColor = WHITE;
-        };  button.fixLayout(); button.refresh();
-        myself.categories.add(button);
+        button.labelPressColor = WHITE;
+        button.fixLayout(); button.refresh(
+        );  myself.categories.add(button);
         myself.categories.buttons.push(button);
         return button;
     };  function fixCategoriesLayout() {
@@ -2048,11 +1990,8 @@ IDE_Morph.prototype.createCategories = function () {
             buttonHeight = myself.categories.children[0].height(),
             border = 3,
             rows =  Math.ceil((myself.categories.children.length) / 2),
-            xPadding = (200 // myself.logo.width()
-                - border
-                - buttonWidth * 2) / 3,
-            yPadding = 2,
-            l = myself.categories.left(),
+            xPadding = (200 - border - buttonWidth * 2) / 3,
+            yPadding = 2, l = myself.categories.left(),
             t = myself.categories.top(),
             i = 0,      row,      col;
 
@@ -2193,28 +2132,20 @@ IDE_Morph.prototype.createStageHandle = function () {
 
 IDE_Morph.prototype.createSpriteBar = function () {
     // assumes that the categories pane has already been created
-    var rotationStyleButtons = [],
-        thumbSize = new Point(45, 45),
-        nameField,
-        padlock,
-        thumbnail,
-        tabCorner = 15,
-        tabColors = this.tabColors,
+    var rotationStyleButtons = [], thumbSize = new Point(45, 45
+        ), nameField, padlock, thumbnail, tabCorner = 15,
+        tabColors = this.tabColors, tab, myself = this,
         tabBar = new AlignmentMorph('row', -tabCorner * 2),
-        tab,
         symbols = [
             new SymbolMorph('square', 3.75),
             new SymbolMorph('turnAround', 10),
             new SymbolMorph('arrowLeftRightThin', 10),
-        ],
-        labels = ['don\'t rotate', 'can rotate', 'only face left/right'],
-        myself = this;
+        ],  labels = ['don\'t rotate', 'can rotate',
+        'only face left/right'];
 
     if (this.spriteBar) {
         this.spriteBar.destroy();
-    }
-
-    this.spriteBar = new Morph;
+    };  this.spriteBar = new Morph;
     this.spriteBar.color = this.frameColor;
     this.add(this.spriteBar);
 
@@ -2288,77 +2219,68 @@ IDE_Morph.prototype.createSpriteBar = function () {
         };
     };
 
-    nameField = new InputFieldMorph(this.currentSprite.name);
-    nameField.setWidth(100); // fixed dimensions
-    nameField.contrast = 90;
-    nameField.setPosition(thumbnail.topRight().add(new Point(10, 3)));
-    this.spriteBar.add(nameField);
-    this.spriteBar.nameField = nameField;
-    nameField.fixLayout();
+    nameField = new InputFieldMorph((this.currentSprite
+    ).name); nameField.setWidth(100); (nameField.contrast
+    ) = 90;  nameField.setPosition(thumbnail.topRight(
+    ).add(new Point(10, 3))); this.spriteBar.add(
+    nameField); this.spriteBar.nameField = (
+    nameField); nameField.fixLayout();
     nameField.accept = function () {
-        var newName = nameField.getValue();
-        myself.currentSprite.setName(
-            myself.newSpriteName(newName, myself.currentSprite)
-        );
-        nameField.setContents(myself.currentSprite.name);
+        var newName = nameField.getValue(
+        );  myself.currentSprite.setName(
+            myself.newSpriteName(newName,
+            myself.currentSprite));
+            nameField.setContents((
+            myself.currentSprite).name);
         myself.recordUnsavedChanges();
-    };
-    this.spriteBar.reactToEdit = nameField.accept;
+    };  ((this.spriteBar).reactToEdit
+    ) = nameField.accept;
 
     // padlock
     padlock = new ToggleMorph(
-        'checkbox',
-        null,
-        () => {
-            this.currentSprite.isDraggable = !this.currentSprite.isDraggable;
-            this.recordUnsavedChanges();
-        },
-        localize('draggable'),
-        () => this.currentSprite.isDraggable
-    );
-    padlock.label.isBold = false;
-    padlock.label.setColor(this.buttonLabelColor);
-    padlock.color = tabColors[2];
-    padlock.highlightColor = tabColors[0];
-    padlock.pressColor = tabColors[1];
+    'checkbox', null, () => {(
+    this.currentSprite).setDraggableTo(
+    !((this.currentSprite).isDraggable
+    )); this.recordUnsavedChanges();},
+    localize('draggable'), (function (
+    ) {return ((myself.currentSprite
+    ).isDraggable);})); (padlock.label
+    ).isBold = false; (padlock.label
+    ).setColor(this.buttonLabelColor
+    ); padlock.color = tabColors[2];
+    padlock.highlightColor = tabColors[
+    0]; padlock.pressColor = tabColors[1];
 
-    padlock.tick.shadowOffset = MorphicPreferences.isFlat ?
-            ZERO : new Point(-1, -1);
+    padlock.tick.shadowOffset = ((
+    MorphicPreferences).isFlat ? (
+    ZERO) : new Point(-1, -1));
     padlock.tick.shadowColor = BLACK;
     padlock.tick.color = this.buttonLabelColor;
     padlock.tick.isBold = false;
     padlock.tick.fixLayout();
 
     padlock.setPosition(nameField.bottomLeft().add(2));
-    padlock.fixLayout();
-    this.spriteBar.add(padlock);
+    padlock.fixLayout(); this.spriteBar.add(padlock);
     if (this.currentSprite instanceof StageMorph) {
-        padlock.hide();
-    }
+    padlock.hide();};
 
     // tab bar
-    tabBar.tabTo = function (tabString) {
-        var active;
-        if (myself.currentTab === tabString) {return; }
-        myself.world().hand.destroyTemporaries();
+    tabBar.tabTo = function (
+        tabString) {var active;
+        if (myself.currentTab === tabString) {return;
+        };  myself.world().hand.destroyTemporaries();
         myself.currentTab = tabString;
         this.children.forEach(each => {
-            each.refresh();
-            if (each.state) {active = each;};
-        });
-        active.refresh(); // needed when programmatically tabbing
-        myself.createSpriteEditor();
-        myself.fixLayout('tabEditor');
-    };
-
-    tab = new TabMorph(
-        tabColors,
-        null, // target
+            each.refresh();  if (
+            each.state) {active = (
+        each);};}); active.refresh(
+        ); myself.createSpriteEditor(
+    );  myself.fixLayout('tabEditor');};
+    tab = new TabMorph(tabColors, null,
         () => tabBar.tabTo('scripts'),
-        localize('Scripts'), // label
-        () => this.currentTab === 'scripts' // query
-    );
-    tab.padding = 3;
+        localize('Scripts'), () => (
+        this.currentTab === 'scripts'
+    )); tab.padding = 3;
     tab.corner = tabCorner;
     tab.edge = 1;
     tab.labelShadowOffset = new Point(-1, -1);
@@ -3389,13 +3311,11 @@ IDE_Morph.prototype.startFastTracking = function () {this.stage.isFastTracked = 
 IDE_Morph.prototype.stopFastTracking = function () {this.stage.isFastTracked = false;};
 
 IDE_Morph.prototype.runScripts = function () {if (this.stage.threads.pauseCustomHatBlocks) {this.stage.threads.pauseCustomHatBlocks = false; this.controlBar.stopButton.refresh();}; this.stage.fireGreenFlagEvent(
-);}; IDE_Morph.prototype.togglePauseResume = function () {if (this.stage.threads.isPaused()) {world.children.filter(function (child) {if (child instanceof DialogBoxMorph) {return child.key === 'debug';} else {
-return false;}}).forEach(function (child) {child.destroy();}); this.stage.timerProcedure.resumeNow(); this.stage.threads.resumeAll(this.stage);} else {this.stage.threads.pauseAll(this.stage); if (
-this.stage.threads.processes.length > 0) {this.stage.timerProcedure.pauseNow();} else {if (this.stage.timerProcedure.state === 'paused') {this.stage.timerProcedure.resumeNow();} else {
-this.stage.timerProcedure.pauseNow();};};}; this.controlBar.pauseButton.refresh();}; IDE_Morph.prototype.isPaused = function () {if (!this.stage) {return false;}; return this.stage.threads.isPaused();};
-IDE_Morph.prototype.stopAllScripts = function () {var ide = this; if (this.world().currentKey === 16) {this.scenes.map(scn => scn.stop(true));} else {this.scene.stop();}; var dialog = world.children.filter(
-child => child instanceof DialogBoxMorph).filter(child => child.key === 'screenshotMaker'); if (dialog.length > 0) {dialog = dialog[0]; if ((dialog.button2.labelString.color.g > 0) && (
-dialog.button1.labelString.name === 'circleSolid')) {dialog.button1.action(); dialog.button1.fixLayout();};};};
+);}; IDE_Morph.prototype.togglePauseResume = function () {if (this.stage.threads.isPaused()) {world.children.filter(function (child) {if (child instanceof DialogBoxMorph) {return child.key === 'debug';
+} else {return false;};}).forEach(function (child) {child.destroy();}); this.stage.timerProcedure.resumeNow(); this.stage.threads.resumeAll(this.stage);} else {this.stage.threads.pauseAll((this
+).stage); if ((this.stage).threads.processes.length > 0) {this.stage.timerProcedure.pauseNow();} else {if (this.stage.timerProcedure.state === 'paused') {this.stage.timerProcedure.resumeNow(
+);} else {(this.stage.timerProcedure).pauseNow();};};}; this.controlBar.pauseButton.refresh();}; IDE_Morph.prototype.isPaused = function () {if (!this.stage) {return false;}; return (this.stage
+).threads.isPaused();}; IDE_Morph.prototype.stopAllScripts = function () {var ide = this; if (this.world().currentKey === 16) {this.scenes.map(scn => scn.stop(true));} else {this.scene.stop();};};
 
 IDE_Morph.prototype.selectSprite = function (sprite, noEmptyRefresh) {
     if (this.currentSprite && this.currentSprite.scripts.focus) {
@@ -3572,7 +3492,7 @@ var username = this.cloud.username; this.scene.captureGlobalSettings();
 } else {callback()};
 };
 
-IDE_Morph.prototype.clearBackup = function () {this.confirm('Do you wanna to delete the backup?\n\(All unsaved data will be erased.\)', 'Hmm...',
+IDE_Morph.prototype.clearBackup = function () {this.confirm('Do you want to delete the backup?\n\(All unsaved data will be erased.\)', 'Hmm...',
 function () {delete localStorage['-snap-bakflag-']; delete localStorage['-snap-bakuser-']; delete localStorage['-snap-backup-'];});};
 
 IDE_Morph.prototype.availableBackup = function (anyway) {var username = this.cloud.username, bak, ix;
@@ -4240,7 +4160,7 @@ IDE_Morph.prototype.settingsMenu = function () {
     addPreference(
         'Backuping Projects',
         () => {if (asABool(this.getSetting('backup'))) {this.saveSetting('backup', false);} else {this.saveSetting('backup', true);};}, asABool(this.getSetting('backup')),
-        'uncheck to not create backups\nof your projects\n\(don\'t unckeck this if you don\'t wanna to stay\nsad about of your losted projects.\)', 'check to create backups\nof your projects', true
+        'uncheck to not create backups\nof your projects\n\(don\'t unckeck this if you don\'t want to stay\nsad about of your losted projects.\)', 'check to create backups\nof your projects', true
     );
     addPreference(
         'Animations',
@@ -4496,9 +4416,9 @@ if (storage.key(i).startsWith('-snap-file-')) {anArray.push([storage.getItem(sto
 }); menu.addItem('Save As...', 'saveProjectsBrowser');}; menu.addItem('Reload', function () {location.reload();}); menu.addItem('Quit', function () {window.close();}); if (backup) {menu.addItem('Open Backup',
 'restore', backup, new Color(100, 0, 0)); menu.addItem('Delete Backup', 'clearBackup', backup, new Color(100, 0, 0));}; menu.addLine(); menu.addItem('Open Snapinator', () => {window.open(
 (window.location.toString().split('snap.html')[0]).concat('src/snapinator/index.html'), 'Snapinator', "width=1025, height=775");}); menu.addItem('Open Tetris', function () {window.open(
-window.location.toString().split('index.html')[0] + 'src/tetris/index.html', 'JsTetris - javascript tetris game', "width=302, height=312");}); menu.addItem('Open Colors', function () {
-window.open(window.location.toString().split('index.html')[0] + 'src/colors.html', 'Colors v1.0', "width=572, height=447");}); menu.addItem('Open Alonzweeper', function () {window.open(
-window.location.toString().split('index.html')[0] + 'src/alonzweeper/index.html', 'Alonzweeper', "width=1440, height=990");}); menu.addLine(); menu.addItem('Import...', 'importLocalFile',
+window.location.toString().split('snap.html')[0] + 'src/tetris/index.html', 'JsTetris - javascript tetris game', "width=302, height=312");}); menu.addItem('Open Colors', function () {
+window.open(window.location.toString().split('snap.html')[0] + 'src/colors.html', 'Colors v1.0', "width=572, height=447");}); menu.addItem('Open Alonzweeper', function () {window.open(
+window.location.toString().split('snap.html')[0] + 'src/alonzweeper/index.html', 'Alonzweeper', "width=1440, height=990");}); menu.addLine(); menu.addItem('Import...', 'importLocalFile',
 'file menu import hint'); menu.addItem('Export project...', () => {var pn = this.getProjectName(); if (pn) {this.exportProject(pn);} else {this.prompt('Export Project As...',
 name => this.exportProject(name), null, 'exportProject');};}, 'save project data as XML\nto your downloads folder');
         menu.addItem(
@@ -4824,8 +4744,7 @@ IDE_Morph.prototype.undeleteSprites = function (pos) {
     if (!this.scene.trash.length) {
         this.showMessage('NO ITEM IN TRASH');
         return;
-    }
-    this.scene.trash.forEach(sprite =>
+    };  this.scene.trash.forEach(sprite =>
         menu.addItem(
             [
                 sprite.thumbnail(new Point(24, 24), null, true),
@@ -4833,8 +4752,7 @@ IDE_Morph.prototype.undeleteSprites = function (pos) {
             ],
             sprite
         )
-    );
-    menu.popup(this.world(), pos);
+    );  menu.popup(this.world(), pos);
 };
 
 IDE_Morph.prototype.undelete = function (aSprite, pos) {
@@ -4852,7 +4770,7 @@ IDE_Morph.prototype.undelete = function (aSprite, pos) {
             aSprite.name = this.newSpriteName(aSprite.name);
             this.stage.add(aSprite);
             aSprite.setXPosition(rnd.call(this, -50, 50));
-            aSprite.setYPosition(rnd.call(this, -50, 59));
+            aSprite.setYPosition(rnd.call(this, -50, 50));
             aSprite.fixLayout();
             aSprite.rerender();
             this.sprites.add(aSprite);
@@ -4866,10 +4784,10 @@ IDE_Morph.prototype.undelete = function (aSprite, pos) {
 // IDE_Morph menu actions
 
 IDE_Morph.prototype.certificate = function () {pic = new Image; pic.onload = function () {certificate = newCanvas(new Point(pic.width, pic.height), true);
-ctx = certificate.getContext('2d'); ctx.drawImage(pic, 0, 0); new DialogBoxMorph().inform('Cerificate of Appreciation', null, world, certificate);};
-pic.src = 'src/certificate.svg';}; /* The certificate is here to see the persons that I'm inspired to make my mod. Thanks! :-) */
+ctx = certificate.getContext('2d'); ctx.drawImage(pic, 0, 0); new DialogBoxMorph().inform('Cerificate of Appreciation', null, world, certificate);
+}; pic.src = 'src/certificate.svg';}; /* The certificate is here to see the persons that I'm inspired to make my mod. Thanks! :-) */
 
-IDE_Morph.prototype.aboutSnap = function () {var dlg, aboutTxt, noticeTxt, creditsTxt, versions = '', translations, module, btn1, btn2, btn3, btn4, licenseBtn, translatorsBtn, world = this.world();
+IDE_Morph.prototype.aboutSnap = function () {var dlg, aboutTxt, noticeTxt, creditsTxt, versions = '', translations, module, btn1, btn2, btn3, licenseBtn, translatorsBtn, world = this.world();
     aboutTxt = 'Snavanced! ' + SnavancedVersion + ' - Programming Mode (' + LastUpdated + ') \nBuild Your Own Blocks - a reimplementation of Scratch.\n'
         + 'Alessandrito123 \(Alessandro Moisés\)\n'
         + 'aless01pime@gmail.com\n'
@@ -4934,17 +4852,6 @@ IDE_Morph.prototype.aboutSnap = function () {var dlg, aboutTxt, noticeTxt, credi
         + '\nAchal Dave: Web Audio'
         + '\nJoe Otto: Morphic Testing and Debugging';
 
-    for (module in modules) {
-        if (Object.prototype.hasOwnProperty.call(modules, module)) {
-            versions += ('\n' + module + ' (' +
-                            modules[module] + ')');
-        }
-    }
-    if (versions !== '') {
-        versions = localize('current module versions:') + ' \n\n' +
-            'morphic (' + morphicVersion + ')' +
-            versions;
-    }
     translations = localize('Translations') + '\n' + SnapTranslator.credits();
 
     dlg = new DialogBoxMorph;
@@ -4961,8 +4868,7 @@ IDE_Morph.prototype.aboutSnap = function () {var dlg, aboutTxt, noticeTxt, credi
                 null,
                 MorphicPreferences.isFlat ? null : new Point(1, 1),
                 WHITE
-            ),
-            scroller,
+            ),  scroller,
             maxHeight = world.height() - dlg.titleFontSize * 10;
         if (tm.height() > maxHeight) {
             scroller = new ScrollFrameMorph();
@@ -4973,12 +4879,10 @@ IDE_Morph.prototype.aboutSnap = function () {var dlg, aboutTxt, noticeTxt, credi
             scroller.addContents(tm);
             scroller.color = new Color(0, 0, 0, 0);
             return scroller;
-        }
-        return tm;
-    }
-
-    dlg.inform('About Snavanced!', aboutTxt, world, this.logo.cachedTexture);
-    btn1 = dlg.buttons.children[0]; btn1.hint = (new Context).getBYOB();
+        };  return tm;
+    };  dlg.inform('About Snavanced!', aboutTxt, world,
+    this.logo.cachedTexture); btn1 = dlg.buttons.children[
+    0]; btn1.hint = (new Context).getBYOB();
     translatorsBtn = dlg.addButton(
         () => {
             dlg.addBody(txt(translations));
@@ -4986,30 +4890,26 @@ IDE_Morph.prototype.aboutSnap = function () {var dlg, aboutTxt, noticeTxt, credi
             btn1.show();
             btn2.show();
             btn3.hide();
-            btn4.hide();
             licenseBtn.hide();
             translatorsBtn.hide();
             dlg.fixLayout();
             dlg.setCenter(world.center());
         },
         'Translators...'
-    );
-    btn2 = dlg.addButton(
+    );  btn2 = dlg.addButton(
         () => {
             dlg.addBody(txt(aboutTxt));
             dlg.body.fixLayout();
             btn1.show();
             btn2.hide();
             btn3.show();
-            btn4.show();
             licenseBtn.show();
             translatorsBtn.hide();
             dlg.fixLayout();
             dlg.setCenter(world.center());
         },
         'Back...'
-    );
-    btn2.hide();
+    );  btn2.hide();
     licenseBtn = dlg.addButton(
         () => {
             dlg.addBody(txt(noticeTxt));
@@ -5017,30 +4917,13 @@ IDE_Morph.prototype.aboutSnap = function () {var dlg, aboutTxt, noticeTxt, credi
             btn1.show();
             btn2.show();
             btn3.hide();
-            btn4.hide();
             licenseBtn.hide();
             translatorsBtn.hide();
             dlg.fixLayout();
             dlg.setCenter(world.center());
         },
         'License...'
-    );
-    btn3 = dlg.addButton(
-        () => {
-            dlg.addBody(txt(versions));
-            dlg.body.fixLayout();
-            btn1.show();
-            btn2.show();
-            btn3.hide();
-            btn4.hide();
-            licenseBtn.hide();
-            translatorsBtn.hide();
-            dlg.fixLayout();
-            dlg.setCenter(world.center());
-        },
-        'Modules...'
-    );
-    btn4 = dlg.addButton(
+    );  btn3 = dlg.addButton(
         () => {
             dlg.addBody(txt(creditsTxt));
             dlg.body.fixLayout();
@@ -5048,14 +4931,12 @@ IDE_Morph.prototype.aboutSnap = function () {var dlg, aboutTxt, noticeTxt, credi
             btn2.show();
             translatorsBtn.show();
             btn3.hide();
-            btn4.hide();
             licenseBtn.hide();
             dlg.fixLayout();
             dlg.setCenter(world.center());
         },
         'Credits...'
-    );
-    translatorsBtn.hide();
+    );  translatorsBtn.hide();
     dlg.fixLayout();
 };
 
@@ -5405,13 +5286,13 @@ IDE_Morph.prototype.exportProjectSummary = function (useDropShadows) {
     function addNode(tag, node, contents) {
         if (!node) {node = body; }
         return new XML_Element(tag, contents, node);
-    }
+    };
 
     function add(contents, tag, node) {
         if (!tag) {tag = 'p'; }
         if (!node) {node = body; }
         return new XML_Element(tag, contents, node);
-    }
+    };
 
     function addImage(canvas, node, inline) {
         if (!node) {node = body; }
@@ -5419,7 +5300,7 @@ IDE_Morph.prototype.exportProjectSummary = function (useDropShadows) {
             pic = addNode('img', para || node);
         pic.attributes.src = canvas.toDataURL();
         return pic;
-    }
+    };
 
     function addVariables(varFrame) {
         var names = varFrame.names().sort(),
@@ -5703,9 +5584,7 @@ IDE_Morph.prototype.rawOpenProjectString = function (str) {
         this.openProject(
             this.serializer.load(str, this)
         );
-    }
-    this.stopFastTracking();
-};
+    };  this.stopFastTracking();};
 
 IDE_Morph.prototype.openBlocksString = function (str, name, silently) {
     var msg;
@@ -5715,8 +5594,7 @@ IDE_Morph.prototype.openBlocksString = function (str, name, silently) {
             this.rawOpenBlocksString(str, name, silently);
             msg.destroy();
         }
-    ]);
-};
+    ]);};
 
 IDE_Morph.prototype.rawOpenBlocksString = function (str, name, silently) {
     // name is optional (string), so is silently (bool)
@@ -5728,11 +5606,10 @@ IDE_Morph.prototype.rawOpenBlocksString = function (str, name, silently) {
             blocks = this.serializer.loadBlocks(str, this.stage);
         } catch (err) {
             this.showMessage('Load failed: ' + err);
-        }
+        };
     } else {
         blocks = this.serializer.loadBlocks(str, this.stage);
-    }
-    if (silently) {
+    };  if (silently) {
         blocks.global.forEach(def => {
             def.receiver = this.stage;
             this.stage.globalBlocks.push(def);
@@ -5755,8 +5632,7 @@ IDE_Morph.prototype.rawOpenBlocksString = function (str, name, silently) {
             this.stage,
             name
         ).popUp();
-    }
-    this.createCategories();
+    };  this.createCategories();
     this.categories.refreshEmpty();
     this.createPaletteHandle();
     this.categories.fixLayout();
@@ -5785,21 +5661,14 @@ IDE_Morph.prototype.rawOpenSpritesString = function (str) {
         }
     } else {
         this.serializer.loadSprites(str, this);
-    }
-};
+    };};
 
-IDE_Morph.prototype.openMediaString = function (str) {
-    if (Process.prototype.isCatchingErrors) {
-        try {
-            this.serializer.loadMedia(str);
-        } catch (err) {
-            this.showMessage('Load failed: ' + err);
-        }
-    } else {
-        this.serializer.loadMedia(str);
-    }
-    this.showMessage('Imported Media Module.', 2);
-};
+IDE_Morph.prototype.openMediaString = function (str
+) {if (Process.prototype.isCatchingErrors) {try {
+this.serializer.loadMedia(str);} catch (err) {
+this.showMessage('Load failed: ' + err);};} else {
+this.serializer.loadMedia(str);}; this.showMessage(
+'Imported Media Module.', 2);};
 
 IDE_Morph.prototype.openScriptString = function (str) {
     var msg;
@@ -5823,9 +5692,8 @@ IDE_Morph.prototype.rawOpenScriptString = function (str) {
             this.showMessage('Load failed: ' + err);
         };
     } else {
-        script = this.deserializeScriptString(str);
-    };
-    script.fixBlockColor(null, true);
+        script = this.deserializeScriptString(
+    str);};  script.fixBlockColor(null, true);
     this.spriteBar.tabBar.tabTo('scripts');
     scripts.add(script);
     script.fixBlockColor(null, true); // force zebra coloring
@@ -5840,8 +5708,7 @@ IDE_Morph.prototype.rawOpenScriptString = function (str) {
     this.showMessage(
         'Imported Script.',
         2
-    );
-};
+    );};
 
 IDE_Morph.prototype.deserializeScriptString = function (str) {
     var xml = this.serializer.parse(str, this.currentSprite),
@@ -5881,8 +5748,7 @@ IDE_Morph.prototype.openDataString = function (str, name, type) {
             this.rawOpenDataString(str, name, type);
             msg.destroy();
         }
-    ]);
-};
+    ]);};
 
 IDE_Morph.prototype.rawOpenDataString = function (str, name, type) {
     var data, vName, dlg,
@@ -5897,9 +5763,8 @@ IDE_Morph.prototype.rawOpenDataString = function (str, name, type) {
         while (contains(existing, newName)) {
             count += 1;
             newName = stem + '(' + count + ')';
-        }
-        return newName;
-    }
+        };  return newName;
+    };
 
     switch (type) {
         case 'csv':
@@ -6174,7 +6039,7 @@ IDE_Morph.prototype.toggleBlurredShadows = function () {
         this.removeSetting('solidshadow');
     } else {
         this.saveSetting('solidshadow', false);
-    }
+    };
 };
 
 IDE_Morph.prototype.toggleLongFormInputDialog = function () {
@@ -6184,7 +6049,7 @@ IDE_Morph.prototype.toggleLongFormInputDialog = function () {
         this.saveSetting('longform', true);
     } else {
         this.removeSetting('longform');
-    }
+    };
 };
 
 IDE_Morph.prototype.togglePlainPrototypeLabels = function () {
@@ -6194,7 +6059,7 @@ IDE_Morph.prototype.togglePlainPrototypeLabels = function () {
         this.saveSetting('plainprototype', true);
     } else {
         this.removeSetting('plainprototype');
-    }
+    };
 };
 
 IDE_Morph.prototype.togglePreferEmptySlotDrops = function () {
@@ -6266,8 +6131,7 @@ IDE_Morph.prototype.toggleAppMode = function (appMode) {
     if (this.isAppMode) {
 		this.wasSingleStepping = Process.prototype.enableSingleStepping;
 		if (this.wasSingleStepping) {
-     		this.toggleSingleStepping();
-    	         };
+     		this.toggleSingleStepping();};
         this.setColor(SpriteMorph.prototype.paletteColor);
         this.controlBar.setColor(SpriteMorph.prototype.paletteColor);
         this.controlBar.appModeButton.refresh();
@@ -6285,24 +6149,20 @@ IDE_Morph.prototype.toggleAppMode = function (appMode) {
         document.documentElement.requestFullscreen();};} else {
         if (this.wasSingleStepping && !Process.prototype.enableSingleStepping) {
              this.toggleSingleStepping();
-        }
-        this.setColor(this.backgroundColor);
+        };   this.setColor(this.backgroundColor);
         this.controlBar.setColor(this.frameColor);
         elements.forEach(e =>
             e.show()
-        );
-        this.stage.setScale(1);
+        );  this.stage.setScale(1);
         world.children.forEach(morph => {
             if (morph instanceof DialogBoxMorph) {
                 morph.show();
             };
-        });
-        world.allChildren().filter(c =>
+        }); world.allChildren().filter(c =>
             c instanceof ScrollFrameMorph
         ).forEach(s =>
             s.adjustScrollBars()
-        );
-        if (this.currentSprite === this.stage) {
+        );  if (this.currentSprite === this.stage) {
             this.spriteBar.children.forEach(child => {
                 if (child instanceof PushButtonMorph) {
                     child.hide();
@@ -6326,9 +6186,7 @@ IDE_Morph.prototype.toggleStageSize = function (isSmall, forcedRatio) {
 
     function toggle() {
         myself.isSmallStage = isNil(isSmall) ? !myself.isSmallStage : isSmall;
-    }
-
-    function zoomTo(targetRatio) {
+    };  function zoomTo(targetRatio) {
         myself.isSmallStage = true;
         world.animations.push(new Animation(
             ratio => {
@@ -6351,40 +6209,38 @@ IDE_Morph.prototype.toggleStageSize = function (isSmall, forcedRatio) {
             this.stage.dimensions.x;
         if (!this.isSmallStage || (smallRatio === this.stageRatio)) {
             toggle();
-        }
+        };
     } else if (altClicked) {
         smallRatio = this.width() / 2 /
             this.stage.dimensions.x;
         if (!this.isSmallStage || (smallRatio === this.stageRatio)) {
             toggle();
-        }
+        };
     } else {
         toggle();
-    }
-    if (this.isSmallStage) {
+    };  if (this.isSmallStage) {
         zoomTo(smallRatio);
     } else {
         zoomTo(1);
-    }
+    };
 };
 
-IDE_Morph.prototype.toggleScreenshotDialog = function anonymous () {if ((world.children.filter(child => child instanceof DialogBoxMorph).filter(child => child.key === 'screenshotMaker').length) > 0) {
+IDE_Morph.prototype.toggleScreenshotDialog = function () {if ((world.children.filter(child => child instanceof DialogBoxMorph).filter(child => child.key === 'screenshotMaker').length) > 0) {
 world.children.filter(child => child instanceof DialogBoxMorph).filter(child => child.key === 'screenshotMaker')[0].destroy();} else {var dialog = new DialogBoxMorph; dialog.key = 'screenshotMaker';
 dialog.labelString = 'Video Capture'; dialog.createLabel(); dialog.spriteEditor = new StageMorph; dialog.spriteEditor.alpha = 0; var video = new SpriteMorph; video.screenshots = []; video.isRecording = false;
 video.isDraggable = false; dialog.add(dialog.spriteEditor); dialog.spriteEditor.add(video); dialog.spriteEditor.setPosition(new Point(0, 28)); video.step = function anonymous () {
 var screenshot = world.childThatIsA(StageMorph).fullImage(); this.wearCostume(new Costume(screenshot)); if (this.isRecording) {this.screenshots.push(screenshot.toDataURL().slice(22));}; this.setTop(
 dialog.spriteEditor.top()); this.setLeft(dialog.left());}; var button = dialog.addButton((function anonymous () {if (button.labelString.name === 'pointRight') {video.startTime = Date.now();
 video.isRecording = true; button.labelString = new SymbolMorph('circleSolid', 10, new Color(200, 0, 0));} else {video.isRecording = false; video.endTime = Date.now(); var zip = new JSZip;
-world.childThatIsA(IDE_Morph).showMessage('Creating \"video.zip\"...\nStay tuned!'); world.nextSteps([(function anonymous () {this.rerender();})]); var screenshotsFile = zip.folder("screenshots"), i = 0; while (
+world.childThatIsA(IDE_Morph).showMessage('Creating \"video.zip\"...\nStay tuned!'); world.nextSteps([(function () {this.rerender();})]); var screenshotsFile = zip.folder("screenshots"), i = 0; while (
 i < video.screenshots.length) {screenshotsFile.file(i + '.png', video.screenshots[i], {base64: true}); i++;}; zip.file("duration.txt", ('The video had the duration of ' + (video.endTime - video.startTime
-) + ' milliseconds')); zip.generateAsync({type:"blob"}).then(function(content) {/* see FileSaver.js */ video.screenshots = []; saveAs(content, "video.zip");}); button.labelString = new SymbolMorph('pointRight',
-10, new Color(0, 200, 0));}; button.createLabel();}), new SymbolMorph('pointRight', 10, new Color(0, 200, 0))); button.createLabel = function anonymous () {if (!isNil(this.label)) {this.label.destroy();}; if (
-this.labelString instanceof Morph) {this.label = this.labelString.fullCopy();}; this.add(this.label);}; button.updateLabelColors = function () {if (this.label) {this.label.fixLayout(true);};}; button.createLabel(
-); button.fixLayout(); var greenFlag = dialog.addButton((function anonymous () {if (greenFlag.labelString.color.g > 0) {greenFlag.labelString.color.g = 0;} else {greenFlag.labelString.color.g = 200;};}),
-new SymbolMorph('flag', 10, new Color(0, 0, 0))); greenFlag.createLabel = function anonymous () {if (!isNil(this.label)) {this.label.destroy();}; if (this.labelString instanceof Morph) {
-this.label = this.labelString.fullCopy();}; this.add(this.label);}; greenFlag.updateLabelColors = function () {if (this.label) {this.label.fixLayout(true);};}; greenFlag.createLabel(
-); greenFlag.fixLayout(); dialog.setExtent(new Point(480, 360)); dialog.spriteEditor.userMenu = nop; video.userMenu = nop; dialog.button1 = button; dialog.button2 = greenFlag;
-dialog.fixLayout(); dialog.popUp(world);};}; /* Now you can record a video with this. Like Turbowarp, there is a recording dialog for the stage too!!! Try it!!! :-) */
+) + ' milliseconds')); zip.generateAsync({type:"blob"}).then(function(content) {video.screenshots = []; saveAs(content, "video.zip");}); button.labelString = new SymbolMorph('pointRight', 10, new Color(
+0, 200, 0));}; button.createLabel();}), new SymbolMorph('pointRight', 10, new Color(0, 200, 0))); button.createLabel = function () {if (!isNil(this.label)) {this.label.destroy();}; if ((this.labelString
+) instanceof Morph) {this.label = this.labelString.fullCopy();}; this.add(this.label);}; button.updateLabelColors = function () {if (this.label) {this.label.fixLayout(true);};}; button.createLabel();
+button.fixLayout(); var greenFlag = dialog.addButton((function () {if (greenFlag.labelString.color.g > 0) {greenFlag.labelString.color.g = 0;} else {greenFlag.labelString.color.g = 200;};}), new SymbolMorph(
+'flag', 10, new Color(0, 0, 0))); greenFlag.createLabel = function anonymous () {if (!isNil(this.label)) {this.label.destroy();}; if (this.labelString instanceof Morph) {this.label = this.labelString.fullCopy();
+}; this.add(this.label);}; greenFlag.updateLabelColors = function () {if (this.label) {this.label.fixLayout(true);};}; greenFlag.createLabel(); greenFlag.fixLayout(); dialog.setExtent(new Point(480, 360));
+dialog.spriteEditor.userMenu = nop; video.userMenu = nop; dialog.button1 = button; dialog.button2 = greenFlag; dialog.fixLayout(); dialog.popUp(world);};};
 
 IDE_Morph.prototype.toggleUnifiedPalette = function () {this.setUnifiedPalette(!this.scene.unifiedPalette); this.recordUnsavedChanges();};
 
@@ -6407,32 +6263,26 @@ IDE_Morph.prototype.openProjectsBrowser = function () {this.importLocalFile();};
 
 IDE_Morph.prototype.saveProjectsBrowser = function () {this.prompt('Export Project As...', name => this.exportProject(name), null, 'exportProject');};
 
-IDE_Morph.prototype.value_depthMenu = function anonymous () {
+IDE_Morph.prototype.value_depthMenu = function () {
     var menu = new MenuMorph(this, localize('Value-depth colors')),
         world = this.world(),
         pos = this.controlBar.settingsButton.bottomLeft(),
         qualities = [255, 128, 64, 32, 16, 8, 4, 2, 1],
         tick = new SymbolMorph(
             'tick',
-            MorphicPreferences.menuFontSize * 0.75
-        ),
-        empty = tick.fullCopy();
+            MorphicPreferences.menuFontSize * 3/4
+        ),  empty = tick.fullCopy();
 
     empty.render = nop;
     qualities.forEach((quality, i) => {
         menu.addItem(
             [
-                +localStorage['-snap-setting-colorQuality'] === [
-                255, 128, 64, 32, 16, 8, 4, 2, 1][i] ? tick : empty,
-                quality.toString()
+                (+(localStorage['-snap-setting-colorQuality']) === (
+                qualities[i]) ? tick : empty, quality.toString())
             ],
             () => {localStorage['-snap-setting-colorQuality'
-            ] = [255, 128, 64, 32, 16, 8, 4, 2, 1
-            ][i]; location.reload();}
-        );
-    });
-    menu.popup(world, pos);
-};
+            ] = qualities[i]; location.reload();});}
+            );  menu.popup(world, pos);};
 
 // IDE_Morph microphone settings
 
@@ -6445,12 +6295,10 @@ IDE_Morph.prototype.microphoneMenu = function anonymous () {
         tick = new SymbolMorph(
             'tick',
             MorphicPreferences.menuFontSize * 0.75
-        ),
-        on = new SymbolMorph(
+        ),  on = new SymbolMorph(
             'checkedBox',
             MorphicPreferences.menuFontSize * 0.75
-        ),
-        empty = tick.fullCopy();
+        ),  empty = tick.fullCopy();
 
     empty.render = nop;
     if (microphone.isReady) {
@@ -6460,10 +6308,8 @@ IDE_Morph.prototype.microphoneMenu = function anonymous () {
                 localize('Microphone')
             ],
             () => microphone.stop()
-        );
-        menu.addLine();
-    }
-    resolutions.forEach((res, i) => {
+        );  menu.addLine();
+    };  resolutions.forEach((res, i) => {
         menu.addItem(
             [
                 microphone.resolution === i + 1 ? tick : empty,
@@ -6471,9 +6317,7 @@ IDE_Morph.prototype.microphoneMenu = function anonymous () {
             ],
             () => microphone.setResolution(i + 1)
         );
-    });
-    menu.popup(world, pos);
-};
+    }); menu.popup(world, pos);};
 
 IDE_Morph.prototype.themesMenu = function () {var menu = new MenuMorph(this), pos = this.controlBar.settingsButton.bottomLeft(), themes = ['old', 'simple', 'default', 'light', 'animated'], tick = new SymbolMorph(
 'tick', MorphicPreferences.menuFontSize * 0.75), on = new SymbolMorph('checkedBox', MorphicPreferences.menuFontSize * 0.75), empty = tick.fullCopy(); empty.render = nop; themes.forEach((theme, i) => {menu.addItem(
@@ -6506,12 +6350,10 @@ IDE_Morph.prototype.languageMenu = function () {
             }
         )
     );  menu.popup(world, pos);
-};
-
-IDE_Morph.prototype.setLanguage = function (lang, callback, noSave) {var translation = document.getElementById('language'), src; SnapTranslator.unload(); if (translation) {document.head.removeChild(translation);};
-if (!(lang in SnapTranslator.dict)) {if (lang.includes('_') && lang.split('_')[0] in SnapTranslator.dict) {lang = lang.split('_')[0];} else {lang = 'en';};}; if (lang === 'en') {return this.reflectLanguage('en',
-callback, noSave);}; src = this.resourceURL('src', 'locale', 'lang-' + lang + '.js'); translation = document.createElement('script'); translation.id = 'language'; translation.onload = () => this.reflectLanguage(
-lang, callback, noSave); document.head.appendChild(translation); translation.src = src;};
+};  IDE_Morph.prototype.setLanguage = function (lang, callback, noSave) {var translation = document.getElementById('language'), src; SnapTranslator.unload(); if (translation) {(document
+).head.removeChild(translation);}; if (!(lang in SnapTranslator.dict)) {if (lang.includes('_') && lang.split('_')[0] in SnapTranslator.dict) {lang = lang.split('_')[0];} else {lang = 'en';
+};}; if (lang === 'en') {return this.reflectLanguage('en', callback, noSave);}; src = this.resourceURL('src', 'locale', 'lang-' + lang + '.js'); translation = document.createElement(
+'script'); translation.id = 'language'; translation.onload = () => this.reflectLanguage(lang, callback, noSave); document.head.appendChild(translation); translation.src = src;};
 
 IDE_Morph.prototype.reflectLanguage = function (lang, callback, noSave) {
     var projectData,
@@ -6526,14 +6368,13 @@ IDE_Morph.prototype.reflectLanguage = function (lang, callback, noSave) {
                 );
             } catch (err) {
                 this.showMessage('Serialization failed: ' + err);
-            }
+            };
         } else {
             projectData = this.serializer.serialize(
                 new Project(this.scenes, this.scene)
             );
-        }
-    }
-    SpriteMorph.prototype.initBlocks();
+        };
+    };  SpriteMorph.prototype.initBlocks();
     this.spriteBar.tabBar.tabTo('scripts');
     this.createCategories();
     this.categories.refreshEmpty();
@@ -6544,89 +6385,55 @@ IDE_Morph.prototype.reflectLanguage = function (lang, callback, noSave) {
         location.hash = urlBar;
     } else {
         this.openProjectString(projectData);
-    }
-    if (!noSave) {
+    };  if (!noSave) {
         this.saveSetting('language', lang);
-    }
-    if (callback) {callback.call(this); }
+    };  if (callback) {callback.call(this);};
 };
 
 // IDE_Morph blocks scaling
 
-IDE_Morph.prototype.userSetBlocksScale = function () {
-    var scrpt,
-        blck,
-        shield,
-        sample,
-        action,
-        dlg;
-
-    scrpt = new CommandBlockMorph;
-    scrpt.color = SpriteMorph.prototype.blockColor.control;
-    scrpt.setSpec(localize('ZOOM TEST STRING 2'));
-    blck = new CommandBlockMorph;
-    blck.color = SpriteMorph.prototype.blockColor.variables;
-    blck.setSpec(localize('ZOOM TEST STRING 3'));
-    scrpt.nextBlock(blck);
-    blck = new CommandBlockMorph;
-    blck.color = SpriteMorph.prototype.blockColor.lists;
-    blck.setSpec(localize('ZOOM TEST STRING 4'));
-    scrpt.bottomBlock().nextBlock(blck);
-    blck = SpriteMorph.prototype.blockForSelector('zoomLambdaTest');
-    blck.inputs()[0].nestedBlock(scrpt);
-
-    sample = new FrameMorph; sample.acceptsDrops = false;
-    sample.color = IDE_Morph.prototype.categoryColor;
-    if (SyntaxElementMorph.prototype.alpha > 0.8) {
-    sample.cachedTexture = this.scriptsPaneTexture;
-    }; sample.setExtent(new Point(250, 125));
-    blck.setPosition(sample.position().add(20));
-    sample.add(blck); shield = new Morph;
-    shield.alpha = 0; shield.setExtent(
-    sample.extent()); shield.setPosition(
-    sample.position()); sample.add(shield);
-
-    action = (num) => {
-        var backup = blck.children[blck.children.length - 1].nestedBlock(
-        ).fullCopy(); blck.setScale(num); blck.setSpec(blck.blockSpec);
-        blck.children[blck.children.length - 1].nestedBlock(backup);
-        blck.inputs()[0].setScale(num); blck.inputs()[0].fixLayout();
-        backup.setScale(num); backup.setSpec(backup.blockSpec);
-        backup.fixLayout(); backup.blockSequence().forEach(
-        block => {block.setScale(num); block.setSpec(
-        block.blockSpec); block.fixLayout();});
-        blck.inputs()[0].fixLayout(); blck.fullChanged();
-    };
-
-    dlg = new DialogBoxMorph(
-        null,
-        num => this.setBlocksScale(num)
-    ).withKey('zoomBlocks');
-    if (MorphicPreferences.isTouchDevice) {
-        dlg.isDraggable = false;
-    }
-    dlg.prompt(
-        'ZOOM MENU STRING',
-        SyntaxElementMorph.prototype.scale.toString(),
-        this.world(),
-        sample,
-        {
-            'ZOOM 1 SIZE' : 1,
-            'ZOOM 1.2 SIZE' : 1.2,
-            'ZOOM 1.4 SIZE' : 1.4,
-            'ZOOM 1.5 SIZE' : 1.5,
-            'ZOOM 2 SIZE' : 2,
-            'ZOOM 4 SIZE' : 4,
-            'ZOOM 8 SIZE' : 8,
-            'ZOOM 10 SIZE' : 10
-        },
-        false,
-        true,
-        1,
-        10,
-        action
-    );
-};
+IDE_Morph.prototype.userSetBlocksScale = function (
+) {var scrpt, blck, shield, sample, action, dlg;
+scrpt = new CommandBlockMorph; scrpt.color = (
+SpriteMorph.prototype.blockColor.control); (scrpt
+).setSpec(localize('ZOOM TEST STRING 2')); (blck
+) = new CommandBlockMorph; blck.color = (SpriteMorph
+).prototype.blockColor.variables; blck.setSpec(localize(
+'ZOOM TEST STRING 3')); scrpt.nextBlock(blck); blck = (
+new CommandBlockMorph); blck.color = (SpriteMorph.prototype
+).blockColor.lists; blck.setSpec(localize('ZOOM TEST STRING 4'
+)); scrpt.bottomBlock().nextBlock(blck); blck = (SpriteMorph
+).prototype.blockForSelector('zoomLambdaTest'); blck.inputs(
+)[0].nestedBlock(scrpt); sample = new FrameMorph; (sample
+).acceptsDrops = false; sample.color = (IDE_Morph.prototype
+).categoryColor; if ((SyntaxElementMorph.prototype.alpha
+) > 0.8) {sample.cachedTexture = this.scriptsPaneTexture;
+}; sample.setExtent(new Point(250, 125)); blck.setPosition(
+sample.position().add(20)); sample.add(blck); shield = (
+new Morph); shield.alpha = 0; shield.setExtent(sample.extent(
+)); shield.setPosition(sample.position()); sample.add(shield
+); action = (num => {var backup = blck.children[(blck.children
+).length - 1].nestedBlock().fullCopy(); blck.setScale(num);
+blck.setSpec(blck.blockSpec); blck.children[(blck.children
+).length - 1].nestedBlock(backup); blck.inputs()[0].setScale(
+num); blck.inputs()[0].fixLayout(); backup.setScale(num);
+backup.setSpec(backup.blockSpec); backup.fixLayout();
+backup.blockSequence().forEach((block => {block.setScale(
+num); block.setSpec(block.blockSpec); block.fixLayout();}));
+blck.inputs()[0].fixLayout(); blck.fullChanged();}); dlg = (
+new DialogBoxMorph(null, num => this.setBlocksScale(num
+))).withKey('zoomBlocks'); if ((MorphicPreferences
+).isTouchDevice) {dlg.isDraggable = false;}; (dlg
+).prompt('ZOOM MENU STRING', (SyntaxElementMorph
+).prototype.scale.toString(), world, sample, {
+'ZOOM 0.5 SIZE' : 0.5, 'ZOOM 0.75 SIZE' : 0.75,
+'ZOOM 0.9 SIZE' : 0.9, 'ZOOM 1 SIZE' : 1,
+'ZOOM 1.11 SIZE' : 1.11, 'ZOOM 1.295 SIZE' : 1.295,
+'ZOOM 1.365 SIZE' : 1.365, 'ZOOM 1.445 SIZE' : 1.445,
+'ZOOM 1.5 SIZE' : 1.5, 'ZOOM 2 SIZE' : 2,
+'ZOOM 4 SIZE' : 4, 'ZOOM 8 SIZE' : 8,
+'ZOOM 10 SIZE' : 10},  false,
+true, 0.5, 10, action);};
 
 IDE_Morph.prototype.setBlocksScale = function (num) {
 var projectData;
@@ -6657,45 +6464,16 @@ var projectData;
 
 // IDE_Morph blocks fading
 
-IDE_Morph.prototype.userFadeBlocks = function () {
-    var dlg,
-        initial = 100 - (SyntaxElementMorph.prototype.alpha * 100);
-
-    dlg = new DialogBoxMorph(
-        null,
-        num => this.setBlockTransparency(num, true)
-    ).withKey('fadeBlocks');
-    if (MorphicPreferences.isTouchDevice) {
-        dlg.isDraggable = false;
-    }
-
-    dlg.cancel = () => {
-        this.setBlockTransparency(initial);
-        dlg.destroy();
-    };
-
-    dlg.prompt(
-        'FADING MENU STRING',
-        initial.toString(),
-        this.world(),
-        null, // pic
-        {
-            'block-solid (0)' : 0,
-            'medium (50)' : 50,
-            'light (70)' : 70,
-            'shimmering (80)' : 80,
-            'elegant (90)' : 90,
-            'subtle (95)' : 95,
-            'text-only (100)' : 100
-        },
-        false, // read only?
-        true, // numeric
-        0, // slider min
-        100, // slider max
-        num => this.setBlockTransparency(num), // slider action
-        0 // decimals
-    );
-};
+IDE_Morph.prototype.userFadeBlocks = function () {var dlg,
+initial = (1 - SyntaxElementMorph.prototype.alpha) * 100; dlg = (
+new DialogBoxMorph(null, num => this.setBlockTransparency(num, true
+))).withKey('fadeBlocks'); if (MorphicPreferences.isTouchDevice) {(dlg
+).isDraggable = false;}; dlg.cancel = () => {this.setBlockTransparency(
+initial); dlg.destroy();}; dlg.prompt('FADING MENU STRING', (initial
+).toString(), world, null, {'block-solid (0)' : 0, 'medium (50)' : 50,
+'light (70)' : 70, 'shimmering (80)' : 80, 'elegant (90)' : 90,
+'subtle (95)' : 95, 'text-only (100)' : 100},  false, true,
+0, 100, num => this.setBlockTransparency(num), 0);};
 
 IDE_Morph.prototype.setBlockTransparency = function (num, save) {
     SyntaxElementMorph.prototype.setAlphaScaled(100 - num);
@@ -6705,28 +6483,16 @@ IDE_Morph.prototype.setBlockTransparency = function (num, save) {
             this.removeSetting('fade');
         } else {
             this.saveSetting('fade', num);
-        }
-    }
-};
+        };
+    };};
 
 // IDE_Morph stage size manipulation
 
 IDE_Morph.prototype.userSetStageSize = function () {
-    new DialogBoxMorph(
-        this,
-        this.setStageExtent,
-        this
-    ).promptVector(
-        "Stage size",
-        this.stage.dimensions,
-        new Point(480, 360),
-        'Stage width',
-        'Stage height',
-        this.world(),
-        null, // pic
-        null // msg
-    );
-};
+(new DialogBoxMorph(this, this.setStageExtent, this)
+).promptVector("Stage size", this.stage.dimensions,
+new Point(480, 360), 'Stage width', 'Stage height',
+world, null, null);};
 
 IDE_Morph.prototype.setStageExtent = function (aPoint) {
     var myself = this,
@@ -6744,13 +6510,12 @@ IDE_Morph.prototype.setStageExtent = function (aPoint) {
             } else {
                 myself.stage.dimensions =
                     myself.stage.dimensions.add(delta);
-            }
-            myself.stage.setExtent(myself.stage.dimensions);
+            };  myself.stage.setExtent(myself.stage.dimensions);
             myself.stage.clearPenTrails();
             myself.fixLayout();
             this.setExtent(world.extent());
         };
-    }
+    };
 
     this.stageRatio = 1;
     this.isSmallStage = false;
@@ -7409,24 +7174,24 @@ IDE_Morph.prototype.getUser = function () {var thisUser = this.getSetting('user'
 
 IDE_Morph.prototype.isNonWebStandardBrowser = function anonymous () {var ua = navigator.userAgent; return ua.indexOf("MSIE ") > -1 || ua.indexOf("Trident/") > -1;};
 
-IDE_Morph.prototype.getRandomTip = function anonymous () {var numberOfTip = (0 - Math.round(0 - Math.random() * 30)); var aRandomTip = ''; if (this.isNonWebStandardBrowser(
-)) {aRandomTip = 'If do you wanna to run Snavanced!\nto the best graphics and speed,\nrun this with Google Chrome, Firefox,\nor another browser which it\'s a web-standards. 🤨';
+IDE_Morph.prototype.getRandomTip = function () {var numberOfTip = (0 - Math.round(0 - Math.random() * 30)); var aRandomTip = ''; if (this.isNonWebStandardBrowser(
+)) {aRandomTip = 'If do you want to run Snavanced!\nto the best graphics and speed,\nrun this with Google Chrome, Firefox,\nor another browser which it\'s a web-standards. 🤨';
 } else if (numberOfTip === 0) {aRandomTip = 'Snap! is a broadly\ninviting programming language\nfor kids and adults that\'s also a platform\nfor serious study of computer science. 🙂';
 } else if (numberOfTip === 1) {aRandomTip = '\"Anything you can do from the GUI,\nyou should be able to do from\nthe programming language\nand viceversa.\"\nMike Eisenberg, d. 3/12/2019 Rest In Peace. 😭';
 } else if (numberOfTip === 2) {aRandomTip = 'BYOB is Build Your Own Blocks.\nA mod for Scratch 1.4. Too old! 🙂';
 } else if (numberOfTip === 3) {aRandomTip = 'Brian Harvey is the co-developer\nof Snap! \(BYOB\), he is a lecturer and\nis the official creator of the UCB LOGO. 🙂';
-} else if (numberOfTip === 4) {aRandomTip = 'TypeScript has syntax-types for JavaScript. 🙂\nIf you wanna to try it, go to:\ntypescriptlang.org/play';
+} else if (numberOfTip === 4) {aRandomTip = 'TypeScript has syntax-types for JavaScript. 🙂\nIf you want to try it, go to:\ntypescriptlang.org/play';
 } else if (numberOfTip === 5) {aRandomTip = 'Snap! (BYOB) have the famous \"λ calculus\".\nIn other context, all of the things are first class. 🙂';
 } else if (numberOfTip === 6) {aRandomTip = 'Did you know what, Snavanced!\nadded more features than Snap!, just look!';
 } else if (numberOfTip === 7) {aRandomTip = '\u0049\u0020\u0064\u006F\u006E\u0027\u0074\u0020\u006B\u006E\u006F\u0077\u0020\u0077\u0068\u0061\u0074\u0020\u0069\u0074\u0027\u0073\u0020\u0073\u0075\u0070\u0070\u006F\u0073\u0065\u0064\u0020\u0074\u006F\u0020\u006D\u0065\u0061\u006E\u000A\u0074\u0068\u0061\u0074\u0020\u0049\u0027\u006D\u0020\u0073\u006F\u0020\u0073\u0061\u0064\u002C\u0020\u0061\u0020\u0066\u0061\u0069\u0072\u0079\u0020\u0074\u0061\u006C\u0065\u0020\u0066\u0072\u006F\u006D\u0020\u0061\u006E\u0063\u0069\u0065\u006E\u0074\u0020\u0074\u0069\u006D\u0065\u0073\u002C\u000A\u0049\u0020\u0063\u0061\u006E\u0027\u0074\u0020\u0067\u0065\u0074\u0020\u0074\u0068\u0061\u0074\u0020\u006F\u0075\u0074\u0020\u006F\u0066\u0020\u006D\u0079\u0020\u006D\u0069\u006E\u0064\u002E\u000A\u0054\u0068\u0065\u0020\u0061\u0069\u0072\u0020\u0069\u0073\u0020\u0063\u006F\u006F\u006C\u0020\u0061\u006E\u0064\u0020\u0069\u0074\u0020\u0069\u0073\u0020\u0067\u0065\u0074\u0074\u0069\u006E\u0067\u0020\u0064\u0061\u0072\u006B\u002C\u0020\u0061\u006E\u0064\u0020\u0074\u0068\u0065\u0020\u0052\u0068\u0069\u006E\u0065\u0020\u0066\u006C\u006F\u0077\u0073\u0020\u0063\u0061\u006C\u006D\u006C\u0079\u003B\u000A\u0074\u0068\u0065\u0020\u0070\u0065\u0061\u006B\u0020\u006F\u0066\u0020\u0074\u0068\u0065\u0020\u006D\u006F\u0075\u006E\u0074\u0061\u0069\u006E\u0020\u0073\u0070\u0061\u0072\u006B\u006C\u0065\u0073\u0020\u0069\u006E\u0020\u0074\u0068\u0065\u0020\u0065\u0076\u0065\u006E\u0069\u006E\u0067\u0020\u0073\u0075\u006E\u0073\u0068\u0069\u006E\u0065\u002E\u000A\u0054\u0068\u0065\u0020\u006D\u006F\u0073\u0074\u0020\u0062\u0065\u0061\u0075\u0074\u0069\u0066\u0075\u006C\u0020\u006D\u0061\u0069\u0064\u0065\u006E\u0020\u0073\u0069\u0074\u0073\u0020\u0077\u006F\u006E\u0064\u0065\u0072\u0066\u0075\u006C\u006C\u0079\u0020\u0075\u0070\u0020\u0074\u0068\u0065\u0072\u0065\u002C\u000A\u0068\u0065\u0072\u0020\u0067\u006F\u006C\u0064\u0065\u006E\u0020\u006A\u0065\u0077\u0065\u006C\u0072\u0079\u0020\u0066\u006C\u0061\u0073\u0068\u0065\u0073\u002C\u0020\u0073\u0068\u0065\u0020\u0063\u006F\u006D\u0062\u0073\u0020\u0068\u0065\u0072\u0020\u0067\u006F\u006C\u0064\u0065\u006E\u0020\u0068\u0061\u0069\u0072\u002C\u000A\u0073\u0068\u0065\u0020\u0063\u006F\u006D\u0062\u0073\u0020\u0069\u0074\u0020\u0077\u0069\u0074\u0068\u0020\u0061\u0020\u0067\u006F\u006C\u0064\u0065\u006E\u0020\u0063\u006F\u006D\u0062\u002C\u0020\u0061\u006E\u0064\u0020\u0073\u0069\u006E\u0067\u0073\u0020\u0061\u0020\u0073\u006F\u006E\u0067\u0020\u0077\u0068\u0069\u006C\u0065\u0020\u0064\u006F\u0069\u006E\u0067\u0020\u0069\u0074\u003B\u000A\u0069\u0074\u0020\u0068\u0061\u0073\u0020\u0061\u0020\u0077\u006F\u006E\u0064\u0072\u006F\u0075\u0073\u002C\u0020\u0070\u006F\u0077\u0065\u0072\u0066\u0075\u006C\u0020\u006D\u0065\u006C\u006F\u0064\u0079\u002E\u000A\u0054\u0068\u0065\u0020\u0073\u0061\u0069\u006C\u006F\u0072\u0020\u0069\u006E\u0020\u0074\u0068\u0065\u0020\u006C\u0069\u0074\u0074\u006C\u0065\u0020\u0073\u0068\u0069\u0070\u0020\u0069\u0073\u0020\u0073\u0065\u0069\u007A\u0065\u0064\u0020\u0077\u0069\u0074\u0068\u0020\u0077\u0069\u006C\u0064\u0020\u0070\u0061\u0069\u006E\u003B\u000A\u0068\u0065\u0020\u0064\u006F\u0065\u0073\u006E\u0027\u0074\u0020\u006C\u006F\u006F\u006B\u0020\u0061\u0074\u0020\u0074\u0068\u0065\u0020\u0063\u006C\u0069\u0066\u0066\u0073\u002C\u0020\u0068\u0065\u0020\u006A\u0075\u0073\u0074\u0020\u006C\u006F\u006F\u006B\u0073\u0020\u0075\u0070\u0020\u0069\u006E\u0074\u006F\u0020\u0074\u0068\u0065\u0020\u0073\u006B\u0079\u002E\u000A\u0049\u0020\u0074\u0068\u0069\u006E\u006B\u0020\u0069\u006E\u0020\u0074\u0068\u0065\u0020\u0065\u006E\u0064\u0020\u0074\u0068\u0065\u0020\u0077\u0061\u0076\u0065\u0073\u0020\u0077\u0069\u006C\u006C\u0020\u0073\u0077\u0061\u006C\u006C\u006F\u0077\u0020\u0075\u0070\u0020\u0074\u0068\u0065\u0020\u0073\u006B\u0069\u0070\u0070\u0065\u0072\u0020\u0061\u006E\u0064\u0020\u0062\u0061\u0072\u0067\u0065\u002C\u000A\u0061\u006E\u0064\u0020\u0074\u0068\u0061\u0074\u0020\u0068\u0061\u0073\u0020\u0062\u0065\u0065\u006E\u0020\u0064\u006F\u006E\u0065\u0020\u0077\u0069\u0074\u0068\u0020\u0068\u0065\u0072\u0020\u0073\u0069\u006E\u0067\u0069\u006E\u0067\u002C\u0020\u0074\u0068\u0065\u0020\u004C\u006F\u0072\u0065\u006C\u0065\u0069\u002E';}
-else if (numberOfTip === 8) {aRandomTip = 'There\'s a mod of Snap! called NetsBlox. 🙂\nIf do you wanna to try it, go to:\nhttps://editor.netsblox.org';}
+else if (numberOfTip === 8) {aRandomTip = 'There\'s a mod of Snap! called NetsBlox. 🙂\nIf do you want to try it, go to:\nhttps://editor.netsblox.org';}
 else if (numberOfTip === 9) {aRandomTip = 'Did you know what, Snavanced!\nit\'s called that because the GameBoy Advance,\nis the next generation of GameBoy. 🙂';}
 else if (numberOfTip === 10) {aRandomTip = 'Did you know what, Snavanced!\nis a probably succesor of the self Snap!. 🙂';}
 else if (numberOfTip === 11) {aRandomTip = 'Did you know what, Snavanced!\nis based too much of BYOB. 🙂';}
 else if (numberOfTip === 12) {aRandomTip = 'Did you know what, Snavanced!\nis a bit slow. It\'s not intentional. 😕';}
 else if (numberOfTip === 13) {aRandomTip = 'Did you know what, Snavanced!\nhas the new and the old \n\"λ blocks\" in the same mod. 😄';}
 else if (numberOfTip === 14) {if (isNil(this.getSetting('user'))) {
-aRandomTip = 'If you don\'t wanna to have a username yet,\n you simply leave your username\nin blank, and you will be a \"Guest\". 🙂';
+aRandomTip = 'If you don\'t want to have a username yet,\n you simply leave your username\nin blank, and you will be a \"Guest\". 🙂';
 } else {aRandomTip = 'Did you know what, your username\nis only to you, to have your identity. 🙂';};
 } else if (numberOfTip === 15) {aRandomTip = 'The Snap!\'s mascot, Alonzo,\nhave a \"λ type\" of haircut. 🙂';}
 else if (numberOfTip === 16) {aRandomTip = 'Brian Harvey loves the Animaniacs,\nprincipally, Wakko. 😄';}
@@ -7589,7 +7354,7 @@ ProjectDialogMorph.prototype.buildContents = function () {
         if (this.cachedTexture) {
             this.renderCachedTexture(ctx);
         } else if (this.texture) {
-            this.renderTexture(this.texture, ctx);
+            this.renderTexture(this.texture);
         }
     };
     this.preview.renderCachedTexture = function (ctx) {
@@ -8638,7 +8403,7 @@ ProjectRecoveryDialogMorph.prototype.buildContents = function () {
         if (this.cachedTexture) {
             this.renderCachedTexture(ctx);
         } else if (this.texture) {
-            this.renderTexture(this.texture, ctx);
+            this.renderTexture(this.texture);
         }
     };
     this.preview.renderCachedTexture = function (ctx) {
@@ -9204,7 +8969,7 @@ LibraryImportDialogMorph.prototype.showMessage = function (msgText) {
 
 // SpriteIconMorph inherits from ToggleButtonMorph (Widgets)
 
-SpriteIconMorph.prototype = new ToggleButtonMorph();
+SpriteIconMorph.prototype = new ToggleButtonMorph;
 SpriteIconMorph.prototype.constructor = SpriteIconMorph;
 SpriteIconMorph.uber = ToggleButtonMorph.prototype;
 
@@ -9220,38 +8985,29 @@ SpriteIconMorph.prototype.fontSize = 9;
 
 function SpriteIconMorph(aSprite) {
     this.init(aSprite);
-}
-
-SpriteIconMorph.prototype.init = function (aSprite) {
+};  SpriteIconMorph.prototype.init = function (aSprite) {
     var colors, action, query, hover;
 
     colors = [
         IDE_Morph.prototype.categoryColor,
         IDE_Morph.prototype.frameColor,
         IDE_Morph.prototype.frameColor
-    ];
-
-    action = () => {
+    ];  action = () => {
         // make my sprite the current one
         var ide = this.parentThatIsA(IDE_Morph);
 
         if (ide) {
             ide.selectSprite(this.object);
-        }
-    };
-
-    query = () => {
+        };
+    };  query = () => {
         // answer true if my sprite is the current one
         var ide = this.parentThatIsA(IDE_Morph);
 
         if (ide) {
-            return ide.currentSprite === this.object;
-        }
-        return false;
-    };
-
-    hover = () => {
-        if (!aSprite.exemplar) {return null; }
+            return (ide.currentSprite === this.object);
+        };  return false;
+    };  hover = () => {
+        if (!aSprite.exemplar) {return null;};
         return (localize('parent') + ':\n' + aSprite.exemplar.name);
     };
 
@@ -9284,9 +9040,7 @@ SpriteIconMorph.prototype.init = function (aSprite) {
 SpriteIconMorph.prototype.createThumbnail = function () {
     if (this.thumbnail) {
         this.thumbnail.destroy();
-    }
-
-    this.thumbnail = new Morph();
+    };  this.thumbnail = new Morph;
     this.thumbnail.isCachingImage = true;
     this.thumbnail.bounds.setExtent(this.thumbSize);
     if (this.object instanceof SpriteMorph) { // support nested sprites
@@ -9310,8 +9064,7 @@ SpriteIconMorph.prototype.createLabel = function () {
 
     if (this.label) {
         this.label.destroy();
-    }
-    txt = new StringMorph(
+    };  txt = new StringMorph(
         this.object.name,
         this.fontSize,
         this.fontStyle,
@@ -9323,7 +9076,7 @@ SpriteIconMorph.prototype.createLabel = function () {
         this.labelColor
     );
 
-    this.label = new FrameMorph();
+    this.label = new FrameMorph;
     this.label.acceptsDrops = false;
     this.label.alpha = 0;
     this.label.setExtent(txt.extent());
@@ -9692,7 +9445,7 @@ SpriteIconMorph.prototype.flash = function () {
 // CostumeIconMorph inherits from ToggleButtonMorph (Widgets)
 // ... and copies methods from SpriteIconMorph
 
-CostumeIconMorph.prototype = new ToggleButtonMorph();
+CostumeIconMorph.prototype = new ToggleButtonMorph;
 CostumeIconMorph.prototype.constructor = CostumeIconMorph;
 CostumeIconMorph.uber = ToggleButtonMorph.prototype;
 
@@ -9940,7 +9693,7 @@ CostumeIconMorph.prototype.prepareToBeGrabbed = function () {
 // TurtleIconMorph inherits from ToggleButtonMorph (Widgets)
 // ... and copies methods from SpriteIconMorph
 
-TurtleIconMorph.prototype = new ToggleButtonMorph();
+TurtleIconMorph.prototype = new ToggleButtonMorph;
 TurtleIconMorph.prototype.constructor = TurtleIconMorph;
 TurtleIconMorph.uber = ToggleButtonMorph.prototype;
 
@@ -10118,7 +9871,7 @@ TurtleIconMorph.prototype.userMenu = function () {
 
 // WardrobeMorph inherits from ScrollFrameMorph
 
-WardrobeMorph.prototype = new ScrollFrameMorph();
+WardrobeMorph.prototype = new ScrollFrameMorph;
 WardrobeMorph.prototype.constructor = WardrobeMorph;
 WardrobeMorph.uber = ScrollFrameMorph.prototype;
 
@@ -10142,7 +9895,6 @@ WardrobeMorph.prototype.init = function (aSprite, sliderColor) {
     WardrobeMorph.uber.init.call(this, null, null, sliderColor);
 
     // configure inherited properties
-    // this.fps = 2; // commented out to make scrollbars more responsive
     this.updateList();
 };
 
@@ -10368,7 +10120,7 @@ WardrobeMorph.prototype.reactToDropOf = function (icon) {
 // SoundIconMorph inherits from ToggleButtonMorph (Widgets)
 // ... and copies methods from SpriteIconMorph
 
-SoundIconMorph.prototype = new ToggleButtonMorph();
+SoundIconMorph.prototype = new ToggleButtonMorph;
 SoundIconMorph.prototype.constructor = SoundIconMorph;
 SoundIconMorph.uber = ToggleButtonMorph.prototype;
 
@@ -10590,7 +10342,7 @@ SoundIconMorph.prototype.prepareToBeGrabbed = function () {
 
 // JukeboxMorph instance creation
 
-JukeboxMorph.prototype = new ScrollFrameMorph();
+JukeboxMorph.prototype = new ScrollFrameMorph;
 JukeboxMorph.prototype.constructor = JukeboxMorph;
 JukeboxMorph.uber = ScrollFrameMorph.prototype;
 
@@ -10609,7 +10361,6 @@ JukeboxMorph.prototype.init = function (aSprite, sliderColor) {
 
     // configure inherited properties
     this.acceptsDrops = false;
-    // this.fps = 2; // commented out to make scrollbars more responsive
     this.updateList();
 };
 
@@ -10728,13 +10479,6 @@ JukeboxMorph.prototype.reactToDropOf = function (icon) {
 
 // MIDIMorph ////////////////////////////////////////////////////
 
-/*
-    I am a selectable element in a SceneAlbum, keeping
-    a self-updating thumbnail of the scene I'm respresenting, and a
-    self-updating label of the scene's name (in case it is changed
-    elsewhere)
-*/
-
 // MIDIMorph inherits from Morph
 
 MIDIMorph.prototype = new FrameMorph;
@@ -10759,15 +10503,12 @@ var aMID = new MIDSoundData('Unnamed', 0, ((note, volume, length, index,
 optional) => 0), true); this.parentThatIsA(IDE_Morph).mids.push(aMID);
 this.add(new MIDIIconMorph(aMID)); this.fixLayout();};
 this.add(new SliderMorph(0, myMIDs.length)); this.children[2].setPosition(new Point(
-99, 0)); this.children[2].mouseDownLeft = function anonymous (pos) {
-    var world;
-
+99, 0)); this.children[2].mouseDownLeft = function (pos) {
     if (!this.button.bounds.containsPoint(pos)) {
         this.offset = new Point(); // return null;
     } else {
         this.offset = pos.subtract(this.button.bounds.origin);
-    }
-    world = this.root();
+    };
 
     this.step = () => {
         var mousePos, newX, newY;
@@ -10816,7 +10557,7 @@ if (myMIDs.length > 0) {this.visualizer.selectedMID = myMIDs[0];};
 this.add(new MIDIIconMorph(myMIDs[i])); i++;};}).apply(this, [myMIDs]);
 this.fixLayout();};
 
-MIDIMorph.prototype.fixLayout = function anonymous () {
+MIDIMorph.prototype.fixLayout = function () {
 var myChildren = this.children, myMIDs = (isNil(this.parentThatIsA(
 IDE_Morph)) ? [] : this.parentThatIsA(IDE_Morph).mids);
 myChildren.filter(child => child instanceof MIDIIconMorph
@@ -10829,13 +10570,6 @@ morph => morph instanceof MIDIIconMorph).indexOf(child) + 1)) - child.bounds.hei
 0, myChildren[2].value * (myMIDs.length * 2.875))))); myChildren[0].fixLayout();};
 
 // MIDIVisualizerMorph ////////////////////////////////////////////////////
-
-/*
-    I am a selectable element in a SceneAlbum, keeping
-    a self-updating thumbnail of the scene I'm respresenting, and a
-    self-updating label of the scene's name (in case it is changed
-    elsewhere)
-*/
 
 // MIDIVisualizerMorph inherits from Morph
 
@@ -10923,13 +10657,6 @@ MIDIIconMorph.prototype.fixLayout = function () {
 };
 
 // SoundVisualizerMorph ////////////////////////////////////////////////////
-
-/*
-    I am a selectable element in a SceneAlbum, keeping
-    a self-updating thumbnail of the scene I'm respresenting, and a
-    self-updating label of the scene's name (in case it is changed
-    elsewhere)
-*/
 
 // SoundVisualizerMorph inherits from Morph
 
@@ -11337,8 +11064,7 @@ StageHandleMorph.prototype.init = function (target) {
     this.target = target || null;
     this.userState = 'normal'; // or 'highlight'
     HandleMorph.uber.init.call(this);
-    this.color = MorphicPreferences.isFlat ?
-            IDE_Morph.prototype.backgroundColor : new Color(190, 190, 190);
+    this.color = IDE_Morph.prototype.categoryColor.lighter();
     this.isDraggable = false;
     this.setExtent(new Point(12, 50));
 
@@ -11351,13 +11077,12 @@ StageHandleMorph.prototype.render = function (ctx) {
     if (this.userState === 'highlight') {
         this.renderOn(
             ctx,
-            MorphicPreferences.isFlat ?
-                    new Color(245, 245, 255) : new Color(100, 100, 255),
+            (this.color).darker(),
             this.color
         );
     } else { // assume 'normal'
         this.renderOn(ctx, this.color);
-    }
+    };
 };
 
 StageHandleMorph.prototype.renderOn = function (
@@ -11367,10 +11092,7 @@ StageHandleMorph.prototype.renderOn = function (
 ) {
     var l = this.height() / 8,
         w = this.width() / 6,
-        r = w / 2,
-        x,
-        y,
-        i;
+        r = w / 2, x, y, i;
 
     ctx.lineWidth = w;
     ctx.lineCap = 'round';
@@ -11384,11 +11106,9 @@ StageHandleMorph.prototype.renderOn = function (
             ctx.moveTo(x, y - (l - r));
             ctx.lineTo(x, y + (l - r));
             ctx.stroke();
-        }
-        x += (w * 2);
+        };  x += (w * 2);
         l *= 2;
-    }
-    if (shadowColor) {
+    };  if (shadowColor) {
         ctx.strokeStyle = shadowColor.toString();
         x = this.width() / 12 + w;
         l = this.height() / 8;
@@ -11398,69 +11118,47 @@ StageHandleMorph.prototype.renderOn = function (
                 ctx.moveTo(x, y - (l - r));
                 ctx.lineTo(x, y + (l - r));
                 ctx.stroke();
-            }
-            x += (w * 2);
+            };  x += (w * 2);
             l *= 2;
-        }
-    }
+        };
+    };
 };
 
 // StageHandleMorph layout:
 
-StageHandleMorph.prototype.fixLayout = function () {
-    if (!this.target) {return; }
-    var ide = this.target.parentThatIsA(IDE_Morph);
-    this.setTop(this.target.top() + 10);
-    this.setRight(this.target.left());
-    if (ide) {ide.add(this); } // come to front
-};
+StageHandleMorph.prototype.fixLayout = function () {if (
+this.target instanceof Morph) {var ide = (this.target
+).parentThatIsA(IDE_Morph); this.setTop((this.target
+).top() + 10); this.setRight(this.target.left());
+if (ide instanceof Morph) {ide.add(this);};};};
 
 // StageHandleMorph stepping:
 
 StageHandleMorph.prototype.step = null;
 
-StageHandleMorph.prototype.mouseDownLeft = function (pos) {
-    var world = this.world(),
-        offset = this.right() - pos.x,
-        ide = this.target.parentThatIsA(IDE_Morph);
-
-    if (!this.target) {
-        return null;
-    }
-    ide.isSmallStage = true;
-    ide.controlBar.stageSizeButton.refresh();
-
-    this.step = function () {
-        var newPos, newWidth;
-        if (world.hand.mouseButton) {
-            newPos = world.hand.bounds.origin.x + offset;
-            newWidth = this.target.right() - newPos;
-            ide.stageRatio = newWidth / this.target.dimensions.x;
-            ide.setExtent(world.extent());
-
-        } else {
-            this.step = null;
-            ide.isSmallStage = (ide.stageRatio !== 1);
-            ide.controlBar.stageSizeButton.refresh();
-        }
-    };
-};
+StageHandleMorph.prototype.mouseDownLeft = function (
+pos) {if (!isNil(this.target)) {var world = this.world(
+), offset = this.right() - pos.x, ide = (this.target
+).parentThatIsA(IDE_Morph); ide.isSmallStage = true;
+ide.controlBar.stageSizeButton.refresh(); (this.step
+) = function () {var newPos, newWidth; if ((world.hand
+).mouseButton) {newPos = ((world.hand.bounds.origin.x
+) + offset); newWidth = this.target.right() - newPos;
+ide.stageRatio = newWidth / this.target.dimensions.x;
+ide.setExtent(world.extent());} else {this.step = null;
+ide.isSmallStage = (ide.stageRatio !== 1); (ide.controlBar
+).stageSizeButton.refresh();};};} else {return null;};};
 
 // StageHandleMorph events:
 
-StageHandleMorph.prototype.mouseEnter = function () {
-    this.userState = 'highlight';
-    this.rerender();
-};
+StageHandleMorph.prototype.mouseEnter = function (
+) {this.userState = 'highlight'; this.rerender();};
 
-StageHandleMorph.prototype.mouseLeave = function () {
-    this.userState = 'normal';
-    this.rerender();
-};
+StageHandleMorph.prototype.mouseLeave = function (
+) {this.userState = 'normal'; this.rerender();};
 
-StageHandleMorph.prototype.mouseDoubleClick = function () {
-    this.target.parentThatIsA(IDE_Morph).toggleStageSize(this.isSmallStage);
-};
+StageHandleMorph.prototype.mouseDoubleClick = function () {(this
+).target.parentThatIsA(IDE_Morph).toggleStageSize(this.isSmallStage);};
 
 // PaletteHandleMorph ////////////////////////////////////////////////////////
 
@@ -11481,7 +11179,7 @@ PaletteHandleMorph.prototype.init = function (target) {
     this.target = target || null;
     this.userState = 'normal';
     HandleMorph.uber.init.call(this);
-    this.color = new Color(190, 190, 190);
+    this.color = IDE_Morph.prototype.categoryColor.lighter();
     this.isDraggable = false;
     this.setExtent(new Point(12, 50));
 
@@ -11712,8 +11410,7 @@ CamSnapshotDialogMorph.prototype.close = function () {
     if (this.videoElement && this.videoElement.stream) {
         this.videoElement.stream.getTracks()[0].stop();
         this.videoElement.remove();
-    }
-    CamSnapshotDialogMorph.uber.destroy.call(this);
+    };  CamSnapshotDialogMorph.uber.destroy.call(this);
 };
 
 // SoundRecorderDialogMorph ////////////////////////////////////////////////////
@@ -11725,48 +11422,30 @@ CamSnapshotDialogMorph.prototype.close = function () {
 
 // SoundRecorderDialogMorph inherits from DialogBoxMorph:
 
-SoundRecorderDialogMorph.prototype = new DialogBoxMorph;
-SoundRecorderDialogMorph.prototype.constructor = SoundRecorderDialogMorph;
-SoundRecorderDialogMorph.uber = DialogBoxMorph.prototype;
-
-// SoundRecorderDialogMorph instance creation
-
-function SoundRecorderDialogMorph (onAccept) {this.init(onAccept);};
-
-SoundRecorderDialogMorph.prototype.init = function (onAccept) {var myself = this; this.padding = 10; this.accept = onAccept; this.mediaRecorder = null; this.audioElement = document.createElement('audio'
-); this.audioElement.hidden = true; this.audioElement.onended = function (event) {myself.stop();}; document.body.appendChild(this.audioElement); this.recordButton = null; this.stopButton = null;
-this.playButton = null; this.progressBar = new BoxMorph(); SoundRecorderDialogMorph.uber.init.call(this); this.labelString = 'Sound Recorder'; this.createLabel(); this.buildContents();};
-
-SoundRecorderDialogMorph.prototype.buildContents = function () {var audioChunks = []; this.recordButton = new PushButtonMorph(this, 'record', new SymbolMorph('circleSolid', 10)); this.stopButton = new
-PushButtonMorph(this, 'stop', new SymbolMorph('rectangleSolid', 10)); this.playButton = new PushButtonMorph(this, 'play', new SymbolMorph('pointRight', 10)); this.buildProgressBar(); this.addBody(new
-AlignmentMorph('row', this.padding)); this.body.add(this.recordButton); this.body.add(this.stopButton); this.body.add(this.playButton); this.body.add(this.progressBar); this.body.fixLayout(); if
-(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {navigator.mediaDevices.getUserMedia({audio: {channelCount: 1}}).then(stream => {this.mediaRecorder = new MediaRecorder(stream);
-this.mediaRecorder.ondataavailable = (event) => {audioChunks.push(event.data);}; this.mediaRecorder.onstop = (event) => {var buffer = new Blob(audioChunks), reader = new window.FileReader();
-reader.readAsDataURL(buffer); reader.onloadend = () => {var base64 = reader.result; base64 = 'data:audio/ogg;base64,' + base64.split(',')[1]; this.audioElement.src = base64;
-this.audioElement.load(); audioChunks = [];};};});}; this.addButton('ok', 'Save'); this.addButton('cancel', 'Cancel'); this.fixLayout(); this.rerender();};
-
-SoundRecorderDialogMorph.prototype.buildProgressBar = function () {var line = new Morph(), myself = this; this.progressBar.setExtent(new Point(150, 20)); this.progressBar.setColor(new Color(200, 200, 200));
-this.progressBar.setBorderWidth(1); this.progressBar.setBorderColor(new Color(150, 150, 150)); line.setExtent(new Point(130, 2)); line.setColor(new Color(50, 50, 50)); line.setCenter(this.progressBar.center());
-this.progressBar.add(line); this.progressBar.indicator = new Morph(); this.progressBar.indicator.setExtent(new Point(5, 15)); this.progressBar.indicator.setColor(new Color(50, 200, 50));
-this.progressBar.indicator.setCenter(line.leftCenter()); this.progressBar.add(this.progressBar.indicator);
-this.progressBar.setPercentage = function (percentage) {this.indicator.setLeft(line.left() + (line.width() / 100 * percentage) - this.indicator.width() / 2);};
-this.progressBar.step = function () {if (myself.audioElement.duration) {this.setPercentage(myself.audioElement.currentTime / myself.audioElement.duration * 100);} else {this.setPercentage(0);}};};
-
-SoundRecorderDialogMorph.prototype.record = function anonymous () {if (this.mediaRecorder && this.mediaRecorder.state !== 'inactive') {this.stop();
-return;}; this.mediaRecorder.start(); this.recordButton.label.setColor(new Color(255, 0, 0)); this.playButton.label.setColor(new Color(0, 0, 0));};
-
-SoundRecorderDialogMorph.prototype.stop = function () {if (this.mediaRecorder && this.mediaRecorder.state !== 'inactive') {this.mediaRecorder.stop(
-);}; this.audioElement.pause(); this.audioElement.currentTime = 0; this.recordButton.label.setColor(BLACK); this.playButton.label.setColor(BLACK);};
-
-SoundRecorderDialogMorph.prototype.play = function () {this.stop(); this.audioElement.oncanplaythrough = function (
-) {this.play(); this.oncanplaythrough = nop;}; this.playButton.label.setColor(new Color(0, 255, 0));};
-
-SoundRecorderDialogMorph.prototype.ok = function () {var myself = this; this.stop(); this.audioElement.oncanplaythrough = function anonymous () {if (this.duration && (this.duration !== Infinity
-)) {myself.accept(this); this.oncanplaythrough = nop; myself.destroy();} else {myself.buttons.children.forEach(button => button.disable()); this.play();};};};
-
-SoundRecorderDialogMorph.prototype.destroy = function anonymous () {this.stop(); this.audioElement.remove(
-); if (this.mediaRecorder && this.mediaRecorder.stream) {this.mediaRecorder.stream.getTracks()[0].stop(
-);}; SoundRecorderDialogMorph.uber.destroy.call(this);}; /* The recorder is now updated too... :-) */
+function SoundRecorderDialogMorph (onAccept) {this.init(onAccept);}; SoundRecorderDialogMorph.prototype = new DialogBoxMorph; SoundRecorderDialogMorph.prototype.constructor = SoundRecorderDialogMorph;
+SoundRecorderDialogMorph.uber = DialogBoxMorph.prototype; SoundRecorderDialogMorph.prototype.init = function (onAccept) {var myself = this; this.padding = 10; this.accept = onAccept; this.mediaRecorder = (
+null); this.audioElement = document.createElement('audio'); this.audioElement.hidden = true; this.audioElement.onended = function (event) {myself.stop();}; document.body.appendChild(this.audioElement); (this
+).recordButton = null; this.stopButton = null; this.playButton = null; this.progressBar = new BoxMorph; SoundRecorderDialogMorph.uber.init.call(this); this.labelString = 'Sound Recorder'; this.createLabel();
+this.buildContents();}; SoundRecorderDialogMorph.prototype.buildContents = function () {var audioChunks = []; this.recordButton = new PushButtonMorph(this, 'record', new SymbolMorph('circleSolid', 10)); (this
+).stopButton = new PushButtonMorph(this, 'stop', new SymbolMorph('rectangleSolid', 10)); this.playButton = new PushButtonMorph(this, 'play', new SymbolMorph('pointRight', 10)); this.buildProgressBar(); (this
+).addBody(new AlignmentMorph('row', this.padding)); this.body.add(this.recordButton); this.body.add(this.stopButton); this.body.add(this.playButton); this.body.add(this.progressBar); this.body.fixLayout();
+if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {navigator.mediaDevices.getUserMedia({audio: {channelCount: 1}}).then(stream => {this.mediaRecorder = new MediaRecorder(stream); (this
+).mediaRecorder.ondataavailable = (event) => {audioChunks.push(event.data);}; this.mediaRecorder.onstop = (event) => {var buffer = new Blob(audioChunks), reader = new window.FileReader(); (reader
+).readAsDataURL(buffer); reader.onloadend = () => {var base64 = reader.result; base64 = 'data:audio/ogg;base64,' + base64.split(',')[1]; this.audioElement.src = base64; this.audioElement.load();
+audioChunks = [];};};});}; this.addButton('ok', 'Save'); this.addButton('cancel', 'Cancel'); this.fixLayout(); this.rerender();}; SoundRecorderDialogMorph.prototype.buildProgressBar = function (
+) {var line = new Morph(), myself = this; this.progressBar.setExtent(new Point(150, 20)); this.progressBar.setColor(new Color(200, 200, 200)); this.progressBar.setBorderWidth(1); (this.progressBar
+).setBorderColor(new Color(150, 150, 150)); line.setExtent(new Point(130, 2)); line.setColor(new Color(50, 50, 50)); line.setCenter(this.progressBar.center()); this.progressBar.add(line); (this
+).progressBar.indicator = new Morph; this.progressBar.indicator.setExtent(new Point(5, 15)); this.progressBar.indicator.setColor(new Color(50, 200, 50)); (this.progressBar).indicator.setCenter(
+line.leftCenter()); this.progressBar.add(this.progressBar.indicator); this.progressBar.setPercentage = function (percentage) {this.indicator.setLeft(line.left() + (line.width() / (100 * percentage
+)) - this.indicator.width() / 2);}; this.progressBar.step = function () {if (myself.audioElement.duration) {this.setPercentage(myself.audioElement.currentTime / ((myself.audioElement).duration * 100
+));} else {this.setPercentage(0);}};}; SoundRecorderDialogMorph.prototype.record = function () {if (this.mediaRecorder && this.mediaRecorder.state !== 'inactive') {this.stop(); return;}; (this
+).mediaRecorder.start(); this.recordButton.label.setColor(new Color(255, 0, 0)); this.playButton.label.setColor(new Color(0, 0, 0));}; SoundRecorderDialogMorph.prototype.stop = (function (
+) {if (this.mediaRecorder && this.mediaRecorder.state !== 'inactive') {this.mediaRecorder.stop();}; this.audioElement.pause(); this.audioElement.currentTime = 0; (this.recordButton.label
+).setColor(BLACK); this.playButton.label.setColor(BLACK);}); SoundRecorderDialogMorph.prototype.play = function () {this.stop(); this.audioElement.oncanplaythrough = function () {(this
+).play(); this.oncanplaythrough = nop;}; this.playButton.label.setColor(new Color(0, 255, 0));}; SoundRecorderDialogMorph.prototype.ok = function () {var myself = this; this.stop(); (this
+).audioElement.oncanplaythrough = function () {if (this.duration && (this.duration !== Infinity)) {myself.accept(this); this.oncanplaythrough = nop; myself.destroy();} else {(myself
+).buttons.children.forEach(button => button.disable()); this.play();};};}; SoundRecorderDialogMorph.prototype.destroy = function () {this.stop(); this.audioElement.remove();
+if (this.mediaRecorder && this.mediaRecorder.stream) {this.mediaRecorder.stream.getTracks()[0].stop();}; SoundRecorderDialogMorph.uber.destroy.call(this);};
 
 // IDE_FPSMorph //////////////////////////////////////////////////////////
 
@@ -11774,8 +11453,7 @@ SoundRecorderDialogMorph.prototype.destroy = function anonymous () {this.stop();
 
 // IDE_FPSMorph inherits from FPSMorph:
 
-IDE_FPSMorph = function IDE_FPSMorph () {this.init();}; IDE_FPSMorph.prototype = new FPSMorph; IDE_FPSMorph.prototype.constructor = IDE_FPSMorph; IDE_FPSMorph.uber = FPSMorph.prototype;
-IDE_FPSMorph.prototype.step = function anonymous () {this.frameCounter++; if (!(Date.now() < (this.startTime + 1000))) {this.text = (('FPS\: ').concat(this.frameCounter));
-this.fixLayoutAndPosition(); this.frameCounter = 0; this.startTime = Date.now();};}; IDE_FPSMorph.prototype.fixLayoutAndPosition = function anonymous (
-) {try {this.fixLayout(); if (this.parent instanceof IDE_Morph) {this.setRight(this.parent.right()); this.setBottom(this.parent.bottom(
-)); this.parent.add(this);}; if (!this.isVisible) {this.isVisible = true;}; this.rerender();} catch (error) {};};
+function IDE_FPSMorph () {this.init();}; IDE_FPSMorph.prototype = new FPSMorph; IDE_FPSMorph.prototype.constructor = IDE_FPSMorph; IDE_FPSMorph.uber = FPSMorph.prototype; (IDE_FPSMorph
+).prototype.step = function () {this.text = (('FPS\: ').concat(Math.round(((performance.now() - this.startTime) > 0) ? (1000 / (performance.now() - this.startTime)) : 0).toString()));
+this.fixLayoutAndPosition(); this.startTime = performance.now();}; IDE_FPSMorph.prototype.fixLayoutAndPosition = function () {try {this.fixLayout(); if (this.parent instanceof IDE_Morph
+) {this.setRight((this.parent).right()); this.setBottom(this.parent.bottom()); this.parent.add(this);}; this.isVisible = true; this.rerender();} catch (error) {};};

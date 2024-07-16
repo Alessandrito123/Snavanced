@@ -36,12 +36,6 @@
 
 */
 
-/*global modules, StageMorph*/
-
-// Global stuff ////////////////////////////////////////////////////////
-
-modules.video = '2019-May-22';
-
 var VideoMotion;
 
 // VideoMotion /////////////////////////////////////////////////////////////////
@@ -59,13 +53,13 @@ function VideoMotion(width, height) {
     this.lastAnalyzedFrame = 0;
     this.motionAmount = 0;
     this.motionDirection = 0;
-    this.imageBuffer = new ArrayBuffer(this.width * this.height * 2);
+    this.imageBuffer = new ArrayBuffer(
+    this.width * this.height * 2);
     this.curr = new Uint8ClampedArray(
         this.imageBuffer,
         0,
         this.width * this.height
-    );
-    this.prev = new Uint8ClampedArray(
+    );  this.prev = new Uint8ClampedArray(
         this.imageBuffer,
         this.width * this.height,
         this.width * this.height

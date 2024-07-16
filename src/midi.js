@@ -9,9 +9,9 @@
 
     Copyleft (Ɔ) 2024 by Alessandro Moisés
 
-    This file is part of Snap!.
+    This file is part of Snavanced!
 
-    Snap! is free software: you can redistribute it and/or modify
+    Snavanced! is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as
     published by the Free Software Foundation, either version 3 of
     the License, or (at your option) any later version.
@@ -48,9 +48,18 @@
 
 // Declarations
 
-var MIDSoundSystem = {basicHertzValue : 256,
-basicLogarithmicValue : 59.760344731969152},
-MIDSoundData, MIDVoiceData;
+var MIDSoundSystem = {basicHertzValue : BigDec(256),
+basicLogarithmicValue : BigDec('59.760344731969152'),
+basicSampleRateValue : BigDec(20)}; /* Starters. */
+
+MIDSoundSystem.createWhiteNoise = function (volume, duration) {if (isNil(volume)) {volume = theOne;
+} else {volume = (theOne.min(volume.max())).squareRoot(true);}; if (isNil(duration)) {duration = (
+MIDSoundSystem.basicSampleRateValue).multiplicateWith(new BigDec('1000'));} else {duration = (
+duration.max()).basicRound();}; duration = +(duration.toString()); var i = 0, result = [new List,
+new List]; while (i < duration) {result[0].add(volume.getRandomNumberFromSignedUnits());
+result[1].add(volume.getRandomNumberFromSignedUnits()); i++;}; return new List(result);};
+
+var MIDSoundData, MIDVoiceData;
 
 // MIDSoundSystem //////////////////////////////////////////////
 
@@ -60,17 +69,16 @@ MIDSoundData, MIDVoiceData;
 
 function MIDSoundData (name, optional, callback, isEditable) {this.init(name, optional, callback, isEditable);};
 
-MIDSoundData.prototype.init = function anonymous (name, optional, callback, isEditable
-) {this.name = name; if ((typeof callback) === 'function') {this.callback = callback;
-} else {this.callback = (() => 0);}; this.makeInitialData(720, optional);
-this.isEditable = asABool(isEditable); this.defaultOptional = optional;};
-MIDSoundData.prototype.makeInitialData = function anonymous (length,
-optional) {this.initialData = []; var i = 0; while (i < length) {
-this.initialData.push(Process.prototype.fixSimpleNumber(
-this.callback(47, 100, length, (i + 1), optional)));
-i = Process.prototype.reportBasicSum(i, 1);};};
+MIDSoundData.prototype.init = function (name, optional, callback, isEditable
+) {this.name = name; if ((typeof callback) === 'function') {this.callback = (
+callback);} else {this.callback = (() => 0);}; this.makeInitialData(720,
+optional); this.isEditable = asABool(isEditable); this.defaultOptional = (
+optional);}; MIDSoundData.prototype.makeInitialData = function (length,
+optional) {this.initialData = []; var i = 0; while (i < length) {(this
+).initialData.push(Process.prototype.fixSimpleNumber(this.callback(47,
+100, length, (i + 1), optional))); i++;};};
 
-Process.prototype.makeMIDSound = function anonymous (note, volume, length, instrument, optional, isNormal) {
+Process.prototype.makeMIDSound = function (note, volume, length, instrument, optional, isNormal) {
 var finalData = [], i = 0, selectedMID = ((this.reportTypeOf(instrument) === 'number') ? world.childThatIsA(
 IDE_Morph).mids[instrument - 1] : world.childThatIsA(IDE_Morph).mids.filter(mid => (mid.name === instrument)
 )[0]); if (selectedMID instanceof MIDSoundData) {var callback = selectedMID.callback;} else {var callback = ((
@@ -83,7 +91,7 @@ selectedMID.initialData))); i = Process.prototype.reportBasicSum(i, 1);}; return
 /* Makes a list with all of the generated data from a MID to show to the end-user's screen, use any type of MID
 to create songs with any type of voices like FNF', use them and I'm going to be more happy thanks to you. :-) */
 
-Process.prototype.makeNoiseSound = function anonymous (intensity, length, volume) {
+Process.prototype.makeNoiseSound = function (intensity, length, volume) {
 var aList = new List, i = 0; intensity = Math.max(0, Math.min(100, intensity));
 while (i < length) {if (intensity > 0) {aList.add(((Process.prototype.reportRound(
 Math.random(), new List([Math.round(Math.max(1, Math.min(100, intensity)) - 1)])
@@ -102,7 +110,7 @@ MIDVoiceData.uber = MIDSoundData.prototype;
 
 function MIDVoiceData (name, data, callback, optional) {this.init(name, data, callback, optional);};
 
-MIDVoiceData.prototype.init = function anonymous (name, data, callback, optional) {
+MIDVoiceData.prototype.init = function (name, data, callback, optional) {
 this.name = name; if ((typeof callback) === 'function') {this.callback = callback;
 } else {this.callback = (() => 0);}; if (data instanceof Array) {
 this.initialData = data;} else {this.initialData = [];};

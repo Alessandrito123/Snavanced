@@ -54,14 +54,6 @@
 
 */
 
-// Global settings /////////////////////////////////////////////////////
-
-/*global modules, newCanvas, Point, Morph, WorldMorph, Color, BoxMorph,
-StringMorph, ScrollFrameMorph, MorphicPreferences, SliderMorph,
-ToggleMorph, HandleMorph*/
-
-modules.charts = '2024-Jan-29';
-
 var GridMorph, LineMorph, ChartMorph;
 
 WorldMorph.prototype.customMorphs = function () {
@@ -647,5 +639,5 @@ ChartMorph.prototype.renderGradient = function (context) {
 	};
 };
 
-ChartMorph.prototype.render = function anonymous (
-ctx) {this.renderGradient(ctx); this.fixLayout();};
+ChartMorph.prototype.render = function (ctx) {
+this.renderGradient(ctx); this.fixLayout();};

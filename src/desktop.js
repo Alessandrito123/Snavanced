@@ -120,7 +120,7 @@ return j;}).apply(this)); delete localStorage['-snap-file-project-' + this.id];
 this.destroy(); localStorage['-snap-notification-newFile'] = true;}); return menu;};
 FileMorph.prototype.pickUp = function (wrrld) {this.userState = 'highlight'; this.rerender();
 var world = wrrld || this.world(); this.setPosition(world.hand.position(
-).subtract(this.extent().floorDivideBy(2))); world.hand.grab(this);};
+).subtract(this.extent().divideBy(2))); world.hand.grab(this);};
 
 /*
 

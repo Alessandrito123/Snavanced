@@ -7,11 +7,11 @@
     written by Alessandro Moisés
     aless01pime@gmail.com
 
-    Copyright (C) 2022 by Alessandro Moisés
+    Copyleft (Ɔ) 2024 by Alessandro Moisés
 
     This file is part of Snap!.
 
-    Snap! is free software: you can redistribute it and/or modify
+    Snavanced! is free software: you can redistribute it and/or modify
     it under the terms of the GNU Affero General Public License as
     published by the Free Software Foundation, either version 3 of
     the License, or (at your option) any later version.
@@ -40,17 +40,8 @@
 
 */
 
-// Global settings /////////////////////////////////////////////////////
-
-/*global modules, Process, contains*/
-
-/*jshint esversion: 11*/
-
-modules.motors = '2022-November-15';
-
-// Global stuff
-
-/* You can contribute to add motors in Snap!, the blocks are implemented yet, but not the code of the blocks, please put your code here. :) */
+/* You can contribute to add motors in Snap!, the blocks are implemented
+yet, but not the code of them, please put your code here. :) */
 
 Process.prototype.motorOnAndWait = function anonymous (seconds) {};
 

@@ -931,7 +931,7 @@ SymbolMorph.prototype.renderSymbolStage = function (ctx, color, inverted) {
         h2 = h / 2;
 
     if (inverted) {
-    ctx.fillStyle = color.darker(25).toString();
+    ctx.fillStyle = color.darker(50).toString();
     ctx.fillRect(0, 0, w, h);
 
     ctx.fillStyle = color.toString();
@@ -940,7 +940,7 @@ SymbolMorph.prototype.renderSymbolStage = function (ctx, color, inverted) {
     ctx.fillStyle = color.toString();
     ctx.fillRect(0, 0, w, h);
 
-    ctx.fillStyle = color.darker(25).toString();
+    ctx.fillStyle = color.darker(50).toString();
     ctx.fillRect(w2, 0, w2, h2);
     }; return ctx;
 };

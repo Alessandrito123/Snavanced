@@ -7,7 +7,7 @@
     written by Jens Mönig
     jens@moenig.org
 
-    Copyright (C) 2023 by Jens Mönig
+    Copyright (C) 2024 by Jens Mönig
 
     This file is part of Snap!.
 
@@ -73,8 +73,6 @@ CostumeIconMorph, SoundIconMorph, localize*/
 
 /*jshint esversion: 6*/
 
-modules.tables = '2023-September-10';
-
 var Table;
 var TableCellMorph;
 var TableMorph;
@@ -97,9 +95,8 @@ function Table (cols, rows) {
     this.contents = new Array(+rows);
     for (var i = 0; i < rows; i += 1) {
         this.contents[i] = new Array(+cols);
-    };
-    this.lastChanged = Date.now();
-}
+    };  this.lastChanged = Date.now();
+};
 
 // Table testing:
 
@@ -122,8 +119,8 @@ Table.prototype.get = function (col, row) {
         return this.rowName(row);
     } else if (!row) {
         return this.colName(col);
-    }
-    if (col > this.colCount || row > this.rowCount) {return null; }
+    };  if ((col > this.colCount) || (
+    row > this.rowCount)) {return null;};
     return (this.contents[row - 1] || [])[col - 1];
 };
 
@@ -137,8 +134,7 @@ Table.prototype.col = function(col) {
         i;
     for (i = 0; i < this.rowCount; i += 1) {
         dta.push(this.contents[i][c]);
-    }
-    return dta;
+    };  return dta;
 };
 
 Table.prototype.colName = function (col) {
@@ -179,8 +175,8 @@ Table.prototype.set = function (data, col, row) {
 
 Table.prototype.setRows = function (rowsArray, colNames, rowNames) {
     this.contents = rowsArray;
-    if (colNames) {this.colNames = colNames; }
-    if (rowNames) {this.rowNames = rowNames; }
+    if (colNames) {this.colNames = colNames;};
+    if (rowNames) {this.rowNames = rowNames;};
     this.changed();
 };
 
@@ -189,11 +185,10 @@ Table.prototype.setCols = function (colsArray, colNames, rowNames) {
     for (c = 0; c < this.colCount; c += 1) {
         for (r = 0; r < this.rowCount; r += 1) {
             this.contents[r][c] = colsArray[c][r];
-        }
-    }
-    if (colNames) {this.colNames = colNames; }
-    if (rowNames) {this.rowNames = rowNames; }
-    this.changed();
+        };
+    };  if (colNames) {this.colNames = colNames;
+    };  if (rowNames) {this.rowNames = rowNames;
+    };  this.changed();
 };
 
 Table.prototype.setColNames = function (array) {
@@ -223,8 +218,7 @@ Table.prototype.addRow = function (array, name) {
         this.contents[this.rowCount] = array;
     } else {
         this.contents[this.rowCount] = new Array(this.rowCount);
-    }
-    this.rowNames[this.rowCount] = name;
+    };  this.rowNames[this.rowCount] = name;
     this.rowCount += 1;
     this.changed();
 };
@@ -234,9 +228,8 @@ Table.prototype.addCol = function (array, name) {
     if (array) {
         for (i = 0; i < this.col; i += 1) {
             this.contents[i][this.colCount] = array[i];
-        }
-    }
-    this.colNames[this.colCount] = name;
+        };
+    };  this.colNames[this.colCount] = name;
     this.colCount += 1;
     this.changed();
 };
@@ -282,15 +275,14 @@ TableCellMorph.prototype.listSymbol = function () {
             SyntaxElementMorph.prototype.fontSize,
             SpriteMorph.prototype.blockColor.lists.darker(50)
         );
-    }
-    return this.cachedListSymbol.getImage();
+    };  return this.cachedListSymbol.getImage();
 };
 
 // TableCellMorph instance creation:
 
 function TableCellMorph(data, extent, isLabel) {
     this.init(data, extent, isLabel);
-}
+};
 
 TableCellMorph.prototype.init = function (data, extent, isLabel) {
     // additional properties:
@@ -310,8 +302,7 @@ TableCellMorph.prototype.setData = function (data, extent) {
     this.data = data;
     if (extent && (!extent.eq(this.extent()))) {
         this.bounds.setExtent(extent);
-    }
-    this.rerender();
+    };  this.rerender();
 };
 
 TableCellMorph.prototype.getData = function () {
@@ -345,8 +336,7 @@ TableCellMorph.prototype.render = function (ctx) {
     if (this.shouldBeList()) {
         BoxMorph.prototype.outlinePath.call(
             this, ctx, SyntaxElementMorph.prototype.corner + 1, 0
-        );
-        ctx.fill();
+        );  ctx.fill();
     } else if (this.isOvershooting()) {
         this.raggedBoxPath(ctx);
         ctx.fill();
@@ -388,12 +378,14 @@ TableCellMorph.prototype.dataRepresentation = function (dta) {
     if (!isNil(dta)) {
     if (dta instanceof Morph) {
         if (isSnapObject(dta)) {
-            return dta.thumbnail(new Point(40, 40), null, true); // no watchers
+            return dta.thumbnail(
+            new Point(40, 40),
+            null, true);
         } else {
             return dta.fullImage();
         };
     } else if (!isNil(dta.textRepresentation)) {
-        return dta.textRepresentation;
+        return getText(dta.textRepresentation, dta);
     } else if (typeof dta === 'number') {
         return dta.toString();
     } else if (isString(dta)) {

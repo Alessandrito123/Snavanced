@@ -22,5 +22,4 @@ SnapTranslator.dict.tok = {
 
 
 
-
 };
