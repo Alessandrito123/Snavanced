@@ -68,59 +68,42 @@ throw Error('You put in here an illegal base!');}; var dividend = Math.trunc(Mat
 number) == -1) ? '-' : '').concat(showChar(dividend), numeral.textRepresentation); numeral.textRepresentation = (numeral.alphabetic).concat('\(', base, '\)'); numeral.isAlphanumerical = true;
 return numeral;}, ComplexNumber = function (real, imag) {try {var number = new Number(asANum(real));} catch (err1) {var number = 0;}; number.isComplex = true; try {number.i = asANum(imag);
 } catch (error) {number.i = 0;}; var imaginaryRepresentation = ((Math.abs(number.i) == 1) ? ((number.i > 0) ? 'i' : '-i') : (number.i).toString().concat('i')); number.textRepresentation = (
-(number == 0) ? ((number.i == 0) ? '0' : imaginaryRepresentation) : number.toString().concat(((number.i > 0) ? '+' : ''), ((number.i == 0) ? '' : imaginaryRepresentation))); if ((+(number.i
-) == 0) && (+number < Infinity)) {number.enableEditing = true;}; return number;}, asAComplexNum = function (n) {var real = +(asANum(n)); try {var imag = (isNil(n.i) ? 0 : +(asANum(n.i))
-);} catch (error) {var imag = 0;}; return (new ComplexNumber(real, imag));}; ThreadManager, Process, Context, Variable, VariableFrame; const NONNUMBERS = [true, false, '']; (() => {for (
+(number == 0) ? ((number.i == 0) ? '0' : imaginaryRepresentation) : number.toString().concat(((number.i > 0) ? '+' : ''), ((number.i == 0) ? '' : imaginaryRepresentation))); if ((+((number
+).i) == 0) && (+number < Infinity)) {number.enableEditing = true;}; return number;}, asAComplexNum = function (n) {var real = +(asANum(n)); try {var imag = (isNil(n.i) ? 0 : +(asANum(n.i)
+));} catch (error) {var imag = 0;}; return (new ComplexNumber(real, imag));}; ThreadManager, Process, Context, Variable, VariableFrame; const NONNUMBERS = [true, false, '']; (() => {for (
 var i = 9; i <= 13; i += 1) {NONNUMBERS.push(String.fromCharCode(i));}; NONNUMBERS.push(String.fromCharCode(160)); /* "zum Schneckengang verdorben, was Adlerflug geworden wäre" collecting
 edge-cases that somebody complained about on Github. Folks, take it easy and keep it fun, okay? This type of things like this is patently ugly and slows Snap!. Thanks, for this. :-( */})();
 
-function gammaFunction (x) {
-    function gammaln(z) {
-        if (z >= 1.5 && z < 2.5) {
-            lg=Math.log(helper(z));
-        } else if (z >= 2.5) {
-            lg = 0; z1 = z;
-            while (z1 >= 2.5) {
-                lg = lg + Math.log(z1 - 1);
-                z1 = z1 - 1;
-            }; lg = lg + Math.log(helper(z1));
-        } else if (z == 1) {
-            lg = 0;
-        } else {
-            lg = 0; z1 = z;
-            while (z1 < 1.5) {
-                lg = lg - Math.log(z1);
-                z1 = z1 + 1;
-            };  lg = lg + Math.log(helper(z1));
-        }; return lg;
-    }; function helper(z) {
-        var p = [0.99999999999980993, 676.5203681218851, -1259.1392167224028,
-            771.32342877765313, -176.61502916214059, 12.507343278686905,
-            -0.13857109526572012, 9.9843695780195716e-6, 1.5056327351493116e-7
-        ];  var g = 7; z -= 1; var a = p[0], t = z + g + 0.5;
-        for (var i = 1; i < p.length; i++) {
-            a += p[i] / (z + i);
-        };  return Math.sqrt(2 * Math.PI) * Math.pow(t, (z + 0.5)) * Math.exp(-t
-) * a;}; var result = Math.exp(gammaln(x)); return (isNaN(result) ? 0 : result);};
+function gammaFunction (x) {function gammaln(z) {var lg, z1; if (!(z < 3/2
+) && (z < 5/2)) {lg = Math.log(helper(z));} else if (z >= 2.5) {lg = 0;
+z1 = z; while (!(z1 < 2.5)) {lg = lg + Math.log(z1 - 1); z1 = z1 - 1;};
+lg = lg + Math.log(helper(z1));} else if (z == 1) {lg = 0;} else {lg = 0;
+z1 = z; while (z1 < 1.5) {lg-= Math.log(z1); z1++;}; lg+= Math.log(helper(
+z1));}; return lg;}; function helper(z) {var p = [0.99999999999980993,
+676.5203681218851, -1259.1392167224028, 771.32342877765313,
+-176.61502916214059, 12.507343278686905, -0.13857109526572012,
+9.9843695780195716e-6, 1.5056327351493116e-7]; var g = 7; z--;
+var a = p[0], t = (z + g + 1/2); for (var i = 1; (i < p.length);
+i++) {a += (p[i] / (z + i));}; return (Math.sqrt(2 * Math.PI) * (
+Math.pow(t, (z + 1/2)) * (Math.exp(-t) * a)));}; var result = (
+Math.exp(gammaln(x))); return (isNaN(result) ? 0 : result);};
 
 function snapEquals(a, b) {if (isNil(a) || isNil(b)) {
 return a === b;}; if (a.equalTo || b.equalTo) {if (
-a.constructor.name === b.constructor.name) {
-return a.equalTo(b);} else {return false;};};
-if ((a instanceof Array) && (b instanceof Array
+a.constructor.name === b.constructor.name) {return (
+a.equalTo(b));} else {return false;};}; if ((
+a instanceof Array) && (b instanceof Array
 )) {return (new List(a.deepMap(item => ((
-item instanceof Array) ? new List(item
-) : item)))).equalTo(new List(b.deepMap(
-item => ((item instanceof Array) ? new List(
-item) : item))));}; var x = +a, y = +b; try {
-if (a.isComplex) {x += a.i;};} catch (err1) {
-}; try {if (b.isComplex) {y += b.i;};} catch (err2) {};
-/* check for special values before coercing to numbers */
-if (isNaN(x) || isNaN(y) || [a, b].some(any => contains(
-NONNUMBERS, any) || (isString(any) && (any.indexOf(' ') > -1)))) {
-x = a; y = b;}; /* handle text comparison case-insensitive. */
-if (isString(x) && isString(y)) {return x.toLowerCase(
-) === y.toLowerCase();}; return (x === y);};
+item instanceof Array) ? new List(item) : (
+item))))).equalTo(new List(b.deepMap(item => (
+(item instanceof Array) ? new List(item) : item
+))));}; var x = +a, y = +b; try {if (a.isComplex
+) {x += a.i;};} catch (err1) {}; try {if (b.isComplex
+) {y += b.i;};} catch (err2) {}; if (isNaN(x) || isNaN(
+y) || [a, b].some(any => contains(NONNUMBERS, any) || (
+isString(any) && (any.indexOf(' ') > -1)))) {x = a;
+y = b;}; if (isString(x) && isString(y)) {return ((x
+).toLowerCase() === y.toLowerCase());}; return (x === y);};
 
 function invoke(
     action, // a BlockMorph or a Context, a reified ("ringified") block
@@ -744,17 +727,18 @@ localStorage))]);}; Process.prototype.blockComment = nop; Process.prototype.doIg
 action instanceof CommandBlockMorph) {if (this.context.isOnlyToOnce) {delete this.context.isOnlyToOnce;} else {this.context.isOnlyToOnce = true; this.pushContext(action.blockSequence());
 this.pushContext('doYield'); this.pushContext();};};}; Process.prototype.scriptChanger = function anonymous (option, block, selector) {if (!(block instanceof Context)) {block = this.reify(
 null, new List);}; if (block.expression instanceof BlockMorph) {if (selector.length() > 0) {selector = selector.at(1);} else {selector = block.expression.selector;};} else {return block;
-}; var result = Process.prototype.reportBlockAttribute(['sequence'], block).map(block => Process.prototype.basicScriptChanger(Process.prototype.inputOption(option), block, selector));
-if (result.length() < 2) {result = result.at(1);}; return result;}; Process.prototype.basicScriptChanger = function anonymous (option, block, selector) {if (option === 'commandize') {
-if (block.expression.isCustomBlock) {var aDefinition = copy(block.expression.definition); aDefinition.type = 'command'; var aBlock = new CustomCommandBlockMorph(aDefinition);} else {
-var aBlock = new CommandBlockMorph;};} else if (contains(['reporterize', 'predicatize', 'arrowize'], option)) {if (block.expression.isCustomBlock) {var aDefinition = copy((block
-).expression.definition); aDefinition.type = ((option === 'predicatize') ? 'predicate' : ((option === 'arrowize') ? 'arrow' : 'reporter')); var aBlock = new CustomReporterBlockMorph(
-aDefinition);} else {var aBlock = new ReporterBlockMorph((option === 'predicatize'), (option === 'arrowize'));};} else if (option === 'definitize') {var aBlock = new DefinitorBlockMorph;
-} else if (option === 'hatize') {var aBlock = new HatBlockMorph;} else if (option === 'ringize') {var aBlock = new RingMorph;} else {var aBlock = new JaggedBlockMorph;}; var i = 0; if (!(
-block.expression.isCustomBlock)) {aBlock.selector = selector;}; aBlock.setSpec('block'); aBlock.children[aBlock.children.length - 1].destroy(); aBlock.category = block.expression.category;
-while (i < block.expression.children.length) {if (block.expression.isCustomBlock) {aBlock.children[i] = block.expression.children[i].fullCopy();} else {aBlock.add((block
-).expression.children[i].fullCopy());}; i++;}; aBlock.blockSpec = block.expression.blockSpec; aBlock.fixLayout(); aBlock.fixBlockColor(); return ((
-aBlock instanceof CommandBlockMorph) ? Process.prototype.reportScript(new List, aBlock) : Process.prototype.reify(aBlock));};
+}; var result = Process.prototype.reportBlockAttribute(['sequence'], block).map(block => Process.prototype.basicScriptChanger(Process.prototype.inputOption(option), block, selector)); if (
+result.length() < 2) {result = result.at(1);}; return result;}; Process.prototype.basicScriptChanger = function (option, block, selector) {if (option === 'commandize') {if ((block.expression
+).isCustomBlock) {var aDefinition = copy(block.expression.definition); aDefinition.type = 'command'; var aBlock = new CustomCommandBlockMorph(aDefinition);} else {var aBlock = (
+new CommandBlockMorph);};} else if (option === 'definitize') {if (block.expression.isCustomBlock) {var aDefinition = copy(block.expression.definition); aDefinition.type = 'definitor';
+var aBlock = new CustomDefinitorBlockMorph(aDefinition);} else {var aBlock = new DefinitorBlockMorph;};} else if (contains(['reporterize', 'predicatize', 'arrowize'], option)) {if (
+block.expression.isCustomBlock) {var aDefinition = copy(block.expression.definition); aDefinition.type = ((option === 'predicatize') ? 'predicate' : ((option === 'arrowize') ? ('arrow'
+) : 'reporter')); var aBlock = new CustomReporterBlockMorph(aDefinition);} else {var aBlock = new ReporterBlockMorph((option === 'predicatize'), (option === 'arrowize'));};} else if (
+option === 'hatize') {var aBlock = new HatBlockMorph;} else if (option === 'ringize') {var aBlock = new RingMorph;} else {var aBlock = new JaggedBlockMorph;}; var i = 0; if (!((block
+).expression.isCustomBlock)) {aBlock.selector = selector;}; aBlock.setSpec('block'); aBlock.children[aBlock.children.length - 1].destroy(); aBlock.category = block.expression.category;
+while (i < block.expression.children.length) {if (block.expression.isCustomBlock) {aBlock.children[i] = block.expression.children[i].fullCopy();} else {aBlock.add((block.expression
+).children[i].fullCopy());}; i++;}; aBlock.blockSpec = block.expression.blockSpec; aBlock.fixLayout(); aBlock.fixBlockColor(); return ((aBlock instanceof CommandBlockMorph) ? (
+Process.prototype.reportScript(null, aBlock)) : Process.prototype.reify(aBlock));};
 
 Process.prototype.reportVariadicAnd = function (inputs) {this.assertType(inputs, 'list'); if (inputs.length() > 2) {return this.reportAnd(inputs.at(1), this.reportVariadicAnd(inputs.cdr()));} else if (
 inputs.length() > 1) {return this.reportAnd(inputs.at(1), inputs.at(2));} else if (inputs.length() > 0) {return asABool(inputs.at(1));} else {return true;};}; Process.prototype.reportAnd = function (
@@ -5030,9 +5014,8 @@ Process.prototype.reportBasicBlockAttribute = function (attribute, block) {
         block => {block.children.forEach(child => {if (
         child instanceof CommandBlockMorph) {
         block.removeChild(child);};});
-        return myself.reportScript((
-        new List), block);});};
-        break;
+        return myself.reportScript(
+        null, block);});}; break;
     case 'selector':
         return (expr ? expr.selector : '');
         break;

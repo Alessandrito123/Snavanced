@@ -816,7 +816,7 @@ SpriteMorph.prototype.bubbleMaxTextWidth = 130; SpriteMorph.prototype.initBlocks
         receiveCondition: {
             type: 'hat',
             category: 'events',
-            spec: 'when %b is true'
+            spec: 'when %b'
         },
         getLastMessage: {
             type: 'reporter',

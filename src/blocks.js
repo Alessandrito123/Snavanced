@@ -2186,18 +2186,14 @@ SyntaxElementMorph.prototype.fixLayout = function () {
                 x = 0;
             };
         };
-    });
-    if (l.length > 0) {
-        lines.push(l);
-    };  // distribute parts on lines
+    }); if (l.length > 0) {lines.push(
+    l);}; // distribute parts on lines
     if (this instanceof CommandBlockMorph) {
         y = this.top() + this.corner + this.edge;
-        if (this instanceof DefinitorBlockMorph
-        )  {y += this.hatHeight;};
-        if (this instanceof HatBlockMorph
-        )  {y += this.hatHeight;
-        if (this.isPrototypeLike) {
-        y += this.hatHeight;};};
+        if ((this instanceof DefinitorBlockMorph
+        ) || (this instanceof HatBlockMorph
+        )) {y += this.hatHeight; if ((this
+        ).isPrototypeLike) {y += this.hatHeight;};};
     } else if (this instanceof ReporterBlockMorph) {
         y = this.top() + (this.edge * 2);
     } else if (this instanceof MultiArgMorph
@@ -2263,7 +2259,7 @@ SyntaxElementMorph.prototype.fixLayout = function () {
 
     // adjust label row below a loop-arrow C-slot to accomodate the loop icon
     if (hasLoopArrow) {
-        x += this.fontSize * 1.5;
+        x += this.fontSize * 3/2;
         maxX = Math.max(maxX, x);
         hasLoopArrow = false;
     };
@@ -6038,10 +6034,13 @@ CommandBlockMorph.prototype.prepareToBeGrabbed = function (handMorph) {
     CommandBlockMorph.uber.prepareToBeGrabbed.call(this, handMorph);
 };
 
-CommandBlockMorph.prototype.isStop = function anonymous () {if (this instanceof CustomCommandBlockMorph) {return ((this.definition instanceof CustomBlockDefinition) ? this.definition.isCap : false);
-} else {if (this.selector === 'doStopThis') {var choice = this.inputs()[0].evaluate(); return (['this scene', 'this scene and restart', 'all scenes', 'this sprite', 'this script', 'this block'].indexOf((
-choice instanceof Array) && choice[0]) > -1);} else {return contains(['doForever', 'doReport', 'removeClone', 'doSwitchToScene', 'launchError', 'runScript', 'throw', 'JSBlocksReturnStatement'], this.selector
-);};};};
+CommandBlockMorph.prototype.isStop = function () {if (this.isCustomBlock) {return (
+(this.definition instanceof CustomBlockDefinition) ? this.definition.isCap : false);
+} else {if (this.selector === 'doStopThis') {var choice = this.inputs()[0].evaluate(
+); return (['this scene', 'this sprite', 'this script', 'this block', 'all scenes',
+'this scene and restart'].indexOf((choice instanceof Array) && choice[0]) > -1);
+} else {return contains(['doForever', 'doReport', 'removeClone', 'doSwitchToScene',
+'launchError', 'runScript', 'throw', 'JSBlocksReturnStatement'], this.selector);};};};
 
 // CommandBlockMorph deleting
 
