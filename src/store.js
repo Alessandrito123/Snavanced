@@ -930,20 +930,14 @@ SnapSerializer.prototype.loadCustomBlocks = function (
     element.children.forEach(child => {
         var definition, names, inputs, vars, header,
         code, cap, special, password, trans, comment, i;
-        if (child.tag !== 'block-definition') {
-            return;
-        }
-        definition = new CustomBlockDefinition(
+        if (child.tag !== 'block-definition') {return;
+        };  definition = new CustomBlockDefinition(
             child.attributes.s || '',
-            object
-        );
+            object);
         definition.category = child.attributes.category || 'other';
-        if (!SpriteMorph.prototype.allCategories().includes(
-            definition.category
-        )) {
-            definition.category = 'other';
-        }
-        definition.type = child.attributes.type || 'command';
+        if (!(((SpriteMorph.prototype).allCategories()).includes(
+            definition.category))) {definition.category = 'other';
+        };  definition.type = child.attributes.type || 'command';
         definition.isHelper = (child.attributes.helper === 'true') || false;
         definition.isGlobal = (isGlobal === true);
         if (isDispatch) {
@@ -1224,14 +1218,13 @@ migrateToVariadic = false, migrateInverse = false, skip;
           	);
         };  if (!info || !contains(SpriteMorph.prototype.allCategories(), info.category)) {
             return this.obsoleteBlock(isReporter, true, model.attributes.s);
-        };  block = info.type === 'command' ? new CustomCommandBlockMorph(
-            info,
-            false
-        ) : new CustomReporterBlockMorph(
-            info,
-            info.type === 'predicate',
-            false);
-    }; if (isNil(block)) {
+        };  if (info.type === 'command') {
+            block = new CustomCommandBlockMorph(info);
+            } else if (info.type === 'definitor') {
+            block = new CustomDefinitorBlockMorph(info);
+            } else {block = new CustomReporterBlockMorph(
+            info, (info.type === 'predicate'), false, (
+        info.type === 'arrow'));};}; if (isNil(block)) {
         block = this.obsoleteBlock(isReporter, false, model.attributes.s);
     };  block.isDraggable = true; inputs = block.inputs(); var i = 0, j = 0,
         child; while (j < model.children.length) {child = model.children[j];
@@ -2058,8 +2051,7 @@ BlockMorph.prototype.toBlockXML = function (serializer) {
         this.selector,
         serializer.store(this.inputs()),
         this.comment ? this.comment.toXML(serializer) : ''
-    );
-};
+    );};
 
 ReporterBlockMorph.prototype.toXML = function (serializer) {
     if (this.selector === 'reportGetVar') {
@@ -2075,33 +2067,18 @@ ReporterBlockMorph.prototype.toXML = function (serializer) {
         }
     } else {
         return this.toBlockXML(serializer);
-    }
-};
+    };};
 
 ReporterBlockMorph.prototype.toScriptXML = function (
-    serializer,
-    savePosition
-) {
-    var position,
-        scale = SyntaxElementMorph.prototype.scale;
-
-    // determine my save-position
-    if (this.parent) {
-        position = this.topLeft().subtract(this.parent.topLeft());
-    } else {
-        position = this.topLeft();
-    }
-
-    if (savePosition) {
-        return serializer.format(
-            '<script x="@" y="@">%</script>',
-            position.x / scale,
-            position.y / scale,
-            this.toXML(serializer)
-        );
-    }
-    return serializer.format('<script>%</script>', this.toXML(serializer));
-};
+serializer, savePosition) {var position, scale = (
+SyntaxElementMorph.prototype.scale); if (this.parent
+) {position = (this.topLeft()).subtract((this.parent
+).topLeft());} else {position = this.topLeft();
+}; if (savePosition) {return serializer.format(
+'<script x="@" y="@">%</script>', ((position.x
+) / scale), (position.y / scale), this.toXML(
+serializer));}; return serializer.format(
+'<script>%</script>', this.toXML(serializer));};
 
 CustomCommandBlockMorph.prototype.toBlockXML = function (serializer) {
     var scope = this.isGlobal ? undefined : 'local';
@@ -2118,9 +2095,10 @@ CustomCommandBlockMorph.prototype.toBlockXML = function (serializer) {
                     this.variables.toXML(serializer) +
                     '</variables>'
                         : '',
-        this.comment ? this.comment.toXML(serializer) : ''
-    );
-};
+        this.comment ? this.comment.toXML(serializer) : '');};
+
+CustomDefinitorBlockMorph.prototype.toBlockXML
+    = CustomCommandBlockMorph.prototype.toBlockXML;
 
 CustomReporterBlockMorph.prototype.toBlockXML
     = CustomCommandBlockMorph.prototype.toBlockXML;
@@ -2182,39 +2160,35 @@ CustomBlockDefinition.prototype.toXML = function (serializer) {
                 );
             }, ''),
         this.body ? serializer.store(this.body.expression) : '',
-        this.scripts.length > 0 ?
-                    '<scripts>' + encodeScripts(this.scripts) + '</scripts>'
-                        : ''
-    );
-};
+        ((this.scripts.length > 0) ? ('<scripts>' + encodeScripts(
+        this.scripts) + '</scripts>') : ''));};
 
 // Scripts - Inputs
 
 ArgMorph.prototype.toXML = function () {return '<l/>';};
 
-StringSyntaxMorph.prototype.toXML = function anonymous (serializer) {
-return serializer.format('<textInput>$</textInput>', this.label.text);};
+StringSyntaxMorph.prototype.toXML = function (serializer) {return (
+serializer.format('<textInput>$</textInput>', this.label.text));};
 
-BooleanSlotMorph.prototype.toXML = function () {return (typeof this.value === 'boolean') ? '<l><bool>' + this.value + '</bool></l>' : '<l/>';};
+BooleanSlotMorph.prototype.toXML = function () {return ((typeof this.value
+) === 'boolean') ? '<l><bool>' + this.value + '</bool></l>' : '<l/>';};
 
 InputSlotMorph.prototype.toXML = function (serializer) {
 	if (this.selectedBlock) {
  		return serializer.format(
         	'<l><wish s="@" type="@" category="@">@</wish></l>',
             this.selectedBlock.semanticSpec,
-         	this.selectedBlock instanceof CommandBlockMorph ? 'command'
-          		: (this.selectedBlock.isPredicate ? 'predicate' : 'reporter'),
-            this.selectedBlock.category,
+         	((this.selectedBlock instanceof CommandBlockMorph) ? ('command'
+          		) : (this.selectedBlock.isArrow ? 'arrow' : ((this
+                         ).selectedBlock.isPredicate ? 'predicate' : (
+                         'reporter')))), this.selectedBlock.category,
             this.selectedBlock.storedTranslations
-        );
- 	}
-    if (this.constant) {
-        return serializer.format(
+        );};  if (this.constant
+        ) {return serializer.format(
             '<l><option>$</option></l>',
             this.constant
-        );
-    }; return serializer.format('<l>$</l>', this.contents().text);
-};
+        );}; return serializer.format(
+        '<l>$</l>', this.contents().text);};
 
 TemplateSlotMorph.prototype.toXML = function (serializer
 ) {return serializer.format('<l>$</l>', this.contents());};
@@ -2250,15 +2224,13 @@ MultiArgMorph.prototype.toXML = function (serializer) {
     return serializer.format(
         (this.hidden ? (this.hiddenInput.isHidden ? '<listHidden>%</listHidden>' : '<list>%</list>') : '<list>%</list>'),
         serializer.store(this.hidden ? [this.hiddenInput] : this.inputs())
-    );
-};
+    );};
 
 ArgLabelMorph.prototype.toXML = function (serializer) {
     return serializer.format(
         '%',
         serializer.store(this.inputs()[0])
-    );
-};
+    );};
 
 ColorSlotMorph.prototype.toXML = function (serializer) {
     return serializer.format(
