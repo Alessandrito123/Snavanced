@@ -43,12 +43,15 @@
 /* You can contribute to add motors in Snap!, the blocks are implemented
 yet, but not the code of them, please put your code here. :) */
 
-Process.prototype.motorOnAndWait = function anonymous (seconds) {};
+Process.prototype.motorOnAndWait = function (secs) {if (!(this.context.startTime)) {
+this.context.startTime = Date.now(); this.motorOn();}; if ((Date.now() - (this.context
+).startTime) >= (secs * 1000)) {if (!(this.isAtomic) && (secs === 0)) {(this.readyToYield
+) = true;}; this.motorOff(); return null;}; this.pushContext('doYield'); this.pushContext();};
 
-Process.prototype.motorOn = function anonymous () {};
+Process.prototype.motorOn = function () {};
 
-Process.prototype.motorOff = function anonymous () {};
+Process.prototype.motorOff = function () {};
 
-Process.prototype.motorPower = function anonymous (power) {};
+Process.prototype.motorPower = function (power) {};
 
-Process.prototype.motorDirection = function anonymous (option) {};
+Process.prototype.motorDirection = function (option) {};

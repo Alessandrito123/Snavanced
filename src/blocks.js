@@ -233,14 +233,14 @@ SyntaxElementMorph.prototype.setScale = function (num) {
 var scale = Math.round(Math.min(Math.max(num, 1/2), 10
 ) * 1000) / 1000; this.scale = scale; this.corner = (
 3 * scale); this.flatEdge = (scale / 2); (this.rounding
-) = this.corner * 3; this.jag = this.rounding / 2; (this
+) = scale * 9; this.jag = (this.rounding / 2); (this
 ).inset = 6 * scale; this.hatHeight = 12 * scale; (this
 ).hatWidth = 70 * scale; this.rfBorder = 3 * scale; (this
 ).edge = scale; this.minWidth = 0; this.dent = 8 * scale;
-this.cSlotPadding = 4 * scale; this.labelPadding = (this
-).cSlotPadding; this.fontSize = this.hatHeight; (this
-).bottomPadding = this.rfBorder; (this.typeInPadding
-) = scale; this.labelFontName = ((localStorage[
+this.cSlotPadding = this.dent / 2; this.labelPadding = (
+this).cSlotPadding; this.fontSize = this.hatHeight; (this
+).bottomPadding = this.rfBorder; this.typeInPadding = (
+scale); this.labelFontName = ((localStorage[
 '-snap-setting-language'] === 'tok') ? (
 'blockTokiPonaFont') : 'blockGlobalFont'
 ); this.labelFontStyle = 'sans-serif'; (this
@@ -2683,7 +2683,7 @@ SyntaxElementMorph.prototype.cSlots = function () {
         if (part instanceof CSlotMorph) {
             result.push(part);
         } else if (part instanceof MultiArgMorph
-            ) {part.cSlots().forEach(
+            ) {(part.cSlots()).forEach(
             slot => result.push(slot));
         };});    return result;};
 
@@ -2694,7 +2694,7 @@ SyntaxElementMorph.prototype.clearSlots = function () {
         part instanceof RingReporterSlotMorph)) {
             result.push(part);
         } else if (part instanceof MultiArgMorph
-            ) {part.clearSlots().forEach(
+            ) {(part.clearSlots()).forEach(
             slot => result.push(slot));
         };});    return result;};
 
@@ -4833,41 +4833,28 @@ BlockMorph.prototype.doRefactorBlockParameter = function (
 };
 
 BlockMorph.prototype.doRefactorRingParameter = function (
-    oldName,
-    newName,
-    justTheTemplate
-) {
-    var ring = this.parentThatIsA(RingMorph),
+    oldName, newName, justTheTemplate
+)  {var ring = this.parentThatIsA(RingMorph),
         script = ring.contents(),
         tb = this.topBlock();
 
     if (contains(ring.inputNames(), newName)) {
         this.varExistsError(this.parentThatIsA(IDE_Morph));
         return;
-    }
-
-    tb.fullChanged();
+    };  tb.fullChanged();
     this.setSpec(newName);
 
     if (justTheTemplate) {
         tb.fullChanged();
         return;
-    }
-
-    if (script) {
+    };  if (script) {
         script.refactorVarInStack(oldName, newName);
-    }
-
-    tb.fullChanged();
-};
+    };  tb.fullChanged();};
 
 BlockMorph.prototype.doRefactorScriptVar = function (
-    oldName,
-    newName,
-    justTheTemplate
-) {
-    var definer = this.parentThatIsA(CommandBlockMorph),
-        receiver, ide;
+    oldName, newName, justTheTemplate
+)  {var definer = this.parentThatIsA(
+    CommandBlockMorph), receiver, ide;
 
     if (definer.definesScriptVariable(newName)) {
         receiver = this.scriptTarget();
@@ -4882,8 +4869,7 @@ BlockMorph.prototype.doRefactorScriptVar = function (
         return;
     }
 
-    definer.refactorVarInStack(oldName, newName, true);
-};
+    definer.refactorVarInStack(oldName, newName, true);};
 
 BlockMorph.prototype.doRefactorSpriteVar = function (
     oldName,
@@ -4913,33 +4899,22 @@ BlockMorph.prototype.doRefactorSpriteVar = function (
                 false
             );
             newWatcher.setPosition(oldWatcher.position());
-        }
-
-        if (!justTheTemplate) {
+        };  if (!justTheTemplate) {
             receiver.refactorVariableInstances(
-                oldName,
-                newName,
-                false
-            );
-            receiver.customBlocks.forEach(eachBlock =>
+                oldName, newName, false
+            );  receiver.customBlocks.forEach(eachBlock =>
                 eachBlock.body.expression.refactorVarInStack(
                     oldName,
                     newName
                 )
             );
-        }
-    }
-
-    ide.flushBlocksCache('variables');
-    ide.refreshPalette();
-};
+        };
+    };  ide.flushBlocksCache('variables');
+    ide.refreshPalette();};
 
 BlockMorph.prototype.doRefactorGlobalVar = function (
-    oldName,
-    newName,
-    justTheTemplate
-) {
-    var receiver = this.scriptTarget(),
+    oldName, newName, justTheTemplate
+)  {var receiver = this.scriptTarget(),
         ide = receiver.parentThatIsA(IDE_Morph),
         stage = ide ? ide.stage : null,
         oldWatcher = receiver.findVariableWatcher(oldName),
@@ -4952,10 +4927,8 @@ BlockMorph.prototype.doRefactorGlobalVar = function (
         stage.children,
         any => any instanceof SpriteMorph &&
             any.hasSpriteVariable(newName)
-    )) {
-        this.varExistsError(ide, 'as a sprite local variable');
-        return;
-    } else {
+    )) {this.varExistsError(ide, 'as a sprite local variable');
+        return;} else {
         oldValue = ide.globalVariables.getVar(oldName);
         stage.deleteVariable(oldName);
         stage.addVariable(newName, true);
@@ -4971,39 +4944,20 @@ BlockMorph.prototype.doRefactorGlobalVar = function (
 
         if (!justTheTemplate) {
             stage.refactorVariableInstances(
-                oldName,
-                newName,
-                true
-            );
+                oldName, newName, true);
             stage.globalBlocks.forEach(eachBlock => {
                 if (eachBlock.body) {
                     eachBlock.body.expression.refactorVarInStack(
-                        oldName,
-                        newName
-                    );
-                }
-            });
+                    oldName, newName);};});
             stage.forAllChildren(child => {
                 if (child instanceof SpriteMorph) {
                     child.refactorVariableInstances(
-                        oldName,
-                        newName,
-                        true
-                    );
-                    child.customBlocks.forEach(eachBlock =>
+                        oldName, newName, true);
+                        child.customBlocks.forEach(eachBlock =>
                         eachBlock.body.expression.refactorVarInStack(
-                            oldName,
-                            newName
-                        )
-                    );
-                }
-            });
-        }
-    }
-
-    ide.flushBlocksCache('variables');
-    ide.refreshPalette();
-};
+                            oldName, newName)
+            );};});};};     ide.flushBlocksCache(
+            'variables'); ide.refreshPalette();};
 
 // BlockMorph thumbnail and script pic
 
@@ -5042,10 +4996,9 @@ BlockMorph.prototype.thumbnail = function (scale, clipWidth) {
             trgt.width / scale,
             trgt.height / scale
         );
-    }; if (nb) {
+    };  if (nb) {
     nb.isVisible = true;
-    }; return trgt;
-};
+    }; return trgt;};
 
 BlockMorph.prototype.scriptPic = function () {
     // answer a canvas image that also includes comments
@@ -5055,15 +5008,10 @@ BlockMorph.prototype.scriptPic = function () {
         ctx = pic.getContext('2d');
 
     this.allComments().forEach(comment =>
-        ctx.drawImage(
-            comment.fullImage(),
+        ctx.drawImage(comment.fullImage(),
             comment.fullBounds().left() - fb.left(),
-            comment.top() - fb.top()
-        )
-    );
-    ctx.drawImage(scr, 0, 0);
-    return pic;
-};
+            comment.top() - fb.top())
+    ); ctx.drawImage(scr, 0, 0); return pic;};
 
 BlockMorph.prototype.fullImage = function () {
     // answer a canvas image meant for (semi-) transparent blocks
@@ -5071,13 +5019,15 @@ BlockMorph.prototype.fullImage = function () {
     var src, solid, pic, ctx;
 
     if (this.alpha === 1) {
-        return BlockMorph.uber.fullImage.call(this);
+    return (BlockMorph.uber
+    ).fullImage.call(this);
     }; this.forAllChildren(m => {
-        if (m instanceof BlockMorph) {
-            m.mouseLeaveBounds();
-        };
-    }); src = BlockMorph.uber.fullImage.call(this);
-    solid = this.doWithAlpha(1, () => BlockMorph.uber.fullImage.call(this));
+    if (m instanceof BlockMorph
+    ) {m.mouseLeaveBounds();};}
+    ); src = (BlockMorph.uber
+    ).fullImage.call(this);
+    solid = this.doWithAlpha(1,
+    () => BlockMorph.uber.fullImage.call(this));
     pic = newCanvas(this.fullBounds().extent());
     ctx = pic.getContext('2d');
     ctx.fillStyle = ScriptsMorph.prototype.getRenderColor().toString();
@@ -5085,17 +5035,12 @@ BlockMorph.prototype.fullImage = function () {
     ctx.globalCompositeOperation = 'destination-in';
     ctx.drawImage(solid, 0, 0);
     ctx.globalCompositeOperation = 'source-over';
-    ctx.drawImage(src, 0, 0);
-    return pic;
-};
+    ctx.drawImage(src, 0, 0); return pic;};
 
-BlockMorph.prototype.clearAlpha = function () {
-    this.forAllChildren(m => {
-        if (m instanceof BlockMorph) {
-            delete m.alpha;
-        };
-    });
-};
+BlockMorph.prototype.clearAlpha = (
+function () {this.forAllChildren(
+m => {if (m instanceof BlockMorph
+) {delete m.alpha;};});});
 
 // BlockMorph drawing
 
@@ -5106,21 +5051,27 @@ BlockMorph.prototype.render = function (ctx) {
     ).isFlat) / 2)).toString(); this.cachedClrDark = (
     ((this.color).darker(this.contrast)).withAlpha((
     1 + (MorphicPreferences).isFlat) / 2)).toString();
+    var slots = this.clearSlots(), pos = this.position();
 
     if (MorphicPreferences.isFlat) {
         // draw the outline
         ctx.fillStyle = this.cachedClrDark;
-        ctx.beginPath();
-        this.outlinePath(ctx, 0);
-        ctx.closePath();
-        ctx.fill();
+        ctx.beginPath(); this.outlinePath(
+        ctx, 0); ctx.clip(); ctx.closePath();
+
+        slots.forEach(slot => (slot.outlinePath(
+        ctx, (slot.position()).subtract(pos))));
+        ctx.clip('evenodd'); ctx.fill();
 
         // draw the inner filled shaped
         ctx.fillStyle = this.cachedClr;
-        ctx.beginPath();
-        this.outlinePath(ctx, this.flatEdge);
-        ctx.closePath();
-        ctx.fill();
+        ctx.beginPath(); this.outlinePath(
+        ctx, this.flatEdge); ctx.clip(
+        ); ctx.closePath();
+
+        slots.forEach(slot => (slot.outlinePath(
+        ctx, (slot.position()).subtract(pos))));
+        ctx.clip('evenodd'); ctx.fill();
     } else {
         // draw the flat shape
         var gradient = (ctx
@@ -5134,24 +5085,24 @@ BlockMorph.prototype.render = function (ctx) {
         ((this.color).darker(
         )).toString()); (ctx
         ).fillStyle = gradient;
-        ctx.beginPath();
-        this.outlinePath(ctx, 0);
-        ctx.closePath();
-        ctx.fill();
+        ctx.beginPath(); (this
+        ).outlinePath(ctx, 0
+        ); ctx.clip(); (ctx
+        ).closePath();
+
+        slots.forEach(slot => (slot.outlinePath(
+        ctx, (slot.position()).subtract(pos))));
+        ctx.clip('evenodd'); ctx.fill();
 
         // add 3D-Effect:
         this.drawEdges(ctx);
-    }; // draw location pin icon if applicable
+    };  // draw location pin icon if applicable
     if (this.hasLocationPin()) {
-        this.drawMethodIcon(ctx);
-    };
-};
+    this.drawMethodIcon(ctx);};};
 
 BlockMorph.prototype.drawMethodIcon = function (ctx) {
     var ext = this.methodIconExtent(),
-        w = ext.x,
-        h = ext.y,
-        r = w / 2,
+        w = ext.x, h = ext.y, r = w / 2,
         x = this.edge + this.labelPadding,
         y = this.edge,
         isNormal =
@@ -5160,7 +5111,7 @@ BlockMorph.prototype.drawMethodIcon = function (ctx) {
         x = this.rounding;
     }; if (this instanceof CommandBlockMorph) {
         y += this.corner;
-    }; ctx.fillStyle = isNormal ? this.bright() : this.dark();
+    }; ctx.fillStyle = (isNormal ? this.bright() : this.dark());
     // pin
     ctx.beginPath();
     ctx.arc(x + r, y + r, r, radians(-210), radians(30), false);
@@ -5172,8 +5123,7 @@ BlockMorph.prototype.drawMethodIcon = function (ctx) {
     ctx.beginPath();
     ctx.arc(x + r, y + r, r * 2/5, 0, Math.PI * 2, false);
     ctx.closePath();
-    ctx.fill();
-};
+    ctx.fill();};
 
 BlockMorph.prototype.hasLocationPin = function () {return (this.isCustomBlock && !this.isGlobal) || this.isLocalVarTemplate;};
 
@@ -5191,17 +5141,16 @@ BlockMorph.prototype.addHighlight = function (oldHighlight) {
         this.activeBorder
     );
     this.addBack(highlight);
-    this.fullChanged();
-    if (isHidden) {this.hide(); }
-    return highlight;
-};
+    this.fullChanged(); if (
+    isHidden) {this.hide();
+    }; return highlight;};
 
 BlockMorph.prototype.addErrorHighlight = function () {
     var isHidden = !this.isVisible,
         highlight;
 
-    if (isHidden) {this.show(); }
-    this.removeHighlight();
+    if (isHidden) {this.show();
+    }; this.removeHighlight();
     highlight = this.highlight(
         this.errorHighlight,
         this.activeBlur,
@@ -5209,9 +5158,8 @@ BlockMorph.prototype.addErrorHighlight = function () {
     );
     this.addBack(highlight);
     this.fullChanged();
-    if (isHidden) {this.hide(); }
-    return highlight;
-};
+    if (isHidden) {this.hide();};
+    return highlight;};
 
 BlockMorph.prototype.removeHighlight = function () {
     var highlight = this.getHighlight();
@@ -6348,19 +6296,15 @@ HatBlockMorph.prototype.blockSequence = function () {
 
 // HatBlockMorph syntax analysis
 
-HatBlockMorph.prototype.reify = function () {
-    // private - assumes that I've already been deep copied
-    var nb = this.nextBlock();
-    if (!nb) {
-        return new Context;
-    }; return nb.reify();
-};
+HatBlockMorph.prototype.reify = function (
+) {var nb = this.nextBlock(); if (!(nb)) {
+return new Context;}; return nb.reify();};
 
 // HatBlockMorph drawing:
 
 HatBlockMorph.prototype.outlinePath = function (ctx, inset) {
-if (this.isPrototypeLike) {PrototypeHatBlockMorph.prototype.outlinePath.call(
-this, ctx, inset);} else {
+if (this.isPrototypeLike) {((PrototypeHatBlockMorph.prototype
+).outlinePath).call(this, ctx, inset);} else {
     var indent = this.corner * 2 + this.inset,
         bottom = this.height() - this.corner,
         bottomCorner = this.height() - this.corner * 2,
@@ -6370,7 +6314,7 @@ this, ctx, inset);} else {
         r = ((4 * h * h) + (s * s)) / (8 * h),
         a = degrees(4 * Math.atan(2 * h / s)),
         sa = a / 2,
-        sp = Math.min(s * 1.7, this.width() - this.corner),
+        sp = Math.min(s * 17/10, this.width() - this.corner),
         pos = this.position();
 
     // top left:
@@ -7252,31 +7196,26 @@ RingMorph.prototype.vanishForSimilar = function anonymous () {
     var slot = this.parts().filter(part => ((part instanceof CommandSlotMorph) || (part instanceof FunctionSlotMorph)))[0];
     var block = slot.nestedBlock();
 
-    if (!block) {return null;};
-    if (!(this.parent instanceof SyntaxElementMorph)) {return null;};
-    if (this.parent instanceof RingReporterSlotMorph
-            || (this.parent instanceof CommandSlotMorph)) {
-        return null;
-    };
-    if ((block.selector === 'reportGetVar' &&
+    if (!(block)) {return null;}; if (!((this.parent
+    ) instanceof SyntaxElementMorph)) {return null;};
+    if ((this.parent instanceof RingReporterSlotMorph
+             ) || (this.parent instanceof CommandSlotMorph
+             )) {return null;
+    };  if ((block.selector === 'reportGetVar' &&
             !contains(this.inputNames(), block.blockSpec)) ||
         contains(['reportJSFunction', 'reportAttributeOf',
         'reportCompiled'], block.selector) ||
         (block instanceof RingMorph)
-    ) {
-        this.parent.replaceInput(this, block);
-    }
-};
+    )  {this.parent.replaceInput(this, block);};};
 
-RingMorph.prototype.blockSlot = function anonymous () {var slots = this.parts().filter(part => ((part instanceof CommandSlotMorph) || (part instanceof FunctionSlotMorph
-))); if (slots.length > 0) {return slots[0];} else {return null;};}; RingMorph.prototype.contents = function anonymous () {var thatSlot = this.blockSlot(); return ((
-thatSlot instanceof Morph) ? thatSlot.nestedBlock() : null);}; RingMorph.prototype.inputNamesElement = function () {var inputs = this.children.filter(part => (
-part instanceof MultiArgMorph))[0]; if (inputs instanceof MultiArgMorph) {return inputs;} else {return null;};}; RingMorph.prototype.inputNames = function (
-) {var inputs = this.inputNamesElement(); if (inputs instanceof MultiArgMorph) {return inputs.evaluate();} else {return [];
-};}; RingMorph.prototype.dataType = function () {return contains(['reportScript', 'reifyScript'], this.selector
-) ? 'command' : ((this.contents() instanceof ReporterBlockMorph) ? (this.contents().isPredicate ? 'predicate' : 'reporter'
-) : (this.blockSlot().isPredicate ? 'predicate' : 'reporter'));}; RingMorph.prototype.isEmptySlot = function (
-) {return ((this.contents() === null) && (this.getSlotSpec().indexOf('Ring') > 0));};
+RingMorph.prototype.blockSlot = function () {var slots = this.parts().filter(part => ((part instanceof CommandSlotMorph) || (part instanceof FunctionSlotMorph
+))); if (slots.length > 0) {return slots[0];} else {return null;};}; RingMorph.prototype.contents = function anonymous () {var thatSlot = this.blockSlot();
+return ((thatSlot instanceof Morph) ? thatSlot.nestedBlock() : null);}; RingMorph.prototype.inputNamesElement = function () {var inputs = this.children.filter(
+part => (part instanceof MultiArgMorph))[0]; if (inputs instanceof MultiArgMorph) {return inputs;} else {return null;};}; (RingMorph.prototype.inputNames
+) = function () {var inputs = this.inputNamesElement(); if (inputs instanceof MultiArgMorph) {return inputs.evaluate();} else {return [];};};
+RingMorph.prototype.dataType = function () {return contains(['reportScript', 'reifyScript'], this.selector) ? 'command' : (((this.contents()
+) instanceof ReporterBlockMorph) ? (this.contents().isPredicate ? 'predicate' : 'reporter') : (this.blockSlot().isPredicate ? 'predicate' : (
+'reporter')));}; RingMorph.prototype.isEmptySlot = function () {return ((this.contents() === null) && (this.getSlotSpec().indexOf('Ring') > 0));};
 
 // ScriptsMorph ////////////////////////////////////////////////////////
 
@@ -8771,32 +8710,31 @@ RingCommandSlotMorph.prototype.rfBorder = 0;
 
 function RingCommandSlotMorph () {this.init();};
 
-RingCommandSlotMorph.prototype.init = function anonymous (
-)  {RingCommandSlotMorph.uber.init.call(
-    this); this.fillingColor = CLEAR;
-    this.cachedClr = (this.fillingColor
-    ).toString(); this.contrast = (
-    RingMorph.prototype.contrast);
-    this.setColor(this.fillerColor
-    );     this.rerender();};
+RingCommandSlotMorph.prototype.init = function (
+)  {RingCommandSlotMorph.uber.init.call(this);
+    this.fillingColor = CLEAR; (this.cachedClr
+    ) = (this.fillingColor).toString(); (this
+    ).contrast = RingMorph.prototype.contrast;
+    this.setColor(this.fillerColor);
+    this.rerender();};
 
-RingCommandSlotMorph.prototype.getSpec = function () {return '%rc';};
+RingCommandSlotMorph.prototype.getSpec = (() => '%rc');
 
 // RingCommandSlotMorph drawing:
 
-RingCommandSlotMorph.prototype.render = function (ctx) {
-this.cachedClrBright = (((this.borderColor).lighter((this
-).contrast)).withAlpha(0.5)).toString(); (this.cachedClrDark
-) = (((this.borderColor).darker(this.contrast)).withAlpha(0.5
-)).toString(); ctx.fillStyle = this.cachedClr; this.drawFlat(
-ctx); if (!MorphicPreferences.isFlat) {this.drawEdges(ctx);};};
+RingCommandSlotMorph.prototype.render = function (ctx) {(this
+).cachedClrBright = (((this.borderColor).lighter(this.contrast
+)).withAlpha(1/2)).toString(); this.cachedClrDark = ((((this
+).borderColor).darker(this.contrast)).withAlpha(1/2)).toString(
+); ctx.fillStyle = this.cachedClr; this.drawFlat(ctx); if (
+!(MorphicPreferences.isFlat)) {this.drawEdges(ctx);};};
 
 RingCommandSlotMorph.prototype.fixHolesLayout = function (
 ) {var edge = this.edge; this.holes = [new Rectangle(edge,
-edge, this.width() - edge, this.height() - edge)];};
+edge, (this.width() - edge), (this.height() - edge))];};
 
 RingCommandSlotMorph.prototype.outlinePath = function (
-    ctx, inset, offset) {var ox = offset.x, oy = offset.y,
+    ctx, offset) {var ox = offset.x, oy = offset.y,
         isFilled = !isNil(this.nestedBlock()),
         ins = this.inset / (2 - isFilled),
         dent = this.dent / (2 - isFilled),
@@ -8807,15 +8745,11 @@ RingCommandSlotMorph.prototype.outlinePath = function (
         rf = (isFilled ? this.rfBorder : 0),
         y = h - this.corner - edge;
 
-    // top left:
     ctx.arc(
         this.corner + edge + ox,
         this.corner + edge + oy,
-        this.corner,
-        -Math.PI,
-        -Math.PI / 2,
-        false
-    );
+        this.corner, -(Math.PI),
+        Math.PI / -2, false);
 
     // dent:
     ctx.lineTo(this.corner + ins + edge + rf * 2 + ox, edge + oy);
@@ -8823,49 +8757,34 @@ RingCommandSlotMorph.prototype.outlinePath = function (
     ctx.lineTo(
         indent + edge  + rf * 2 + (dent - rf * 2) + ox,
         this.corner + edge + oy
-    );
-    ctx.lineTo(
+    );  ctx.lineTo(
         indent + edge  + rf * 2 + (dent - rf * 2) + this.corner + ox,
         edge + oy
-    );
-    ctx.lineTo(this.width() - this.corner - edge + ox, edge + oy);
+    );  ctx.lineTo(this.width() - this.corner - edge + ox, edge + oy);
 
-    // top right:
     ctx.arc(
         w - this.corner - edge + ox,
         this.corner + edge + oy,
         this.corner,
-        radians(-90),
-        radians(-0),
-        false
-    );
-
-    // bottom right:
-    ctx.arc(
+        (Math.PI / -2),
+        0, false
+    );  ctx.arc(
         this.width() - this.corner - edge + ox,
         y + oy,
         this.corner,
-        radians(0),
-        radians(90),
+        0, (Math.PI / 2),
         false
-    );
-
-    // bottom left:
-    ctx.arc(
+    );  ctx.arc(
         this.corner + edge + ox,
         y + oy,
         this.corner,
-        radians(90),
-        radians(180),
+        (Math.PI / 2),
+        Math.PI,
         false
-    );
-
-    // close the path, so we can clip it:
-    ctx.lineTo(
-        this.corner + edge + ox - this.corner, // this needs to be adjusted
+    );  ctx.lineTo(
+        this.corner + edge + ox - this.corner,
         this.corner + edge + oy
-    );
-};
+    );};
 
 // CSlotMorph ////////////////////////////////////////////////////
 
@@ -8884,7 +8803,7 @@ RingCommandSlotMorph.prototype.outlinePath = function (
 
 // CSlotMorph inherits from CommandSlotMorph:
 
-CSlotMorph.prototype = new RingCommandSlotMorph;
+CSlotMorph.prototype = new CommandSlotMorph;
 CSlotMorph.prototype.constructor = CSlotMorph;
 CSlotMorph.uber = CommandSlotMorph.prototype;
 
@@ -8901,11 +8820,10 @@ CSlotMorph.prototype.getSpec = function (
 
 CSlotMorph.prototype.mappedCode = function (definitions) {
     var code = StageMorph.prototype.codeMappings.reify || '<#1>',
-        codeLines = code.split('\n'),
-        nested = this.nestedBlock(),
-        part = nested ? nested.mappedCode(definitions) : '',
-        partLines = (part.toString()).split('\n'),
-        rx = new RegExp('<#1>', 'g');
+        codeLines = code.split('\n'), nested = this.nestedBlock(
+        ), part = (nested ? nested.mappedCode(definitions
+        ) : ''), partLines = (part.toString()).split('\n'
+        ), rx = new RegExp('<#1>', 'g');
 
     codeLines.forEach((codeLine, idx
         ) => {var prefix = '', indent;
@@ -8917,8 +8835,7 @@ CSlotMorph.prototype.mappedCode = function (definitions) {
             partLines.join('\n' + prefix)
         );  codeLines[idx] = codeLines[idx
         ].replace(rx, partLines.join('\n'));
-    }); return codeLines.join('\n');
-};
+        }); return codeLines.join('\n');};
 
 // CSlotMorph layout:
 
@@ -8939,8 +8856,7 @@ CSlotMorph.prototype.fixLayout = function () {
         this.fontSize + this.edge * 2 - shrink + this.cSlotPadding
     )).add(this.edge * 2 + this.rfBorder * 2));};
     if (this.parent && this.parent.fixLayout
-    ) {this.parent.fixLayout();};
-};
+    ) {this.parent.fixLayout();};};
 
 CSlotMorph.prototype.fixLoopLayout = function () {
     var loop;
@@ -8964,6 +8880,9 @@ CSlotMorph.prototype.loop = function () {
 
 CSlotMorph.prototype.isLocked = function () {return ((
 this.isStatic) || (this.parent instanceof MultiArgMorph));};
+
+CSlotMorph.prototype.fixHolesLayout = (
+RingCommandSlotMorph.prototype.fixHolesLayout);
 
 // CSlotMorph drawing:
 
@@ -12898,7 +12817,7 @@ this.drawEdgesOval(ctx, ((this.nestedBlock(
 ) instanceof ReporterBlockMorph) ? (this
 ).nestedBlock().rounding : null));};};};
 
-RingReporterSlotMorph.prototype.outlinePath = function (ctx, inset, offset) {
+RingReporterSlotMorph.prototype.outlinePath = function (ctx, offset) {
 var state = ((this.nestedBlock() instanceof ReporterBlockMorph) ? (
 this.nestedBlock().isPredicate ? 'predicate' : (this.nestedBlock(
 ).isArrow ? 'arrow' : 'reporter')) : 'reporter'); if (this.getSpec(

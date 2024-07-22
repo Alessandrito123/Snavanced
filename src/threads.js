@@ -2670,19 +2670,22 @@ Process.prototype.reportPipe = function (value, reporterList) {
     this.evaluate(next, new List([current]));
 };
 
-Process.prototype.reportSequence = function anonymous (reporter, valueList) {if (this.context.sequenceList instanceof List) {var sequence = this.context.sequenceList,
-initialValue = this.context.initialSequencePart; if ((initialValue instanceof Context) && (sequence.length() > 0)) {this.context.initialSequencePart = invoke(initialValue,
-((sequence.at(1) instanceof List) ? sequence.at(1) : new List([sequence.at(1)]))); this.context.sequenceList.remove(1); this.pushContext('doYield'); this.pushContext(
-);} else {this.returnValueToParentContext(initialValue); delete this.context.sequenceList; delete this.context.initialSequencePart;};} else {this.assertType(reporter,
-['command', 'reporter', 'predicate']); this.assertType(valueList, 'list'); this.context.sequenceList = valueList; this.context.initialSequencePart = reporter;
-this.pushContext('doYield'); this.pushContext();};}; /* If do you wanna to get deeper in the lambdas's outputs, no problem, this block is for you. :-) */
+Process.prototype.reportSequence = function (reporter, valueList) {if ((this.context.sequenceList
+) instanceof List) {var sequence = this.context.sequenceList, initialValue = (this.context
+).initialSequencePart; if ((initialValue instanceof Context) && (sequence.length() > 0)) {(this
+).context.initialSequencePart = invoke(initialValue, ((sequence.at(1) instanceof List) ? (sequence
+).at(1) : new List([sequence.at(1)]))); this.context.sequenceList.remove(1); this.pushContext('doYield'
+); this.pushContext();} else {this.returnValueToParentContext(initialValue); delete ((this.context
+).sequenceList); delete this.context.initialSequencePart;};} else {this.assertType(reporter, ['command',
+'reporter', 'predicate']); this.assertType(valueList, 'list'); this.context.sequenceList = valueList;
+this.context.initialSequencePart = reporter; this.pushContext('doYield'); this.pushContext();};};
 
 // Process interpolated primitives
 
-Process.prototype.doWait = function anonymous (secs) {if (!this.context.startTime) {this.context.startTime = Date.now();}; if ((Date.now() - this.context.startTime
-) >= (secs * 1000)) {if (!this.isAtomic && (secs === 0)) {this.readyToYield = true;}; return null;}; this.pushContext('doYield'); this.pushContext();}; /* Wait. */
+Process.prototype.doWait = function (secs) {if (!(this.context.startTime)) {this.context.startTime = Date.now();}; if ((Date.now() - this.context.startTime) >= (
+secs * 1000)) {if (!(this.isAtomic) && (secs === 0)) {this.readyToYield = true;}; return null;}; this.pushContext('doYield'); this.pushContext();}; /* Wait. */
 
-Process.prototype.doGlide = function anonymous (secs, endX, endY) {
+Process.prototype.doGlide = function (secs, endX, endY) {
     if (!this.context.startTime) {
         this.context.startTime = Date.now();
         this.context.startValue = new Point(
@@ -2700,7 +2703,7 @@ Process.prototype.doGlide = function anonymous (secs, endX, endY) {
     this.pushContext();
 };
 
-Process.prototype.doMove = function anonymous (secs, steps, optDir) {
+Process.prototype.doMove = function (secs, steps, optDir) {
     if (!this.context.startTime) {
         var direction = ((optDir.length() > 0) ? optDir.asArray()[0] : this.blockReceiver().heading);
         if (direction instanceof Array) {if (direction[0] === 'random'
@@ -2727,7 +2730,7 @@ Process.prototype.doMove = function anonymous (secs, steps, optDir) {
     this.pushContext();
 };
 
-Process.prototype.doShake = function anonymous (secs, force, decay) {
+Process.prototype.doShake = function (secs, force, decay) {
     if (!this.context.startTime) {
         this.context.startX = this.blockReceiver().xPosition();
         this.context.startY = this.blockReceiver().yPosition();
@@ -2751,23 +2754,22 @@ Process.prototype.doShake = function anonymous (secs, force, decay) {
     this.pushContext();
 };
 
-Process.prototype.doUpdatePosition = function anonymous (a, b, c) {
+Process.prototype.doUpdatePosition = function (a, b, c) {
 var obj = this.blockReceiver(); if (obj instanceof SpriteMorph) {
 if (this.inputOption(a) === 'change') {if (this.inputOption(b
 ) === 'x') {obj.changeXPosition(c);} else if (this.inputOption(b
 ) === 'y') {obj.changeYPosition(c);};} else {if (this.inputOption(b
 ) === 'x') {obj.setXPosition(c);} else if (this.inputOption(b
-) === 'y') {obj.setYPosition(c);};};};}; /* It's now simplyfied. */
+) === 'y') {obj.setYPosition(c);};};};};
 
-Process.prototype.customizableBubble = function anonymous (option, data, secs) {
+Process.prototype.customizableBubble = function (option, data, secs) {
 option = this.inputOption(option);
 if (secs.length() > 0) {
     secs = secs.at(1);
     if (!this.context.startTime) {
         this.context.startTime = Date.now();
         this.blockReceiver().bubble(data, (option === 'think'), false, (option === 'shout'), (option === 'whisper'));
-    }
-    if ((Date.now() - this.context.startTime) >= (secs * 1000)) {
+    };  if ((Date.now() - this.context.startTime) >= (secs * 1000)) {
         this.blockReceiver().stopTalking();
         return null;
     };  this.pushContext('doYield');
@@ -6290,31 +6292,21 @@ Process.prototype.doMapListCode = function (part, kind, aString) {
 };
 
 Process.prototype.reportMappedCode = function (aContext) {
-    if (aContext instanceof Context) {
-        if (aContext.expression instanceof SyntaxElementMorph) {
-            return aContext.expression.mappedCode();
-        }
-    }
-    return '';
-};
+if (aContext instanceof Context) {if ((aContext.expression
+) instanceof SyntaxElementMorph) {return ((aContext
+).expression).mappedCode();};};   return '';};
 
 // Process music primitives
 
-Process.prototype.doRest = function (beats) {
-    var tempo = this.reportTempo();
-    this.doWait(60 / tempo * beats);
-};
+Process.prototype.doRest = function (
+beats) {var tempo = (this.reportTempo(
+)); this.doWait((60 / tempo) * beats);};
 
 Process.prototype.reportTempo = function () {
     var stage;
     if (this.homeContext.receiver) {
         stage = this.homeContext.receiver.parentThatIsA(StageMorph);
-        if (stage) {
-            return stage.getTempo();
-        }
-    }
-    return 0;
-};
+        if (stage) {return stage.getTempo();};}; return 0;};
 
 Process.prototype.doChangeTempo = function (delta) {
     var stage;
@@ -6322,9 +6314,7 @@ Process.prototype.doChangeTempo = function (delta) {
         stage = this.homeContext.receiver.parentThatIsA(StageMorph);
         if (stage) {
             stage.changeTempo(delta);
-        }
-    }
-};
+        };};};
 
 Process.prototype.doSetTempo = function (bpm) {
     var stage;
@@ -6332,17 +6322,14 @@ Process.prototype.doSetTempo = function (bpm) {
         stage = this.homeContext.receiver.parentThatIsA(StageMorph);
         if (stage) {
             stage.setTempo(bpm);
-        }
-    }
-};
+        };};};
 
 Process.prototype.doPlayNote = function (pitch, beats) {
     var tempo = this.reportTempo();
     this.doPlayNoteForSecs(
         parseFloat(pitch || '0'),
         60 / tempo * parseFloat(beats || '0')
-    );
-};
+    );};
 
 Process.prototype.doPlayNoteForSecs = function (pitch, secs) {
     // interpolated
@@ -6362,16 +6349,14 @@ Process.prototype.doPlayNoteForSecs = function (pitch, secs) {
             this.context.activeNote.stop();
             this.context.activeNote = null;
         }; return null;
-    }; this.pushContext('doYield');
-    this.pushContext();
-};
+    };  this.pushContext('doYield');
+    this.pushContext();};
 
 Process.prototype.doPlayFrequency = function (hz, secs) {
     this.doPlayFrequencyForSecs(
         parseFloat(hz || '0'),
         parseFloat(secs || '0')
-    );
-};
+    );};
 
 Process.prototype.doPlayFrequencyForSecs = function (hz, secs) {
     // interpolated
