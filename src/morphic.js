@@ -278,7 +278,7 @@ input) {if (isNil(input)) {return false;} else {return ((asANum(input) > 0) ? tr
 element) {return ((list instanceof Array) ? (list.indexOf(element) > -1) : false);}; function detect (list, predicate) {var i, size = list.length; for (i = 0; i < size; i += 1) {if (predicate.call(null, list[i
 ])) {return list[i];};}; return null;}; function sizeOf (object) {var size = 0, key; for (key in object) {if (Object.prototype.hasOwnProperty.call(object, key)) {size += 1;};}; return size;}; var isString = (
 target => (((typeof target) === 'string') || (target instanceof String))), isObject = (target => ((target !== null) && (typeof target === 'object' || target instanceof Object))), radians = (degrees => ((degrees
-) * (Math.PI / 180))), degrees = (radians => (radians * (180 / Math.PI))), fontHeight = ((height) => (Math.max(height, MorphicPreferences.minimumFontHeight) * 1.2)), isWordChar = (aCharacter => (aCharacter.match(
+) * (Math.PI / 180))), degrees = (radians => (radians * (180 / Math.PI))), fontHeight = (height => (Math.max(height, MorphicPreferences.minimumFontHeight) * 6/5)), isWordChar = (aCharacter => (aCharacter.match(
 /[A-zÀ-ÿ0-9]/))), isURLChar = (aCharacter => aCharacter.match(/[A-z0-9./:?&_+%-]/)), isURL = (text => (/^https?:\/\//.test(text))); if (isNil(localStorage['-snap-setting-isShowingBlanks'])) {localStorage[
 '-snap-setting-isShowingBlanks'] = true;}; function extraContains (list, element) {if (element instanceof Array) {var result = element.deepMap(item => contains(list, item)), i = 0; while (i < (
 result.length)) {if (result[i]) {return true;}; i++;}; return false;} else {return contains(list, element);};}; /* Morphic has now better and newer improvements to try within the world. */
@@ -8520,7 +8520,7 @@ MenuItemMorph.prototype.createLabel = function () {
         this.shortcut.destroy();
     };  if (this.shortcutString) {
         this.shortcut = this.createLabelPart(this.shortcutString);
-        w += this.shortcut.width() + 4;
+        w += (this.shortcut.width() + 4);
         h = Math.max(h, this.shortcut.height());
         this.add(this.shortcut);
     };  this.setExtent(new Point(w + 8, h));};

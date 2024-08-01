@@ -787,13 +787,13 @@ SpriteMorph.prototype.bubbleBorderColor = new Color(190, 190, 190); SpriteMorph.
         runScript: {
             type: 'definitor',
             category: 'events',
-            spec: 'when $flag-1.5-0-200-0 clicked %c',
+            spec: 'when %flagTheme clicked %c',
             dev: true
         },
         receiveGo: {
             type: 'hat',
             category: 'events',
-            spec: 'when $flag-1.5-0-200-0 clicked'
+            spec: 'when %flagTheme clicked'
         },
         receiveKey: {
             type: 'hat',
@@ -989,6 +989,7 @@ SpriteMorph.prototype.bubbleBorderColor = new Color(190, 190, 190); SpriteMorph.
             spec: 'tell %spr to %cmd %inputs'
         },
         tellToCT: {
+            dev: true,
             type: 'command',
             category: 'control',
             spec: 'tell %spr to %cs %inputs'
@@ -1107,6 +1108,12 @@ SpriteMorph.prototype.bubbleBorderColor = new Color(190, 190, 190); SpriteMorph.
             type: 'command',
             category: 'control',
             spec: 'debug'
+        },
+        doPauseScript: {
+            dev: true,
+            type: 'command',
+            category: 'control',
+            spec: 'debug $arrowDown %cl'
         },
         reportInPause: {
             type: 'reporter',
@@ -2472,12 +2479,14 @@ SpriteMorph.prototype.blockAlternatives = {
     // control:
     doBroadcast: ['doBroadcastAndWait'], doBroadcastAndWait: ['doBroadcast'],
     doWaitUntil: ['doWaitWhile'], doWaitWhile: ['doWaitUntil'], doRepeat: [
-    'doTimrLp', 'doUntil', ['doForever', -1], ['doFor', 2], ['doForEach', 1]],
-    doTimrLp: ['doRepeat', 'doUntil', ['doForever', -1], ['doFor', 2], ['doForEach',
-    1]], doUntil: ['doWhile'], doWhile: ['doUntil'], doRun: ['fork', 'doCallCC'], fork: [
-    'doRun', 'doCallCC'], doCallCC: ['doRun', 'fork'], evaluate: ['reportCallCC',
-    'reportSequence'], reportCallCC: ['evaluate', 'reportSequence'], reportSequence: [
-    'evaluate', 'reportCallCC'], doTellTo: ['tellToCT'], tellToCT: ['doTellTo'],
+    'doTimrLp', 'doUntil', ['doForever', -1], ['doFor', 2], ['doForEach',
+    1]], doTimrLp: ['doRepeat', 'doUntil', ['doForever', -1], ['doFor', 2],
+    ['doForEach', 1]], doUntil: ['doWhile'], doWhile: ['doUntil'], doRun: [
+    'fork', 'doCallCC'], fork: ['doRun', 'doCallCC'], doCallCC: ['doRun',
+    'fork'], evaluate: ['reportCallCC', 'reportSequence'], reportCallCC: [
+    'evaluate', 'reportSequence'], reportSequence: ['evaluate', 'reportCallCC'
+    ], doTellTo: ['tellToCT'], tellToCT: ['doTellTo'], doPauseThread: [
+    'doPauseScript'], doPauseScript: ['doPauseThread'],
 
     // sensing:
     doAsk: ['bubble', 'doThink', 'doSayFor', 'doThinkFor'],
@@ -4019,7 +4028,7 @@ SpriteMorph.prototype.changeBlockVisibility = function (aBlock, hideIt, quick) {
     } else if (aBlock.selector === 'reportGetVar') {
         this.variables.find(
             aBlock.blockSpec
-        ).vars[aBlock.blockSpec].isHidden = !!hideIt;
+        ).vars[aBlock.blockSpec].isHidden = asABool(hideIt);
     } else {
         if (hideIt) {
             StageMorph.prototype.hiddenPrimitives[aBlock.selector] = true;
@@ -4034,8 +4043,7 @@ SpriteMorph.prototype.changeBlockVisibility = function (aBlock, hideIt, quick) {
         reifyReporter: 'operators',
         reifyPredicate: 'operators',
         doDeclareVariables: 'variables'
-    };
-    cat = dict[aBlock.selector] || aBlock.category;
+    };  cat = dict[aBlock.selector] || aBlock.category;
     if (cat === 'motor') {cat = 'motion';
     } else if (cat === 'events') {cat = 'control';
     } else if (cat === 'lists') {cat = 'variables';
@@ -5285,8 +5293,7 @@ SpriteMorph.prototype.changeColorRGBA = function (dta) {
         clr.r = Math.max(0, Math.min(clr.r + num, 255));
         clr.g = Math.max(0, Math.min(clr.g + num, 255));
         clr.b = Math.max(0, Math.min(clr.b + num, 255));
-    };  this.setColor(clr);
-};
+    };  this.setColor(clr);};
 
 SpriteMorph.prototype.setColor = function (aColor) {
     var x = this.xPosition(),
@@ -5296,10 +5303,8 @@ SpriteMorph.prototype.setColor = function (aColor) {
         if (!this.costume) {
             this.rerender();
             this.silentGotoXY(x, y);
-        }
-        this.cachedColorDimensions = this.color[this.penColorModel]();
-    }
-};
+        };  this.cachedColorDimensions = this.color[this.penColorModel]();
+    };};
 
 SpriteMorph.prototype.getPenAttribute = function (attrib) {
     var name = attrib instanceof Array ? attrib[0] : attrib.toString(),
@@ -5314,9 +5319,7 @@ SpriteMorph.prototype.getPenAttribute = function (attrib) {
             this.color.b,
             Math.round(this.color.a * 255)
         ]);
-    }
-    return this.getColorDimension(options.indexOf(name));
-};
+    };  return this.getColorDimension(options.indexOf(name));};
 
 // SpriteMorph layers
 
@@ -5324,28 +5327,21 @@ SpriteMorph.prototype.comeToFront = function () {
     if (this.parent) {
         this.parent.add(this);
         this.changed();
-    }
-};
+    };};
 
-SpriteMorph.prototype.goToBack = function () {
-    if (this.parent) {
-        this.parent.addBack(this);
-        this.changed();
-    }
-};
+SpriteMorph.prototype.goToBack = function (
+) {if (this.parent) {this.parent.addBack(
+this); this.changed();};};
 
 SpriteMorph.prototype.goBack = function (layers) {
-    var layer,
-        newLayer = +layers,
-        targetLayer;
+    var layer, newLayer = +layers, targetLayer;
 
-    if (!this.parent) {return null; }
-    layer = this.parent.children.indexOf(this);
-    this.parent.removeChild(this);
+    if (!this.parent) {return null;};
+    layer = this.parent.children.indexOf(
+    this); this.parent.removeChild(this);
     targetLayer = Math.max(layer - newLayer, 0);
     this.parent.children.splice(targetLayer, null, this);
-    this.parent.changed();
-};
+    this.parent.changed();};
 
 // SpriteMorph collision detection
 
@@ -6810,60 +6806,34 @@ SpriteMorph.prototype.snapPoint = function (aPoint) {
     return new Point(
         (aPoint.x - origin.x) / stage.scale,
         (origin.y - aPoint.y) / stage.scale
-    );
-};
+    );};
 
 // SpriteMorph rotation center / fixation point manipulation
 
 SpriteMorph.prototype.setRotationX = function (absoluteX) {
-  this.setRotationCenter(new Point(absoluteX, this.yPosition()));
-};
+this.setRotationCenter(new Point(absoluteX, this.yPosition()));};
 
 SpriteMorph.prototype.setRotationY = function (absoluteY) {
-  this.setRotationCenter(new Point(this.xPosition(), absoluteY));
-};
+this.setRotationCenter(new Point(this.xPosition(), absoluteY));};
 
-SpriteMorph.prototype.setRotationCenter = function (absoluteCoordinate) {
-    var delta, normal;
-    if (!this.costume) {
-        throw new Error('setting the rotation center requires a costume');
-    };  this.shadowAttribute('costumes');
-    delta = absoluteCoordinate.subtract(
-        new Point(this.xPosition(), this.yPosition())
-    ).divideBy(this.scale).rotateBy(radians(90 - this.heading));
-    normal = this.costume.rotationCenter.add(new Point(delta.x, -delta.y));
-    this.costume.rotationCenter = normal; this.changed(); this.fixLayout();
-    this.changed();
-};
+SpriteMorph.prototype.setRotationCenter = function (absoluteCoordinate
+) {var delta, normal; if (!(this.costume)) {throw Error(('setting the'
+) + ('rotation center requires a costume'));}; this.shadowAttribute(
+'costumes'); delta = absoluteCoordinate.subtract(new Point((this
+).xPosition(), this.yPosition())).divideBy(this.scale).rotateBy(
+radians(90 - this.heading)); normal = (this.costume.rotationCenter
+).add(new Point(delta.x, -delta.y)); (this.costume.rotationCenter
+) = normal; this.changed(); this.fixLayout(); this.changed(
+);}; SpriteMorph.prototype.moveRotationCenter = (
+function () {world.activeHandle = new HandleMorph(
+this, null, null, null, null, 'movePivot');});
 
-SpriteMorph.prototype.moveRotationCenter = function () {
-    // make this a method of Snap >> SpriteMorph
-    this.world().activeHandle = new HandleMorph(
-        this,
-        null,
-        null,
-        null,
-        null,
-        'movePivot'
-    );
-};
-
-SpriteMorph.prototype.setPivot = function (worldCoordinate) {
-    var stage = this.parentThatIsA(StageMorph),
-        ide = this.parentThatIsA(IDE_Morph),
-        cntr;
-    if (stage) {
-        cntr = stage.center();
-        this.setRotationCenter(
-            new Point(
-                (worldCoordinate.x - cntr.x) / stage.scale,
-                (cntr.y - worldCoordinate.y) / stage.scale
-            )
-        );  if (ide) {
-            ide.recordUnsavedChanges();
-        };
-    };
-};
+SpriteMorph.prototype.setPivot = function (worldCoordinate
+) {var stage = this.parentThatIsA(StageMorph), ide = (this
+).parentThatIsA(IDE_Morph), cntr; if (stage) {cntr = (stage
+).center(); this.setRotationCenter(new Point((((worldCoordinate
+).x - cntr.x) / stage.scale), (cntr.y - worldCoordinate.y) / (
+stage.scale)));  if (ide) {ide.recordUnsavedChanges();};};};
 
 // SpriteMorph dimension getters
 
@@ -6873,8 +6843,7 @@ SpriteMorph.prototype.xCenter = function () {
         stage = this.parent.grabOrigin.origin;
     };  if (stage) {
         return (this.center().x - stage.center().x) / stage.scale;
-    };  return this.center().x;
-};
+    };  return this.center().x;};
 
 SpriteMorph.prototype.yCenter = function () {
     var stage = this.parentThatIsA(StageMorph);
@@ -6882,8 +6851,7 @@ SpriteMorph.prototype.yCenter = function () {
         stage = this.parent.grabOrigin.origin;
     };  if (stage) {
         return (stage.center().y - this.center().y) / stage.scale;
-    };  return this.center().y;
-};
+    };  return this.center().y;};
 
 SpriteMorph.prototype.xLeft = function () {
     var stage = this.parentThatIsA(StageMorph);
@@ -6891,8 +6859,7 @@ SpriteMorph.prototype.xLeft = function () {
         stage = this.parent.grabOrigin.origin;
     };  if (stage) {
         return (this.left() - stage.center().x) / stage.scale;
-    };  return this.left();
-};
+    };  return this.left();};
 
 SpriteMorph.prototype.xRight = function () {
     var stage = this.parentThatIsA(StageMorph);
@@ -6900,8 +6867,7 @@ SpriteMorph.prototype.xRight = function () {
         stage = this.parent.grabOrigin.origin;
     };  if (stage) {
         return (this.right() - stage.center().x) / stage.scale;
-    };  return this.right();
-};
+    };  return this.right();};
 
 SpriteMorph.prototype.yTop = function () {
     var stage = this.parentThatIsA(StageMorph);
@@ -6909,8 +6875,7 @@ SpriteMorph.prototype.yTop = function () {
         stage = this.parent.grabOrigin.origin;
     };  if (stage) {
         return (stage.center().y - this.top()) / stage.scale;
-    };  return this.top();
-};
+    };  return this.top();};
 
 SpriteMorph.prototype.yBottom = function () {
     var stage = this.parentThatIsA(StageMorph);
@@ -6918,41 +6883,24 @@ SpriteMorph.prototype.yBottom = function () {
         stage = this.parent.grabOrigin.origin;
     };  if (stage) {
         return (stage.center().y - this.bottom()) / stage.scale;
-    };  return this.bottom();
-};
+    };  return this.bottom();};
 
 // SpriteMorph message broadcasting
 
-SpriteMorph.prototype.allMessageNames = function () {
-    var msgs = [];
-    this.allScripts().forEach(script => {
-        script.allChildren().forEach(morph => {
-            var txt;
-            if (morph instanceof InputSlotMorph && morph.choices && contains(
-                ['messagesMenu', 'messagesReceivedMenu'],
-                morph.choices
-            )) {
-                txt = morph.evaluate();
-                if (isString(txt) && txt !== '') {
-                    if (!contains(msgs, txt)) {
-                        msgs.push(txt);
-                    }
-                }
-            }
-        });
-    });
-    return msgs;
-};
+SpriteMorph.prototype.allMessageNames = function () {var msgs = [];
+(this.allScripts()).forEach(script => {script.allChildren().forEach(
+morph => {var txt; if ((morph instanceof InputSlotMorph) && ((morph
+).choices && contains(['messagesMenu', 'messagesReceivedMenu'],
+morph.choices))) {txt = morph.evaluate(); if (isString(txt) && (
+txt !== '')) {if (!contains(msgs, txt)) {msgs.push(txt);};};};});
+}); return msgs;};
 
-SpriteMorph.prototype.allSendersOf = function (message, receiverName, known) {
-    return this.allScripts().filter(script =>
-        script.isSending && script.isSending(message, receiverName, known)
-    );
-};
+SpriteMorph.prototype.allSendersOf = function (message, receiverName, known) {return (this.allScripts(
+)).filter(script => script.isSending && script.isSending(message, receiverName, known));};
 
 SpriteMorph.prototype.allHatBlocksFor = function (message) {if (typeof message === 'number') {message = message.toString();}; return this.scripts.children.filter(morph => {var sel = morph.selector, event;
-if (sel) {if (sel === 'receiveMessage') {event = morph.inputs()[0].evaluate(); return event === message || (event instanceof Array && message !== '__shout__go__' && message !== '__clone__init__'
-);}; if (contains(['receiveGo', 'runScript'], sel)) {return message === '__shout__go__';} else if (sel === 'receiveOnClone') {return message === '__clone__init__';};}; return false;});};
+if (sel) {if (sel === 'receiveMessage') {event = morph.inputs()[0].evaluate(); return ((event === message) || ((event instanceof Array) && (message !== '__shout__go__') && (message !== '__clone__init__')
+));}; if (contains(['receiveGo', 'runScript'], sel)) {return message === '__shout__go__';} else if (sel === 'receiveOnClone') {return message === '__clone__init__';};}; return false;});};
 
 SpriteMorph.prototype.allHatBlocksForKey = function (key) {
     return this.scripts.children.filter(morph => {

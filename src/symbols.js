@@ -162,8 +162,7 @@ function SymbolMorph(name, size, color, shadowOffset, shadowColor) {
     color,
     shadowOffset,
     shadowColor
-) {
-    this.isProtectedLabel = false; // participate in zebraing
+)  {this.isProtectedLabel = false;
     this.isReadOnly = true;
     this.name = name || 'square';
     this.size = size || 50;
@@ -171,9 +170,8 @@ function SymbolMorph(name, size, color, shadowOffset, shadowColor) {
     this.shadowColor = shadowColor || null;
     SymbolMorph.uber.init.call(this);
     this.color = color || BLACK;
-    this.fixLayout();
-    this.rerender();
-};
+    this.fixLayout(); (this
+    ).rerender();};
 
 // SymbolMorph string representation: 'a SymbolMorph: "square"'
 
@@ -190,14 +188,10 @@ SymbolMorph.prototype.toString = function () {
 // SymbolMorph zebra coloring:
 
 SymbolMorph.prototype.setLabelColor = function (
-    textColor,
-    shadowColor,
-    shadowOffset
-) {
-    this.shadowOffset = shadowOffset || new Point();
-    this.shadowColor = shadowColor;
-    this.setColor(textColor);
-};
+textColor, shadowColor, shadowOffset)  {(this
+).shadowOffset = (shadowOffset || new Point);
+this.shadowColor = shadowColor; (this
+).setColor(textColor);};
 
 // SymbolMorph dynamic coloring:
 

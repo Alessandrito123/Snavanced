@@ -99,14 +99,15 @@ PushButtonMorph.prototype.fontSize = 10; (PushButtonMorph
 ).labelShadowColor = WHITE; (PushButtonMorph.prototype
 ).labelShadowOffset = new Point(1, 1); (PushButtonMorph
 ).prototype.color = new Color(220, 220, 220); (PushButtonMorph
-).prototype.pressColor = new Color(115, 180, 240);
-PushButtonMorph.prototype.highlightColor = (
+).prototype.pressColor = new Color(115, 180, 240
+);   PushButtonMorph.prototype.highlightColor = (
 PushButtonMorph).prototype.pressColor.lighter(50); 
 PushButtonMorph.prototype.outlineGradient = false;
 PushButtonMorph.prototype.outlineColor = new Color(
-30, 30, 30, 0.5); PushButtonMorph.prototype.contrast = 60;
-PushButtonMorph.prototype.edge = 2; (PushButtonMorph.prototype
-).corner = 5; PushButtonMorph.prototype.outline = 1;
+30, 30, 30, 0.5); (PushButtonMorph.prototype.contrast
+) = 60; PushButtonMorph.prototype.edge = 2;
+PushButtonMorph.prototype.corner = 5;
+PushButtonMorph.prototype.outline = 1;
 PushButtonMorph.prototype.padding = 3;
 
 // PushButtonMorph instance creation:
@@ -1968,8 +1969,8 @@ settingsUI.add(settingsButton); clr.add(rCol); clr.add(gCol); clr.add(bCol); clr
 clr.add(settingsUI); inp.add(clr); if (msg) {bdy.add(labelText(msg));}; bdy.add(inp); clr.fixLayout();
 rCol.fixLayout(); gCol.fixLayout(); bCol.fixLayout(); aCol.fixLayout(); settingsUI.fixLayout();
 inp.fixLayout(); bdy.fixLayout(); this.labelString = title; this.createLabel(); if (pic) {
-this.setPicture(pic);}; this.addBody(bdy); this.addButton((function anonymous () {target.color =
-this.getInput(); target.rerender(); if (target.constructor.name === 'ColorSlotMorph') {
+this.setPicture(pic);}; this.addBody(bdy); this.addButton((function () {target.color = (
+this.getInput()); target.rerender(); if (target.constructor.name === 'ColorSlotMorph') {
 world.children[0].recordUnsavedChanges();}; this.destroy();}), 'OK'); this.addButton((function anonymous (
 ) {target.color = targetColor; target.rerender(); this.destroy();}), 'Cancel'); this.fixLayout();
 this.getInput = function () {return new Color(constrainRGB(rInp.getValue()), constrainRGB(gInp.getValue()),
@@ -2304,8 +2305,7 @@ DialogBoxMorph.prototype.processKeyDown = function (event) {
     default:
         nop();
         // this.inspectKeyEvent(event);
-    }
-};
+    };};
 
 // DialogBoxMorph drawing
 
@@ -2443,10 +2443,8 @@ DialogBoxMorph.prototype.render = function (ctx) {
         x,
         y,
         shift,
-        radians(90),
-        radians(0),
-        true
-    );
+        Math.PI / 2,
+        0, true);
     ctx.stroke();
 
     // left body edge
@@ -2501,8 +2499,8 @@ DialogBoxMorph.prototype.outlinePathTitle = function (ctx, radius) {
         radius,
         radius,
         radius,
-        radians(-180),
-        radians(-90),
+        -(Math.PI),
+        Math.PI / -2,
         false
     );
     // top right:
@@ -2510,10 +2508,8 @@ DialogBoxMorph.prototype.outlinePathTitle = function (ctx, radius) {
         w - radius,
         radius,
         radius,
-        radians(-90),
-        radians(-0),
-        false
-    );
+        Math.PI / -2,
+        0, false);
     // bottom right:
     ctx.lineTo(w, h);
 
@@ -2731,11 +2727,9 @@ InputFieldMorph.prototype.edit = function () {
 };
 
 InputFieldMorph.prototype.setIsNumeric = function (bool) {
-    var value;
-
-    this.isNumeric = bool;
-    this.contents().isNumeric = bool;
-    this.contents().text.isNumeric = bool;
+    var value; this.isNumeric = bool;
+    (this.contents()).isNumeric = bool;
+    (this.contents()).text.isNumeric = bool;
 
     // adjust my shown value to conform with the numeric flag
     value = this.getValue();
@@ -2777,17 +2771,9 @@ InputFieldMorph.prototype.dropDownMenu = function () {
                 if (key[0] === '~') {
                     menu.addLine();
                 } else {
-                    menu.addItem(key, choices[key]);
-                }
-            }
-        }
-    }
-    if (menu.items.length > 0) {
-        menu.popUpAtHand(world);
-    } else {
-        return null;
-    }
-};
+                    menu.addItem(key, choices[key]
+                );};};};}; if (menu.items.length > 0
+    ) {menu.popUpAtHand(world);} else {return null;};};
 
 // InputFieldMorph layout:
 
@@ -2804,13 +2790,10 @@ InputFieldMorph.prototype.fixLayout = function () {
     } else {
         arrow.setSize(0);
         arrow.hide();
-    }
-    this.bounds.setHeight(
-        contents.height()
-            + this.edge * 2
-            + this.typeInPadding * 2
-    );
-    this.bounds.setWidth(Math.max(
+    };  this.bounds.setHeight(
+        contents.height() + ((
+        this.edge + this.typeInPadding) * 2)
+    );  this.bounds.setWidth(Math.max(
         contents.minWidth
             + this.edge * 2
             + this.typeInPadding * 2,
@@ -2830,45 +2813,27 @@ InputFieldMorph.prototype.fixLayout = function () {
     arrow.setPosition(new Point(
         this.right() - arrow.width() - this.edge,
         contents.top()
-    ));
-
-    if (this.isReadOnly) {
+    )); if (this.isReadOnly) {
         this.cursorStyle = null;
     } else {
         this.cursorStyle = 'text';
-    };
-};
+    };};
 
 // InputFieldMorph events:
 
-InputFieldMorph.prototype.mouseClickLeft = function (pos) {
-    if (this.arrow().bounds.containsPoint(pos)) {
-        this.dropDownMenu();
-    } else if (this.isReadOnly) {
-        this.dropDownMenu();
-    } else {
-        this.escalateEvent('mouseClickLeft', pos);
-    }
-};
+InputFieldMorph.prototype.mouseClickLeft = function (
+pos) {if ((this.arrow()).bounds.containsPoint(pos)) {
+this.dropDownMenu();} else if (this.isReadOnly) {
+this.dropDownMenu();} else {this.escalateEvent(
+'mouseClickLeft', pos);};};
 
 // InputFieldMorph retrieving:
 
-InputFieldMorph.prototype.getValue = function () {
-/*
-    answer my content's text string. If I am numerical convert that
-    string to a number. If the conversion fails answer the string
-    otherwise the numerical value.
-*/
-    var num,
-        contents = this.contents();
-    if (this.isNumeric) {
-        num = parseFloat(contents.text.text);
-        if (!isNaN(num)) {
-            return num;
-        }
-    }
-    return this.normalizeSpaces(contents.string());
-};
+InputFieldMorph.prototype.getValue = function (
+) {var num, contents = this.contents(); if ((this
+).isNumeric) {num = parseFloat(contents.text.text
+); if (!isNaN(num)) {return num;};}; return (
+this.normalizeSpaces(contents.string()));};
 
 InputFieldMorph.prototype.normalizeSpaces
     = DialogBoxMorph.prototype.normalizeSpaces;
@@ -2880,9 +2845,9 @@ InputFieldMorph.prototype.render = function (ctx) {
 
     if (this.parent) {
         if (this.parent.color.eq(WHITE)) {
-            this.color = this.parent.color.darker(this.contrast * 0.1);
+            this.color = this.parent.color.darker(this.contrast / 10);
         } else {
-            this.color = this.parent.color.lighter(this.contrast * 0.75);
+            this.color = this.parent.color.lighter(this.contrast * 3/4);
         }
         borderColor = this.parent.color;
     } else {
@@ -2907,10 +2872,10 @@ InputFieldMorph.prototype.render = function (ctx) {
 };
 
 InputFieldMorph.prototype.drawRectBorder = function (ctx) {
-    var shift = this.edge * 0.5,
-        gradient;
+    var shift = this.edge / 2, gradient;
 
-    if (MorphicPreferences.isFlat && !this.is3D) {return; }
+    if ((MorphicPreferences.isFlat
+    ) && !(this.is3D)) {return;};
 
     ctx.lineWidth = this.edge;
     ctx.lineJoin = 'round';
@@ -2920,37 +2885,28 @@ InputFieldMorph.prototype.drawRectBorder = function (ctx) {
         ctx.shadowOffsetY = shift;
         ctx.shadowBlur = this.edge * 4;
         ctx.shadowColor = this.cachedClrDark;
-    }
-
-    gradient = ctx.createLinearGradient(
-        0,
-        0,
-        0,
-        this.edge
-    );
+    };  gradient = ctx.createLinearGradient(
+        0, 0, 0, this.edge);
 
     gradient.addColorStop(0, this.cachedClr);
     gradient.addColorStop(1, this.cachedClrDark);
     ctx.strokeStyle = gradient;
     ctx.beginPath();
     ctx.moveTo(this.edge, shift);
-    ctx.lineTo(this.width() - this.edge - shift, shift);
+    ctx.lineTo((this.width() - (
+    this.edge + shift)), shift);
     ctx.stroke();
 
     ctx.shadowOffsetY = 0;
 
     gradient = ctx.createLinearGradient(
-        0,
-        0,
-        this.edge,
-        0
-    );
+        0, 0, this.edge, 0);
     gradient.addColorStop(0, this.cachedClr);
     gradient.addColorStop(1, this.cachedClrDark);
     ctx.strokeStyle = gradient;
     ctx.beginPath();
     ctx.moveTo(shift, this.edge);
-    ctx.lineTo(shift, this.height() - this.edge - shift);
+    ctx.lineTo(shift, (this.height() - (this.edge + shift)));
     ctx.stroke();
 
     ctx.shadowOffsetX = 0;
@@ -2958,33 +2914,24 @@ InputFieldMorph.prototype.drawRectBorder = function (ctx) {
     ctx.shadowBlur = 0;
 
     gradient = ctx.createLinearGradient(
-        0,
-        this.height() - this.edge,
-        0,
-        this.height()
-    );
-    gradient.addColorStop(0, this.cachedClrBright);
-    gradient.addColorStop(1, this.cachedClr);
-    ctx.strokeStyle = gradient;
-    ctx.beginPath();
-    ctx.moveTo(this.edge, this.height() - shift);
-    ctx.lineTo(this.width() - this.edge, this.height() - shift);
-    ctx.stroke();
+        0, (this.height() - this.edge),
+        0, this.height());
+    gradient.addColorStop(0, this.cachedClrBright
+    ); gradient.addColorStop(1, this.cachedClr);
+    ctx.strokeStyle = gradient; ctx.beginPath();
+    ctx.moveTo(this.edge, (this.height() - shift)
+    ); ctx.lineTo((this.width() - this.edge), (
+    this.height() - shift)); ctx.stroke();
 
     gradient = ctx.createLinearGradient(
         this.width() - this.edge,
-        0,
-        this.width(),
-        0
-    );
-    gradient.addColorStop(0, this.cachedClrBright);
-    gradient.addColorStop(1, this.cachedClr);
-    ctx.strokeStyle = gradient;
-    ctx.beginPath();
+        0, this.width(), 0
+    );  gradient.addColorStop(0, this.cachedClrBright
+    );  gradient.addColorStop(1, this.cachedClr);
+    ctx.strokeStyle = gradient; ctx.beginPath();
     ctx.moveTo(this.width() - shift, this.edge);
-    ctx.lineTo(this.width() - shift, this.height() - this.edge);
-    ctx.stroke();
-};
+    ctx.lineTo(this.width() - shift, this.height(
+    ) - this.edge); ctx.stroke();};
 
 // PianoMenuMorph //////////////////////////////////////////////////////
 /* 
@@ -2994,209 +2941,96 @@ InputFieldMorph.prototype.drawRectBorder = function (ctx) {
 // PianoMenuMorph inherits from MenuMorph
 
 PianoMenuMorph.prototype = new MenuMorph;
-PianoMenuMorph.prototype.constructor = PianoMenuMorph;
-PianoMenuMorph.uber = MenuMorph.prototype;
+(PianoMenuMorph.prototype.constructor
+) = PianoMenuMorph; (PianoMenuMorph
+).uber = MenuMorph.prototype;
 
 // PianoMenuMorph instance creation:
 
-function PianoMenuMorph(target,
-environment, fontSize, soundType
-) {this.init(target, environment,
-fontSize, soundType);}; /* Wow! */
+function PianoMenuMorph(target, environment,
+fontSize, soundType) {this.init(target,
+environment, fontSize, soundType);};
 
 PianoMenuMorph.prototype.init = function (
-    target,
-    environment,
-    fontSize,
-    soundType // number 1 - 4: 'sine', 'square', 'sawtooth' or 'triangle'
-) {
-    this.choices = [
-        24,
-        26,
-        25,
-        28,
-        27,
-        29,
-        31,
-        30,
-        33,
-        32,
-        35,
-        34,
-        36,
-        38,
-        37,
-        40,
-        39,
-        41,
-        43,
-        42,
-        45,
-        44,
-        47,
-        46,
-        48,
-        50,
-        49,
-        52,
-        51,
-        53,
-        55,
-        54,
-        57,
-        56,
-        59,
-        58,
-        60,
-        62,
-        61,
-        64,
-        63,
-        65,
-        67,
-        66,
-        69,
-        68,
-        71,
-        70,
-        72,
-        74,
-        73,
-        76,
-        75,
-        77,
-        79,
-        78,
-        81,
-        80,
-        83,
-        82,
-        84,
-        86,
-        85,
-        88,
-        87,
-        89,
-        91,
-        90,
-        93,
-        92,
-        95,
-        94,
-        96
-    ], i = 0;
-    this.soundType = soundType;
-    PianoMenuMorph.uber.init.call(
-    this, target, null, environment,
-    fontSize); while (i < this.choices.length
-    ) {this.addItem((['B','C','C♯',
-    'D','E♭','E','F','F♯','G','G♯',
-    'A','B♭'][(this.choices[i] + 1) % 12]).concat(
-    ' \(',this.choices[i],'\)'), this.choices[i]); i++;};
-    this.pianoKeys = this.choices.sort();
-};
+target, environment, fontSize, soundType,
+visibleOctaves) {var choices, key; (this
+).soundType = soundType; (PianoMenuMorph
+).uber.init.call(this, target, null,
+environment, fontSize); if (isNil(
+visibleOctaves)) {visibleOctaves = 2;
+}; this.visibleOctaves = visibleOctaves;
+this.octave = 4 - (3 % this.visibleOctaves
+); choices = {'C' : 1, 'D' : 3, 'C#' : 2,
+'E' : 5, 'Eb' : 4, 'F' : 6, 'G' : 8,
+'F#' : 7, 'A' : 10, 'Ab' : 9, 'B' : 12,
+'Bb' : 11}; for (var octave = 0; ((octave
+) < this.visibleOctaves); octave++) {for (
+key in choices) {if ((Object.prototype
+).hasOwnProperty.call(choices, key)) {
+this.addItem(key, (choices[key] + ((12
+) * octave)));};};}; this.addItem('C',
+choices.C + (12 * this.visibleOctaves));};
 
-PianoMenuMorph.prototype.createItems = function () {
-    var item,
-        fb,
-        x,
-        y,
-        label,
-        blackkey,
-        key,
-        keycolor,
-        keywidth,
-        keyheight,
-        keyposition;
-
-    this.children.forEach(m => m.destroy());
-    this.children = [];
-    if (!this.isListContents) {
-        this.edge = MorphicPreferences.isFlat ? 0 : 5;
-        this.border = MorphicPreferences.isFlat ? 1 : 2;
-    }
-    this.color = WHITE;
-    this.borderColor = new Color(60, 60, 60);
-    this.bounds.setExtent(ZERO);
-
-    x = this.left() + 1;
-    y = this.top() + (this.fontSize * 1.5) + 2;
-    label = new StringMorph('', this.fontSize);
-    this.items.forEach(tuple => {
-        blackkey = tuple[0][1] !== " ";
-        key = new BoxMorph(1, 1);
-        if (blackkey) {
-            keycolor = BLACK;
-            keywidth = this.fontSize; // 9;
-            keyheight = this.fontSize * 2.5;
-            keyposition = new Point(x + 2 - (this.fontSize * 2), y);
-        } else {
-            keycolor = WHITE;
-            keywidth = this.fontSize * 1.5;
-            keyheight = this.fontSize * 4;
-            keyposition = new Point(x + 1, y);
-            x += keywidth - 1;
-        }; key.setColor(keycolor);
-        key.setWidth(keywidth);
-        key.setHeight(keyheight);
-        item = new PianoKeyMorph(
-            this.target,
-            tuple[1],
-            [key, tuple[0]],
-            this.fontSize || MorphicPreferences.menuFontSize,
-            MorphicPreferences.menuFontName,
-            this.environment,
-            tuple[2], // bubble help hint
-            tuple[3], // color
-            tuple[4], // bold
-            tuple[5], // italic
-            tuple[6], // doubleclick action
-            label     // String to change
-        ); item.cursorStyle = 'pointer';
-        item.setPosition(keyposition);
-        this.add(item);
-    });
-    fb = this.fullBounds();
-    label.setPosition(new Point((fb.width() / 2) - this.fontSize, 2));
-    this.add(label);
-    fb = this.fullBounds();
-    this.bounds.setExtent(fb.extent().add(2));
-};
+PianoMenuMorph.prototype.createItems = function () {var item, fb, x,
+y, label, blackkey, key, keycolor, keywidth, keyheight, keyposition;
+this.children.forEach(m => m.destroy()); this.children = []; if (!(
+this.isListContents)) {this.edge = (5 * (1 - MorphicPreferences.isFlat
+)); this.border = (2 - MorphicPreferences.isFlat);}; this.color = WHITE;
+this.borderColor = new Color(60, 60, 60); this.bounds.setExtent(ZERO);
+x = (this.left() + 1); y = ((this.top() + (this.fontSize * 3/2)) + 2);
+label = new StringMorph('', this.fontSize); this.items.forEach((tuple
+) => {blackkey = ((tuple[0]).length > 1); key = new BoxMorph(1, 1); if (
+blackkey) {keycolor = BLACK; keywidth = this.fontSize; keyheight = ((this
+).fontSize * 5/2); keyposition = new Point(((x + 2) - (this.fontSize * 2)),
+y);} else {keycolor = WHITE; keywidth = (this.fontSize * 3/2); keyheight = (
+this.fontSize * 4); keyposition = new Point((x + 1), y); x += (keywidth - 1
+);}; key.setColor(keycolor); key.setWidth(keywidth); key.setHeight(keyheight
+); item = new PianoKeyMorph(this.target, tuple[1], [key, tuple[0]], ((this
+).fontSize || MorphicPreferences.menuFontSize), (MorphicPreferences
+).menuFontName, this.environment, tuple[2], tuple[3], tuple[4], tuple[
+5], tuple[6], label); item.setPosition(keyposition); this.add(item);});
+fb = this.fullBounds(); label.setPosition(new Point(((fb.width() / 2) - (
+this.fontSize * 8/5)), 2)); this.add(label); var downOctave = (new ArrowMorph(
+'left', fontHeight(this.fontSize), Math.max(Math.floor(this.fontSize / 6), 1))
+); downOctave.setPosition(new Point(5, 3)); downOctave.mouseClickLeft = ((
+) => this.octaveDown()); this.add(downOctave); var upOctave = (new ArrowMorph(
+'right', fontHeight(this.fontSize), Math.max(Math.floor(this.fontSize / 6),
+1))); upOctave.setPosition(new Point((fb.width() - (upOctave.width() + 2)),
+3)); upOctave.mouseClickLeft = (() => this.octaveUp()); this.add(upOctave
+); fb = this.fullBounds(); this.bounds.setExtent(fb.extent().add(2));};
 
 // PianoMenuMorph keyboard selecting a key:
 
-PianoMenuMorph.prototype.select = function(aPianoKeyItem) {
-    this.unselectAllItems();
-    aPianoKeyItem.mouseEnter();
-    this.selection = aPianoKeyItem;
-    this.world.keyboardFocus = this;
-    this.hasFocus = true;
-};
+PianoMenuMorph.prototype.select = function(
+aPianoKeyItem) {this.unselectAllItems();
+aPianoKeyItem.mouseEnter(); (this.selection
+) = aPianoKeyItem; (world.keyboardFocus
+) = this; this.hasFocus = true;};
 
-PianoMenuMorph.prototype.unselectAllItems = function () {
-    this.children.forEach(item => {
-        if (item instanceof MenuItemMorph) {
-            item.mouseLeave();
-        }
-    });
-    this.changed();
-};
+PianoMenuMorph.prototype.unselectAllItems = function (
+) {this.children.forEach(item => {if (item instanceof (
+MenuItemMorph)) {item.mouseLeave();};}); this.changed();};
 
-PianoMenuMorph.prototype.selectKey = function (midiNum) {
-    var key;
-    if (isNil(midiNum)) {
-        return;
-    }
-    key = detect(
-        this.children,
-        each => each.action === Math.round(midiNum)
-    );
-    if (key) {
-        this.select(key);
+PianoMenuMorph.prototype.selectKey = function (midiNum, octave) {
+    var key, note, visibleOctave;
+    
+    if (isNil(midiNum)) {return;};
+
+    if (isNil(octave)) {
+        octave = Math.floor((midiNum / 12) - 1);
+        var octaveIndex = ((octave + 1) % this.visibleOctaves);
+
+        visibleOctave = (octave - octaveIndex);
+        note = 1 + ((midiNum % 12) + (12 * octaveIndex));
     } else {
-        this.selectKey(this.pianoKeys[Math.round((this.choices.length - 1) / 2)]);
-    }
-};
+        note = ((midiNum - 1) % (12 * this.visibleOctaves)) + 1;
+        visibleOctave = this.octave;
+    };  this.octave = visibleOctave;
+    
+    key = detect(this.children,
+        (each => (each.pitch === Math.round(note)))
+    );  if (key) {this.select(key);} else {
+    this.selectKey(1, this.octave);};};
 
 // PianoMenuMorph keyboard navigation & entry:
 
@@ -3207,51 +3041,54 @@ PianoMenuMorph.prototype.processKeyDown = function (event) {
     case 32: // 'space'
         if (this.selection) {
             this.selection.mouseClickLeft();
-        }
-        return;
+        };  return;
     case 27: // 'esc'
         return this.destroy();
     case 37: // 'left arrow'
     case 40: // 'down arrow'
     case 189: // -
-        return this.selectDown();
+        return event.shiftKey ?
+            this.octaveDown()
+            : this.selectDown();
     case 38: // 'up arrow'
     case 39: // 'right arrow'
     case 187: // +
     case 220: // #
-        return this.selectUp();
+        return event.shiftKey ?
+            this.octaveUp()
+            : this.selectUp();
     default:
         switch(event.key) {
-        case 'C':
-            return this.selectKey(48);
         case 'c':
-            return this.selectKey(60);
-        case 'D':
-            return this.selectKey(50);
+            return this.selectKey(1, this.octave);
+        case 'C':
+            return this.selectKey(13, this.octave);
         case 'd':
-            return this.selectKey(62);
-        case 'E':
-            return this.selectKey(52);
+            return this.selectKey(3, this.octave);
+        case 'D':
+            return this.selectKey(15, this.octave);
         case 'e':
-            return this.selectKey(64);
-        case 'F':
-            return this.selectKey(53);
+            return this.selectKey(5, this.octave);
+        case 'E':
+            return this.selectKey(17, this.octave);
         case 'f':
-            return this.selectKey(65);
-        case 'G':
-            return this.selectKey(55);
+            return this.selectKey(6, this.octave);
+        case 'F':
+            return this.selectKey(18, this.octave);
         case 'g':
-            return this.selectKey(67);
-        case 'A':
-            return this.selectKey(57);
+            return this.selectKey(8, this.octave);
+        case 'G':
+            return this.selectKey(20, this.octave);
         case 'a':
-            return this.selectKey(69);
-        case 'B':
-        case 'H':
-            return this.selectKey(59);
+            return this.selectKey(10, this.octave);
+        case 'A':
+            return this.selectKey(22, this.octave);
         case 'b':
         case 'h':
-            return this.selectKey(71);
+            return this.selectKey(12, this.octave);
+        case 'B':
+        case 'H':
+            return this.selectKey(24, this.octave);
         default:
             nop();
         }
@@ -3259,32 +3096,44 @@ PianoMenuMorph.prototype.processKeyDown = function (event) {
 };
 
 PianoMenuMorph.prototype.selectUp = function () {
-    var next = this.choices.sort()[0];
-    if (this.selection) {
-        next = this.selection.action + 1;
-        if (next > this.pianoKeys[this.choices.length - 1]) {
-            next = this.pianoKeys[0];
-        };
-    };
-    this.selectKey(next);
+    this.selectKey(
+        this.selection ?
+            Math.min((this.selection.action + 1), 143)
+            : 1
+    );
 };
 
 PianoMenuMorph.prototype.selectDown = function () {
-    var next = this.choices.sort()[0];
+    this.selectKey(
+        this.selection ?
+            Math.max((this.selection.action - 1), 0)
+            : 1
+    );
+};
+
+PianoMenuMorph.prototype.octaveUp = function () {
+    this.octave += this.visibleOctaves;
+    this.octave = Math.min(this.octave, (10 - (11 % this.visibleOctaves)));
+
     if (this.selection) {
-        next = this.selection.action - 1;
-        if (next < this.pianoKeys[0]) {
-            next = this.pianoKeys[this.choices.length - 1];
-        };
-    };
-    this.selectKey(next);
+        this.selection.mouseEnter();
+    }
+};
+
+PianoMenuMorph.prototype.octaveDown = function () {
+    this.octave -= this.visibleOctaves;
+    this.octave = Math.max(-1, this.octave);
+
+    if (this.selection) {
+        this.selection.mouseEnter();
+    }
 };
 
 PianoMenuMorph.prototype.destroy = function () {
     this.children.forEach(key => {
         if (key.note) {
             key.note.stop();
-        };
+        }
     });
     PianoMenuMorph.uber.destroy.call(this);
 };
@@ -3299,7 +3148,7 @@ PianoKeyMorph.uber = MenuItemMorph.prototype;
 function PianoKeyMorph(
     target,
     action,
-    labelString,
+    labelString, // can also be a Morph or a Canvas or a tuple: [icon, string]
     fontSize,
     fontStyle,
     environment,
@@ -3307,7 +3156,7 @@ function PianoKeyMorph(
     color,
     bold,
     italic,
-    doubleClickAction,
+    doubleClickAction, // optional when used as list morph item
     label
 ) {
     this.init(
@@ -3343,6 +3192,7 @@ PianoKeyMorph.prototype.init = function (
 ) {
     // additional "note" property for sound output:
     this.note = new Note(action);
+    this.pitch = action;
     PianoKeyMorph.uber.init.call(
         this,
         target,
@@ -3357,15 +3207,17 @@ PianoKeyMorph.prototype.init = function (
         italic,
         doubleClickAction,
         label
-    );
+    );  this.cursorStyle = 'pointer';
 };
 
 PianoKeyMorph.prototype.createLabel = function () {
     var icon;
-    if (this.label !== null) {
+    if (!isNil(this.label)) {
         this.label.destroy();
-    }; // assume its pattern is: [icon, string]
-    this.label = new Morph;
+    }
+
+    // assume its pattern is: [icon, string]
+    this.label = new Morph();
     icon = this.createIcon(this.labelString[0]);
     this.label.add(icon);
     this.bounds.setExtent(icon.extent());
@@ -3376,21 +3228,28 @@ PianoKeyMorph.prototype.createLabel = function () {
 
 PianoKeyMorph.prototype.mouseEnter = function () {
     var piano = this.parentThatIsA(PianoMenuMorph),
-        soundType = piano ? piano.soundType : 1;
+        soundType = piano ? piano.soundType : 1,
+        octave = Math.floor((this.action - 1) / 12),
+        octaveOffset = 0;
+        
     if (piano) {
         piano.unselectAllItems();
         piano.selection = this;
         piano.world.keyboardFocus = piano;
         piano.hasFocus = true;
-    }
+        octave = piano.octave;
+    };  octaveOffset = Math.floor((this.pitch - 1) / 12);
+    this.action = (this.pitch - 1) + (12 * (octave + 1));
+    this.note.pitch = this.action;
+    
     this.label.children[0].hide();
     this.userState = 'highlight';
     this.rerender();
-    this.feedback.text = this.labelString[1];
+    this.feedback.text = `${this.labelString[1]}${octave + octaveOffset} (${this.action})`;
     this.feedback.fixLayout();
     this.note.play(soundType);
     setTimeout(
-        () => this.note.stop(true),
+        (() => this.note.stop(true)),
         500
     );
 };

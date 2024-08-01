@@ -333,19 +333,14 @@ IDE_Morph.prototype.setOldDesign = function () {
     SceneIconMorph.prototype.labelColor
         = IDE_Morph.prototype.buttonLabelColor;
 
+    IDE_Morph.prototype.flagColor = new Color(0, 200, 0);
     SyntaxElementMorph.prototype.contrast = 65;
     ScriptsMorph.prototype.feedbackColor = WHITE;
     if (this.fpsViewer instanceof IDE_FPSMorph) {
     this.fpsViewer.color = IDE_Morph.prototype.buttonLabelColor;
     this.fpsViewer.fixLayoutAndPosition();};
     this.scriptsSpecialColors = [this.categoryColor.lighter(2), this.categoryColor.lighter(2)];
-    IDE_Morph.prototype.scriptsPaneTexture = this.scriptsTexture();
-    PushButtonMorph.prototype.outlineColor = (IDE_Morph.prototype.frameColor).withAlpha(0.5);
-    ToggleButtonMorph.prototype.outlineColor = (IDE_Morph.prototype.frameColor).withAlpha(0.5);
-    TabMorph.prototype.outlineColor = (IDE_Morph.prototype.frameColor).withAlpha(0.5);
-    ToggleMorph.prototype.outlineColor = (IDE_Morph.prototype.frameColor).withAlpha(0.5);
-    ToggleElementMorph.prototype.outlineColor = (IDE_Morph.prototype.frameColor).withAlpha(0.5);
-};
+    IDE_Morph.prototype.scriptsPaneTexture = this.scriptsTexture();};
 
 IDE_Morph.prototype.setSimpleDesign = function () {
     SpriteMorph.prototype.paletteColor = new Color(55, 55, 55);
@@ -398,19 +393,14 @@ IDE_Morph.prototype.setSimpleDesign = function () {
     SceneIconMorph.prototype.labelColor
         = IDE_Morph.prototype.buttonLabelColor;
 
+    IDE_Morph.prototype.flagColor = new Color(0, 200, 0);
     SyntaxElementMorph.prototype.contrast = 65;
     ScriptsMorph.prototype.feedbackColor = WHITE;
     if (this.fpsViewer instanceof IDE_FPSMorph) {
     this.fpsViewer.color = IDE_Morph.prototype.buttonLabelColor;
     this.fpsViewer.fixLayoutAndPosition();};
     this.scriptsSpecialColors = [this.categoryColor.lighter(6), this.categoryColor];
-    IDE_Morph.prototype.scriptsPaneTexture = this.scriptsTexture();
-    PushButtonMorph.prototype.outlineColor = (IDE_Morph.prototype.frameColor).withAlpha(0.5);
-    ToggleButtonMorph.prototype.outlineColor = (IDE_Morph.prototype.frameColor).withAlpha(0.5);
-    TabMorph.prototype.outlineColor = (IDE_Morph.prototype.frameColor).withAlpha(0.5);
-    ToggleMorph.prototype.outlineColor = (IDE_Morph.prototype.frameColor).withAlpha(0.5);
-    ToggleElementMorph.prototype.outlineColor = (IDE_Morph.prototype.frameColor).withAlpha(0.5);
-};
+    IDE_Morph.prototype.scriptsPaneTexture = this.scriptsTexture();};
 
 IDE_Morph.prototype.setDefaultDesign = function () {
     SpriteMorph.prototype.paletteColor = new Color(30, 30, 30);
@@ -463,19 +453,14 @@ IDE_Morph.prototype.setDefaultDesign = function () {
     SceneIconMorph.prototype.labelColor
         = IDE_Morph.prototype.buttonLabelColor;
 
+    IDE_Morph.prototype.flagColor = new Color(0, 200, 0);
     SyntaxElementMorph.prototype.contrast = 65;
     ScriptsMorph.prototype.feedbackColor = WHITE;
     if (this.fpsViewer instanceof IDE_FPSMorph) {
     this.fpsViewer.color = IDE_Morph.prototype.buttonLabelColor;
     this.fpsViewer.fixLayoutAndPosition();};
     this.scriptsSpecialColors = [this.groupColor.lighter(2), this.groupColor.darker(2)];
-    IDE_Morph.prototype.scriptsPaneTexture = this.scriptsTexture();
-    PushButtonMorph.prototype.outlineColor = (IDE_Morph.prototype.frameColor).withAlpha(0.5);
-    ToggleButtonMorph.prototype.outlineColor = (IDE_Morph.prototype.frameColor).withAlpha(0.5);
-    TabMorph.prototype.outlineColor = (IDE_Morph.prototype.frameColor).withAlpha(0.5);
-    ToggleMorph.prototype.outlineColor = (IDE_Morph.prototype.frameColor).withAlpha(0.5);
-    ToggleElementMorph.prototype.outlineColor = (IDE_Morph.prototype.frameColor).withAlpha(0.5);
-};
+    IDE_Morph.prototype.scriptsPaneTexture = this.scriptsTexture();};
 
 IDE_Morph.prototype.setLightDesign = function () {
     SpriteMorph.prototype.paletteColor = WHITE;
@@ -521,19 +506,120 @@ IDE_Morph.prototype.setLightDesign = function () {
     SceneIconMorph.prototype.labelColor
         = IDE_Morph.prototype.buttonLabelColor;
 
+    IDE_Morph.prototype.flagColor = new Color(0, 127.5, 0);
     SyntaxElementMorph.prototype.contrast = 25;
     ScriptsMorph.prototype.feedbackColor = WHITE;
     if (this.fpsViewer instanceof IDE_FPSMorph) {
     this.fpsViewer.color = IDE_Morph.prototype.buttonLabelColor;
     this.fpsViewer.fixLayoutAndPosition();};
     this.scriptsSpecialColors = [CLEAR, CLEAR];
-    IDE_Morph.prototype.scriptsPaneTexture = null;
-    PushButtonMorph.prototype.outlineColor = (IDE_Morph.prototype.frameColor).withAlpha(0.5);
-    ToggleButtonMorph.prototype.outlineColor = (IDE_Morph.prototype.frameColor).withAlpha(0.5);
-    TabMorph.prototype.outlineColor = (IDE_Morph.prototype.frameColor).withAlpha(0.5);
-    ToggleMorph.prototype.outlineColor = (IDE_Morph.prototype.frameColor).withAlpha(0.5);
-    ToggleElementMorph.prototype.outlineColor = (IDE_Morph.prototype.frameColor).withAlpha(0.5);
-};
+    IDE_Morph.prototype.scriptsPaneTexture = null;};
+
+IDE_Morph.prototype.setTurboDesign = function () {
+    SpriteMorph.prototype.paletteColor = WHITE;
+    SpriteMorph.prototype.paletteTextColor = new Color(70, 70, 70);
+    StageMorph.prototype.paletteTextColor
+        = SpriteMorph.prototype.paletteTextColor;
+    StageMorph.prototype.paletteColor = SpriteMorph.prototype.paletteColor;
+    SpriteMorph.prototype.sliderColor = SpriteMorph.prototype.paletteColor;
+
+    IDE_Morph.prototype.buttonContrast = 30;
+    IDE_Morph.prototype.backgroundColor = new Color(220, 220, 230);
+    IDE_Morph.prototype.frameColor = new Color(240, 240, 245);
+
+    IDE_Morph.prototype.groupColor = WHITE;
+    IDE_Morph.prototype.categoryColor = WHITE;
+    IDE_Morph.prototype.sliderColor = SpriteMorph.prototype.sliderColor;
+    IDE_Morph.prototype.buttonLabelColor = new Color(70, 70, 70);
+    IDE_Morph.prototype.tabColors = [
+        IDE_Morph.prototype.frameColor,
+        IDE_Morph.prototype.frameColor.lighter(50),
+        IDE_Morph.prototype.groupColor
+    ];
+    IDE_Morph.prototype.buttonColors = IDE_Morph.prototype.tabColors;
+    IDE_Morph.prototype.rotationStyleColors = IDE_Morph.prototype.tabColors;
+    IDE_Morph.prototype.noPaddingForEditor = false;
+    IDE_Morph.prototype.appModeColor = BLACK;
+    IDE_Morph.prototype.padding = 1;
+
+    SpriteIconMorph.prototype.labelColor
+        = IDE_Morph.prototype.buttonLabelColor;
+    CostumeIconMorph.prototype.labelColor
+        = IDE_Morph.prototype.buttonLabelColor;
+    SoundIconMorph.prototype.labelColor
+        = IDE_Morph.prototype.buttonLabelColor;
+    MIDIIconMorph.prototype.colorGroup
+        = [
+        IDE_Morph.prototype.categoryColor,
+        IDE_Morph.prototype.frameColor,
+        IDE_Morph.prototype.frameColor
+        ];
+    TurtleIconMorph.prototype.labelColor
+        = IDE_Morph.prototype.buttonLabelColor;
+    SceneIconMorph.prototype.labelColor
+        = IDE_Morph.prototype.buttonLabelColor;
+
+    IDE_Morph.prototype.flagColor = new Color(0, 127.5, 0);
+    SyntaxElementMorph.prototype.contrast = 25;
+    ScriptsMorph.prototype.feedbackColor = WHITE;
+    if (this.fpsViewer instanceof IDE_FPSMorph) {
+    this.fpsViewer.color = IDE_Morph.prototype.buttonLabelColor;
+    this.fpsViewer.fixLayoutAndPosition();};
+    this.scriptsSpecialColors = [CLEAR, CLEAR];
+    IDE_Morph.prototype.scriptsPaneTexture = null;};
+
+IDE_Morph.prototype.setScratchyDesign = function () {
+    SpriteMorph.prototype.paletteColor = WHITE;
+    SpriteMorph.prototype.paletteTextColor = new Color(70, 70, 70);
+    StageMorph.prototype.paletteTextColor
+        = SpriteMorph.prototype.paletteTextColor;
+    StageMorph.prototype.paletteColor = SpriteMorph.prototype.paletteColor;
+    SpriteMorph.prototype.sliderColor = SpriteMorph.prototype.paletteColor;
+
+    IDE_Morph.prototype.buttonContrast = 30;
+    IDE_Morph.prototype.backgroundColor = new Color(220, 220, 230);
+    IDE_Morph.prototype.frameColor = new Color(240, 240, 245);
+
+    IDE_Morph.prototype.groupColor = WHITE;
+    IDE_Morph.prototype.categoryColor = WHITE;
+    IDE_Morph.prototype.sliderColor = SpriteMorph.prototype.sliderColor;
+    IDE_Morph.prototype.buttonLabelColor = new Color(70, 70, 70);
+    IDE_Morph.prototype.tabColors = [
+        IDE_Morph.prototype.frameColor,
+        IDE_Morph.prototype.frameColor.lighter(50),
+        IDE_Morph.prototype.groupColor
+    ];
+    IDE_Morph.prototype.buttonColors = IDE_Morph.prototype.tabColors;
+    IDE_Morph.prototype.rotationStyleColors = IDE_Morph.prototype.tabColors;
+    IDE_Morph.prototype.noPaddingForEditor = false;
+    IDE_Morph.prototype.appModeColor = BLACK;
+    IDE_Morph.prototype.padding = 1;
+
+    SpriteIconMorph.prototype.labelColor
+        = IDE_Morph.prototype.buttonLabelColor;
+    CostumeIconMorph.prototype.labelColor
+        = IDE_Morph.prototype.buttonLabelColor;
+    SoundIconMorph.prototype.labelColor
+        = IDE_Morph.prototype.buttonLabelColor;
+    MIDIIconMorph.prototype.colorGroup
+        = [
+        IDE_Morph.prototype.categoryColor,
+        IDE_Morph.prototype.frameColor,
+        IDE_Morph.prototype.frameColor
+        ];
+    TurtleIconMorph.prototype.labelColor
+        = IDE_Morph.prototype.buttonLabelColor;
+    SceneIconMorph.prototype.labelColor
+        = IDE_Morph.prototype.buttonLabelColor;
+
+    IDE_Morph.prototype.flagColor = new Color(0, 127.5, 0);
+    SyntaxElementMorph.prototype.contrast = 25;
+    ScriptsMorph.prototype.feedbackColor = WHITE;
+    if (this.fpsViewer instanceof IDE_FPSMorph) {
+    this.fpsViewer.color = IDE_Morph.prototype.buttonLabelColor;
+    this.fpsViewer.fixLayoutAndPosition();};
+    this.scriptsSpecialColors = [CLEAR, CLEAR];
+    IDE_Morph.prototype.scriptsPaneTexture = null;};
 
 IDE_Morph.prototype.setAnimatedDesign = function () {
     SpriteMorph.prototype.paletteColor = (new Color(249, 249, 249)).darker(5);
@@ -545,13 +631,13 @@ IDE_Morph.prototype.setAnimatedDesign = function () {
 
     IDE_Morph.prototype.buttonContrast = 30;
     IDE_Morph.prototype.backgroundColor = WHITE;
-    IDE_Morph.prototype.frameColor = (new Color(70, 142, 255)).lighter(62.5);
+    IDE_Morph.prototype.frameColor = new Color(186, 213, 255);
 
     IDE_Morph.prototype.groupColor = new Color(227, 239, 255);
     IDE_Morph.prototype.categoryColor
         = SpriteMorph.prototype.paletteColor.darker(5);
     IDE_Morph.prototype.sliderColor = SpriteMorph.prototype.sliderColor;
-    IDE_Morph.prototype.buttonLabelColor = new Color((255 / 3), (255 / 3), (255 / 3));
+    IDE_Morph.prototype.buttonLabelColor = new Color(85, 85, 85);
     IDE_Morph.prototype.tabColors = [
         IDE_Morph.prototype.groupColor,
         IDE_Morph.prototype.groupColor.darker(10),
@@ -580,19 +666,68 @@ IDE_Morph.prototype.setAnimatedDesign = function () {
     SceneIconMorph.prototype.labelColor
         = IDE_Morph.prototype.buttonLabelColor;
 
-    SyntaxElementMorph.prototype.contrast = 65;
+    IDE_Morph.prototype.flagColor = new Color(255, 127.5, 0);
+    SyntaxElementMorph.prototype.contrast = 25;
     ScriptsMorph.prototype.feedbackColor = WHITE;
     if (this.fpsViewer instanceof IDE_FPSMorph) {
     this.fpsViewer.color = IDE_Morph.prototype.buttonLabelColor;
     this.fpsViewer.fixLayoutAndPosition();};
     this.scriptsSpecialColors = [CLEAR, CLEAR];
-    IDE_Morph.prototype.scriptsPaneTexture = null;
-    PushButtonMorph.prototype.outlineColor = (IDE_Morph.prototype.frameColor).withAlpha(0.5);
-    ToggleButtonMorph.prototype.outlineColor = (IDE_Morph.prototype.frameColor).withAlpha(0.5);
-    TabMorph.prototype.outlineColor = (IDE_Morph.prototype.frameColor).withAlpha(0.5);
-    ToggleMorph.prototype.outlineColor = (IDE_Morph.prototype.frameColor).withAlpha(0.5);
-    ToggleElementMorph.prototype.outlineColor = (IDE_Morph.prototype.frameColor).withAlpha(0.5);
-};
+    IDE_Morph.prototype.scriptsPaneTexture = null;};
+
+IDE_Morph.prototype.setPenguinDesign = function () {
+    SpriteMorph.prototype.paletteColor = (new Color(249, 249, 249)).darker(5);
+    SpriteMorph.prototype.paletteTextColor = new Color(87, 92, 118);
+    StageMorph.prototype.paletteTextColor
+        = SpriteMorph.prototype.paletteTextColor;
+    StageMorph.prototype.paletteColor = SpriteMorph.prototype.paletteColor;
+    SpriteMorph.prototype.sliderColor = SpriteMorph.prototype.paletteColor;
+
+    IDE_Morph.prototype.buttonContrast = 30;
+    IDE_Morph.prototype.backgroundColor = WHITE;
+    IDE_Morph.prototype.frameColor = new Color(0, 196, 255);
+
+    IDE_Morph.prototype.groupColor = new Color(227, 239, 255);
+    IDE_Morph.prototype.categoryColor
+        = SpriteMorph.prototype.paletteColor.darker(5);
+    IDE_Morph.prototype.sliderColor = SpriteMorph.prototype.sliderColor;
+    IDE_Morph.prototype.buttonLabelColor = new Color(85, 85, 85);
+    IDE_Morph.prototype.tabColors = [
+        IDE_Morph.prototype.groupColor,
+        IDE_Morph.prototype.groupColor.darker(10),
+        IDE_Morph.prototype.groupColor.darker(20)
+    ];
+    IDE_Morph.prototype.buttonColors = IDE_Morph.prototype.tabColors;
+    IDE_Morph.prototype.rotationStyleColors = IDE_Morph.prototype.tabColors;
+    IDE_Morph.prototype.noPaddingForEditor = true;
+    IDE_Morph.prototype.appModeColor = BLACK;
+    IDE_Morph.prototype.padding = 0;
+
+    SpriteIconMorph.prototype.labelColor
+        = IDE_Morph.prototype.buttonLabelColor;
+    CostumeIconMorph.prototype.labelColor
+        = IDE_Morph.prototype.buttonLabelColor;
+    SoundIconMorph.prototype.labelColor
+        = IDE_Morph.prototype.buttonLabelColor;
+    MIDIIconMorph.prototype.colorGroup
+        = [
+        IDE_Morph.prototype.categoryColor,
+        IDE_Morph.prototype.frameColor,
+        IDE_Morph.prototype.frameColor
+        ];
+    TurtleIconMorph.prototype.labelColor
+        = IDE_Morph.prototype.buttonLabelColor;
+    SceneIconMorph.prototype.labelColor
+        = IDE_Morph.prototype.buttonLabelColor;
+
+    IDE_Morph.prototype.flagColor = new Color(0, 152.5, 255);
+    SyntaxElementMorph.prototype.contrast = 25;
+    ScriptsMorph.prototype.feedbackColor = WHITE;
+    if (this.fpsViewer instanceof IDE_FPSMorph) {
+    this.fpsViewer.color = IDE_Morph.prototype.buttonLabelColor;
+    this.fpsViewer.fixLayoutAndPosition();};
+    this.scriptsSpecialColors = [CLEAR, CLEAR];
+    IDE_Morph.prototype.scriptsPaneTexture = null;};
 
 IDE_Morph.prototype.mathConstants = (() => [['π Pi', Math.PI], ['e Euler', Math.E], ['p Plastic', (Math.cbrt((9 + Math.sqrt(69)) / 18) + Math.cbrt((9 - Math.sqrt(69)) / 18))], ['φ Phi', ((1 + Math.sqrt(5)) / 2
 )], ['ψ Psi', ((1 + Math.cbrt((29 + Math.sqrt(837)) / 2) + Math.cbrt((29 - Math.sqrt(837)) / 2)) / 3)], ['ε Epsilon', Number.EPSILON], ['i Imaginary', new ComplexNumber(0, 1)]]); /*  | Okay, they are. :)  | */
@@ -673,7 +808,9 @@ IDE_Morph.prototype.openIn = function (world) {var hash, myself = this; this.bui
         }
     }
 
-    function autoRun () {if (isLoadingAssets()) {myself.world().animations.push(new Animation(nop, nop, 0, 200, nop, autoRun));} else {myself.runScripts();};};
+    function autoRun () {if (isLoadingAssets()) {
+    world.animations.push(new Animation(nop, nop, 0,
+    200, nop, autoRun));} else {myself.runScripts();};};
 
     function isLoadingAssets() {
         return myself.sprites.asArray().concat([myself.stage]).some(any =>
@@ -1148,9 +1285,9 @@ button.render = function (ctx) {
     ctx.closePath();
     ctx.fill();
     ctx.fillRect(
-        w * 0.75,
+        w * 3/4,
         0,
-        w * 0.25,
+        w * 1/4,
         h
     );} else if (this.parentThatIsA(IDE_Morph).isPaused()) {
     // draw a right-pointing, equilateral triangle
@@ -1236,37 +1373,37 @@ button.render = function (ctx) {
     ctx.beginPath();
     ctx.moveTo(w / 8, h / 4);
     ctx.bezierCurveTo(
-        w / 1.25,
+        w * 4/5,
         h / 2,
         w / 2,
         h / 2,
         w,
         h / 2
-    ); ctx.stroke();
-    }; this.color = colorBak;
-};
+    );  ctx.stroke();
+    };  this.color = colorBak;};
 button.refresh = button.rerender;
-button.setExtent(new Point(14, 14));
-button.step = function () {
-        var isRunning;
-        if (!myself.stage) {
+button.setExtent(new Point(14,
+14)); button.step = function (
+        )  {var isRunning;
+        if (!(myself.stage)) {
             return;
-        };  isRunning = !!myself.stage.threads.processes.length;
-        if (isRunning === this.isActive) {
-            return;
+        };  isRunning = asABool((myself.stage
+        ).threads.processes.length); if (
+        isRunning === this.isActive) {return;
         };  this.isActive = isRunning;
         if (isRunning) {
             this.color = activeColors[0];
             this.highlightColor = activeColors[1];
             this.pressColor = activeColors[2];
         } else {
-            this.color = new Color(0, 200, 0);
-            this.highlightColor = new Color(0, 255, 0);
-            this.pressColor = new Color(0, 127.5, 0);
+            this.color = IDE_Morph.prototype.flagColor; (this
+            ).highlightColor = ((IDE_Morph.prototype.flagColor
+            ).lighter()).lighter(); this.pressColor = ((
+            IDE_Morph).prototype.flagColor).darker();
         };  this.rerender();};
-button.action = function () {this.parentThatIsA(IDE_Morph).pressStart();};
-button.contrast = this.buttonContrast;
-button.fixLayout();
+button.action = function () {this.parentThatIsA(
+IDE_Morph).pressStart();}; button.contrast = (
+this.buttonContrast); button.fixLayout();
 
     //  steppingSlider
     slider = new SliderMorph(
@@ -1278,7 +1415,7 @@ button.fixLayout();
         Process.prototype.flashTime = (num - 1) / 100;
         this.controlBar.refreshResumeSymbol();
     };  slider.color = activeColor;
-    slider.alpha = MorphicPreferences.isFlat ? (1 / 4) : (1 / 8);
+    slider.alpha = 1/ ((2 - MorphicPreferences.isFlat) * 4);
     slider.setExtent(new Point(50, 14));
     this.controlBar.add(slider);
     this.controlBar.steppingSlider = slider;
@@ -1288,13 +1425,12 @@ button.fixLayout();
         this,
         'projectMenu',
         new SymbolMorph('file', 14)
-    );
-    button.corner = 12;
+    );  button.corner = 12;
     button.color = colors[0];
-    button.highlightColor = colors[1];
-    button.pressColor = colors[2];
-    button.labelMinExtent = new Point(36, 18);
-    button.padding = 0;
+    button.highlightColor = colors[
+    1]; button.pressColor = colors[2];
+    button.labelMinExtent = new Point(
+    36, 18); button.padding = 0;
     button.labelShadowOffset = new Point(-1, -1);
     button.labelShadowColor = colors[1];
     button.labelColor = this.buttonLabelColor;
@@ -1310,8 +1446,7 @@ button.fixLayout();
         this,
         'settingsMenu',
         new SymbolMorph('gears', 14)
-    );
-    button.corner = 12;
+    );   button.corner = 12;
     button.color = colors[0];
     button.highlightColor = colors[1];
     button.pressColor = colors[2];
@@ -2859,9 +2994,8 @@ IDE_Morph.prototype.fixLayout = function (situation) {
 
 // IDE_Morph project properties
 
-IDE_Morph.prototype.getProjectName = function () {
-    return this.scenes.at(1).name;
-};
+IDE_Morph.prototype.getProjectName = (
+function () {return (this.scenes.at(1)).name;});
 
 IDE_Morph.prototype.setProjectName = function (string) {
     var projectScene = this.scenes.at(1),
@@ -2872,14 +3006,10 @@ IDE_Morph.prototype.setProjectName = function (string) {
         this.recordUnsavedChanges();
         if (projectScene === this.scene) {
             this.controlBar.updateLabel();
-        }
-    }
-    return name;
-};
+        };};     return name;};
 
-IDE_Morph.prototype.getProjectNotes = function () {
-    return this.scenes.at(1).notes;
-};
+IDE_Morph.prototype.getProjectNotes = (
+function () {return (this.scenes.at(1)).notes;});
 
 IDE_Morph.prototype.setProjectNotes = function (string) {
     var projectScene = this.scenes.at(1);
@@ -2888,10 +3018,7 @@ IDE_Morph.prototype.setProjectNotes = function (string) {
         projectScene.stage.version = Date.now();
         this.recordUnsavedChanges();
         if (projectScene === this.scene) {
-            this.controlBar.updateLabel();
-        }
-    }
-};
+        this.controlBar.updateLabel();};};};
 
 // IDE_Morph resizing
 
@@ -2978,12 +3105,10 @@ IDE_Morph.prototype.reactToWorldResize = function (rect) {
     if (this.isAutoFill) {
         this.setPosition(rect.origin);
         this.setExtent(rect.extent());
-    }
-    if (this.filePicker) {
+    };  if (this.filePicker) {
         document.body.removeChild(this.filePicker);
         this.filePicker = null;
-    }
-};
+    };};
 
 IDE_Morph.prototype.beginBulkDrop = function () {
     this.bulkDropInProgress = true;
@@ -3255,7 +3380,7 @@ IDE_Morph.prototype.scrollPaletteToCategory = function (category) {
     }; firstInCategory = palette.contents.children.find(
         block => block.category === category
     );
-    if (firstInCategory === undefined) {return; }
+    if (firstInCategory === undefined) {return;};
     delta = palette.top() - firstInCategory.top() + palette.padding;
     if (delta === 0) {return;};
     this.world().animations.push(new Animation(
@@ -3266,25 +3391,27 @@ IDE_Morph.prototype.scrollPaletteToCategory = function (category) {
         }, () => palette.contents.top(), // getter
         delta, // delta
         msecs, // duration in ms
-        t => Math.pow(t, 6), // easing
-        null // onComplete
-    ));
-};
+        t => Math.pow(t, 6),
+        null));};
 
-IDE_Morph.prototype.topVisibleCategoryInPalette = function anonymous () {var top; if (!this.palette) {return;}; top = this.palette.contents.children.find(morph => (
-morph.category && morph.bounds.intersects(this.palette.bounds))); if (top) {if (top.category === 'other') {if ('staticComment' === top.selector) {return 'control';
-}; if ('doDeclareVariables' === top.selector) {return 'variables';};}; if (top.category === 'motor') {return 'motion';}; if (top.category === 'events') {
+IDE_Morph.prototype.topVisibleCategoryInPalette = function (
+) {var top; if (!(this.palette)) {return;}; top = (this.palette
+).contents.children.find(morph => (morph.category && (morph.bounds
+).intersects((this.palette).bounds))); if (top) {if ((top.category
+) === 'other') {if ('staticComment' === top.selector) {return (
+'control');}; if ('doDeclareVariables' === top.selector
+) {return 'variables';};}; if (top.category === 'motor'
+) {return 'motion';}; if (top.category === 'events') {
 return 'control';}; return top.category;}; return null;};
 
-IDE_Morph.prototype.pressStart = function () {
-    if (this.world().currentKey === 16) {// shiftClicked
+IDE_Morph.prototype.pressStart = function (
+    )  {if (this.currentKey === 16) {
         this.toggleFastTracking();
     } else {
         this.stage.threads.pauseCustomHatBlocks = false;
         this.controlBar.stopButton.refresh();
         this.runScripts();
-    };
-};
+    };};
 
 IDE_Morph.prototype.toggleFastTracking = function () {
 if (this.stage.isFastTracked) {this.stopFastTracking(
@@ -3302,8 +3429,7 @@ IDE_Morph.prototype.toggleCameraSupport = function () {
     CamSnapshotDialogMorph.prototype.enableCamera = !enableCamera;
     this.spriteBar.tabBar.tabTo(this.currentTab);
     this.createCorralBar();
-    this.fixLayout();
-};
+    this.fixLayout();};
 
 IDE_Morph.prototype.startFastTracking = function () {this.stage.isFastTracked = true;};
 IDE_Morph.prototype.stopFastTracking = function () {this.stage.isFastTracked = false;};
@@ -3327,8 +3453,7 @@ IDE_Morph.prototype.selectSprite = function (sprite, noEmptyRefresh) {
     this.createSpriteEditor();
     this.corral.refresh();
     this.fixLayout('selectSprite');
-    this.currentSprite.scripts.fixMultiArgs();
-};
+    this.currentSprite.scripts.fixMultiArgs();};
 
 // IDE_Morph retina display support
 
@@ -3338,20 +3463,25 @@ IDE_Morph.prototype.toggleRetina = function () {
     } else {
         enableRetinaSupport();
     };  this.world().fillPage();
-    if (!MorphicPreferences.isFlat) {
+    if (!(MorphicPreferences.isFlat)) {
         IDE_Morph.prototype.scriptsPaneTexture = this.scriptsTexture();
     };  this.stage.clearPenTrails();
-    this.refreshIDE();
-};
+    this.refreshIDE();};
 
 // IDE_Morph refreshing
 
 IDE_Morph.prototype.refreshIDE = function () {var projectData; this.scene.captureGlobalSettings(
-); if (Process.prototype.isCatchingErrors) {try {projectData = this.serializer.serialize(new Project(
-this.scenes, this.scene));} catch (err) {this.showMessage(('Serialization failed: ').concat(
-err.toString()));};} else {projectData = this.serializer.serialize(new Project(this.scenes,
-this.scene));};  SpriteMorph.prototype.initBlocks(); this.buildPanes(); this.fixLayout();
-if (this.loadNewProject) {this.newProject();} else {this.openProjectString(projectData);};};
+); PushButtonMorph.prototype.outlineColor = (IDE_Morph.prototype.frameColor).withAlpha(1/2);
+ToggleButtonMorph.prototype.outlineColor = (IDE_Morph.prototype.frameColor).withAlpha(1/2
+); TabMorph.prototype.outlineColor = (IDE_Morph.prototype.frameColor).withAlpha(1/2);
+ToggleMorph.prototype.outlineColor = (IDE_Morph.prototype.frameColor).withAlpha(1/2);
+ToggleElementMorph.prototype.outlineColor = (IDE_Morph.prototype.frameColor).withAlpha(
+1/2); if (Process.prototype.isCatchingErrors) {try {projectData = ((this.serializer
+).serialize(new Project(this.scenes, this.scene)));} catch (err) {this.showMessage(
+('Serialization failed: ').concat(err.toString()));};} else {projectData = (
+this.serializer.serialize(new Project(this.scenes, this.scene)));}; (SpriteMorph
+).prototype.initBlocks(); this.buildPanes(); this.fixLayout(); if (this.loadNewProject
+) {this.newProject();} else {this.openProjectString(projectData);};};
 
 // IDE_Morph settings persistance
 
@@ -3370,18 +3500,30 @@ IDE_Morph.prototype.applySavedSettings = function () {
     solidshadow = this.getSetting('solidshadow');
 
     // design
-    MorphicPreferences.isFlat = asABool(this.getSetting('isFlat'));
-    if (design === 'simple') {
+    MorphicPreferences.isFlat = (
+    asABool(this.getSetting('isFlat'
+    ))); if (design === 'simple') {
         this.setSimpleDesign();
     } else if (design === 'old') {
         this.setOldDesign();
+    } else if (design === 'turbo') {
+        this.setTurboDesign();
+    } else if (design === 'scratchy') {
+        this.setScratchyDesign();
     } else if (design === 'animated') {
         this.setAnimatedDesign();
+    } else if (design === 'penguin') {
+        this.setPenguinDesign();
     } else if (design === 'light') {
         this.setLightDesign();
     } else {
         this.setDefaultDesign();
     };  // blocks fade
+    PushButtonMorph.prototype.outlineColor = (IDE_Morph.prototype.frameColor).withAlpha(1/2);
+    ToggleButtonMorph.prototype.outlineColor = (IDE_Morph.prototype.frameColor).withAlpha(1/2);
+    TabMorph.prototype.outlineColor = (IDE_Morph.prototype.frameColor).withAlpha(1/2);
+    ToggleMorph.prototype.outlineColor = (IDE_Morph.prototype.frameColor).withAlpha(1/2);
+    ToggleElementMorph.prototype.outlineColor = (IDE_Morph.prototype.frameColor).withAlpha(1/2);
     if (!isNil(fade)) {
         this.setBlockTransparency(+fade);
     };  // language
@@ -6236,30 +6378,32 @@ i < video.screenshots.length) {screenshotsFile.file(i + '.png', video.screenshot
 0, 200, 0));}; button.createLabel();}), new SymbolMorph('pointRight', 10, new Color(0, 200, 0))); button.createLabel = function () {if (!isNil(this.label)) {this.label.destroy();}; if ((this.labelString
 ) instanceof Morph) {this.label = this.labelString.fullCopy();}; this.add(this.label);}; button.updateLabelColors = function () {if (this.label) {this.label.fixLayout(true);};}; button.createLabel();
 button.fixLayout(); var greenFlag = dialog.addButton((function () {if (greenFlag.labelString.color.g > 0) {greenFlag.labelString.color.g = 0;} else {greenFlag.labelString.color.g = 200;};}), new SymbolMorph(
-'flag', 10, new Color(0, 0, 0))); greenFlag.createLabel = function anonymous () {if (!isNil(this.label)) {this.label.destroy();}; if (this.labelString instanceof Morph) {this.label = this.labelString.fullCopy();
-}; this.add(this.label);}; greenFlag.updateLabelColors = function () {if (this.label) {this.label.fixLayout(true);};}; greenFlag.createLabel(); greenFlag.fixLayout(); dialog.setExtent(new Point(480, 360));
-dialog.spriteEditor.userMenu = nop; video.userMenu = nop; dialog.button1 = button; dialog.button2 = greenFlag; dialog.fixLayout(); dialog.popUp(world);};};
+'flag', 10, new Color(0, 0, 0))); greenFlag.createLabel = function () {if (!isNil(this.label)) {this.label.destroy();}; if (this.labelString instanceof Morph) {this.label = this.labelString.fullCopy(
+);}; this.add(this.label);}; greenFlag.updateLabelColors = function () {if (this.label) {this.label.fixLayout(true);};}; greenFlag.createLabel(); greenFlag.fixLayout(); dialog.setExtent(new Point(
+480, 360)); dialog.spriteEditor.userMenu = nop; video.userMenu = nop; dialog.button1 = button; dialog.button2 = greenFlag; dialog.fixLayout(); dialog.popUp(world);};};
 
 IDE_Morph.prototype.toggleUnifiedPalette = function () {this.setUnifiedPalette(!this.scene.unifiedPalette); this.recordUnsavedChanges();};
 
-IDE_Morph.prototype.setUnifiedPalette = function (bool) {if (this.scene.unifiedPalette === bool && (bool === (this.currentCategory === 'unified'))) {return false;}; this.scene.unifiedPalette = bool;
-this.currentCategory = bool ? 'unified' : 'motion'; this.createCategories(); this.createPaletteHandle(); this.categories.fixLayout(); this.fixLayout(); this.flushBlocksCache(); this.categories.refreshEmpty();
-this.currentSprite.palette(this.currentCategory); this.refreshPalette(true); return true;};
-
-IDE_Morph.prototype.toggleCategoryNames = function () {this.scene.showCategories = !this.scene.showCategories; this.flushBlocksCache(); this.refreshPalette(); this.recordUnsavedChanges();};
-
-IDE_Morph.prototype.togglePaletteButtons = function () {this.scene.showPaletteButtons = !this.scene.showPaletteButtons; this.flushBlocksCache(); this.refreshPalette(); this.recordUnsavedChanges();};
-
-IDE_Morph.prototype.setPaletteWidth = function (newWidth) {var msecs = this.isAnimating ? 100 : 0, world = this.world(); world.animations.push(new Animation(newWidth => {this.paletteWidth = newWidth;
-this.setExtent(world.extent());}, () => this.paletteWidth, newWidth - this.paletteWidth, msecs));};
-
-IDE_Morph.prototype.createNewProject = function () {this.backup(() => this.newProject());};
-
-IDE_Morph.prototype.addScene = function () {var setting = this.isAddingScenes; this.isAddingScenes = true; this.importLocalFile(); this.isAddingScenes = setting;};
-
-IDE_Morph.prototype.openProjectsBrowser = function () {this.importLocalFile();};
-
-IDE_Morph.prototype.saveProjectsBrowser = function () {this.prompt('Export Project As...', name => this.exportProject(name), null, 'exportProject');};
+IDE_Morph.prototype.setUnifiedPalette = function (bool) {if ((this.scene.unifiedPalette === bool
+) && (bool === (this.currentCategory === 'unified'))) {return false;}; (this.scene.unifiedPalette
+) = bool; this.currentCategory = bool ? 'unified' : 'motion'; this.createCategories(); (this
+).createPaletteHandle(); this.categories.fixLayout(); this.fixLayout(); this.flushBlocksCache(
+); this.categories.refreshEmpty(); this.currentSprite.palette(this.currentCategory); (this
+).refreshPalette(true); return true;}; IDE_Morph.prototype.toggleCategoryNames = function (
+) {this.scene.showCategories = !(this.scene.showCategories); this.flushBlocksCache(); (this
+).refreshPalette(); this.recordUnsavedChanges();}; (IDE_Morph.prototype.togglePaletteButtons
+) = function () {this.scene.showPaletteButtons = !(this.scene.showPaletteButtons); (this
+).flushBlocksCache(); this.refreshPalette(); this.recordUnsavedChanges();}; (IDE_Morph
+).prototype.setPaletteWidth = function (newWidth) {var msecs = (this.isAnimating * 100
+); world.animations.push(new Animation(newWidth => {this.paletteWidth = newWidth; (this
+).setExtent(world.extent());}, (() => this.paletteWidth), (newWidth - this.paletteWidth
+), msecs));}; IDE_Morph.prototype.createNewProject = function () {this.backup(() => (
+this.newProject()));}; IDE_Morph.prototype.addScene = function () {var setting = (
+this.isAddingScenes); this.isAddingScenes = true; this.importLocalFile(); (this
+).isAddingScenes = setting;}; IDE_Morph.prototype.saveProjectsBrowser = (
+function () {this.prompt('Export Project As...', (name => this.exportProject(
+name)), null, 'exportProject');}); (IDE_Morph.prototype
+).openProjectsBrowser = function () {this.importLocalFile();};
 
 IDE_Morph.prototype.value_depthMenu = function () {
     var menu = new MenuMorph(this, localize('Value-depth colors')),
@@ -6292,10 +6436,10 @@ IDE_Morph.prototype.microphoneMenu = function anonymous () {
         microphone = this.stage.microphone,
         tick = new SymbolMorph(
             'tick',
-            MorphicPreferences.menuFontSize * 0.75
+            MorphicPreferences.menuFontSize * 3/4
         ),  on = new SymbolMorph(
             'checkedBox',
-            MorphicPreferences.menuFontSize * 0.75
+            MorphicPreferences.menuFontSize * 3/4
         ),  empty = tick.fullCopy();
 
     empty.render = nop;
@@ -6310,18 +6454,22 @@ IDE_Morph.prototype.microphoneMenu = function anonymous () {
     };  resolutions.forEach((res, i) => {
         menu.addItem(
             [
-                microphone.resolution === i + 1 ? tick : empty,
-                localize(res)
+                ((microphone.resolution === (i + 1
+                )) ? tick : empty), localize(res)
             ],
             () => microphone.setResolution(i + 1)
         );
     }); menu.popup(world, pos);};
 
-IDE_Morph.prototype.themesMenu = function () {var menu = new MenuMorph(this), pos = this.controlBar.settingsButton.bottomLeft(), themes = ['old', 'simple', 'default', 'light', 'animated'], tick = new SymbolMorph(
-'tick', MorphicPreferences.menuFontSize * 0.75), on = new SymbolMorph('checkedBox', MorphicPreferences.menuFontSize * 0.75), empty = tick.fullCopy(); empty.render = nop; themes.forEach((theme, i) => {menu.addItem(
-[localStorage['-snap-setting-currentTheme'] === themes[i] ? tick : empty, localize(theme)], function anonymous () {var ide = world.childThatIsA(IDE_Morph); if (i === 1) {ide.setSimpleDesign();} else if (i === 0) {
-ide.setOldDesign();} else if (i === 2) {ide.setDefaultDesign();} else if (i === 3) {ide.setLightDesign();} else if (i === 4) {ide.setAnimatedDesign();}; localStorage['-snap-setting-currentTheme'] = themes[i];
-ide.refreshIDE();});}); menu.popup(world, pos);};
+IDE_Morph.prototype.themesMenu = function () {var menu = new MenuMorph(this), pos = this.controlBar.settingsButton.bottomLeft(
+), themes = ['old', 'simple', 'default', 'light', 'turbo', 'scratchy', 'animated', 'penguin'], tick = new SymbolMorph('tick',
+MorphicPreferences.menuFontSize * 3/4), on = new SymbolMorph('checkedBox', MorphicPreferences.menuFontSize * 3/4), empty = (
+tick.fullCopy()); empty.render = nop; themes.forEach((theme, i) => {menu.addItem([localStorage['-snap-setting-currentTheme'
+] === themes[i] ? tick : empty, localize(theme)], function () {var ide = world.childThatIsA(IDE_Morph); if (i === 1) {(ide
+).setSimpleDesign();} else if (i === 0) {ide.setOldDesign();} else if (i === 2) {ide.setDefaultDesign();} else if (i === 3
+) {ide.setLightDesign();} else if (i === 4) {ide.setTurboDesign();} else if (i === 5) {ide.setScratchyDesign();} else if (
+i === 6) {ide.setAnimatedDesign();} else if (i === 7) {ide.setPenguinDesign();}; localStorage['-snap-setting-currentTheme'
+] = themes[i]; ide.refreshIDE();});}); menu.popup(world, pos);};
 
 // IDE_Morph localization
 
@@ -6331,9 +6479,8 @@ IDE_Morph.prototype.languageMenu = function () {
         pos = this.controlBar.settingsButton.bottomLeft(),
         tick = new SymbolMorph(
             'tick',
-            MorphicPreferences.menuFontSize * 0.75
-        ),
-        empty = tick.fullCopy();
+            MorphicPreferences.menuFontSize * 3/4
+        ),  empty = tick.fullCopy();
 
     empty.render = nop;
     SnapTranslator.languages().forEach(lang =>
@@ -9283,9 +9430,7 @@ SpriteIconMorph.prototype.hideSpriteOnStage = function () {
 
 SpriteIconMorph.prototype.mouseDoubleClick = function () {
 	if (this.object instanceof SpriteMorph) {
-    	this.object.flash();
-    }
-};
+    	this.object.flash();};};
 
 // SpriteIconMorph drawing
 

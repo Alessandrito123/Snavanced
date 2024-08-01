@@ -664,7 +664,7 @@ Process.prototype.evaluateBlock = function (block, argCount) {
         } else {
             return this[selector](block);
         };
-    }; // first evaluate all inputs, then apply the primitive
+    };  // first evaluate all inputs, then apply the primitive
     rcvr = this.context.receiver || this.receiver;
     inputs = this.context.inputs;
 
@@ -689,9 +689,7 @@ Process.prototype.evaluateBlock = function (block, argCount) {
             this.returnValueToParentContext(
                 rcvr[selector].apply(rcvr, inputs)
             ); this.popContext();
-        };
-    };
-};
+        };};};
 
 Process.prototype.playBeep = function () {var beep = WorldMorph.prototype.beepSound; if (beep instanceof Audio) {beep.currentTime = 0; beep.play();};
 if ((world.children.filter(child => child instanceof FlashMorph) < 1) && asABool(localStorage['-snap-setting-flashScreenInBeep'])) {new FlashMorph;};};
@@ -710,49 +708,49 @@ Process.prototype.reportApplyExtension = function (prim, args) {
         args.itemsArray().concat([this])
     );};
 
-Process.prototype.doPauseThread = function () {var myself = this; if (!(myself.debugDialog)) {myself.debugDialog = new DialogBoxMorph; myself.debugDialog.setPicture(myself.topBlock.fullImage(
-)); myself.debugDialog.labelString = myself.blockReceiver().name + ' ^'; myself.debugDialog.addButton(function () {this.isDestroyed = true; this.destroy();}, new SymbolMorph('pointRight', 12)
-); myself.debugDialog.addButton(function () {myself.stop(); this.destroy();}, new SymbolMorph('rectangle', 12)); myself.debugDialog.key = ('debug - ' + Date.now()); (myself.debugDialog.process
-) = myself; myself.debugDialog.createLabel(); myself.debugDialog.fixLayout(); myself.debugDialog.popUp(world); myself.isOnDebug = true; myself.pushContext('doYield'); myself.pushContext();
-} else {if (!(myself.debugDialog.isDestroyed)) {myself.pushContext('doYield'); myself.pushContext();} else {myself.debugDialog = null;};};}; Process.prototype.reportInPause = function (input
-) {var myself = this; if (!myself.debugDialog) {myself.debugDialog = new DialogBoxMorph; myself.debugDialog.setPicture(myself.topBlock.fullImage()); myself.debugDialog.labelString = ((myself
-).blockReceiver().name + ' ^'); myself.debugDialog.addButton(function anonymous () {this.isDestroyed = true; this.destroy();}, new SymbolMorph('pointRight', 12)); myself.debugDialog.addButton(
-function () {myself.stop(); this.destroy();}, new SymbolMorph('rectangle', 12)); myself.debugDialog.key = ('debug - ' + Date.now()); myself.debugDialog.process = myself; (myself.debugDialog
-).createLabel(); myself.debugDialog.fixLayout(); myself.debugDialog.popUp(world); myself.isOnDebug = true; myself.pushContext('doYield'); myself.pushContext();} else {if (!((myself.debugDialog
-).isDestroyed)) {this.context.inputs = []; myself.pushContext('doYield'); myself.pushContext();} else {myself.debugDialog = null; myself.returnValueToParentContext(input);};};}; (Process
-).prototype.durationOf = function (action) {if (action instanceof CommandBlockMorph) {if (!(this.context.startTime)) {this.context.startTime = Date.now();}; if (this.context.isOnlyToOnce) {
-delete this.context.isOnlyToOnce; return (Date.now() - this.context.startTime) / 1000;} else {this.context.isOnlyToOnce = true; this.pushContext(action.blockSequence()); this.pushContext(
-'doYield'); this.pushContext();};} else {return 0;};}; Process.prototype.reportLocalStorage = function () {return new List([new List(Object.keys(localStorage)), new List(Object.values(
-localStorage))]);}; Process.prototype.blockComment = nop; Process.prototype.doIgnoreValue = nop; Process.prototype.scriptNamer = function (name, action) {action = action.at(1); if (
-action instanceof CommandBlockMorph) {if (this.context.isOnlyToOnce) {delete this.context.isOnlyToOnce;} else {this.context.isOnlyToOnce = true; this.pushContext(action.blockSequence());
-this.pushContext('doYield'); this.pushContext();};};}; Process.prototype.scriptChanger = function anonymous (option, block, selector) {if (!(block instanceof Context)) {block = this.reify(
-null, new List);}; if (block.expression instanceof BlockMorph) {if (selector.length() > 0) {selector = selector.at(1);} else {selector = block.expression.selector;};} else {return block;
-}; var result = Process.prototype.reportBlockAttribute(['sequence'], block).map(block => Process.prototype.basicScriptChanger(Process.prototype.inputOption(option), block, selector)); if (
-result.length() < 2) {result = result.at(1);}; return result;}; Process.prototype.basicScriptChanger = function (option, block, selector) {if (option === 'commandize') {if ((block.expression
-).isCustomBlock) {var aDefinition = copy(block.expression.definition); aDefinition.type = 'command'; var aBlock = new CustomCommandBlockMorph(aDefinition);} else {var aBlock = (
-new CommandBlockMorph);};} else if (option === 'definitize') {if (block.expression.isCustomBlock) {var aDefinition = copy(block.expression.definition); aDefinition.type = 'definitor';
-var aBlock = new CustomDefinitorBlockMorph(aDefinition);} else {var aBlock = new DefinitorBlockMorph;};} else if (contains(['reporterize', 'predicatize', 'arrowize'], option)) {if (
-block.expression.isCustomBlock) {var aDefinition = copy(block.expression.definition); aDefinition.type = ((option === 'predicatize') ? 'predicate' : ((option === 'arrowize') ? ('arrow'
-) : 'reporter')); var aBlock = new CustomReporterBlockMorph(aDefinition);} else {var aBlock = new ReporterBlockMorph((option === 'predicatize'), (option === 'arrowize'));};} else if (
-option === 'hatize') {var aBlock = new HatBlockMorph;} else if (option === 'ringize') {var aBlock = new RingMorph;} else {var aBlock = new JaggedBlockMorph;}; var i = 0; if (!((block
-).expression.isCustomBlock)) {aBlock.selector = selector;}; aBlock.setSpec('block'); aBlock.children[aBlock.children.length - 1].destroy(); aBlock.category = block.expression.category;
-while (i < block.expression.children.length) {if (block.expression.isCustomBlock) {aBlock.children[i] = block.expression.children[i].fullCopy();} else {aBlock.add((block.expression
-).children[i].fullCopy());}; i++;}; aBlock.blockSpec = block.expression.blockSpec; aBlock.fixLayout(); aBlock.fixBlockColor(); return ((aBlock instanceof CommandBlockMorph) ? (
-Process.prototype.reportScript(null, aBlock)) : Process.prototype.reify(aBlock));};
-
-Process.prototype.reportVariadicAnd = function (inputs) {this.assertType(inputs, 'list'); if (inputs.length() > 2) {return this.reportAnd(inputs.at(1), this.reportVariadicAnd(inputs.cdr()));} else if (
-inputs.length() > 1) {return this.reportAnd(inputs.at(1), inputs.at(2));} else if (inputs.length() > 0) {return asABool(inputs.at(1));} else {return true;};}; Process.prototype.reportAnd = function (
-input1, input2) {if (input1 instanceof List) {input1 = this.reportVariadicAnd(input1);}; if (input2 instanceof List) {input2 = this.reportVariadicAnd(input2);}; return asABool(this.reportBasicAnd(input1,
-input2));}; Process.prototype.reportBasicAnd = function (input1, input2) {return +((Math.sign(Math.abs(input1)) + Math.sign(Math.abs(input2))) > 1);}; Process.prototype.reportVariadicOr = function (inputs
-) {this.assertType(inputs, 'list'); if (inputs.length() > 2) {return this.reportOr(inputs.at(1), this.reportVariadicOr(inputs.cdr()));} else if (inputs.length() > 1) {return this.reportOr(inputs.at(1),
-inputs.at(2));} else if (inputs.length() > 0) {return asABool(inputs.at(1));} else {return false;};}; Process.prototype.reportOr = function (input1, input2) {if (input1 instanceof List) {input1 = (this
-).reportVariadicOr(input1);}; if (input2 instanceof List) {input2 = this.reportVariadicOr(input2);}; return asABool(this.reportBasicOr(input1, input2));}; Process.prototype.reportBasicOr = function (
-input1, input2) {return +((Math.sign(Math.abs(input1)) + Math.sign(Math.abs(input2))) > 0);}; Process.prototype.reportOnlyOne = function (inputs) {return (inputs.filter(input => (input === true)
-).length === 1);}; /* Isn't variadic "xor" but is useful in some cases but "xor" isn't an associative operator. Only the arrays are to use here. */ Process.prototype.reportXor = function (input1,
-input2) {this.assertType(input1, ['nothing', 'number', 'Boolean']); this.assertType(input2, ['nothing', 'number', 'Boolean']); return asABool(this.reportBasicXor(input1, input2));}; (Process
-).prototype.reportBasicXor = function (input1, input2) {return +(Math.abs(Math.sign(Math.abs(input1)) - Math.sign(Math.abs(input2))) > 0);}; Process.prototype.reportNot = function (input) {
-myself = this; return ((input instanceof List) ? (input.fullCopy().map(item => myself.reportNot(item))) : asABool(myself.reportBasicNot(input)));}; Process.prototype.reportBasicNot = function (
-input) {return (1 - Math.sign(Math.abs(input)));}; /* Any of the boolean operators are better. */
+Process.prototype.doPauseThread = function () {var myself = this; if (!(myself.debugDialog)) {myself.debugDialog = new DialogBoxMorph; myself.debugDialog.setPicture(myself.topBlock.fullImage()); (myself
+).debugDialog.labelString = (myself.blockReceiver()).name + ' ^'; myself.debugDialog.addButton(function () {this.isDestroyed = true; this.destroy();}, new SymbolMorph('pointRight', 12)); (myself.debugDialog
+).addButton(function () {myself.stop(); this.destroy();}, new SymbolMorph('rectangle', 12)); myself.debugDialog.key = ('debug - ' + Date.now()); myself.debugDialog.process = myself; (myself.debugDialog
+).createLabel(); myself.debugDialog.fixLayout(); myself.debugDialog.popUp(world); myself.isOnDebug = true; myself.pushContext('doYield'); myself.pushContext();} else {if (!(myself.debugDialog.isDestroyed
+)) {myself.pushContext('doYield'); myself.pushContext();} else {myself.debugDialog = null;};};}; Process.prototype.reportInPause = function (input) {var myself = this; if (!(myself.debugDialog)) {(myself
+).debugDialog = new DialogBoxMorph; myself.debugDialog.setPicture(myself.topBlock.fullImage()); myself.debugDialog.labelString = ((myself.blockReceiver()).name + ' ^'); myself.debugDialog.addButton(function (
+) {this.isDestroyed = true; this.destroy();}, new SymbolMorph('pointRight', 12)); myself.debugDialog.addButton(function () {myself.stop(); this.destroy();}, new SymbolMorph('rectangle', 12)); (myself.debugDialog
+).key = ('debug - ' + Date.now()); myself.debugDialog.process = myself; myself.debugDialog.createLabel(); myself.debugDialog.fixLayout(); myself.debugDialog.popUp(world); myself.isOnDebug = true; (myself
+).pushContext('doYield'); myself.pushContext();} else {if (!(myself.debugDialog.isDestroyed)) {this.context.inputs = []; myself.pushContext('doYield'); myself.pushContext();} else {myself.debugDialog = null;
+myself.returnValueToParentContext(input);};};}; Process.prototype.durationOf = function (action) {if (action instanceof CommandBlockMorph) {if (!(this.context.startTime)) {this.context.startTime = Date.now();};
+if (this.context.isOnlyToOnce) {delete this.context.isOnlyToOnce; return ((Date.now() - this.context.startTime) / 1000);} else {this.context.isOnlyToOnce = true; this.pushContext(action.blockSequence()); (this
+).pushContext('doYield'); this.pushContext();};} else {return 0;};}; Process.prototype.reportLocalStorage = function () {return new List([new List(Object.keys(localStorage)), new List(Object.values(localStorage
+))]);}; Process.prototype.blockComment = nop; Process.prototype.doIgnoreValue = nop; Process.prototype.scriptNamer = function (name, action) {action = action.at(1); if (action instanceof CommandBlockMorph) {if (
+this.context.isOnlyToOnce) {delete this.context.isOnlyToOnce;} else {this.context.isOnlyToOnce = true; this.pushContext(action.blockSequence()); this.pushContext('doYield'); this.pushContext();};};}; (Process
+).prototype.scriptChanger = function (option, block, selector) {if (!(block instanceof Context)) {block = this.reify();}; if (block.expression instanceof BlockMorph) {if (selector.length() > 0) {selector = (
+selector.at(1));} else {selector = block.expression.selector;};} else {return block;}; var result = (Process.prototype.reportBlockAttribute(['sequence'], block).map(block => Process.prototype.basicScriptChanger(
+Process.prototype.inputOption(option), block, selector))); if (result.length() < 2) {result = result.at(1);}; return result;}; Process.prototype.basicScriptChanger = function (option, block, selector) {if (
+option === 'commandize') {if (block.expression.isCustomBlock) {var aDefinition = copy(block.expression.definition); aDefinition.type = 'command'; var aBlock = new CustomCommandBlockMorph(aDefinition);} else {
+var aBlock = new CommandBlockMorph;};} else if (option === 'definitize') {if (block.expression.isCustomBlock) {var aDefinition = copy(block.expression.definition); aDefinition.type = 'definitor'; var aBlock = (
+new CustomDefinitorBlockMorph(aDefinition));} else {var aBlock = new DefinitorBlockMorph;};} else if (contains(['reporterize', 'predicatize', 'arrowize'], option)) {if (block.expression.isCustomBlock) {
+var aDefinition = copy(block.expression.definition); aDefinition.type = ((option === 'predicatize') ? 'predicate' : ((option === 'arrowize') ? 'arrow' : 'reporter')); var aBlock = new CustomReporterBlockMorph(
+aDefinition);} else {var aBlock = new ReporterBlockMorph((option === 'predicatize'), (option === 'arrowize'));};} else if (option === 'hatize') {var aBlock = new HatBlockMorph;} else if (option === 'ringize') {
+var aBlock = new RingMorph;} else {var aBlock = new JaggedBlockMorph;}; var i = 0; if (!(block.expression.isCustomBlock)) {aBlock.selector = selector;}; aBlock.setSpec('block'); aBlock.children[(aBlock.children
+).length - 1].destroy(); aBlock.category = block.expression.category; while (i < block.expression.children.length) {if (block.expression.isCustomBlock) {aBlock.children[i] = block.expression.children[i].fullCopy(
+);} else {aBlock.add((block.expression.children[i]).fullCopy());}; i++;}; aBlock.blockSpec = block.expression.blockSpec; aBlock.fixLayout(); aBlock.fixBlockColor(); return ((aBlock instanceof CommandBlockMorph
+) ? this.reportScript(null, aBlock) : this.reify(aBlock));}; Process.prototype.reportVariadicAnd = function (inputs) {this.assertType(inputs, 'list'); if (inputs.length() > 2) {return this.reportAnd(inputs.at(1
+), this.reportVariadicAnd(inputs.cdr()));} else if (inputs.length() > 1) {return this.reportAnd(inputs.at(1), inputs.at(2));} else if (inputs.length() > 0) {return asABool(inputs.at(1));} else {return true;};};
+Process.prototype.reportAnd = function (input1, input2) {if (input1 instanceof List) {input1 = this.reportVariadicAnd(input1);}; if (input2 instanceof List) {input2 = this.reportVariadicAnd(input2);}; return (
+asABool(this.reportBasicAnd(input1, input2)));}; Process.prototype.reportBasicAnd = function (input1, input2) {return +((Math.sign(Math.abs(input1)) + Math.sign(Math.abs(input2))) > 1);}; (Process.prototype
+).reportVariadicOr = function (inputs) {this.assertType(inputs, 'list'); if (inputs.length() > 2) {return this.reportOr(inputs.at(1), this.reportVariadicOr(inputs.cdr()));} else if (inputs.length() > 1) {
+return this.reportOr(inputs.at(1), inputs.at(2));} else if (inputs.length() > 0) {return asABool(inputs.at(1));} else {return false;};}; Process.prototype.reportOr = function (input1, input2) {if ((input1
+) instanceof List) {input1 = this.reportVariadicOr(input1);}; if (input2 instanceof List) {input2 = this.reportVariadicOr(input2);}; return asABool(this.reportBasicOr(input1, input2));}; (Process.prototype
+).reportBasicOr = function (input1, input2) {return +((Math.sign(Math.abs(input1)) + Math.sign(Math.abs(input2))) > 0);}; Process.prototype.reportOnlyOne = function (inputs) {return (inputs.filter((input
+) => (input === true)).length === 1);}; /* Isn't variadic "xor" but is useful in some cases but "xor" isn't an associative operator. Only the arrays are to use here. */ Process.prototype.reportXor = function (
+input1, input2) {this.assertType(input1, ['nothing', 'number', 'Boolean']); this.assertType(input2, ['nothing', 'number', 'Boolean']); return asABool(this.reportBasicXor(input1, input2));}; (Process.prototype
+).reportBasicXor = function (input1, input2) {return +(Math.abs(Math.sign(Math.abs(input1)) - Math.sign(Math.abs(input2))) > 0);}; Process.prototype.reportNot = function (input) {myself = this; return (((input
+) instanceof List) ? (input.fullCopy().map(item => myself.reportNot(item))) : asABool(myself.reportBasicNot(input)));}; Process.prototype.reportBasicNot = function (input) {return (1 - Math.sign(Math.abs(input
+)));}; /* Any of the boolean operators are now better. */ Process.prototype.doPauseScript = function (script) {var myself = this; if (!(myself.debugDialog)) {myself.debugDialog = new DialogBoxMorph; (myself
+).debugDialog.setPicture(myself.topBlock.fullImage()); myself.debugDialog.labelString = (myself.blockReceiver()).name + ' ^'; myself.debugDialog.addButton(function () {this.isDestroyed = true; this.destroy();
+}, new SymbolMorph('pointRight', 12)); myself.debugDialog.addButton(function () {this.isDestroyed = true; this.destroy(); if (!isNil(script)) {myself.execute(['run'], script, new List);};}, new SymbolMorph(
+'stepForward', 12)); myself.debugDialog.addButton(function () {myself.stop(); this.destroy();}, new SymbolMorph('rectangle', 12)); myself.debugDialog.key = ('debug - ' + Date.now()); (myself.debugDialog
+).process = myself; myself.debugDialog.createLabel(); myself.debugDialog.fixLayout(); myself.debugDialog.popUp(world); myself.isOnDebug = true; myself.pushContext('doYield'); (myself
+).pushContext();} else {if (!(myself.debugDialog.isDestroyed)) {myself.pushContext('doYield'); myself.pushContext();} else {myself.debugDialog = null;};};};
 
 // Process: Special Forms Blocks Primitives
 
@@ -2157,7 +2155,7 @@ Process.prototype.reportIfElse = function (block) {
     } else {
         expression = block.inputs()[2]; // false block
     };  this.pushContext(expression);
-}; // Processing related primitives
+};  //  Processing related primitives
 
 Process.prototype.doStopThis = function (choice) {var ide = world.children[0]; switch (this.inputOption(choice)) {case 'this scene': case 'all': ide.scene.stop(); break; case 'this scene and restart':
 (ide.scene).restart(); ide.runScripts(); break; case 'all scenes': ide.scenes.forEach(scn => scn.stop(true)); break; case 'this sprite': ide.stage.threads.stopAllForReceiver((this.context.outerContext
@@ -2169,14 +2167,15 @@ this.pushContext(action.blockSequence()); this.pushContext('doYield'); this.push
 
 // Atomic Functions: The atomic functions are functions that are running all of the blocks inside them all at once. In BYOB, only appears as an option menu for the custom blocks.
 
-Process.prototype.doWarp = function anonymous (body) {var outer = this.context.outerContext, isCustomBlock = this.context.isCustomBlock, stage; this.popContext(); if (body) {if (this.homeContext.receiver
-) {if (this.homeContext.receiver.startWarp) {this.homeContext.receiver.startWarp();}; stage = this.homeContext.receiver.parentThatIsA(StageMorph);}; this.pushContext('popContext'); if (this.context) {
-this.context.isCustomBlock = isCustomBlock;}; if (!this.isAtomic) {this.pushContext('doStopWarping');}; this.pushContext(body.blockSequence(), outer); this.isAtomic = true;}; this.pushContext();};
-Process.prototype.doStopWarping = function () {var stage; this.popContext(); this.isAtomic = false; if (this.homeContext.receiver) {if (this.homeContext.receiver.endWarp) {
-this.homeContext.receiver.endWarp();}; stage = this.homeContext.receiver.parentThatIsA(StageMorph);};}; Process.prototype.doSetFastTracking = function (bool) {var ide; if (
-this.homeContext.receiver) {ide = this.homeContext.receiver.parentThatIsA(IDE_Morph); if (ide) {if (asABool(bool)) {ide.startFastTracking();} else {ide.stopFastTracking();
-};};};}; Process.prototype.reportIsFastTracking = function () {var ide = world.childThatIsA(IDE_Morph); return ((ide instanceof IDE_Morph) ? ide.stage.isFastTracked : false
-);}; Process.prototype.compileFast = function anonymous (action) {/* window.alert(reportBasicToJS(action)); */ reportBasicToJS(action).apply(this.blockReceiver(), [this]);};
+Process.prototype.doWarp = function (body) {var outer = this.context.outerContext, isCustomBlock = this.context.isCustomBlock, stage; this.popContext(); if (body) {if (
+this.homeContext.receiver) {if (this.homeContext.receiver.startWarp) {this.homeContext.receiver.startWarp();}; stage = this.homeContext.receiver.parentThatIsA(StageMorph
+);}; this.pushContext('popContext'); if (this.context) {this.context.isCustomBlock = isCustomBlock;}; if (!this.isAtomic) {this.pushContext('doStopWarping');}; (this
+).pushContext(body.blockSequence(), outer); this.isAtomic = true;}; this.pushContext();}; Process.prototype.doStopWarping = function () {var stage; this.popContext();
+this.isAtomic = false; if (this.homeContext.receiver) {if (this.homeContext.receiver.endWarp) {this.homeContext.receiver.endWarp();}; stage = (this.homeContext.receiver
+).parentThatIsA(StageMorph);};}; Process.prototype.doSetFastTracking = function (bool) {var ide; if (this.homeContext.receiver) {ide = (this.homeContext.receiver
+).parentThatIsA(IDE_Morph); if (ide) {if (asABool(bool)) {ide.startFastTracking();} else {ide.stopFastTracking();};};};}; (Process.prototype.reportIsFastTracking
+) = function () {var ide = world.childThatIsA(IDE_Morph); return ((ide instanceof IDE_Morph) ? ide.stage.isFastTracked : false);}; (Process.prototype.compileFast
+) = function (action) {/* window.alert(reportBasicToJS(action)); */ reportBasicToJS(action).apply(this.blockReceiver(), [this]);};
 
 // Statement Functions: Are for managing scripts more than expected. :-)
 
@@ -2197,37 +2196,16 @@ return !isNil(stage.projectionSource) && stage.projectionLayer().getContext('2d'
 
 // Pause and Resume:
 
-Process.prototype.doPauseOptions = function anonymous (choice) {
-var stage = world.childThatIsA(IDE_Morph).stage;
-if (choice == 'this scene') {
-stage.threads.pauseAll(stage);
-stage.timerProcedure.pauseNow();
-} else if (choice == 'this scene but this script') {
-stage.pauseAllActiveSounds();
-var myObj = this.blockReceiver(), myself = this;
-stage.threads.processes.filter(proc => (!(proc === myself))
-).forEach(proc => (proc.root instanceof BlockMorph) ? ((
-proc.root.selector === 'receiveInteraction') ? ((
-proc.root.inputs()[0].evaluate() === 'paused') ? null : proc.pause(
-)) : proc.pause()) : proc.pause());
-myObj.receiveUserInteraction('paused', true, true);
-} else if (choice == 'this sprite') {this.doPauseOptions(['this sprite but this script']);
-this.pause();} else if (choice == 'this script') {this.pause();
-} else if (choice == 'this sprite but this script') {
-var myObj = this.blockReceiver(), myself = this;
-stage.threads.processes.filter(proc => ((
-proc.blockReceiver() === myObj) && !(proc === myself))
-).forEach(proc => (proc.root instanceof BlockMorph) ? ((
-proc.root.selector === 'receiveInteraction') ? ((
-proc.root.inputs()[0].evaluate() === 'paused') ? null : proc.pause(
-)) : proc.pause()) : proc.pause());
-myObj.receiveUserInteraction('paused', true, true);};
-world.childThatIsA(IDE_Morph).controlBar.pauseButton.refresh();};
-Process.prototype.doResumeOptions = function (choice) {var ide = world.children[0]; if (Process.prototype.inputOption(choice) === 'this scene') {ide.stage.threads.resumeAll(
-ide.stage); ide.stage.timerProcedure.resumeNow(); ide.controlBar.pauseButton.refresh(); ide.stage.resumeAllActiveSounds(); world.children.filter(function anonymous (child) {if (
-child instanceof DialogBoxMorph) {return (child.key).includes('debug');} else {return false;};}).forEach(function anonymous (child) {child.destroy();});} else {var myself = this;
-ide.stage.threads.processes.forEach(proc => ((proc.receiver === myself.receiver) ? proc.resume() : nop())); ide.stage.runUnpauseScripts(this.receiver);};
-}; /* You can pause or resume in many different ways, you can try every choice in the revamped pause block and try the new resume block. */
+Process.prototype.doPauseOptions = function (choice) {var stage = world.childThatIsA(IDE_Morph).stage; if (choice == 'this scene') {stage.threads.pauseAll(stage); stage.timerProcedure.pauseNow();} else if (
+choice == 'this scene but this script') {stage.pauseAllActiveSounds(); var myObj = this.blockReceiver(), myself = this; stage.threads.processes.filter(proc => (!(proc === myself))).forEach(proc => (proc.root instanceof BlockMorph) ? ((proc.root.selector === 'receiveInteraction') ? ((proc.root.inputs()[0].evaluate() === 'paused') ? null : proc.pause()) : proc.pause()) : proc.pause()); myObj.receiveUserInteraction(
+'paused', true, true);} else if (choice == 'this sprite') {this.doPauseOptions(['this sprite but this script']); this.pause();} else if (choice == 'this script') {this.pause();} else if (choice == (
+'this sprite but this script')) {var myObj = this.blockReceiver(), myself = this; stage.threads.processes.filter(proc => ((proc.blockReceiver() === myObj) && !(proc === myself))).forEach(proc => (
+proc.root instanceof BlockMorph) ? ((proc.root.selector === 'receiveInteraction') ? ((proc.root.inputs()[0].evaluate() === 'paused') ? null : proc.pause()) : proc.pause()) : proc.pause()); (myObj
+).receiveUserInteraction('paused', true, true);}; world.childThatIsA(IDE_Morph).controlBar.pauseButton.refresh();}; Process.prototype.doResumeOptions = function (choice) {var ide = world.children[
+0]; if (Process.prototype.inputOption(choice) === 'this scene') {ide.stage.threads.resumeAll(ide.stage); ide.stage.timerProcedure.resumeNow(); ide.controlBar.pauseButton.refresh(); (ide.stage
+).resumeAllActiveSounds(); world.children.filter(function (child) {if (child instanceof DialogBoxMorph) {return (child.key).includes('debug');} else {return false;};}).forEach(function (child
+) {child.destroy();});} else {var myself = this; ide.stage.threads.processes.forEach(proc => ((proc.receiver === myself.receiver) ? proc.resume() : nop())); ide.stage.runUnpauseScripts((this
+).receiver);};}; /* You can pause or resume scripts in many different ways, you can try every choice in the revamped pause block and try the new resume block. Also, debugging works with. */
 
 // Process loop primitives
 
