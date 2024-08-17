@@ -459,6 +459,7 @@ ThreadManager.prototype.clickFrameFor = function (block) {
                         another process
     readyToTerminate    boolean indicating whether the stop method has
                         been called
+    debugDialog         the dialog from a block that is going to be debugged
     isDead              boolean indicating a terminated clone process
     timeout             msecs after which to force yield
     lastYield           msecs when the process last yielded
@@ -709,7 +710,7 @@ Process.prototype.reportApplyExtension = function (prim, args) {
     );};
 
 Process.prototype.doPauseThread = function () {var myself = this; if (!(myself.debugDialog)) {myself.debugDialog = new DialogBoxMorph; myself.debugDialog.setPicture(myself.topBlock.fullImage()); (myself
-).debugDialog.labelString = (myself.blockReceiver()).name + ' ^'; myself.debugDialog.addButton(function () {this.isDestroyed = true; this.destroy();}, new SymbolMorph('pointRight', 12)); (myself.debugDialog
+).debugDialog.labelString = ((myself.blockReceiver()).name + ' ^'); myself.debugDialog.addButton(function () {this.isDestroyed = true; this.destroy();}, new SymbolMorph('pointRight', 12)); (myself.debugDialog
 ).addButton(function () {myself.stop(); this.destroy();}, new SymbolMorph('rectangle', 12)); myself.debugDialog.key = ('debug - ' + Date.now()); myself.debugDialog.process = myself; (myself.debugDialog
 ).createLabel(); myself.debugDialog.fixLayout(); myself.debugDialog.popUp(world); myself.isOnDebug = true; myself.pushContext('doYield'); myself.pushContext();} else {if (!(myself.debugDialog.isDestroyed
 )) {myself.pushContext('doYield'); myself.pushContext();} else {myself.debugDialog = null;};};}; Process.prototype.reportInPause = function (input) {var myself = this; if (!(myself.debugDialog)) {(myself
@@ -748,9 +749,9 @@ input1, input2) {this.assertType(input1, ['nothing', 'number', 'Boolean']); this
 )));}; /* Any of the boolean operators are now better. */ Process.prototype.doPauseScript = function (script) {var myself = this; if (!(myself.debugDialog)) {myself.debugDialog = new DialogBoxMorph; (myself
 ).debugDialog.setPicture(myself.topBlock.fullImage()); myself.debugDialog.labelString = (myself.blockReceiver()).name + ' ^'; myself.debugDialog.addButton(function () {this.isDestroyed = true; this.destroy();
 }, new SymbolMorph('pointRight', 12)); myself.debugDialog.addButton(function () {this.isDestroyed = true; this.destroy(); if (!isNil(script)) {myself.execute(['run'], script, new List);};}, new SymbolMorph(
-'stepForward', 12)); myself.debugDialog.addButton(function () {myself.stop(); this.destroy();}, new SymbolMorph('rectangle', 12)); myself.debugDialog.key = ('debug - ' + Date.now()); (myself.debugDialog
-).process = myself; myself.debugDialog.createLabel(); myself.debugDialog.fixLayout(); myself.debugDialog.popUp(world); myself.isOnDebug = true; myself.pushContext('doYield'); (myself
-).pushContext();} else {if (!(myself.debugDialog.isDestroyed)) {myself.pushContext('doYield'); myself.pushContext();} else {myself.debugDialog = null;};};};
+'stepForward', 12)); myself.debugDialog.addButton(function () {myself.stop(); this.destroy();}, new SymbolMorph('rectangle', 12)); myself.debugDialog.key = ('debug - ' + Date.now());
+myself.debugDialog.process = myself; myself.debugDialog.createLabel(); myself.debugDialog.fixLayout(); myself.debugDialog.popUp(world); myself.isOnDebug = true; myself.pushContext(
+'doYield'); myself.pushContext();} else {if (!(myself.debugDialog.isDestroyed)) {myself.pushContext('doYield'); myself.pushContext();} else {myself.debugDialog = null;};};};
 
 // Process: Special Forms Blocks Primitives
 

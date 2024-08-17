@@ -9,11 +9,8 @@ var JSCompiler;
 	*** highly experimental and heavily under construction ***
 */
 
-function JSCompiler (aProcess) {this.process = aProcess; /* proc */ this.source = null; /* context */
-this.gensyms = new Map; /* temp dictionary for parameter substitutions */ this.implicitParams = null;
-this.paramCount = null; this.scriptVarCounter = null;}; /* compiling scripts to be JIT for now. :) */
-
-JSCompiler.prototype.toString = function anonymous () {return 'a JSCompiler';};
+function JSCompiler (aProcess) {this.process = aProcess; this.source = null; this.gensyms = new Map; (this.implicitParams
+) = null; this.paramCount = null; this.scriptVarCounter = null;}; JSCompiler.prototype.toString = (() => 'a JSCompiler');
 
 JSCompiler.prototype.compileFunction = function (aContext, implicitParamCount) {
     var block = aContext.expression,

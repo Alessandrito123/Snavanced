@@ -127,7 +127,6 @@ IDE_Morph.prototype.init = function (isAutoFill
     this.applySavedSettings();
 
     // additional properties:
-    this.cloud = new Cloud;
     this.source = null;
     this.serializer = new SnapSerializer;
 
@@ -234,7 +233,7 @@ IDE_Morph.prototype.init = function (isAutoFill
     this.globalVariables = this.scene.globalVariables;
     this.currentSprite = this.scene.addDefaultSprite();
     this.sprites = this.scene.sprites;
-    this.currentCategory = this.scene.unifiedPalette ? 'unified' : 'motion';
+    this.currentCategory = this.scene.unifiedPalette ? 'unified' : 'other';
     this.currentTab = 'scripts';
     this.logo = null;
     this.controlBar = null;
@@ -747,17 +746,6 @@ IDE_Morph.prototype.scriptsTexture = function () {
 
 IDE_Morph.prototype.openIn = function (world) {var hash, myself = this; this.buildPanes(); world.add(this); world.userMenu = this.userMenu;
 
-    // override SnapCloud's user message with Morphic
-    this.cloud.message = (string) => {
-        var m = new MenuMorph(null, string),
-            intervalHandle;
-        m.popUpCenteredInWorld(world);
-        intervalHandle = setInterval(() => {
-            m.destroy();
-            clearInterval(intervalHandle);
-        }, 2000);
-    };
-
     // prevent non-DialogBoxMorphs from being dropped
     // onto the World in user-mode
     world.reactToDropOf = (morph) => {
@@ -1052,9 +1040,7 @@ IDE_Morph.prototype.openIn = function (world) {var hash, myself = this; this.bui
             } else {
                 langSetting = location.hash.slice(6,8);
             };
-        };  // lang-flag wins lang-anchor setting
-        langSetting = myself.cloud.parseDict(location.hash).lang || langSetting;
-        return langSetting;
+        };  return langSetting;
     };  if (launcherLangSetting()) {
         this.loadNewProject = true;
         this.setLanguage(launcherLangSetting(), interpretUrlAnchors);
@@ -3370,7 +3356,7 @@ IDE_Morph.prototype.refreshPalette = function (shouldIgnorePosition) {
 
 IDE_Morph.prototype.scrollPaletteToCategory = function (category) {
     var palette = this.palette,
-        msecs = this.isAnimating ? 200 : 0,
+        msecs = ((this.isAnimating) * 200),
         firstInCategory,
         delta;
 
@@ -3597,9 +3583,9 @@ return !isNil(localStorage);} catch (err) {return false;};};
 
 IDE_Morph.prototype.hasUnsavedEdits = function () {return this.scenes.itemsArray().some(any => any.hasUnsavedEdits);
 };  IDE_Morph.prototype.recordUnsavedChanges = function () {this.scene.hasUnsavedEdits = true; this.updateChanges();};
-IDE_Morph.prototype.recordSavedChanges = function () {this.scenes.itemsArray().forEach(scene => scene.hasUnsavedEdits = false
-); this.updateChanges();}; IDE_Morph.prototype.updateChanges = function () {if (this.hasLocalStorage() && (localStorage['-snap-bakuser-'
-] == this.cloud.username)) {localStorage['-snap-bakflag-'] = 'expired';}; this.controlBar.updateLabel();}; /* Prevents lost media. */
+IDE_Morph.prototype.recordSavedChanges = function () {this.scenes.itemsArray().forEach(scene => (scene.hasUnsavedEdits
+) = false); this.updateChanges();}; IDE_Morph.prototype.updateChanges = function () {if (this.hasLocalStorage()) {
+localStorage['-snap-bakflag-'] = 'expired';}; this.controlBar.updateLabel();}; /* Prevents lost media. */
 
 // IDE_Morph project backup
 
@@ -4011,10 +3997,10 @@ IDE_Morph.prototype.settingsMenu = function () {
         shiftClicked = (world.currentKey === 16),
         on = new SymbolMorph(
             'checkedBox',
-            MorphicPreferences.menuFontSize * 0.75
+            MorphicPreferences.menuFontSize * 3/4
         ), off = new SymbolMorph(
             'rectangle',
-            MorphicPreferences.menuFontSize * 0.75
+            MorphicPreferences.menuFontSize * 3/4
         );
 
     function addPreference(label, toggle, test, onHint, offHint, hide) {
@@ -5153,8 +5139,8 @@ IDE_Morph.prototype.editNotes = function () {
     text.edit();
 };
 
-IDE_Morph.prototype.newProject = function () {IDE_Morph.showMotorBlocks = false; this.flushBlocksCache('motion'); this.refreshPalette();
-this.categories.refreshEmpty(); var project = new Project(); project.addDefaultScene(); this.openProject(project);};
+IDE_Morph.prototype.newProject = function () {IDE_Morph.showMotorBlocks = false; this.flushBlocksCache('other'); this.refreshPalette(
+); this.categories.refreshEmpty(); var project = new Project(); project.addDefaultScene(); this.openProject(project);};
 
 IDE_Morph.prototype.createNewScene = function () {var setting = this.isAddingScenes; this.isAddingScenes = true; this.newProject(); this.isAddingScenes = setting;};
 
@@ -5947,7 +5933,7 @@ IDE_Morph.prototype.openProjectName = function (name) {
 
 IDE_Morph.prototype.openProject = function (project) {
     IDE_Morph.showMotorBlocks = false;
-    this.flushBlocksCache('motion');
+    this.flushBlocksCache('other');
     this.refreshPalette();
     this.categories.refreshEmpty();
     if (this.isAddingScenes) {
@@ -5957,8 +5943,7 @@ IDE_Morph.prototype.openProject = function (project) {
         });
     } else {
         this.scenes = project.scenes;
-    }
-    this.switchToScene(
+    };  this.switchToScene(
         project.currentScene || project.scenes.at(1),
         true,  // refresh album
         null, // msg
@@ -5996,8 +5981,9 @@ IDE_Morph.prototype.switchToScene = function (
         if (morph.state) {
         morph.scrollIntoView();};
     }); scene.applyGlobalSettings();
-    if (!SpriteMorph.prototype.allCategories().includes(this.currentCategory)) {
-        this.currentCategory = 'motion';
+    if (!((SpriteMorph.prototype.allCategories(
+        )).includes(this.currentCategory))) {
+        this.currentCategory = 'other';
     };  if (!this.setUnifiedPalette(scene.unifiedPalette)) {
         this.createCategories();
         this.createPaletteHandle();
@@ -6365,28 +6351,27 @@ IDE_Morph.prototype.toggleStageSize = function (isSmall, forcedRatio) {
     };
 };
 
-IDE_Morph.prototype.toggleScreenshotDialog = function () {if ((world.children.filter(child => child instanceof DialogBoxMorph).filter(child => child.key === 'screenshotMaker').length) > 0) {
-world.children.filter(child => child instanceof DialogBoxMorph).filter(child => child.key === 'screenshotMaker')[0].destroy();} else {var dialog = new DialogBoxMorph; dialog.key = 'screenshotMaker';
-dialog.labelString = 'Video Capture'; dialog.createLabel(); dialog.spriteEditor = new StageMorph; dialog.spriteEditor.alpha = 0; var video = new SpriteMorph; video.screenshots = []; video.isRecording = false;
-video.isDraggable = false; dialog.add(dialog.spriteEditor); dialog.spriteEditor.add(video); dialog.spriteEditor.setPosition(new Point(0, 28)); video.step = function anonymous () {
-var screenshot = world.childThatIsA(StageMorph).fullImage(); this.wearCostume(new Costume(screenshot)); if (this.isRecording) {this.screenshots.push(screenshot.toDataURL().slice(22));}; this.setTop(
-dialog.spriteEditor.top()); this.setLeft(dialog.left());}; var button = dialog.addButton((function anonymous () {if (button.labelString.name === 'pointRight') {video.startTime = Date.now();
-video.isRecording = true; button.labelString = new SymbolMorph('circleSolid', 10, new Color(200, 0, 0));} else {video.isRecording = false; video.endTime = Date.now(); var zip = new JSZip;
-world.childThatIsA(IDE_Morph).showMessage('Creating \"video.zip\"...\nStay tuned!'); world.nextSteps([(function () {this.rerender();})]); var screenshotsFile = zip.folder("screenshots"), i = 0; while (
-i < video.screenshots.length) {screenshotsFile.file(i + '.png', video.screenshots[i], {base64: true}); i++;}; zip.file("duration.txt", ('The video had the duration of ' + (video.endTime - video.startTime
-) + ' milliseconds')); zip.generateAsync({type:"blob"}).then(function(content) {video.screenshots = []; saveAs(content, "video.zip");}); button.labelString = new SymbolMorph('pointRight', 10, new Color(
-0, 200, 0));}; button.createLabel();}), new SymbolMorph('pointRight', 10, new Color(0, 200, 0))); button.createLabel = function () {if (!isNil(this.label)) {this.label.destroy();}; if ((this.labelString
-) instanceof Morph) {this.label = this.labelString.fullCopy();}; this.add(this.label);}; button.updateLabelColors = function () {if (this.label) {this.label.fixLayout(true);};}; button.createLabel();
-button.fixLayout(); var greenFlag = dialog.addButton((function () {if (greenFlag.labelString.color.g > 0) {greenFlag.labelString.color.g = 0;} else {greenFlag.labelString.color.g = 200;};}), new SymbolMorph(
-'flag', 10, new Color(0, 0, 0))); greenFlag.createLabel = function () {if (!isNil(this.label)) {this.label.destroy();}; if (this.labelString instanceof Morph) {this.label = this.labelString.fullCopy(
-);}; this.add(this.label);}; greenFlag.updateLabelColors = function () {if (this.label) {this.label.fixLayout(true);};}; greenFlag.createLabel(); greenFlag.fixLayout(); dialog.setExtent(new Point(
-480, 360)); dialog.spriteEditor.userMenu = nop; video.userMenu = nop; dialog.button1 = button; dialog.button2 = greenFlag; dialog.fixLayout(); dialog.popUp(world);};};
+IDE_Morph.prototype.toggleScreenshotDialog = function () {if ((world.children.filter(child => child instanceof DialogBoxMorph).filter(child => child.key === 'screenshotMaker').length) > 0) {(world.children
+).filter(child => child instanceof DialogBoxMorph).filter(child => child.key === 'screenshotMaker')[0].destroy();} else {var dialog = new DialogBoxMorph; dialog.key = 'screenshotMaker'; (dialog.labelString
+) = 'Video Capture'; dialog.createLabel(); dialog.spriteEditor = new StageMorph; dialog.spriteEditor.alpha = 0; var video = new SpriteMorph; video.screenshots = []; video.isRecording = false; (video
+).isDraggable = false; dialog.add(dialog.spriteEditor); dialog.spriteEditor.add(video); dialog.spriteEditor.setPosition(new Point(0, 28)); video.step = function () {var screenshot = world.childThatIsA(
+StageMorph).fullImage(); this.wearCostume(new Costume(screenshot)); if (this.isRecording) {this.screenshots.push(screenshot.toDataURL().slice(22));}; this.setTop(dialog.spriteEditor.top()); this.setLeft(
+dialog.left());}; var button = dialog.addButton((function () {if (button.labelString.name === 'pointRight') {video.startTime = Date.now(); video.isRecording = true; button.labelString = (new SymbolMorph(
+'circleSolid', 10, new Color(200, 0, 0)));} else {video.isRecording = false; video.endTime = Date.now(); var zip = new JSZip; world.childThatIsA(IDE_Morph).showMessage('Creating \"video.zip\"...\nStay tuned!'
+); world.nextSteps([(function () {this.rerender();})]); var screenshotsFile = zip.folder("screenshots"), i = 0; while (i < video.screenshots.length) {screenshotsFile.file(i + '.png', video.screenshots[i], {
+base64: true}); i++;}; zip.file("duration.txt", ('The video had the duration of ' + (video.endTime - video.startTime) + ' milliseconds')); zip.generateAsync({type:"blob"}).then(function(content) {(video
+).screenshots = []; saveAs(content, "video.zip");}); button.labelString = new SymbolMorph('pointRight', 10, new Color(0, 200, 0));}; button.createLabel();}), new SymbolMorph('pointRight', 10, new Color(0,
+200, 0))); button.createLabel = function () {if (!isNil(this.label)) {this.label.destroy();}; if ((this.labelString) instanceof Morph) {this.label = this.labelString.fullCopy();}; this.add(this.label);}; button.updateLabelColors = function () {if (this.label) {this.label.fixLayout(true);};}; button.createLabel(); button.fixLayout(); var themeFlag = dialog.addButton((function () {if ((themeFlag.label.color
+).eq(BLACK)) {themeFlag.label.color = IDE_Morph.prototype.flagColor;} else {themeFlag.label.color = BLACK;};}), new SymbolMorph('flag', 10, BLACK)); themeFlag.createLabel = function () {if (!isNil(this.label
+)) {this.label.destroy();}; if (this.labelString instanceof Morph) {this.label = this.labelString.fullCopy();}; this.add(this.label);}; themeFlag.updateLabelColors = function () {if (this.label) {(this.label
+).fixLayout(true);};}; themeFlag.createLabel(); themeFlag.fixLayout(); dialog.setExtent(new Point(480, 360)); dialog.spriteEditor.userMenu = nop; video.userMenu = nop; dialog.button1 = button;
+dialog.button2 = themeFlag; dialog.fixLayout(); dialog.popUp(world);};};
 
 IDE_Morph.prototype.toggleUnifiedPalette = function () {this.setUnifiedPalette(!this.scene.unifiedPalette); this.recordUnsavedChanges();};
 
 IDE_Morph.prototype.setUnifiedPalette = function (bool) {if ((this.scene.unifiedPalette === bool
 ) && (bool === (this.currentCategory === 'unified'))) {return false;}; (this.scene.unifiedPalette
-) = bool; this.currentCategory = bool ? 'unified' : 'motion'; this.createCategories(); (this
+) = bool; this.currentCategory = bool ? 'unified' : 'other'; this.createCategories(); (this
 ).createPaletteHandle(); this.categories.fixLayout(); this.fixLayout(); this.flushBlocksCache(
 ); this.categories.refreshEmpty(); this.currentSprite.palette(this.currentCategory); (this
 ).refreshPalette(true); return true;}; IDE_Morph.prototype.toggleCategoryNames = function (

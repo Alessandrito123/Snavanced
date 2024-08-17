@@ -49,6 +49,7 @@
     Color
     Node
         Morph
+            ArrowMorph
             BlinkerMorph
                 CursorMorph
             BouncerMorph*
@@ -1531,6 +1532,10 @@ Rectangle.prototype.extent = function () {
     return this.corner.subtract(this.origin);
 };
 
+Rectangle.prototype.integerExtent = function () {
+var something = this.extent(); return new Point(
+Math.ceil(something.x), Math.ceil(something.y));};
+
 Rectangle.prototype.height = function () {
     return this.corner.y - this.origin.y;
 };
@@ -1897,13 +1902,10 @@ Node.prototype.childThatIsA = function () {
 
 // Morph: referenced constructors
 
-var Morph, HandMorph, WorldMorph,
-FlashMorph, ShadowMorph, FrameMorph,
-MenuMorph, HandleMorph, FPSMorph,
-StringFieldMorph, ColorPickerMorph,
-SliderMorph, ScrollFrameMorph,
-InspectorMorph, StringMorph,
-TextMorph; /* Morphs */
+var Morph, HandMorph, WorldMorph, ArrowMorph, FlashMorph,
+ShadowMorph, FrameMorph, FPSMorph, MenuMorph, HandleMorph,
+StringFieldMorph, SliderMorph, ColorPickerMorph, TextMorph,
+ScrollFrameMorph, InspectorMorph, StringMorph; /* Morphs */
 
 // Morph inherits from Node:
 
@@ -2065,12 +2067,17 @@ Morph.prototype.topLeft = function () {
 Morph.prototype.topRight = function () {
     return this.bounds.topRight();
 };
+
 Morph.prototype.position = function () {
     return this.bounds.origin;
 };
 
 Morph.prototype.extent = function () {
     return this.bounds.extent();
+};
+
+Morph.prototype.integerExtent = function () {
+    return this.bounds.integerExtent();
 };
 
 Morph.prototype.width = function () {
@@ -2252,23 +2259,20 @@ Morph.prototype.setColor = function (aColor) {
 
 // Morph rendering:
 
-Morph.prototype.getImage = function () {var img;
-if (this.cachedImage && !this.shouldRerender) {
-return this.cachedImage;}; img = newCanvas((this
-).extent(),  false, this.cachedImage); (img
-).imageSmoothingEnabled = false; if ((this
-).isCachingImage) {this.cachedImage = img;};
-var ctx = img.getContext('2d'); (this
-).render(img.getContext('2d')); (this
-).shouldRerender = false; return img;};
-Morph.prototype.render = function (aContext) {
-aContext.fillStyle = this.getRenderColor().toString(
-); aContext.fillRect(0, 0, this.width(), this.height(
-)); if (this.cachedTexture) {this.renderCachedTexture(
-aContext);} else if (this.texture) {this.renderTexture(
-this.texture);};}; (Morph.prototype.getRenderColor
-) = function () {return this.color;}; (Morph
-).prototype.fixLayout = nop;
+Morph.prototype.getImage = function () {var img; if (
+(this.cachedImage) && !this.shouldRerender) {return (
+this.cachedImage);}; img = newCanvas(this.extent(),
+false, this.cachedImage); (img.imageSmoothingEnabled
+) = false; if (this.isCachingImage) {(this.cachedImage
+) = img;}; this.render(img.getContext('2d')); (this
+).shouldRerender = false; return img;}; (Morph.prototype
+).render = function (aContext) {aContext.fillStyle = (
+this.getRenderColor()).toString(); aContext.fillRect(0,
+0, this.width(), this.height()); if (this.cachedTexture
+) {this.renderCachedTexture(aContext);} else if (
+this.texture) {this.renderTexture(this.texture);};
+}; Morph.prototype.getRenderColor = function () {
+return this.color;}; Morph.prototype.fixLayout = nop;
 
 Morph.prototype.fixHolesLayout = nop;
 
@@ -2331,6 +2335,51 @@ Morph.prototype.fullDrawOn = function (aContext, aRect) {if (
 this.isVisible) {this.drawOn(aContext, aRect); (this.children
 ).forEach(child => child.fullDrawOn(aContext, aRect));};};
 
+Morph.prototype.getBodyImage = function () {var img;
+if ((this.cachedImage) && !this.shouldRerender) {return (
+this.cachedImage);}; img = newCanvas(this.integerExtent(
+), false, this.cachedImage); (img.imageSmoothingEnabled
+) = false; if (this.isCachingImage) {(this.cachedImage
+) = img;}; this.backupRender(img.getContext('2d'));
+this.shouldRerender = false; return img;};
+
+Morph.prototype.drawBodyOn = function (ctx,
+    rect) {var clipped = rect.intersect(
+    this.bounds), pos = this.position(), pic, src,
+    w, h, sl, st; if (!(clipped.integerExtent().gt(ZERO))
+    ) {return;}; ctx.save(); ctx.globalAlpha = (
+    this).alpha; if (this.isCachingImage) {
+        pic = this.getBodyImage(); src = (clipped
+        ).translateBy(pos.neg()); sl = src.left(
+        ); st = src.top(); w = Math.min(src.width(
+        ), pic.width - sl); h = Math.min(src.height(
+        ), pic.height - st); if ((w > 0) || (h > 0)
+        ) {return;}; ctx.drawImage(pic, sl, st, w,
+        h, clipped.left(), clipped.top(), w, h);
+    } else {ctx.beginPath(); ctx.rect(clipped.left(
+        ), clipped.top(), Math.ceil(clipped.width()
+        ), Math.ceil(clipped.height())); ctx.clip();
+        ctx.translate(pos.x, pos.y); this.backupRender(
+        ctx); if (MorphicPreferences.showHoles) {
+            ctx.translate(-pos.x, -pos.y);
+            ctx.globalAlpha = 1/4;
+            ctx.fillStyle = 'white';
+            this.holes.forEach(hole => {
+                var sect = hole.translateBy(
+                pos).intersect(clipped
+                ); ctx.fillRect(
+                    sect.left(), sect.top(),
+                    Math.ceil(sect.width()),
+                    Math.ceil(sect.height()
+                ));});};}; ctx.restore();};
+
+Morph.prototype.recordBodyImage = function () {
+var fb = this.bounds, img = newCanvas(
+fb.extent()), ctx = img.getContext('2d');
+ctx.translate(-fb.origin.x, -fb.origin.y
+); if (this.isVisible) {this.drawBodyOn(
+ctx, fb);}; return img;};
+
 Morph.prototype.show = function () {if (!this.isVisible
 ) {this.isVisible = true; this.changed();};}; (Morph
 ).prototype.hide = function () {if (this.isVisible
@@ -2343,9 +2392,9 @@ this.isVisible) {this.hide();} else {this.show();};};
 
 Morph.prototype.fullImage = function () {
 var fb = this.fullBounds(), img = newCanvas(
-fb.extent()), ctx = img.getContext('2d'); (ctx
-).translate(-fb.origin.x, -fb.origin.y); (this
-).fullDrawOn(ctx, fb); return img;};
+fb.extent()), ctx = img.getContext('2d');
+ctx.translate(-fb.origin.x, -fb.origin.y);
+this.fullDrawOn(ctx, fb); return img;};
 
 // Morph screenshot:
 
@@ -3622,7 +3671,7 @@ HandleMorph.prototype.renderCrosshairsOn = function (ctx, fract) {
     var r = this.width() / 2;
 
     // semi-transparent white background blob
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+    ctx.fillStyle = 'rgba(255, 255, 255, 1/2)';
     ctx.beginPath();
     ctx.arc(
         r,
@@ -3824,8 +3873,108 @@ HandleMorph.prototype.attach = function () {
         });
     });
     if (choices.length > 0) {
-        menu.popUpAtHand(this.world());
+        menu.popUpAtHand(world);
     }
+};
+
+// ArrowMorph //////////////////////////////////////////////////////////
+
+/*
+    I am a triangular arrow shape, for use in drop-down menus etc.
+    My orientation is governed by my 'direction' property, which can be
+    'down', 'up', 'left' or 'right'.
+*/
+
+// ArrowMorph inherits from Morph:
+
+ArrowMorph.prototype = new Morph;
+ArrowMorph.prototype.constructor = ArrowMorph;
+ArrowMorph.uber = Morph.prototype;
+
+// ArrowMorph instance creation:
+
+function ArrowMorph(direction, size, padding, color, isBlockLabel) {
+    this.init(direction, size, padding, color, isBlockLabel);
+}
+
+ArrowMorph.prototype.init = function (direction, size, padding, color, isLbl) {
+    this.direction = direction || 'down';
+    this.size = size || ((size === 0) ? 0 : 50);
+    this.padding = padding || 0;
+    this.isBlockLabel = isLbl || false;
+
+    ArrowMorph.uber.init.call(this);
+    this.color = color || BLACK;
+    this.bounds.setWidth(this.size);
+    this.bounds.setHeight(this.size);
+    this.rerender();
+
+    this.cursorStyle = 'pointer';
+};
+
+ArrowMorph.prototype.setSize = function (size) {
+    var min = Math.max(size, 1);
+    this.size = size;
+    this.changed();
+    this.bounds.setWidth(min);
+    this.bounds.setHeight(min);
+    this.rerender();
+};
+
+// ArrowMorph displaying:
+
+ArrowMorph.prototype.childChanged = function () {
+    // react to a change in one of my children,
+    // default is to just pass this message on upwards
+    // override this method for Morphs that need to adjust accordingly
+    if (this.parent) {
+        this.shouldRerender = true;
+        this.parent.childChanged(this);
+    };
+};
+
+ArrowMorph.prototype.render = function (ctx) {if (this.shouldRerender) {
+this.selectedImage = this.getBodyImage();}; if (!isNil(this.selectedImage
+)) {ctx.drawImage(this.selectedImage, 0, 0);};};
+
+ArrowMorph.prototype.backupRender = function (ctx) {
+    // initialize my surface property
+    var pad = this.padding,
+        h = this.height(
+        ), h2 = h / 2,
+        w = this.width(
+        ), w2 = w / 2;
+
+    ctx.fillStyle = this.getRenderColor().toString();
+    ctx.beginPath();
+    if (this.direction === 'down') {
+        ctx.moveTo(pad, h2);
+        ctx.lineTo(w - pad, h2);
+        ctx.lineTo(w2, h - pad);
+    } else if (this.direction === 'up') {
+        ctx.moveTo(pad, h2);
+        ctx.lineTo(w - pad, h2);
+        ctx.lineTo(w2, pad);
+    } else if (this.direction === 'left') {
+        ctx.moveTo(pad, h2);
+        ctx.lineTo(w2, pad);
+        ctx.lineTo(w2, h - pad);
+    } else { // 'right'
+        ctx.moveTo(w2, pad);
+        ctx.lineTo(w - pad, h2);
+        ctx.lineTo(w2, h - pad);
+    }
+    ctx.closePath();
+    ctx.fill();
+};
+
+ArrowMorph.prototype.getRenderColor = function () {
+    if (this.isBlockLabel) {
+        if (MorphicPreferences.isFlat) {
+            return this.color;
+        };  return ((SyntaxElementMorph.prototype
+        ).alpha > 1/4 ? this.color : WHITE);
+    };  return this.color;
 };
 
 // PenMorph ////////////////////////////////////////////////////////////

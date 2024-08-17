@@ -466,33 +466,6 @@ SpriteMorph.prototype.bubbleBorderColor = new Color(190, 190, 190); SpriteMorph.
             spec: 'Noise with: %br intensity: %n %br duration: %n %br volume: %n',
             defaults: [100, 44100, 100]
         },
-
-        // Text To Speech (TTS)
-        doSpeakAndWait: {
-            type: 'command',
-            category: 'sound',
-            spec: 'speak %s',
-            defaults: [localize('hello')]
-        },
-        doSetSpeakingPitch: {
-            type: 'command',
-            category: 'sound',
-            spec: 'set voice to %speakingPitch',
-            defaults: [localize('alto')]
-        },
-        doSetSpeakingSpeed: {
-            type: 'command',
-            category: 'sound',
-            spec: 'set speed to %speakingSpeed',
-            defaults: [localize('normal')]
-        },
-        doSetSpeakingLanguage: {
-            type: 'command',
-            category: 'sound',
-            spec: 'set language to %speakingLanguage',
-            defaults: [localize('English')]
-        },
-
         playBeep: {
             type: 'command',
             category: 'sound',
@@ -616,6 +589,32 @@ SpriteMorph.prototype.bubbleBorderColor = new Color(190, 190, 190); SpriteMorph.
             type: 'command',
             category: 'sound',
             spec: 'stop frequency'
+        },
+
+        // Text To Speech (TTS)
+        doSpeakAndWait: {
+            type: 'command',
+            category: 'sound',
+            spec: 'speak %s',
+            defaults: [localize('hello')]
+        },
+        doSetSpeakingPitch: {
+            type: 'command',
+            category: 'sound',
+            spec: 'set voice to %speakingPitch',
+            defaults: [localize('alto')]
+        },
+        doSetSpeakingSpeed: {
+            type: 'command',
+            category: 'sound',
+            spec: 'set speed to %speakingSpeed',
+            defaults: [localize('normal')]
+        },
+        doSetSpeakingLanguage: {
+            type: 'command',
+            category: 'sound',
+            spec: 'set language to %speakingLanguage',
+            defaults: [localize('English')]
         },
 
         // Pen
@@ -2095,6 +2094,53 @@ SpriteMorph.prototype.bubbleBorderColor = new Color(190, 190, 190); SpriteMorph.
             spec: 'Cool! Now RUN me %s !'
         },
 
+        // JavaScript Blocks
+        jsSingleLineComment: {
+            type: 'command',
+            category: 'other',
+            spec: '// %jsMiscellaneousName'
+        },
+        jsMultiLineComment: {
+            type: 'command',
+            category: 'other',
+            spec: '/* \n %jsComment \n */'
+        },
+        jsCurlyBraces: {
+            type: 'reporter',
+            category: 'other',
+            spec: '\{ %c \}'
+        },
+        jsLabeledStatement: {
+            type: 'command',
+            category: 'other',
+            spec: '%s \:'
+        },
+        test1: {
+            type: 'command',
+            category: 'other',
+            spec: '%rr \;'
+        },
+        test2: {
+            type: 'reporter',
+            category: 'other',
+            spec: '%rr \;'
+        },
+        test3: {
+            type: 'reporter',
+            category: 'other',
+            spec: '\( %commaParms \) => %rr'
+        },
+        test4: {
+            type: 'reporter',
+            category: 'other',
+            spec: '\( %rr %extraGroup \)'
+        },
+        test5: {
+            type: 'reporter',
+            category: 'other',
+            spec: '%a a'
+        },
+
         // Obsolete
         commandObsolete: {
             dev: true,
@@ -2428,27 +2474,22 @@ SpriteMorph.prototype.blockAlternatives = {
     //      ersatz can also be a 2-item array: [selector, input-offset]
 
     // motion:
-    forward: [['doMove', 1]],
-    turn: ['turnLeft'],
-    turnLeft: ['turn'],
-    doFaceTowards:  ['doGotoObject'],
-    gotoDeviatedXY: [['doGlide', 1]],
-    doGotoObject: ['doFaceTowards'],
-    doGlide: [['gotoDeviatedXY', -1]],
-    doMove: [['forward', -1]],
-    xPosition: ['yPosition', 'direction', 'getPosition'],
-    yPosition: ['xPosition', 'direction', 'getPosition'],
-    direction: ['xPosition', 'yPosition', 'getPosition'],
-    getPosition: ['xPosition', 'yPosition', 'direction'],
+    forward: [['doMove', 1]], turn: ['turnLeft'],
+    turnLeft: ['turn'], doFaceTowards:  ['doGotoObject'
+    ], gotoDeviatedXY: [['doGlide', 1]], doGotoObject: [
+    'doFaceTowards'], doGlide: [['gotoDeviatedXY', -1]],
+    doMove: [['forward', -1]], xPosition: ['yPosition',
+    'direction', 'getPosition'], yPosition: ['xPosition',
+    'direction', 'getPosition'], direction: ['xPosition',
+    'yPosition', 'getPosition'], getPosition: [
+    'xPosition', 'yPosition', 'direction'],
 
     // looks:
     reportNewCostumeStretched: ['reportNewCostumeSkewed'],
-    reportNewCostumeSkewed: ['reportNewCostumeStretched'],
-    show: ['hide'], hide: ['show'],
-    changeEffect: ['setEffect'],
-    setEffect: ['changeEffect'],
-    changeScale: ['setScale'],
-    setScale: ['changeScale'],
+    reportNewCostumeSkewed: ['reportNewCostumeStretched'
+    ], show: ['hide'], hide: ['show'], changeEffect: [
+    'setEffect'], setEffect: ['changeEffect'],
+    changeScale: ['setScale'], setScale: ['changeScale'],
 
     // sound:
     playSound: ['doPlaySoundUntilDone', 'doPlaySoundAtRate'],
@@ -2490,8 +2531,7 @@ SpriteMorph.prototype.blockAlternatives = {
 
     // sensing:
     doAsk: ['bubble', 'doThink', 'doSayFor', 'doThinkFor'],
-    getLastAnswer: ['getTimer'],
-    getTimer: ['getLastAnswer'],
+    getLastAnswer: ['getTimer'], getTimer: ['getLastAnswer'],
     reportMouseX: ['reportMouseY', 'reportMousePosition'],
     reportMouseY: ['reportMouseX', 'reportMousePosition'],
     reportMousePosition: ['reportMouseX', 'reportMouseY'],
@@ -2570,14 +2610,14 @@ SpriteMorph.prototype.blockAlternatives = {
 
 function SpriteMorph(globals) {this.init(globals);};
 
-SpriteMorph.prototype.init = function anonymous (globals) {this.name = (localize('DEFAULT SPRITE NAME') + '1'); this.speakingPitch = 1; this.speakingSpeed = 1; this.speakingLanguage = 'en-GB';
-this.variables = new VariableFrame((globals || null), this); this.scripts = new ScriptsMorph; this.customBlocks = []; this.costumes = new List; this.costumes.type = 'costume'; this.costume = null;
-this.sounds = new List; this.sounds.type = 'sound'; this.normalExtent = new Point(60, 60); this.scale = 1; this.instrument = 1; this.rotationStyle = 1; this.version = Date.now(); this.isTemporary = false;
-this.isCorpse = false; this.cloneOriginName = ''; this.volume = 100; this.gainNode = null; this.pan = 0; this.pannerNode = null; this.freqPlayer = null; this.cachedColorDimensions = [0, 0, 0];
-this.inheritedMethodsCache = []; this.parts = []; this.anchor = null; this.nestingScale = 1; this.rotatesWithAnchor = true; this.layers = null; this.primitivesCache = {}; this.paletteCache = {
-}; this.categoriesCache = null; this.rotationOffset = ZERO; this.idx = 0; this.graphicsValues = {'color': 0, 'fisheye': 0, 'whirl': 0, 'pixelate': 0, 'mosaic': 0, 'duplicate': 0, 'negative': 0, 'comic': 0,
-'confetti': 0, 'saturation': 0, 'brightness': 0, 'red': 0, 'green': 0, 'blue': 0}; this.exemplar = null; this.instances = []; this.cachedPropagation = false; this.inheritedAttributes = []; this.imageExtent = ZERO;
-this.imageOffset = ZERO; this.imageData = {}; this.motionAmount = 0; this.motionDirection = 0; this.frameNumber = 0; SpriteMorph.uber.init.call(this); this.isCachingImage = true; this.isFreeForm = true;
+SpriteMorph.prototype.init = function (globals) {this.name = (localize('DEFAULT SPRITE NAME')).concat('1'); this.speakingPitch = 1; this.speakingSpeed = 1; this.speakingLanguage = 'en-GB'; this.variables = (
+new VariableFrame((globals || null), this)); this.scripts = new ScriptsMorph; this.customBlocks = []; this.costumes = new List; this.costumes.type = 'costume'; this.costume = null; this.sounds = new List;
+this.sounds.type = 'sound'; this.normalExtent = new Point(60, 60); this.scale = 1; this.instrument = 1; this.rotationStyle = 1; this.version = Date.now(); this.isTemporary = false; this.isCorpse = false;
+this.cloneOriginName = ''; this.volume = 100; this.gainNode = null; this.pan = 0; this.pannerNode = null; this.freqPlayer = null; this.cachedColorDimensions = [0, 0, 0]; this.inheritedMethodsCache = [
+]; this.parts = []; this.anchor = null; this.nestingScale = 1; this.rotatesWithAnchor = true; this.layers = null; this.primitivesCache = {}; this.paletteCache = {}; this.categoriesCache = null; (this
+).rotationOffset = ZERO; this.idx = 0; this.graphicsValues = {'color': 0, 'fisheye': 0, 'whirl': 0, 'pixelate': 0, 'mosaic': 0, 'duplicate': 0, 'negative': 0, 'comic': 0, 'confetti': 0, 'saturation': 0,
+'brightness': 0, 'red': 0, 'green': 0, 'blue': 0}; this.exemplar = null; this.instances = []; this.cachedPropagation = false; this.inheritedAttributes = []; this.imageExtent = ZERO; (this.imageOffset
+) = ZERO; this.imageData = {}; this.motionAmount = 0; this.motionDirection = 0; this.frameNumber = 0; SpriteMorph.uber.init.call(this); this.isCachingImage = true; this.isFreeForm = true;
 this.cachedColorDimensions = this.color[this.penColorModel](); this.isDraggable = true; this.isDown = false; this.heading = 90; this.fixLayout(); this.rerender();};
 
 // SpriteMorph duplicating (fullCopy)
@@ -9370,16 +9410,14 @@ StageMorph.prototype.fireUserEditEvent = function (
 };
 
 StageMorph.prototype.fireGreenFlagEvent = function () {var procs = [], ide = this.parentThatIsA(IDE_Morph); ide.scene.restart(); this.lastAnswer = ''; ((this.children).concat(this)).forEach(morph => {if (
-isSnapObject(morph)) {morph.allHatBlocksFor('__shout__go__').forEach(block => procs.push(this.threads.startProcess(block, morph, this.isThreadSafe)));}}); var dialog = world.children.filter(child => (
-child instanceof DialogBoxMorph)).filter(child => child.key === 'screenshotMaker'); if (dialog.length > 0) {dialog = dialog[0]; if ((dialog.button2.labelString.color.g > 0) && ((dialog.button1
-).labelString.name === 'pointRight')) {dialog.button1.action(); dialog.button1.fixLayout();};}; this.timerStart = Date.now(); return procs;}; StageMorph.prototype.runPauseScripts = function (
-) {this.receiveUserInteraction('paused', true, true); this.children.forEach(morph => {if (morph instanceof SpriteMorph) {morph.receiveUserInteraction('paused', true, true);};});};
-StageMorph.prototype.runUnpauseScripts = function (receiver) {if (Process.prototype.reportIsA(receiver, ['agent'])) {receiver.receiveUserInteraction('unpaused', true, true);
-} else {this.receiveUserInteraction('unpaused', true, true); this.children.forEach(morph => {if (morph instanceof SpriteMorph) {morph.receiveUserInteraction('unpaused',
-true, true);}});};}; StageMorph.prototype.runStopScripts = function () {this.receiveUserInteraction('stopped', true, true); this.children.forEach(morph => {if (
-morph instanceof SpriteMorph) {morph.receiveUserInteraction('stopped', true, true);}});}; StageMorph.prototype.removeAllClones = function () {var clones = (this
-).children.filter(morph => ((morph instanceof SpriteMorph) && morph.isTemporary)); clones.forEach(clone => {this.threads.stopAllForReceiver(clone);
-clone.detachFromAnchor(); clone.corpsify(); clone.destroy();}); this.cloneCount = 0;}; /* StageMorph important block events. */
+isSnapObject(morph)) {morph.allHatBlocksFor('__shout__go__').forEach(block => procs.push(this.threads.startProcess(block, morph, this.isThreadSafe)));}}); var dialog = world.children.filter(child => ((child
+) instanceof DialogBoxMorph)).filter(child => child.key === 'screenshotMaker'); if (dialog.length > 0) {dialog = dialog[0]; if (!(dialog.button2.label.eq(BLACK)) && (dialog.button1.labelString.name === (
+'pointRight'))) {dialog.button1.action(); dialog.button1.fixLayout();};}; this.timerStart = Date.now(); return procs;}; StageMorph.prototype.runPauseScripts = function () {this.receiveUserInteraction('paused',
+true, true); this.children.forEach(morph => {if (morph instanceof SpriteMorph) {morph.receiveUserInteraction('paused', true, true);};});}; StageMorph.prototype.runUnpauseScripts = function (receiver) {if (
+Process.prototype.reportIsA(receiver, ['agent'])) {receiver.receiveUserInteraction('unpaused', true, true);} else {this.receiveUserInteraction('unpaused', true, true); this.children.forEach(morph => {if ((morph
+) instanceof SpriteMorph) {morph.receiveUserInteraction('unpaused', true, true);}});};}; StageMorph.prototype.runStopScripts = function () {this.receiveUserInteraction('stopped', true, true); (this.children
+).forEach(morph => {if (morph instanceof SpriteMorph) {morph.receiveUserInteraction('stopped', true, true);}});}; StageMorph.prototype.removeAllClones = function () {var clones = (this.children).filter((morph
+) => ((morph instanceof SpriteMorph) && morph.isTemporary)); clones.forEach(clone => {this.threads.stopAllForReceiver(clone); clone.detachFromAnchor(); clone.corpsify(); clone.destroy();}); this.cloneCount = 0;};
 
 StageMorph.prototype.editScripts = function () {
     var ide = this.parentThatIsA(IDE_Morph),
@@ -13163,8 +13201,8 @@ Scene.prototype.stop = function (forGood) {
     var dialog = world.children.filter(child => (
     child instanceof DialogBoxMorph)).filter((child
     ) => child.key === 'screenshotMaker'); if ((dialog
-    ).length > 0) {dialog = dialog[0]; if (((dialog
-    ).button2.labelString.color.g > 0) && (((dialog
+    ).length > 0) {dialog = dialog[0]; if (!((dialog
+    ).button2.label.color.eq(BLACK)) && (((dialog
     ).button1).labelString.name === 'circleSolid')) {
     dialog.button1.action(); dialog.button1.fixLayout();};};
 };
