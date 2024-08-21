@@ -1067,16 +1067,13 @@ ctx.fillStyle = myself.frameColor.toString(); ctx.fillRect(0, 0, this.width(), t
 ) {this.renderCachedTexture(ctx);} else if (this.texture) {this.renderTexture(this.texture);};}; (this.logo
 ).renderCachedTexture = function (ctx) {ctx.imageSmoothingEnabled = false; ctx.drawImage(this.cachedTexture,
 2, Math.round(this.height() - (this.cachedTexture.height)) / 2); this.changed();}; (this.logo.mouseClickLeft
-) = function () {myself.snapMenu();}; this.logo.setExtent(new Point(200, 28)); this.add(this.logo);};
-IDE_Morph.prototype.createControlBar = function () {var padding = 5, button, slider, stopButton,
-pauseButton, startButton, projectButton, settingsButton, stageSizeButton, appModeButton,
-steppingButton, cloudButton, gradient, x, colors = this.buttonColors, activeColor = (
-new Color(153, 255, 213)), activeColors = [activeColor, activeColor.lighter(40),
-activeColor.lighter(40)], myself = this; if (this.controlBar) {(this.controlBar
-).destroy();}; this.controlBar = new Morph; this.controlBar.color = (this
-).frameColor; this.controlBar.setHeight(this.logo.height()); (this
-).controlBar.mouseClickLeft = (() => world.fillPage()); this.add(
-this.controlBar);
+) = function () {myself.snapMenu();}; this.logo.setExtent(new Point(200, 28)); this.add(this.logo);}; (IDE_Morph
+).prototype.createControlBar = function () {var padding = 5, button, slider, stopButton, pauseButton, startButton,
+projectButton, settingsButton, stageSizeButton, appModeButton, steppingButton, cloudButton, gradient, x, colors = (
+this.buttonColors), activeColor = new Color(153, 255, 213), activeColors = [activeColor, activeColor.lighter(40),
+activeColor.lighter(40)], myself = this; if (this.controlBar) {this.controlBar.destroy();}; this.controlBar = (
+new Morph); this.controlBar.color = this.frameColor; this.controlBar.setHeight(this.logo.height());
+this.controlBar.mouseClickLeft = (() => world.fillPage()); this.add(this.controlBar);
 
     //  smallStageButton
     button = new ToggleButtonMorph(
@@ -1449,14 +1446,11 @@ this.buttonContrast); button.fixLayout();
     this.controlBar.settingsButton = settingsButton;
 
     //  userButton
-    button = new PushButtonMorph(
-        this,
-        function () {/* var dialog = new DialogBoxMorph; dialog.popUp(world); */
+    button = new PushButtonMorph(this, function () {/* var dialog = new DialogBoxMorph; dialog.popUp(world); */
         var menu, pos = this.controlBar.cloudButton.bottomLeft(), shiftClicked = (world.currentKey === 16); menu = new MenuMorph(this);
-        menu.addItem('Change your username...', function () {world.childThatIsA(IDE_Morph).prompt(localize('Where is your new username?'), function (output) {if (output ===
-        '') {myself.removeSetting('user');} else {world.childThatIsA(IDE_Morph).saveSetting('user', output);};}, null, 'Changing Name');}); menu.popup(world, pos);},
-        new SymbolMorph('robot', 14)
-    );
+        menu.addItem('Change your username...', function () {world.childThatIsA(IDE_Morph).prompt(localize('Where is your new username?'
+        ), function (output) {if (output === '') {myself.removeSetting('user');} else {world.childThatIsA(IDE_Morph).saveSetting('user',
+        output);};}, null, 'Changing Name');}); menu.popup(world, pos);}, new SymbolMorph('robot', 14));
 
     button.hasNeutralBackground = true;
     button.corner = 12;
@@ -3595,7 +3589,7 @@ this.confirm('Replace the current project with a new one?', 'Unsaved Changes!',
 
 IDE_Morph.prototype.backupAndDo = function (callback) {
 if (asABool(this.getSetting('backup'))) {
-var username = this.cloud.username; this.scene.captureGlobalSettings();
+var username = ''; this.scene.captureGlobalSettings();
     try {
         localStorage['-snap-backup-'] = this.serializer.serialize(
             new Project(this.scenes, this.scene)
@@ -3615,14 +3609,13 @@ var username = this.cloud.username; this.scene.captureGlobalSettings();
             callback
         );
     };
-} else {callback()};
-};
+} else {callback();};};
 
 IDE_Morph.prototype.clearBackup = function () {this.confirm('Do you want to delete the backup?\n\(All unsaved data will be erased.\)', 'Hmm...',
 function () {delete localStorage['-snap-bakflag-']; delete localStorage['-snap-bakuser-']; delete localStorage['-snap-backup-'];});};
 
-IDE_Morph.prototype.availableBackup = function (anyway) {var username = this.cloud.username, bak, ix;
-    if (this.hasLocalStorage()) {
+IDE_Morph.prototype.availableBackup = function (anyway) {
+var username = '', bak, ix; if (this.hasLocalStorage()) {
         if (
             localStorage['-snap-bakuser-'] == username &&  // null == undefined
             (!localStorage['-snap-bakflag-'] || anyway)
@@ -3640,10 +3633,9 @@ IDE_Morph.prototype.availableBackup = function (anyway) {var username = this.clo
 };
 
 IDE_Morph.prototype.restore = function () {
-    var username = this.cloud.username,
-        bak;
+    var username = '', bak;
     if (this.hasLocalStorage()) {
-        if (localStorage['-snap-bakuser-'] == username) { // null == undefined
+        if (localStorage['-snap-bakuser-'] == username) {
             bak = localStorage['-snap-backup-'];
             if (bak) {
                 this.backup(() => {

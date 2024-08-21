@@ -17,24 +17,24 @@ isNil(this.localStorage.getItem('bigNumMemoizerOutputs'))) {this.localStorage.se
 ); this.memoizedOutputs = (this.localStorage.getItem('bigNumMemoizerOutputs')).split('\|');};}; BigNumMemoizer.prototype.constructor = BigNumMemoizer; Array.prototype.flatten = function () {var result = [
 ]; this.deepMap(item => result.push(item)); return result;}; Array.prototype.shallowCopy = function () {var result = []; this.forEach(item => result.push(item)); return result;}; (Array.prototype.deepMap
 ) = function (callback) {return this.map(item => ((item instanceof Array) ? item.deepMap(callback) : callback(item)));}; Array.prototype.completeCopy = function () {return (this.deepMap(item => (((item
-) instanceof Array) ? item.fullCopy() : (isNil(item) ? item : ((item.fullCopy instanceof Function) ? item.fullCopy() : (item))))));}; Array.prototype.fullCopy = function () {return this.deepMap(item => (
-(item instanceof Array) ? item.fullCopy() : item));}; Array.prototype.uniques = function () {return this.filter((item,index,list)=>(list.indexOf(item) == index));}; const nil = [null, undefined], isNil = (
+) instanceof Array) ? item.fullCopy() : (isNil(item) ? item : ((item.fullCopy instanceof Function) ? item.fullCopy() : item)))));}; Array.prototype.fullCopy = function () {return this.deepMap(item => ((
+item instanceof Array) ? item.fullCopy() : item));}; Array.prototype.uniques = function () {return this.filter((item, index, list) => (list.indexOf(item) == index));}; const nil = [null, undefined], isNil = (
 thing => nil.includes(thing)), getHiddenVariable = function (selectedVar) {if (isNil(selectedVar)) {return undefined;} else if (selectedVar.toString instanceof Function) {selectedVar = selectedVar.toString();
 } else {return undefined;}; return (new Function(('try \{return ').concat(selectedVar,'\;\} catch \(error\) \{return undefined\;\}\;')))();}, digits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '-', '.'
 ], infinities = ['Infinity', '-Infinity'], isADigit = (digit => digits.includes(digit)), getNZeroes = function (zeroes) {zeroes = Math.trunc(Math.max(zeroes, 0)); if (zeroes == 0) {return '';} else {return ((
 10n ** BigInt(zeroes.toString())).toString()).slice(1, zeroes + 1);};}, isSecureForNumbers = function (text) {return (infinities.includes(text) || (text.split('')).every(isADigit));}, containsNumbers = function (
 text) {return (text.split('')).some(isADigit);}, BigDec = function (text) {if (new.target instanceof Function) {this.init(text);} else {return (new BigDec(text));};}, LocalBigNumMemoizer = new BigNumMemoizer;
 BigDec.prototype.constructor = BigDec; BigDec.prototype.init = function (text) {this.bignum = this; this.imaginaryPart = null; if (isNil(text)) {text = '';} else if (text.toString instanceof Function) {text = (
-text.toString()); text = (isSecureForNumbers(text) ? text : '');} else {text = '';}; if (infinities.includes(text)) {this.naturalContainer = (1n); this.isNegative = (text[0] == '-'); this.isInfinite = true;
-this.dotPosition = 0;} else {this.isInfinite = false; var splittedNumeral = text.split('.'); this.isNegative = ((splittedNumeral[0])[0] == '-'); this.dotPosition = 0; if (this.isNegative) {splittedNumeral[0
-] = (splittedNumeral[0]).slice(1, (splittedNumeral[0]).length);}; if (splittedNumeral.length > 1) {if (((splittedNumeral[1]).length) > this.maximumDecimals) {splittedNumeral[1] = (splittedNumeral[1]).slice(0,
-this.maximumDecimals);}; while (true) {if ((splittedNumeral[1])[splittedNumeral[1].length - 1] == '0') {splittedNumeral[1] = ((splittedNumeral[1]).slice(0, ((splittedNumeral[1]).length - 1)));} else {break;};};
+text.toString()); text = (isSecureForNumbers(text) ? text : '');} else {text = '';}; if (infinities.includes(text)) {this.naturalContainer = 1n; this.isNegative = (text[0] == '-'); this.isInfinite = true; (this
+).dotPosition = 0;} else {this.isInfinite = false; var splittedNumeral = text.split('.'); this.isNegative = ((splittedNumeral[0])[0] == '-'); this.dotPosition = 0; if (this.isNegative) {splittedNumeral[0] = (
+splittedNumeral[0]).slice(1, (splittedNumeral[0]).length);}; if (splittedNumeral.length > 1) {if (((splittedNumeral[1]).length) > this.maximumDecimals) {splittedNumeral[1] = (splittedNumeral[1]).slice(0, (this
+).maximumDecimals);}; while (true) {if ((splittedNumeral[1])[splittedNumeral[1].length - 1] == '0') {splittedNumeral[1] = ((splittedNumeral[1]).slice(0, ((splittedNumeral[1]).length - 1)));} else {break;};};
 } else {splittedNumeral.push('');}; this.dotPosition = (splittedNumeral[1]).length; this.naturalContainer = BigInt((splittedNumeral[0]).concat(splittedNumeral[1])); if (this.naturalContainer.toString() == '0'
 ) {this.isNegative = false;}; this.magnitudes = [];}; return this;}; BigDec.prototype.toString = function () {if (this.isInfinite) {return (this.isNegative ? '-' : '').concat(infinities[0]);}; var numeral = (
 this.naturalContainer).toString(); if (this.dotPosition > 0) {return (this.isNegative ? '-' : '').concat((!(this.dotPosition < ((this.naturalContainer).toString()).length) ? '0' : ''), numeral.slice(0, Math.max(
 (numeral.length - this.dotPosition), 0)), '.', getNZeroes(this.dotPosition - (this.naturalContainer.toString()).length), numeral.slice(Math.max((numeral.length - this.dotPosition), 0), numeral.length));} else {
 return ((this.isNegative ? '-' : '').concat(numeral));};}; BigDec.prototype.maximumDecimals = 16; BigDec.prototype.toSignedInteger = function () {var copy = this.fullCopy(); copy.dotPosition = 0; return (
-copy.toString());}; BigDec.prototype.fullCopy = function () { if (this.isInfinite) {return BigDec(this);} else {var splittedNumeral = (this.toString()).split('.'); if (splittedNumeral.length > 1) {if ((
+copy.toString());}; BigDec.prototype.fullCopy = function () {if (this.isInfinite) {return BigDec(this);} else {var splittedNumeral = (this.toString()).split('.'); if (splittedNumeral.length > 1) {if ((
 splittedNumeral[1]).length > this.maximumDecimals) {splittedNumeral[1] = (splittedNumeral[1]).slice(0, this.maximumDecimals);};} else {splittedNumeral.push('0');}; return BigDec((splittedNumeral[0]).concat(
 '.', splittedNumeral[1]));};}; BigDec.prototype.subtractWith = function (anotherBigNum) {return this.addWith(anotherBigNum.negativeCopy());}; BigDec.prototype.negativeCopy = function () {var copy = (this
 ).fullCopy(); copy.isNegative = !(copy.isNegative); return copy;}; BigDec.prototype.getImaginaryPart = function () {var imag = this.imaginaryPart; return (isNil(imag) ? theZero : imag);}; (BigDec.prototype
@@ -61,7 +61,7 @@ result.isNegative = this.isNegative; return result.fullCopy();} else {result = B
 ).addWith(anotherBigNum)).basicModulateWith(anotherBigNum);};}; BigDec.prototype.basicRound = function () {return (!(((this.absoluteValue()).getDecimals()).isLessThan(theHalf)) ? this.ceiling() : this.floor());
 }; BigDec.prototype.betterRound = function () {var rounded = (this.absoluteValue()).basicRound(); rounded.isNegative = this.isNegative; return rounded;}; BigDec.prototype.exponentialHelper = function () {if (
 this.isLessThan(theZero)) {return ((this.negativeCopy()).exponentialHelper()).getReciprocal();} else if (this.isEqualTo(theZero)) {return theOne;} else if (this.isGreaterThan(theOne)) {return ((eulerNatural
-).raiseWith(this.truncate())).multiplicateWith((this.getDecimals()).exponentialHelper());} else {return (repeatedSummatory(( n=> (this.raiseWith(n)).divideWith((n).simpleFactorial())), theZero, theSevenTeen
+).raiseWith(this.truncate())).multiplicateWith((this.getDecimals()).exponentialHelper());} else {return (repeatedSummatory((n => (this.raiseWith(n)).divideWith((n).simpleFactorial())), theZero, theSevenTeen
 )).fixDecimals();};}; BigDec.prototype.multiplicateWith = function (anotherBigNum) {if (theOne.isEqualTo(anotherBigNum)) {return this.fullCopy();} else if (anotherBigNum.isEqualTo(theZero)) {return theZero;
 } else if (this.isInfinite || anotherBigNum.isInfinite) {return (infinitySignedAs(!(this.isNegative == anotherBigNum.isNegative)));} else {var secondNum = anotherBigNum.toSignedInteger(), firstNum = (this
 ).toSignedInteger(), firstDot = this.dotPosition, secondDot = anotherBigNum.dotPosition, result = BigDec(BigInt(firstNum) * BigInt(secondNum)); result.dotPosition = firstDot + secondDot; return (result
@@ -138,48 +138,49 @@ if ((this.getDecimals()).isGreaterThan(theZero)) {return ((this.naturalLogarithm
 )) * ((this.truncate()).toString()).length), j = 0; result = this.subtractWith((i.addWith(theDarkUnit)).powerWith(index)); while (j < limit) {result = (result.subtractWith(((result.powerWith(index)
 ).subtractWith(this)).divideWith(index.multiplicateWith(result.powerWith(index.addWith(theDarkUnit)))))); j++;}; return result;};} else {return i;};};};}; BigDec.prototype.customFibonacci = function (
 base) {var metallicPower = (base.getIntervalMetallicMean()).powerWith(this), result = (metallicPower.subtractWith(((halfTurn.multiplicateWith(this)).cosine()).divideWith(metallicPower))).divideWith(
-base.getCoreMetallicMean()); if (this.isPureInteger()) {result = result.betterRound();}; return result;}; BigDec.prototype.permutateWith = function (anotherBigNum) {return (this.simpleFactorial()
-).divideWith((this.subtractWith(anotherBigNum)).simpleFactorial());}; BigDec.prototype.customLucas = function (base) {var metallicPower = (base.getIntervalMetallicMean()).powerWith(this), result = (
-metallicPower.addWith(((halfTurn.multiplicateWith(this)).cosine()).divideWith(metallicPower))); if (this.isPureInteger()) {result = result.betterRound();}; return result;}; (BigDec.prototype.standardLucas
-) = function () {return this.customLucas(theOne);}; BigDec.prototype.textRepresentation = function () {return (this.isInfinite ? (this.isNegative ? '-' : '').concat('∞') : this.toString());}; (BigDec
-).prototype.standardFibonacci = function () {return this.customFibonacci(theOne);}; BigDec.prototype.hypotenuse = function (anotherBigNum) {return ((this.squarePower()).addWith(anotherBigNum.squarePower(
-))).squareRoot();}; BigDec.prototype.getMagnitudeNamed = (() => ['', '0']); BigDec.prototype.containsMagnitudeNamed = (() => false); BigDec.prototype.getRandomNumberFromSignedUnits = function () {
-return this.multiplicateWith(theDarkUnit.dealWith(theOne));}; BigDec.prototype.combineWith = function (anotherBigNum) {return (this.permutateWith(anotherBigNum)).divideWith(anotherBigNum.simpleFactorial(
-));}; BigDec.prototype.arcTangent = function () {return (this.isLessThan(theZero) ? (halfTurn).subtractWith((this.negativeCopy()).arcTangent()) : (this.isGreaterThan(theOne) ? quarterOfTurn.subtractWith(
-(this.getReciprocal()).arcTangent()) : (((this.arcTangentRadians()).divideWith(arcPi)).multiplicateWith(octaveOfTurn))));}; BigDec.prototype.arcTangent2 = function (anotherBigNum) {if ((anotherBigNum
-).isLessThan(theZero) && this.isGreaterThan(theZero)) {return halfTurn.subtractWith(this.arcTangent2(anotherBigNum.negativeCopy()));} else if (anotherBigNum.isLessThan(theZero) && this.isEqualTo(theZero
-)) {return halfTurn;} else if ((anotherBigNum.isLessThan(theZero)) && this.isLessThan(theZero)) {return (halfTurn.addWith((this.negativeCopy()).arcTangent2(anotherBigNum.negativeCopy())));} else if ((
-anotherBigNum).isEqualTo(theZero) && this.isLessThan(theZero)) {return tripleOfHalfTurn;} else if (anotherBigNum.isGreaterThan(theZero) && this.isLessThan(theZero)) {return (entireTurn.subtractWith((
-this.negativeCopy()).arcTangent2(anotherBigNum)));} else if (anotherBigNum.isGreaterThan(theZero) && this.isEqualTo(theZero)) {return theZero;} else {return quarterOfTurn.subtractWith(((anotherBigNum
-).divideWith(this)).arcTangent());};}; BigDec.prototype.arcCosine = function () {return (this.isGreaterThan(theDarkUnit) ? (this.isGreaterThan(theOne) ? negativeInfinity : (((theOne.subtractWith((this
-).squarePower())).squareRoot()).divideWith(this)).arcTangent()) : (this.isLessThan(theDarkUnit) ? positiveInfinity : halfTurn));}; BigDec.prototype.arcSine = function () {var result = (quarterOfTurn
-).subtractWith(this.arcCosine()); return (result.isInfinite ? result : result.betterModulateWith(entireTurn));}; BigDec.prototype.arcSecant = function () {return (this.getReciprocal()).arcCosine(
-);}; BigDec.prototype.arcCosecant = function () {return (this.getReciprocal()).arcSine();}; BigDec.prototype.arcCotangent = function () {return (quarterOfTurn.subtractWith(this.arcTangent()));};
-const arithmeticMean = function () {var list = Array.from(arguments); return ((list.length > 1) ? (list.reduce((a, b) => a.addWith(b))).divideWith(BigDec(list.length)) : ((list.length > 0) ? list[
-0] : theZero));}, medianMean = function () {var list = (Array.from(arguments)).sort((a, b) => (a.isLessThan(b))); return (list.length > 1 ? ((list.length % 2) > 0) ? list[Math.ceil(list.length / 2)
-] : arithmeticMean(list[list.length / 2], list[(list.length / 2) + 1]) : (list.length > 0 ? list[0] : theZero));}, geometricMean = function () {var list = Array.from(arguments); return (((list.length
-) > 1) ? (list.reduce((a, b) => a.multiplicateWith(b))).radicateWith(BigDec(list.length)) : ((list.length > 0) ? list[0] : theOne));}, harmonicMean = function () {var basic = Array.from(arguments), list = (
-basic.fullCopy()).map(n => (n.getReciprocal())); return ((list.length > 1) ? (BigDec(list.length)).divideWith(list.reduce((a, b) => a.addWith(b))) : ((list.length > 0) ? basic[0] : positiveInfinity));};
-BigDec.prototype.dealWith = function(anotherBigNum) {var max = this.max(anotherBigNum), min = this.min(anotherBigNum), result = max.subtractWith(min), digitPlacers = ((result.truncate()).toString()
-).length + 15; if (result.isEqualTo(theZero)) {return min;} else {var randomness = '', i = 0; while (i < digitPlacers) {randomness = randomness.concat(getRandomDigit()); i++;}; result = (result
-).multiplicateWith(BigDec(randomness)); result.dotPosition += digitPlacers; return (result.fullCopy()).addWith(min);};}; BigDec.prototype.agm = function (anotherBigNum) {var firstA = this,
-firstB = anotherBigNum, secondA, secondB, i = 0, limit = (((((((arithmeticMean(firstA, firstB)).betterRound()).absoluteValue()).toString()).length) * this.maximumDecimals) * 2); while (
-i < limit) {secondA = arithmeticMean(firstA, firstB); secondB = geometricMean(firstA, firstB); firstA = secondA; firstB = secondB; i++;}; return arithmeticMean(firstA, firstB);}; (BigDec
-).prototype.ghm = function (anotherBigNum) {var firstA = this, firstB = anotherBigNum, secondA, secondB, i = 0, limit = (((((((harmonicMean(firstA, firstB)).betterRound()).absoluteValue()
-).toString()).length) * this.maximumDecimals) * 2); while (i < limit) {secondA = harmonicMean(firstA, firstB); secondB = geometricMean(firstA, firstB); firstA = secondA; firstB = secondB;
-i++;}; return harmonicMean(firstA, firstB);}; BigDec.prototype.cubeRoot = function (isFaster) {return (isFaster ? ((this.naturalLogarithm()).divideWith(theSerpentNum)).exponential() : (this
-).radicateWith(theSerpentNum));}; BigDec.prototype.hiperbolicSine = function () {return ((this.exponential()).subtractWith((this.negativeCopy()).exponential())).divideWith(theFartNum);};
-BigDec.prototype.hiperbolicTangent = function () {return ((this.exponential()).subtractWith((this.negativeCopy()).exponential())).divideWith((this.exponential()).addWith((this.negativeCopy(
-)).exponential()));}; BigDec.prototype.hiperbolicCosine = function () {return ((this.exponential()).addWith((this.negativeCopy()).exponential())).divideWith(theFartNum);}; (BigDec.prototype
-).hiperbolicCotangent = function () {return (this.hiperbolicTangent()).getReciprocal();}; BigDec.prototype.hiperbolicSecant = function () {return (this.hiperbolicCosine()).getReciprocal();};
-BigDec.prototype.hiperbolicCosecant = function () {return (this.hiperbolicSine()).getReciprocal();}; BigDec.prototype.hiperbolicArcSine = function () {return this.addWith((theOne.addWith((this
-).squarePower())).squareRoot(true));}; BigDec.prototype.hiperbolicArcTangent = function () {return (((theOne.addWith(this)).divideWith(theOne.subtractWith(this))).naturalLogarithm()).divideWith(
-theFartNum);}; BigDec.prototype.hiperbolicArcCosine = function () {return this.addWith((theDarkUnit.addWith(this.squarePower())).squareRoot(true));}; BigDec.prototype.hiperbolicArcCosecant = (
-function () {return (this.getReciprocal()).hiperbolicArcSine();}); BigDec.prototype.hiperbolicArcSecant = function () {return (this.getReciprocal()).hiperbolicArcCosine();}; (BigDec.prototype
-).hiperbolicArcCotangent = function () {return (this.getReciprocal()).hiperbolicArcTangent();}; const piIncalculable = BigDec('3.1415926535897932'), goldenRatio = theOne.getIntervalMetallicMean(
-), silverRatio = theFartNum.getIntervalMetallicMean(), dottieNumber = BigDec('.9998477415310881'), mascheroniEulerConstant = BigDec('.5772156649015329'), plasticRatio = ((((BigDec(9)).addWith((
-BigDec(69)).squareRoot(true))).divideWith(BigDec(18))).cubeRoot(true)).addWith((((BigDec(9)).subtractWith((BigDec(69)).squareRoot(true))).divideWith(BigDec(18))).cubeRoot(true)), arcPi = (theOne
-).arcTangentRadians(), strangeLemniscate = BigDec('2.6220575542921198'); BigDec.prototype.gamma = function () {};
+base.getCoreMetallicMean()); if (this.isPureInteger() && base.isPureInteger()) {result = result.betterRound();}; return result;}; BigDec.prototype.permutateWith = function (anotherBigNum) {return (
+this.simpleFactorial()).divideWith((this.subtractWith(anotherBigNum)).simpleFactorial());}; BigDec.prototype.customLucas = function (base) {var metallicPower = (base.getIntervalMetallicMean()).powerWith(
+this), result = (metallicPower.addWith(((halfTurn.multiplicateWith(this)).cosine()).divideWith(metallicPower))); if (this.isPureInteger() && base.isPureInteger()) {result = result.betterRound();};
+return result;}; BigDec.prototype.standardLucas = function () {return this.customLucas(theOne);}; BigDec.prototype.textRepresentation = function () {return (this.isInfinite ? (this.isNegative ? (
+'-') : '').concat('∞') : this.toString());}; BigDec.prototype.standardFibonacci = function () {return this.customFibonacci(theOne);}; BigDec.prototype.hypotenuse = function (anotherBigNum) {return (
+(this.squarePower()).addWith(anotherBigNum.squarePower())).squareRoot();}; BigDec.prototype.getMagnitudeNamed = (() => ['', '0']); BigDec.prototype.containsMagnitudeNamed = (() => false); (BigDec.prototype
+).getRandomNumberFromSignedUnits = function () {return this.multiplicateWith(theDarkUnit.dealWith(theOne));}; BigDec.prototype.combineWith = function (anotherBigNum) {return (this.permutateWith(anotherBigNum
+)).divideWith(anotherBigNum.simpleFactorial());}; BigDec.prototype.arcTangent = function () {return (this.isLessThan(theZero) ? (halfTurn).subtractWith((this.negativeCopy()).arcTangent()) : (this.isGreaterThan(
+theOne) ? quarterOfTurn.subtractWith((this.getReciprocal()).arcTangent()) : (((this.arcTangentRadians()).divideWith(arcPi)).multiplicateWith(octaveOfTurn))));}; BigDec.prototype.arcTangent2 = function (
+anotherBigNum) {if (anotherBigNum.isLessThan(theZero) && this.isGreaterThan(theZero)) {return halfTurn.subtractWith(this.arcTangent2(anotherBigNum.negativeCopy()));} else if (anotherBigNum.isLessThan(theZero
+) && this.isEqualTo(theZero)) {return halfTurn;} else if ((anotherBigNum.isLessThan(theZero)) && this.isLessThan(theZero)) {return (halfTurn.addWith((this.negativeCopy()).arcTangent2(anotherBigNum.negativeCopy(
+))));} else if (anotherBigNum.isEqualTo(theZero) && this.isLessThan(theZero)) {return tripleOfHalfTurn;} else if (anotherBigNum.isGreaterThan(theZero) && this.isLessThan(theZero)) {return (entireTurn.subtractWith(
+(this.negativeCopy()).arcTangent2(anotherBigNum)));} else if (anotherBigNum.isGreaterThan(theZero) && this.isEqualTo(theZero)) {return theZero;} else {return quarterOfTurn.subtractWith(((anotherBigNum).divideWith(
+this)).arcTangent());};}; BigDec.prototype.arcCosine = function () {return (this.isGreaterThan(theDarkUnit) ? (this.isGreaterThan(theOne) ? negativeInfinity : (((theOne.subtractWith(this.squarePower())
+).squareRoot()).divideWith(this)).arcTangent()) : (this.isLessThan(theDarkUnit) ? positiveInfinity : halfTurn));}; BigDec.prototype.arcSine = function () {var result = quarterOfTurn.subtractWith((this
+).arcCosine()); return (result.isInfinite ? result : result.betterModulateWith(entireTurn));}; BigDec.prototype.arcSecant = function () {return (this.getReciprocal()).arcCosine();}; (BigDec.prototype
+).arcCosecant = function () {return (this.getReciprocal()).arcSine();}; BigDec.prototype.arcCotangent = function () {return (quarterOfTurn.subtractWith(this.arcTangent()));}; const arithmeticMean = (
+function () {var list = Array.from(arguments); return ((list.length > 1) ? (list.reduce((a, b) => a.addWith(b))).divideWith(BigDec(list.length)) : ((list.length > 0) ? list[0] : theZero));}),
+medianMean = function () {var list = (Array.from(arguments)).sort((a, b) => (a.isLessThan(b))); return (list.length > 1 ? ((list.length % 2) > 0) ? list[Math.ceil(list.length / 2)] : arithmeticMean(
+list[list.length / 2], list[(list.length / 2) + 1]) : (list.length > 0 ? list[0] : theZero));}, geometricMean = function () {var list = Array.from(arguments); return ((list.length > 1) ? (list.reduce((a,
+b) => a.multiplicateWith(b))).radicateWith(BigDec(list.length)) : ((list.length > 0) ? list[0] : theOne));}, harmonicMean = function () {var basic = Array.from(arguments), list = (basic.fullCopy()).map(
+n => (n.getReciprocal())); return ((list.length > 1) ? (BigDec(list.length)).divideWith(list.reduce((a, b) => a.addWith(b))) : ((list.length > 0) ? basic[0] : positiveInfinity));}; (BigDec.prototype
+).dealWith = function(anotherBigNum) {var max = this.max(anotherBigNum), min = this.min(anotherBigNum), result = max.subtractWith(min), digitPlacers = (((result.truncate()).toString()).length + 15
+); if (result.isEqualTo(theZero)) {return min;} else {var randomness = '', i = 0; while (i < digitPlacers) {randomness = randomness.concat(getRandomDigit()); i++;}; result = result.multiplicateWith(
+BigDec(randomness)); result.dotPosition += digitPlacers; return (result.fullCopy()).addWith(min);};}; BigDec.prototype.agm = function (anotherBigNum) {var firstA = this, firstB = anotherBigNum,
+secondA, secondB, i = 0, limit = (((((((arithmeticMean(firstA, firstB)).betterRound()).absoluteValue()).toString()).length) * this.maximumDecimals) * 2); while (i < limit) {secondA = arithmeticMean(
+firstA, firstB); secondB = geometricMean(firstA, firstB); firstA = secondA; firstB = secondB; i++;}; return arithmeticMean(firstA, firstB);}; BigDec.prototype.ghm = function (anotherBigNum) {
+var firstA = this, firstB = anotherBigNum, secondA, secondB, i = 0, limit = (((((((harmonicMean(firstA, firstB)).betterRound()).absoluteValue()).toString()).length) * this.maximumDecimals) * 2
+); while (i < limit) {secondA = harmonicMean(firstA, firstB); secondB = geometricMean(firstA, firstB); firstA = secondA; firstB = secondB; i++;}; return harmonicMean(firstA, firstB);}; (BigDec
+).prototype.cubeRoot = function (isFaster) {return (isFaster ? ((this.naturalLogarithm()).divideWith(theSerpentNum)).exponential() : this.radicateWith(theSerpentNum));}; (BigDec.prototype
+).hiperbolicSine = function () {return ((this.exponential()).subtractWith((this.negativeCopy()).exponential())).divideWith(theFartNum);}; BigDec.prototype.hiperbolicTangent = function () {
+return ((this.exponential()).subtractWith((this.negativeCopy()).exponential())).divideWith((this.exponential()).addWith((this.negativeCopy()).exponential()));}; (BigDec.prototype.hiperbolicCosine
+) = function () {return ((this.exponential()).addWith((this.negativeCopy()).exponential())).divideWith(theFartNum);}; BigDec.prototype.hiperbolicCotangent = function () {return (this.hiperbolicTangent(
+)).getReciprocal();}; BigDec.prototype.hiperbolicSecant = function () {return (this.hiperbolicCosine()).getReciprocal();}; BigDec.prototype.hiperbolicCosecant = function () {return (this.hiperbolicSine(
+)).getReciprocal();}; BigDec.prototype.hiperbolicArcSine = function () {return this.addWith((theOne.addWith(this.squarePower())).squareRoot(true));}; BigDec.prototype.hiperbolicArcTangent = function () {
+return (((theOne.addWith(this)).divideWith(theOne.subtractWith(this))).naturalLogarithm()).divideWith(theFartNum);}; BigDec.prototype.hiperbolicArcCosine = function () {return this.addWith(((theDarkUnit
+).addWith(this.squarePower())).squareRoot(true));}; BigDec.prototype.hiperbolicArcCosecant = function () {return (this.getReciprocal()).hiperbolicArcSine();}; (BigDec.prototype.hiperbolicArcSecant
+) = function () {return (this.getReciprocal()).hiperbolicArcCosine();}; BigDec.prototype.hiperbolicArcCotangent = function () {return (this.getReciprocal()).hiperbolicArcTangent();};
+const piIncalculable = BigDec('3.1415926535897932'), goldenRatio = theOne.getIntervalMetallicMean(), silverRatio = theFartNum.getIntervalMetallicMean(), dottieNumber = BigDec(
+'.9998477415310881'), mascheroniEulerConstant = BigDec('.5772156649015329'), plasticRatio = ((((BigDec(9)).addWith((BigDec(69)).squareRoot(true))).divideWith(BigDec(18))).cubeRoot(
+true)).addWith((((BigDec(9)).subtractWith((BigDec(69)).squareRoot(true))).divideWith(BigDec(18))).cubeRoot(true)), arcPi = theOne.arcTangentRadians(), strangeLemniscate = BigDec(
+'2.6220575542921198'), powerOnlyIntegralHandler = function (upperBound, multiplier, power, lowerBound) {var addedPower = power.addWith(theOne); return (multiplier.multiplicateWith(
+(upperBound.powerWith(addedPower)).subtractWith(lowerBound.powerWith(addedPower)))).divideWith(addedPower);}; BigDec.prototype.gamma = function () {};
 
 BigDec.prototype.tetrateWith = function (anotherBigNum) {
     var out = theOne.addWith((anotherBigNum.absoluteValue()).getDecimals());

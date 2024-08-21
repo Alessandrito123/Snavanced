@@ -25,7 +25,6 @@
     You should have received a copy of the GNU Affero General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-
     documentation contents
     ----------------------
     I. inheritance hierarchy
@@ -39,6 +38,12 @@
     IX. acknowledgements
     X. contributors
 
+    credits
+    -------
+    Lucas Karahadian contributed a first prototype of the piano keyboard
+    additional symbols have been contributed by members of the Snap!
+    open-source community, especially by Bernat Romagosa
+
     I. hierarchy
     -------------
     the following tree lists all constructors hierarchically,
@@ -49,15 +54,17 @@
     Color
     Node
         Morph
+            AlignmentMorph
             ArrowMorph
             BlinkerMorph
                 CursorMorph
-            BouncerMorph*
             BoxMorph
                 InspectorMorph
                 MenuMorph
+                    PianoMenuMorph
                 MouseSensorMorph*
                 SpeechBubbleMorph
+            BouncerMorph*
             CircleBoxMorph
                 SliderButtonMorph
                 SliderMorph
@@ -65,6 +72,7 @@
                 GrayPaletteMorph
             ColorPickerMorph
             DialMorph
+            DialogBoxMorph
             FrameMorph
                 ScrollFrameMorph
                     ListMorph
@@ -72,12 +80,20 @@
                 WorldMorph
             HandleMorph
             HandMorph
+            InputFieldMorph
             PenMorph
             ShadowMorph
             StringMorph
+            SymbolMorph
             TextMorph
             TriggerMorph
                 MenuItemMorph
+                PianoKeyMorph
+                    PushButtonMorph
+                        ToggleMorph
+                        ToggleButtonMorph
+                        TabMorph
+                ToggleElementMorph
     Point
     Rectangle
 
@@ -123,6 +139,17 @@
     BouncerMorph*
     HandMorph
     WorldMorph
+    PushButtonMorph
+    ToggleButtonMorph
+    TabMorph
+    ToggleMorph
+    ToggleElementMorph
+    DialogBoxMorph
+    AlignmentMorph
+    InputFieldMorph
+    PianoMenuMorph
+    PianoKeyMorph
+    SymbolMorph
 
     * included only for demo purposes
 
@@ -281,8 +308,8 @@ element) {return ((list instanceof Array) ? (list.indexOf(element) > -1) : false
 target => (((typeof target) === 'string') || (target instanceof String))), isObject = (target => ((target !== null) && (typeof target === 'object' || target instanceof Object))), radians = (degrees => ((degrees
 ) * (Math.PI / 180))), degrees = (radians => (radians * (180 / Math.PI))), fontHeight = (height => (Math.max(height, MorphicPreferences.minimumFontHeight) * 6/5)), isWordChar = (aCharacter => (aCharacter.match(
 /[A-zÀ-ÿ0-9]/))), isURLChar = (aCharacter => aCharacter.match(/[A-z0-9./:?&_+%-]/)), isURL = (text => (/^https?:\/\//.test(text))); if (isNil(localStorage['-snap-setting-isShowingBlanks'])) {localStorage[
-'-snap-setting-isShowingBlanks'] = true;}; function extraContains (list, element) {if (element instanceof Array) {var result = element.deepMap(item => contains(list, item)), i = 0; while (i < (
-result.length)) {if (result[i]) {return true;}; i++;}; return false;} else {return contains(list, element);};}; /* Morphic has now better and newer improvements to try within the world. */
+'-snap-setting-isShowingBlanks'] = true;}; function extraContains (list, element) {if (element instanceof Array) {var result = element.deepMap(item => contains(list, item)), i = 0; while (i < (result.length
+)) {if (result[i]) {return true;}; i++;}; return false;} else {return contains(list, element);};}; /* Morphic has now better and newer improvements to try within the world. */
 
 var standardSettings = {
     minimumFontHeight: getMinimumFontHeight(),
@@ -431,8 +458,7 @@ function copy(target) {
         for (property in target) {
             c[property] = target[property];
         };
-    };  return c;
-};
+    };  return c;};
 
 // first, try enabling support for retina displays - can be turned off later
 
@@ -514,8 +540,8 @@ function enableRetinaSupport() {
     be transparent to the code that uses Canvas. All dimensions read or
     written to the Canvas element will be scaled appropriately.
 
-    NOTE: This implementation is not exhaustive; it only implements what is
-    needed by the Snap! UI.
+    NOTE: This implementation is not exhaustive; it
+    only implements what is needed by the Snap! UI.
 
     [Jens]: like all other retina screen support implementations I've seen
     Bartosz's patch also does not address putImageData() compatibility when
@@ -807,8 +833,7 @@ function disableRetinaSupport() {
     Object.defineProperty(contextProto, 'shadowBlur', uber.shadowBlur);
     delete canvasProto._isRetinaEnabled;
     delete canvasProto.isRetinaEnabled;
-    delete canvasProto._bak;
-};
+    delete canvasProto._bak;};
 
 function normalizeCanvas(aCanvas, getCopy) {
     // make sure aCanvas is non-retina, otherwise convert it in place (!)
@@ -879,14 +904,14 @@ Animation.prototype.easings = {
     // ease both in and out:
     linear: t => t,
     sinusoidal: t => 1 - Math.cos(radians(t * 90)),
-    quadratic: t => t < 0.5 ? 2 * t * t : ((4 - (2 * t)) * t) - 1,
+    quadratic: t => t < 1/2 ? 2 * t * t : ((4 - (2 * t)) * t) - 1,
     cubic: t => {
-        return t < 0.5 ?
+        return t < 1/2 ?
             4 * t * t * t
                 : ((t - 1) * ((2 * t) - 2) * ((2 * t) - 2)) + 1;
     },
     elastic: t => {
-        return (t -= 0.5) < 0 ?
+        return (t -= 1/2) < 0 ?
             (0.01 + 0.01 / t) * Math.sin(50 * t)
                 : (0.02 - 0.01 / t) * Math.sin(50 * t) + 1;
     },
@@ -967,7 +992,7 @@ Color.prototype.isCloseTo = function (aColor, observeAlpha, tolerance) {
     // experimental - answer whether a color is "close" to another one by
     // a given percentage. tolerance is the percentage by which each color
     // channel may diverge, alpha needs to be the exact same unless ignored
-    var thres = 2.55 * (tolerance || 10);
+    var thres = 51/20 * (tolerance || 10);
 
     function dist(a, b) {
         var diff = a - b;
@@ -1803,7 +1828,9 @@ idx > -1) {this.children.splice(idx, 1);};};
 
 Node.prototype.root = function () {
 if (isNil(this.parent)) {return this;
-} else {return this.parent.root();};};
+} else {return (((this.parent.root
+) instanceof Function) ? (this
+).parent.root() : this);};};
 
 Node.prototype.parentThatChecks = function (condition
 ) {var myself = this; if (isNil(this.parent)) {
@@ -1822,14 +1849,12 @@ Node.prototype.allChildren = function () {
     var result = [this];
     this.children.forEach(child => {
         result = result.concat(child.allChildren());
-    }); return result;
-};
+    }); return result;};
 
 Node.prototype.forAllChildren = function (aFunction) {
     if (this.children.length > 0) {
         this.children.forEach(child => child.forAllChildren(aFunction));
-    };  aFunction.call(null, this);
-};
+    };  aFunction.call(null, this);};
 
 Node.prototype.anyChild = function (aPredicate) {
     /* includes myself */     var i;
@@ -1837,10 +1862,7 @@ Node.prototype.anyChild = function (aPredicate) {
         return true;
     };  for (i = 0; i < this.children.length; i += 1) {
         if (this.children[i].anyChild(aPredicate)) {
-            return true;
-        };
-    };  return false;
-};
+        return true;};};  return false;};
 
 Node.prototype.allLeafs = function () {
     var result = [];
@@ -1848,37 +1870,23 @@ Node.prototype.allLeafs = function () {
         if (element.children.length === 0) {
             result.push(element);
         };
-    }); return result;
-};
+    }); return result;};
 
 Node.prototype.allParents = function () {
     // includes myself
     var result = [this];
-    if (this.parent !== null) {
+    if (!isNil(this.parent)) {
         result = result.concat(this.parent.allParents());
-    };  return result;
-};
+    };  return result;};
 
 Node.prototype.siblings = function () {if (isNil(this.parent)) {return [];
-} else {return this.parent.children.filter(child => child !== this);};};
+} else {return this.parent.children.filter(child => (child !== this));};};
 
-Node.prototype.parentThatIsA = function () {
-    // including myself
-    // Note: you can pass in multiple constructors to test for
-    var i;
-    for (i = 0; i < arguments.length; i += 1) {
-        if (this instanceof arguments[i]) {
-            return this;
-        };
-    };  if (!this.parent) {
-        return null;
-    };  return this.parentThatIsA.apply(this.parent, arguments);
-};
-
-Node.prototype.parentThatIsAnyOf = function (constructors) {
-    // deprecated, use parentThatIsA instead
-    return this.parentThatIsA.apply(this, constructors);
-};
+Node.prototype.parentThatIsA = function () {var i;
+for (i = 0; (i < arguments.length); i += 1) {if (
+this instanceof arguments[i]) {return this;};}; if (
+isNil(this.parent)) {return null;}; return ((this
+).parentThatIsA.apply(this.parent, arguments));};
 
 Node.prototype.childThatIsA = function () {
     // including myself
@@ -1902,10 +1910,12 @@ Node.prototype.childThatIsA = function () {
 
 // Morph: referenced constructors
 
-var Morph, HandMorph, WorldMorph, ArrowMorph, FlashMorph,
-ShadowMorph, FrameMorph, FPSMorph, MenuMorph, HandleMorph,
-StringFieldMorph, SliderMorph, ColorPickerMorph, TextMorph,
-ScrollFrameMorph, InspectorMorph, StringMorph; /* Morphs */
+var Morph, HandMorph, WorldMorph, ArrowMorph, FlashMorph, ShadowMorph,
+HandleMorph, StringFieldMorph, SymbolMorph, SliderMorph, FrameMorph,
+FPSMorph, MenuMorph, ColorPickerMorph, TextMorph, ScrollFrameMorph,
+InspectorMorph, StringMorph, PushButtonMorph, ToggleElementMorph,
+InputFieldMorph, ToggleButtonMorph, DialogBoxMorph, TabMorph,
+PianoMenuMorph, AlignmentMorph, ToggleMorph, PianoKeyMorph;
 
 // Morph inherits from Node:
 
@@ -1923,48 +1933,65 @@ function Morph () {this.init();};
 
 // Morph initialization:
 
-Morph.prototype.init = function () {
-    Morph.uber.init.call(this);
-    this.isMorph = true; // used to optimize deep copying
-    this.cachedImage = null;
-    this.isCachingImage = false;
-    this.shouldRerender = false;
-    this.bounds = new Rectangle(0, 0, 50, 40);
-    this.holes = []; // list of "untouchable" regions (rectangles)
-    this.color = new Color(80, 80, 80);
-    this.texture = null; // optional url of a fill-image
-    this.cachedTexture = null; // internal cache of actual bg image
-    this.alpha = 1;
-    this.isVisible = true;
-    this.isDraggable = false;
-    this.isTemplate = false;
-    this.acceptsDrops = false;
-    this.isFreeForm = false;
-    this.noDropShadow = false;
-    this.fullShadowSource = true;
-    this.fps = 0;
-    this.customContextMenu = null;
-    this.lastTime = Date.now();
-    this.onNextStep = null; // optional function to be run once
-    this.cursorStyle = null; this.cursorGrabStyle = null;
-};
+Morph.prototype.init = function (
+) {Morph.uber.init.call(this); (this
+).isMorph = true; (this.cachedImage
+) = null; this.isCachingImage = false;
+this.shouldRerender = false; (this
+).bounds = new Rectangle(0, 0, 50,
+40); this.holes = []; (this.color
+) = new Color(80, 80, 80); (this
+).cachedTexture = null; (this
+).texture = null; (this.alpha
+) = 1; this.isVisible = true;
+this.fullShadowSource = true;
+this.noDropShadow = false;
+this.acceptsDrops = false;
+this.isDraggable = false;
+this.isTemplate = false;
+this.isFreeForm = false;
+this.customContextMenu = null;
+this.lastTime = Date.now();
+this.fps = 0; (this.onNextStep
+) = null; this.cursorStyle = (null
+); this.cursorGrabStyle = null;};
 
 // Morph string representation: e.g. 'a Morph 2 [20@45 | 130@250]'
 
 Morph.prototype.toString = function () {
-    return 'a ' +
-        (this.constructor.name ||
-            this.constructor.toString().split(' ')[1].split('(')[0]) +
-        ' ' +
-        this.children.length.toString() + ' ' +
-        this.bounds;
-};
+return ('a ').concat(((this.constructor
+).name || (this.constructor.toString()
+).split(' ')[1].split('(')[0]), ' ',
+this.children.length.toString(),
+' ', this.bounds.toString());};
 
 // Morph deleting:
 
-Morph.prototype.destroy = function () {if (
-!isNil(this.parent)) {this.fullChanged();
-this.parent.removeChild(this);};};
+Array.prototype.listFlatten = function () {var result = [
+]; this.deepMap(item => (item instanceof List) ? ((item
+).flatten()).contents.forEach(element => result.push(
+element)) : result.push(item)); return result;};
+
+Morph.prototype.destroy = function (
+) {if (!(isNil(this.parent))) {(this
+).fullChanged(); if ((this.parent
+).removeChild instanceof Function) {
+(this.parent).removeChild(this);};};};
+
+Morph.prototype.secureDestroy = function (
+) {var myself = this; myself.destroy();
+this.parent = null; var listOfKeys = (
+Object.keys(myself)), morphsList = (
+(listOfKeys.map(key => myself[key])
+).listFlatten()).filter(item => (
+item instanceof Morph)); (((morphsList
+).filter(element => ((element.parent
+) === myself))).uniques()).map(
+child => child.secureDestroy());
+(Object.keys(myself)).forEach(
+key => (delete myself[key]));
+Object.setPrototypeOf(myself,
+Object.prototype);};
 
 // Morph stepping:
 
@@ -2564,39 +2591,32 @@ Morph.prototype.world = function () {
         return root;
     };  if (root instanceof HandMorph) {
         return root.world;
-    };  return world;
-};
+    };  return world;};
 
 Morph.prototype.add = function (aMorph) {
     var owner = aMorph.parent;
-    if (owner !== null) {
+    if (!isNil(owner)) {
         owner.removeChild(aMorph);
-    };  this.addChild(aMorph);
-};
+    };  this.addChild(aMorph);};
 
 Morph.prototype.addBack = function (aMorph) {
     var owner = aMorph.parent;
-    if (owner !== null) {
+    if (!isNil(owner)) {
         owner.removeChild(aMorph);
-    };  this.addChildFirst(aMorph);
-};
+    };  this.addChildFirst(aMorph);};
 
-Morph.prototype.topMorphAt = function (point) {
-    var i, result;
-    if (!this.isVisible) {return null; }
-    for (i = this.children.length - 1; i >= 0; i -= 1) {
-        result = this.children[i].topMorphAt(point);
-        if (result) {return result; }
-    };  if (this.bounds.containsPoint(point)) {
-        if (this.holes.some(
-                any => any.translateBy(this.position()).containsPoint(point))
-        ) {
-            return null;
-        };  if (this.isFreeForm) {
-            if (!this.isTransparentAt(point)) {
-                return this;};
-        } else {return this;};
-};  return null;};
+Morph.prototype.topMorphAt = function (point
+) {var i, result; if (!(this.isVisible)) {
+return null;}; for (i = ((this.children
+).length - 1); i >= 0; i -= 1) {result = (
+this.children[i]).topMorphAt(point); if (
+result) {return result;};}; if ((this.bounds
+).containsPoint(point)) {if (this.holes.some(
+any => (any.translateBy(this.position())
+).containsPoint(point))) {return null;
+}; if (this.isFreeForm) {if (!((this
+).isTransparentAt(point))) {return this;};
+} else {return this;};}; return null;};
 
 Morph.prototype.topMorphSuchThat = function (predicate) {
     var next;  if (predicate.call(null, this)) {
@@ -2635,43 +2655,30 @@ context.getImageData(point.x, point.y, 1, 1).data
 (data[3] / 255));} catch {return BLACK;};};
 
 Morph.prototype.isTransparentAt = function (aPoint) {
-    var point, context, data;
-    if (this.bounds.containsPoint(aPoint)) {
-        if (this.texture) {
-            return false;
-        };  point = aPoint.subtract(this.bounds.origin
-        );  context = this.getImage().getContext('2d');
-        data = context.getImageData(
-            Math.floor(point.x),
-            Math.floor(point.y),
-            1,
-            1
-        );  return data.data[3] === 0;
-    };  return false;
-};
+var point, context, data; if (this.bounds.containsPoint(
+aPoint)) {if (this.texture) {return false;}; point = (
+aPoint.subtract(this.bounds.origin)); context = (
+this.getImage()).getContext('2d'); data = (context
+).getImageData(Math.floor(point.x), Math.floor((point
+).y), 1, 1); return data.data[3] === 0;}; return false;};
 
 // Morph duplicating:
 
 Morph.prototype.copy = function () {
-    var c = copy(this);
-    c.parent = null;
-    c.children = [];
-    c.bounds = this.bounds.copy();
-    return c;
-};
+var c = copy(this); c.parent = null;
+c.children = []; c.bounds = (this
+).bounds.copy(); return c;};
 
 Morph.prototype.fullCopy = function () {
-    /*
-    Produce a copy of me with my entire tree of submorphs. Morphs
-    mentioned more than once are all directed to a single new copy.
-    Other properties are also *shallow* copied, so you must override
-    to deep copy Arrays and (complex) Objects
-    */
-    var map = new Map(), c;
-    c = this.copyRecordingReferences(map);
-    c.forAllChildren(m => m.updateReferences(map));
-    return c;
-};
+/* Produce a copy of me with my entire tree
+of submorphs. Morphs mentioned more than once
+are all directed to a single new copy. Other
+properties are also *shallow* copied, so you
+must override to deep copy Arrays and (
+complex) Objects */ var map = new Map,
+c = this.copyRecordingReferences(
+map); c.forAllChildren(m => (m
+).updateReferences(map)); return c;};
 
 Morph.prototype.copyRecordingReferences = function (map) {
     /*
@@ -2686,11 +2693,8 @@ Morph.prototype.copyRecordingReferences = function (map) {
     contain other complex data that should be copied when the morph is
     duplicated.
     */
-    var c = this.copy();
-    map.set(this, c);
-    this.children.forEach(m => c.add(m.copyRecordingReferences(map)));
-    return c;
-};
+    var c = this.copy(); map.set(this, c); this.children.forEach(
+    m => c.add(m.copyRecordingReferences(map))); return c;};
 
 Morph.prototype.updateReferences = function (map) {
     /*
@@ -2710,35 +2714,26 @@ Morph.prototype.updateReferences = function (map) {
         value = this[property];
         if (value && value.isMorph) {
             reference = map.get(value);
-            if (reference) { this[property] = reference; }
-        }
-    }
-};
+            if (reference) {this[property] = reference;}
+        };};};
 
 // Morph dragging and dropping:
 
 Morph.prototype.rootForGrab = function () {
     if (this instanceof ShadowMorph) {
         return this.parent.rootForGrab();
-    }
-    if (this.parent instanceof ScrollFrameMorph) {
+    };  if (this.parent instanceof ScrollFrameMorph) {
         return this.parent;
-    }
-    if (this.parent === null ||
+    };  if (isNil(this.parent) ||
             this.parent instanceof WorldMorph ||
             this.parent instanceof FrameMorph ||
-            this.isDraggable === true) {
+            this.isDraggable) {
         return this;
-    }
-    return this.parent.rootForGrab();
-};
+    };  return this.parent.rootForGrab();};
 
-Morph.prototype.isCorrectingOutsideDrag = function () {
-    // make sure I don't "trail behind" the hand when dragged
-    // override for morphs that you want to be dragged outside
-    // their full bounds
-    return true;
-};
+/* make sure I don't "trail behind" the hand when dragged override
+for morphs that you want to be dragged outside their full bounds */
+Morph.prototype.isCorrectingOutsideDrag = (() => true);
 
 Morph.prototype.wantsDropOf = function (aMorph) {
     // default is to answer the general flag - change for my heirs
@@ -2746,9 +2741,7 @@ Morph.prototype.wantsDropOf = function (aMorph) {
             (aMorph instanceof MenuMorph) ||
             (aMorph instanceof InspectorMorph)) {
         return false;
-    }
-    return this.acceptsDrops;
-};
+    };  return this.acceptsDrops;};
 
 Morph.prototype.pickUp = function (wrrld) {
     var world = wrrld || this.world();
@@ -3177,8 +3170,12 @@ Morph.prototype.developersMenu = function () {
         );
     }
     menu.addItem("hide", 'hide');
-    menu.addItem("delete", 'destroy');
-    if (!(this instanceof WorldMorph)) {
+    if (world.currentKey == 16) {
+    menu.addItem("destroy it",
+    'secureDestroy');} else {
+    menu.addItem("trash it",
+    'destroy');}; if (!((this
+    ) instanceof WorldMorph)) {
         menu.addLine();
         menu.addItem(
             "World...",
@@ -3206,10 +3203,8 @@ Morph.prototype.setAlphaScaled = function (alpha) {
         if (!isNaN(newAlpha)) {
             unscaled = newAlpha / 100;
             this.alpha = Math.min(Math.max(unscaled, 0), 1);
-        }
-    }
-    this.changed();
-};
+        };
+    };  this.changed();};
 
 Morph.prototype.attach = function () {
     var choices = this.overlappedMorphs(),
@@ -3923,21 +3918,7 @@ ArrowMorph.prototype.setSize = function (size) {
 
 // ArrowMorph displaying:
 
-ArrowMorph.prototype.childChanged = function () {
-    // react to a change in one of my children,
-    // default is to just pass this message on upwards
-    // override this method for Morphs that need to adjust accordingly
-    if (this.parent) {
-        this.shouldRerender = true;
-        this.parent.childChanged(this);
-    };
-};
-
-ArrowMorph.prototype.render = function (ctx) {if (this.shouldRerender) {
-this.selectedImage = this.getBodyImage();}; if (!isNil(this.selectedImage
-)) {ctx.drawImage(this.selectedImage, 0, 0);};};
-
-ArrowMorph.prototype.backupRender = function (ctx) {
+ArrowMorph.prototype.render = function (ctx) {
     // initialize my surface property
     var pad = this.padding,
         h = this.height(
@@ -3945,7 +3926,7 @@ ArrowMorph.prototype.backupRender = function (ctx) {
         w = this.width(
         ), w2 = w / 2;
 
-    ctx.fillStyle = this.getRenderColor().toString();
+    ctx.fillStyle = (this.getRenderColor()).toString();
     ctx.beginPath();
     if (this.direction === 'down') {
         ctx.moveTo(pad, h2);
@@ -11207,10 +11188,5723 @@ WorldMorph.prototype.stopEditing = function () {
     this.lastEditedText = null;
 };
 
-WorldMorph.prototype.toggleBlurredShadows = function anonymous () {useBlurredShadows = !useBlurredShadows;};
-WorldMorph.prototype.toggleHolesDisplay = function () {MorphicPreferences.showHoles = !MorphicPreferences.showHoles;
-this.rerender();}; WorldMorph.prototype.togglePreferences = function () {if (MorphicPreferences === standardSettings
-) {MorphicPreferences = touchScreenSettings;} else {MorphicPreferences = standardSettings;};}; /* Check this file out! */
+WorldMorph.prototype.toggleBlurredShadows = function () {useBlurredShadows = !(useBlurredShadows
+);}; WorldMorph.prototype.toggleHolesDisplay = function () {MorphicPreferences.showHoles = !(
+MorphicPreferences.showHoles); this.rerender();}; WorldMorph.prototype.togglePreferences = (
+function () {if (MorphicPreferences === standardSettings) {MorphicPreferences = (
+touchScreenSettings);} else {MorphicPreferences = standardSettings;};});
+
+// SymbolMorph //////////////////////////////////////////////////////////
+
+/*
+    I display graphical symbols, such as special letters. I have been
+    called into existence out of frustration about not being able to
+    consistently use Unicode characters to the same ends.
+
+    Symbols can also display costumes, if one is specified in lieu
+    of a name property, although this feature is currently not being
+    used because of asynchronous image loading issues.
+ */
+
+// SymbolMorph inherits from Morph:
+
+SymbolMorph.prototype = new Morph;
+SymbolMorph.prototype.constructor = SymbolMorph;
+SymbolMorph.uber = Morph.prototype;
+
+// SymbolMorph available symbols:
+
+SymbolMorph.prototype.names = [
+    'square',
+    'pointRight',
+    'stepForward',
+    'gears',
+    'gearPartial',
+    'gearBig',
+    'file',
+    'folder',
+    'fullScreen',
+    'grow',
+    'normalScreen',
+    'shrink',
+    'stage',
+    'smallStage',
+    'normalStage',
+    'turtle',
+    'turtleOutline',
+    'pause',
+    'flag',
+    'octagon',
+    'cloud',
+    'cloudGradient',
+    'cloudOutline',
+    'turnRight',
+    'turnNormal',
+    'turnLeft',
+    'turnAround',
+    'storage',
+    'presentation',
+    'poster',
+    'flash',
+    'brush',
+    'tick',
+    'checkedBox',
+    'crok',
+    'slashedBox',
+    'rectangle',
+    'rectangleSolid',
+    'circle',
+    'circleSolid',
+    'dot',
+    'ellipse',
+    'line',
+    'cross',
+    'crosshairs',
+    'paintbucket',
+    'eraser',
+    'pipette',
+    'speechBubble',
+    'speechBubbleOutline',
+    'loop',
+    'turnBack',
+    'turnForward',
+    'arrowUp',
+    'arrowUpOutline',
+    'arrowUpThin',
+    'arrowUpDownThin',
+    'arrowLeft',
+    'arrowLeftOutline',
+    'arrowLeftThin',
+    'arrowLeftRightThin',
+    'arrowDown',
+    'arrowDownOutline',
+    'arrowDownThin',
+    'arrowRight',
+    'arrowRightOutline',
+    'arrowRightThin',
+    'robot',
+    'magnifyingGlass',
+    'magnifierOutline',
+    'selection',
+    'polygon',
+    'closedBrush',
+    'notes',
+    'camera',
+    'cameraOutline',
+    'video',
+    'videoOutline',
+    'location',
+    'footprints',
+    'keyboard',
+    'keyboardFilled',
+    'globe',
+    'globeBig',
+    'list',
+    'verticalEllipsis',
+    'flipVertical',
+    'flipHorizontal',
+    'trash',
+    'trashFull'
+];
+
+// SymbolMorph instance creation:
+
+function SymbolMorph(name, size, color, shadowOffset, shadowColor) {
+    this.init(name, size, color, shadowOffset, shadowColor);
+};  SymbolMorph.prototype.init = function (
+    name,
+    size,
+    color,
+    shadowOffset,
+    shadowColor
+)  {this.isProtectedLabel = false;
+    this.isReadOnly = true;
+    this.name = name || 'square';
+    this.size = size || 50;
+    this.shadowOffset = shadowOffset || ZERO;
+    this.shadowColor = shadowColor || null;
+    SymbolMorph.uber.init.call(this);
+    this.color = color || BLACK;
+    this.fixLayout(); (this
+    ).rerender();};
+
+// SymbolMorph string representation: 'a SymbolMorph: "square"'
+
+SymbolMorph.prototype.toString = function () {
+    return 'a ' +
+        (this.constructor.name ||
+            this.constructor.toString().split(' ')[1].split('(')[0]) +
+        ': "' +
+        this.name +
+        '" ' +
+        this.bounds;
+};
+
+// SymbolMorph zebra coloring:
+
+SymbolMorph.prototype.setLabelColor = function (
+textColor, shadowColor, shadowOffset)  {(this
+).shadowOffset = (shadowOffset || new Point);
+this.shadowColor = shadowColor; (this
+).setColor(textColor);};
+
+// SymbolMorph dynamic coloring:
+
+SymbolMorph.prototype.getShadowRenderColor = function () {
+    // answer the shadow rendering color, can be overridden for my children
+    return this.shadowColor;
+};
+
+// SymbolMorph layout:
+
+SymbolMorph.prototype.setExtent = function (aPoint) {
+    if (this.size === aPoint.y) {return; }
+    this.changed();
+    this.size = aPoint.y;
+    this.fixLayout();
+    this.rerender();
+};
+
+SymbolMorph.prototype.fixLayout = function () {
+    // determine my extent
+    this.bounds.setWidth(this.symbolWidth() + Math.abs(this.shadowOffset.x));
+    this.bounds.setHeight(this.size + Math.abs(this.shadowOffset.y));
+};
+
+// SymbolMorph displaying:
+
+SymbolMorph.prototype.render = function (ctx) {
+    var sx = this.shadowOffset.x < 0 ? 0 : this.shadowOffset.x,
+        sy = this.shadowOffset.y < 0 ? 0 : this.shadowOffset.y,
+        x = this.shadowOffset.x < 0 ? Math.abs(this.shadowOffset.x) : 0,
+        y = this.shadowOffset.y < 0 ? Math.abs(this.shadowOffset.y) : 0;
+
+    if (this.shadowColor) {
+        ctx.save();
+        ctx.translate(sx, sy);
+        this.renderShape(ctx, this.getShadowRenderColor());
+        ctx.restore();
+    };  ctx.save();
+    ctx.translate(x, y);
+    this.renderShape(ctx, this.getRenderColor());
+    ctx.restore();
+};
+
+SymbolMorph.prototype.renderShape = function (ctx, aColor) {
+    // private
+    switch (this.name) {
+    case 'square':
+    case 'stage':
+        this.renderSymbolStop(ctx, aColor);
+        break;
+    case 'pointRight':
+        this.renderSymbolPointRight(ctx, aColor);
+        break;
+    case 'stepForward':
+        this.renderSymbolStepForward(ctx, aColor);
+        break;
+    case 'gears':
+        this.renderSymbolGears(ctx, aColor);
+        break;
+    case 'gearBig':
+        this.renderSymbolGearBig(ctx, aColor);
+        break;
+    case 'gearPartial':
+        this.renderSymbolGearPartial(ctx, aColor);
+        break;
+    case 'file':
+        this.renderSymbolFile(ctx, aColor);
+        break;
+    case 'folder':
+        this.renderSymbolFolder(ctx, aColor);
+        break;
+    case 'fullScreen':
+        this.renderSymbolFullScreen(ctx, aColor);
+        break;
+    case 'grow':
+        this.renderSymbolGrow(ctx, aColor);
+        break;
+    case 'normalScreen':
+        this.renderSymbolNormalScreen(ctx, aColor);
+        break;
+    case 'smallStage':
+        this.renderSymbolStage(ctx, aColor, true);
+        break;
+    case 'normalStage':
+        this.renderSymbolStage(ctx, aColor);
+        break;
+    case 'shrink':
+        this.renderSymbolShrink(ctx, aColor);
+        break;
+    case 'turtle':
+        this.renderSymbolTurtle(ctx, aColor);
+        break;
+    case 'turtleOutline':
+        this.renderSymbolTurtleOutline(ctx, aColor);
+        break;
+    case 'pause':
+        this.renderSymbolPause(ctx, aColor);
+        break;
+    case 'flag':
+        this.renderSymbolFlag(ctx, aColor);
+        break;
+    case 'octagon':
+        this.renderSymbolOctagon(ctx, aColor);
+        break;
+    case 'cloud':
+        this.renderSymbolCloud(ctx, aColor);
+        break;
+    case 'cloudGradient':
+        this.renderSymbolCloudGradient(ctx, aColor);
+        break;
+    case 'cloudOutline':
+        this.renderSymbolCloudOutline(ctx, aColor);
+        break;
+    case 'turnRight':
+        this.renderSymbolTurnRight(ctx, aColor);
+        break;
+    case 'turnNormal':
+        this.renderSymbolTurnNormal(ctx, aColor);
+        break;
+    case 'turnLeft':
+        this.renderSymbolTurnLeft(ctx, aColor);
+        break;
+    case 'turnAround':
+        this.renderSymbolTurnAround(ctx, aColor);
+        break;
+    case 'storage':
+        this.renderSymbolStorage(ctx, aColor);
+        break;
+    case 'presentation':
+        this.renderSymbolPresentation(ctx, aColor);
+        break;
+    case 'poster':
+        this.renderSymbolPoster(ctx, aColor);
+        break;
+    case 'flash':
+        this.renderSymbolFlash(ctx, aColor);
+        break;
+    case 'brush':
+        this.renderSymbolBrush(ctx, aColor);
+        break;
+    case 'tick':
+        this.renderSymbolTick(ctx, aColor);
+        break;
+    case 'checkedBox':
+        this.renderSymbolCheckedBox(ctx, aColor);
+        break;
+    case 'crok':
+        this.renderSymbolCrok(ctx, aColor);
+        break;
+    case 'slashedBox':
+        this.renderSymbolSlashedBox(ctx, aColor);
+        break;
+    case 'rectangle':
+        this.renderSymbolRectangle(ctx, aColor);
+        break;
+    case 'rectangleSolid':
+        this.renderSymbolRectangleSolid(ctx, aColor);
+        break;
+    case 'circle':
+        this.renderSymbolCircle(ctx, aColor);
+        break;
+    case 'circleSolid':
+    case 'dot':
+        this.renderSymbolCircleSolid(ctx, aColor);
+        break;
+    case 'ellipse':
+        this.renderSymbolCircle(ctx, aColor);
+        break;
+    case 'line':
+        this.renderSymbolLine(ctx, aColor);
+        break;
+    case 'cross':
+        this.renderSymbolCross(ctx, aColor);
+        break;
+    case 'crosshairs':
+        this.renderSymbolCrosshairs(ctx, aColor);
+        break;
+    case 'paintbucket':
+        this.renderSymbolPaintbucket(ctx, aColor);
+        break;
+    case 'eraser':
+        this.renderSymbolEraser(ctx, aColor);
+        break;
+    case 'pipette':
+        this.renderSymbolPipette(ctx, aColor);
+        break;
+    case 'speechBubble':
+        this.renderSymbolSpeechBubble(ctx, aColor);
+        break;
+    case 'speechBubbleOutline':
+        this.renderSymbolSpeechBubbleOutline(ctx, aColor);
+        break;
+    case 'loop':
+        this.renderSymbolLoop(ctx, aColor);
+        break;
+    case 'turnBack':
+        this.renderSymbolTurnBack(ctx, aColor);
+        break;
+    case 'turnForward':
+        this.renderSymbolTurnForward(ctx, aColor);
+        break;
+    case 'arrowUp':
+        this.renderSymbolArrowUp(ctx, aColor);
+        break;
+    case 'arrowUpOutline':
+        this.renderSymbolArrowUpOutline(ctx, aColor);
+        break;
+    case 'arrowUpThin':
+        this.renderSymbolArrowUpThin(ctx, aColor);
+        break;
+    case 'arrowUpDownThin':
+        this.renderSymbolArrowUpDownThin(ctx, aColor);
+        break;
+    case 'arrowLeft':
+        this.renderSymbolArrowLeft(ctx, aColor);
+        break;
+    case 'arrowLeftOutline':
+        this.renderSymbolArrowLeftOutline(ctx, aColor);
+        break;
+    case 'arrowLeftThin':
+        this.renderSymbolArrowLeftThin(ctx, aColor);
+        break;
+    case 'arrowLeftRightThin':
+        this.renderSymbolArrowLeftRightThin(ctx, aColor);
+        break;
+    case 'arrowDown':
+        this.renderSymbolArrowDown(ctx, aColor);
+        break;
+    case 'arrowDownOutline':
+        this.renderSymbolArrowDownOutline(ctx, aColor);
+        break;
+    case 'arrowDownThin':
+        this.renderSymbolArrowDownThin(ctx, aColor);
+        break;
+    case 'arrowRight':
+        this.renderSymbolArrowRight(ctx, aColor);
+        break;
+    case 'arrowRightOutline':
+        this.renderSymbolArrowRightOutline(ctx, aColor);
+        break;
+    case 'arrowRightThin':
+        this.renderSymbolArrowRightThin(ctx, aColor);
+        break;
+    case 'robot':
+        this.renderSymbolRobot(ctx, aColor);
+        break;
+    case 'magnifyingGlass':
+        this.renderSymbolMagnifyingGlass(ctx, aColor);
+        break;
+    case 'magnifierOutline':
+        this.renderSymbolMagnifierOutline(ctx, aColor);
+        break;
+    case 'selection':
+        this.renderSymbolSelection(ctx, aColor);
+        break;
+    case 'polygon':
+        this.renderSymbolOctagonOutline(ctx, aColor);
+        break;
+    case 'closedBrush':
+        this.renderSymbolClosedBrushPath(ctx, aColor);
+        break;
+    case 'notes':
+        this.renderSymbolNotes(ctx, aColor);
+        break;
+    case 'camera':
+        this.renderSymbolCamera(ctx, aColor);
+        break;
+    case 'cameraOutline':
+        this.renderSymbolCameraOutline(ctx, aColor);
+        break;
+    case 'video':
+        this.renderSymbolVideo(ctx, aColor);
+        break;
+    case 'videoOutline':
+        this.renderSymbolVideoOutline(ctx, aColor);
+        break;
+    case 'location':
+        this.renderSymbolLocation(ctx, aColor);
+        break;
+    case 'footprints':
+        this.renderSymbolFootprints(ctx, aColor);
+        break;
+    case 'keyboard':
+        this.renderSymbolKeyboard(ctx, aColor);
+        break;
+    case 'keyboardFilled':
+        this.renderSymbolKeyboardFilled(ctx, aColor);
+        break;
+    case 'globe':
+        this.renderSymbolGlobe(ctx, aColor);
+        break;
+    case 'globeBig':
+        this.renderSymbolGlobeBig(ctx, aColor);
+        break;
+    case 'list':
+        this.renderSymbolList(ctx, aColor);
+        break;
+    case 'verticalEllipsis':
+        this.renderSymbolVerticalEllipsis(ctx, aColor);
+        break;
+    case 'flipVertical':
+        this.renderSymbolFlipVertical(ctx, aColor);
+        break;
+    case 'flipHorizontal':
+        this.renderSymbolFlipHorizontal(ctx, aColor);
+        break;
+    case 'trash':
+        this.renderSymbolTrash(ctx, aColor);
+        break;
+    case 'trashFull':
+        this.renderSymbolTrashFull(ctx, aColor);
+        break;
+    default:
+        throw new Error('unknown symbol name: "' + this.name + '"');
+    };
+};
+
+SymbolMorph.prototype.symbolWidth = function () {
+    // private
+    var size = this.size;
+
+    switch (this.name) {
+    case 'pointRight':
+        return Math.sqrt(size * size - Math.pow(size / 2, 2));
+    case 'verticalEllipsis':
+        return size / 5;
+    case 'dot':
+        return size * 0.4;
+    case 'location':
+        return size * 0.6;
+    case 'turnRight':
+    case 'turnNormal':
+    case 'turnLeft':
+        return size / 3 * 2;
+    case 'flash':
+    case 'file':
+    case 'folder':
+    case 'list':
+        return size * 0.8;
+    case 'stage':
+    case 'smallStage':
+    case 'normalStage':
+        return size * 1.2;
+    case 'turtle':
+    case 'turtleOutline':
+        return size * 1.375;
+    case 'cloud':
+    case 'cloudGradient':
+    case 'cloudOutline':
+    case 'turnBack':
+    case 'turnForward':
+    case 'keyboard':
+    case 'keyboardFilled':
+        return size * 1.6;
+    case 'loop':
+        return size * 2;
+    default:
+        return size;
+    };
+};
+
+SymbolMorph.prototype.renderSymbolStop = function (ctx, color) {
+    // draw a vertically centered square
+    ctx.fillStyle = color.toString();
+    ctx.fillRect(0, 0, this.symbolWidth(), this.size);
+};
+
+SymbolMorph.prototype.renderSymbolPointRight = function (ctx, color) {
+    // draw a right-pointing, equilateral triangle
+    ctx.fillStyle = color.toString();
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(this.symbolWidth(), this.size / 2);
+    ctx.lineTo(0, this.size);
+    ctx.lineTo(0, 0);
+    ctx.closePath();
+    ctx.fill();
+};
+
+SymbolMorph.prototype.renderSymbolStepForward = function (ctx, color) {
+    // draw a right-pointing triangle
+    // followed by a vertical bar
+    var w = this.symbolWidth(),
+        h = this.size;
+
+    ctx.fillStyle = color.toString();
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(w * 0.75, h / 2);
+    ctx.lineTo(0, h);
+    ctx.lineTo(0, 0);
+    ctx.closePath();
+    ctx.fill();
+    ctx.fillRect(
+        w * 0.75,
+        0,
+        w * 0.25,
+        h
+    );
+};
+
+SymbolMorph.prototype.renderSymbolGears = function (ctx, color
+) {var w = this.symbolWidth(), r = w / 2, e = r / 4, g = 1.625;
+ctx.beginPath(); ctx.lineCap = 'round'; ctx.strokeStyle = color.toString(
+); ctx.lineWidth = this.symbolWidth() / 4; ctx.arc(r, r, w, 0, 2 * Math.PI,
+true); ctx.arc(r, r, e * 2, 0, 2 * Math.PI, false); ctx.closePath();
+ctx.clip(); ctx.moveTo(e, r); ctx.lineTo(w - e, r); ctx.stroke();
+ctx.moveTo(r, e); ctx.lineTo(r, w - e); ctx.stroke(); ctx.moveTo(
+e * g, e * g); ctx.lineTo(w - (e * g), w - (e * g)); ctx.stroke();
+ctx.moveTo(w - (e * g), e * g); ctx.lineTo(e * g, w - (e * g));
+ctx.stroke();}; /* These are rounded gears!!! Exclusive :~O */
+
+SymbolMorph.prototype.renderSymbolGearBig = function (ctx, color) {
+    // draw a large gear
+    var w = this.symbolWidth(),
+        r = w / 2,
+        spikes = 10,
+        off = 7,
+        shift = 8,
+        angle, i;
+
+    ctx.fillStyle = color.toString();
+    ctx.beginPath();
+
+    // draw the spiked outline
+    ctx.moveTo(w, r);
+    angle = 360 / spikes;
+    for (i = 0; i < spikes; i += 1) {
+        ctx.arc(
+            r,
+            r,
+            r,
+            radians(i * angle),
+            radians(i * angle + off)
+        );
+        ctx.arc(
+            r,
+            r,
+            r * 0.8,
+            radians(i * angle - shift + angle * 0.5),
+            radians(i * angle + shift + angle * 0.5)
+        );
+        ctx.arc(
+            r,
+            r,
+            r,
+            radians((i + 1) * angle - off),
+            radians((i + 1) * angle)
+        );
+    }
+    ctx.lineTo(w, r);
+
+    // draw the holes in the middle
+    ctx.arc(r, r, r * 0.6, 0, 2 * Math.PI);
+    ctx.arc(r, r, r * 0.2, 0, 2 * Math.PI);
+
+    // fill
+    ctx.clip('evenodd');
+    ctx.fillRect(0, 0, w, w);
+};
+
+SymbolMorph.prototype.renderSymbolGearPartial = function (ctx, color) {
+    // draw gears
+    var w = this.symbolWidth(),
+        r = w * 0.75,
+        spikes = 8,
+        off = 8,
+        shift = 10,
+        angle, turn, i;
+
+    ctx.fillStyle = color.toString();
+    ctx.beginPath();
+
+    // draw the spiked outline
+    ctx.moveTo(w, r);
+    angle = 360 / spikes;
+    turn = angle * 0.5;
+    for (i = 0; i < spikes; i += 1) {
+        ctx.arc(
+            r,
+            r,
+            r,
+            radians(i * angle + turn),
+            radians(i * angle + off + turn)
+        );
+        ctx.arc(
+            r,
+            r,
+            r * 0.7,
+            radians(i * angle - shift + angle * 0.5 + turn),
+            radians(i * angle + shift + angle * 0.5 + turn)
+        );
+        ctx.arc(
+            r,
+            r,
+            r,
+            radians((i + 1) * angle - off + turn),
+            radians((i + 1) * angle + turn)
+        );
+    }
+    ctx.lineTo(w, r);
+
+    // draw the hole in the middle
+    ctx.arc(r, r, r * 0.3, 0, 2 * Math.PI);
+
+    // fill
+    ctx.clip('evenodd');
+    ctx.fillRect(0, 0, w, w);
+};
+
+SymbolMorph.prototype.renderSymbolFile = function (ctx, color) {
+    // draw a page symbol
+    var height = this.size,
+        width = this.symbolWidth(),
+        w = Math.min(width, height) / 2;
+
+    ctx.fillStyle = color.toString();
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(w, 0);
+    ctx.lineTo(w, w);
+    ctx.lineTo(width, w);
+    ctx.lineTo(width, height);
+    ctx.lineTo(0, height);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.fillStyle = color.darker(25).toString();
+    ctx.beginPath();
+    ctx.moveTo(w, 0);
+    ctx.lineTo(width, w);
+    ctx.lineTo(w, w);
+    ctx.lineTo(w, 0);
+    ctx.closePath();
+    ctx.fill();
+};
+
+SymbolMorph.prototype.renderSymbolFolder = function (ctx, color) {
+    // draw a folder symbol
+    var height = this.size,
+        width = this.symbolWidth(),
+        w = Math.min(width, height) / 2;
+
+    ctx.fillStyle = color.toString();
+    ctx.beginPath();
+    ctx.moveTo(0, (height / 4));
+    ctx.lineTo((width / 3), (height / 4));
+    ctx.lineTo((width / 3), ((height / 4) * 2));
+    ctx.lineTo(width, ((height / 4) * 2));
+    ctx.lineTo(width, height);
+    ctx.lineTo(0, height);
+    ctx.lineTo(0, (height / 4));
+    ctx.closePath();
+    ctx.fill();
+};
+
+SymbolMorph.prototype.renderSymbolFullScreen = function (ctx, color) {
+    // draw two arrows pointing diagonally outwards
+    var h = this.size,
+        width = this.symbolWidth(),
+        c = width / 2,
+        off = width / 20,
+        w = width / 2;
+
+    ctx.strokeStyle = color.toString();
+    ctx.lineWidth = width / 5;
+    ctx.beginPath();
+    ctx.moveTo(c - off, c + off);
+    ctx.lineTo(off * 2, h - off * 2);
+    ctx.stroke();
+
+    ctx.strokeStyle = color.toString();
+    ctx.lineWidth = width / 5;
+    ctx.beginPath();
+    ctx.moveTo(c + off, c - off);
+    ctx.lineTo(h - off * 2, off * 2);
+    ctx.stroke();
+
+    ctx.fillStyle = color.toString();
+    ctx.beginPath();
+    ctx.moveTo(0, h);
+    ctx.lineTo(0, h - w);
+    ctx.lineTo(w, h);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.fillStyle = color.toString();
+    ctx.beginPath();
+    ctx.moveTo(h, 0);
+    ctx.lineTo(h - w, 0);
+    ctx.lineTo(h, w);
+    ctx.closePath();
+    ctx.fill();
+};
+
+SymbolMorph.prototype.renderSymbolGrow = function (ctx, color) {
+
+    var h = this.size,
+        width = this.symbolWidth(),
+        c = width / 2,
+        off = width / 20,
+        w = width / 3;
+        
+    function arrows() {
+        ctx.strokeStyle = color.toString();
+        ctx.lineWidth = width / 7;
+        ctx.beginPath();
+        ctx.moveTo(c - off * 3, c + off * 3);
+        ctx.lineTo(off * 2, h - off * 2);
+        ctx.stroke();
+
+        ctx.strokeStyle = color.toString();
+        ctx.lineWidth = width / 7;
+        ctx.beginPath();
+        ctx.moveTo(c + off * 3 , c - off * 3);
+        ctx.lineTo(h - off * 2, off * 2);
+        ctx.stroke();
+
+        ctx.fillStyle = color.toString();
+        ctx.beginPath();
+        ctx.moveTo(0, h);
+        ctx.lineTo(0, h - w);
+        ctx.lineTo(w, h);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.fillStyle = color.toString();
+        ctx.beginPath();
+        ctx.moveTo(h, 0);
+        ctx.lineTo(h - w, 0);
+        ctx.lineTo(h, w);
+        ctx.closePath();
+        ctx.fill();
+    }
+    
+    // draw four arrows pointing diagonally outwards
+    arrows();
+    ctx.translate(this.size, 0);
+    ctx.rotate(radians(90));
+    arrows();
+};
+
+
+SymbolMorph.prototype.renderSymbolNormalScreen = function (ctx, color) {
+ var h = this.size,
+        w = this.symbolWidth(),
+        c = w / 2,
+        off = w / 20;
+
+    ctx.strokeStyle = color.toString();
+    ctx.lineWidth = w / 5;
+    ctx.beginPath();
+    ctx.moveTo(c - off * 3, c + off * 3);
+    ctx.lineTo(off, h - off);
+    ctx.stroke();
+
+    ctx.strokeStyle = color.toString();
+    ctx.lineWidth = w / 5;
+    ctx.beginPath();
+    ctx.moveTo(c + off * 3, c - off * 3);
+    ctx.lineTo(h - off, off);
+    ctx.stroke();
+
+    ctx.fillStyle = color.toString();
+    ctx.beginPath();
+    ctx.moveTo(c + off, c - off);
+    ctx.lineTo(w, c - off);
+    ctx.lineTo(c + off, 0);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.fillStyle = color.toString();
+    ctx.beginPath();
+    ctx.moveTo(c - off, c + off);
+    ctx.lineTo(0, c + off);
+    ctx.lineTo(c - off, w);
+    ctx.closePath();
+    ctx.fill();
+};
+
+SymbolMorph.prototype.renderSymbolShrink = function (ctx, color) {
+    // draw 4 arrows pointing diagonally inwards
+    var h = this.size,
+        w = this.symbolWidth(),
+        c = w / 2,
+        off = w / 20;
+        
+    function arrows() {
+        ctx.strokeStyle = color.toString();
+        ctx.lineWidth = w / 8;
+        ctx.beginPath();
+        ctx.moveTo(c - off * 3, c + off * 3);
+        ctx.lineTo(off, h - off);
+        ctx.stroke();
+
+        ctx.strokeStyle = color.toString();
+        ctx.lineWidth = w / 8;
+        ctx.beginPath();
+        ctx.moveTo(c + off * 3, c - off * 3);
+        ctx.lineTo(h - off, off);
+        ctx.stroke();
+
+        ctx.fillStyle = color.toString();
+        ctx.beginPath();
+        ctx.moveTo(c + off * 2, c - off * 2);
+        ctx.lineTo(w - off, c - off * 2);
+        ctx.lineTo(c + off * 2, 0 + off);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.fillStyle = color.toString();
+        ctx.beginPath();
+        ctx.moveTo(c - off * 2, c + off * 2);
+        ctx.lineTo(0 + off, c + off * 2);
+        ctx.lineTo(c - off * 2, w - off);
+        ctx.closePath();
+        ctx.fill();
+    }
+    
+    arrows();
+    ctx.translate(this.size, 0);
+    ctx.rotate(radians(90));
+    arrows();
+};
+
+SymbolMorph.prototype.renderSymbolStage = function (ctx, color, inverted) {
+    // answer a canvas showing a stage toggling symbol
+        w = this.symbolWidth(),
+        h = this.size,
+        w2 = w / 2,
+        h2 = h / 2;
+
+    if (inverted) {
+    ctx.fillStyle = color.darker(50).toString();
+    ctx.fillRect(0, 0, w, h);
+
+    ctx.fillStyle = color.toString();
+    ctx.fillRect(w2, 0, w2, h2);
+    } else {
+    ctx.fillStyle = color.toString();
+    ctx.fillRect(0, 0, w, h);
+
+    ctx.fillStyle = color.darker(50).toString();
+    ctx.fillRect(w2, 0, w2, h2);
+    }; return ctx;
+};
+
+SymbolMorph.prototype.renderSymbolTurtle = function (ctx, color) {
+    // draw a LOGO turtle
+    var w = this.symbolWidth(),
+        h = this.size;
+
+    ctx.fillStyle = color.toString();
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(w, h / 2);
+    ctx.lineTo(0, h);
+    ctx.lineTo(h / 3, h / 2);
+    ctx.closePath();
+    ctx.fill();
+};
+
+SymbolMorph.prototype.renderSymbolTurtleOutline = function (ctx, color) {
+    // draw a LOGO turtle
+    var w = this.symbolWidth(),
+        h = this.size;
+
+    ctx.strokeStyle = color.toString();
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(w, h / 2);
+    ctx.lineTo(0, h);
+    ctx.lineTo(h / 2, h / 2);
+    ctx.closePath();
+    ctx.stroke();
+};
+
+SymbolMorph.prototype.renderSymbolPause = function (ctx, color) {
+    // draw two parallel rectangles
+    var w = this.symbolWidth() / 5,
+        h = this.size;
+
+    ctx.fillStyle = color.toString();
+    ctx.fillRect(0, 0, w * 2, h);
+    ctx.fillRect(w * 3, 0, w * 2, h);
+};
+
+SymbolMorph.prototype.renderSymbolFlag = function (ctx, color) {
+    // draw a flag
+    var w = this.symbolWidth(),
+        h = this.size,
+        l = Math.max(w / 12, 1);
+
+    ctx.lineWidth = l;
+    ctx.strokeStyle = color.toString();
+    ctx.beginPath();
+    ctx.moveTo(l * 2, 0);
+    ctx.lineTo(0, h);
+    ctx.stroke();
+
+    ctx.lineWidth = h / 2;
+    ctx.beginPath();
+    ctx.moveTo(w / 8, h / 4);
+    ctx.bezierCurveTo(
+        w / 1.25,
+        h / 2,
+        w / 2,
+        h / 2,
+        w,
+        h / 2
+    );
+    ctx.stroke();
+};
+
+SymbolMorph.prototype.renderSymbolOctagon = function (ctx, color) {
+    // draw an octagon
+    var side = this.symbolWidth(),
+        vert = (side / 3);
+
+    ctx.fillStyle = color.toString();
+    ctx.beginPath();
+    ctx.moveTo(vert, 0);
+    ctx.lineTo(side - vert, 0);
+    ctx.lineTo(side, vert);
+    ctx.lineTo(side, side - vert);
+    ctx.lineTo(side - vert, side);
+    ctx.lineTo(vert, side);
+    ctx.lineTo(0, side - vert);
+    ctx.lineTo(0, vert);
+    ctx.closePath();
+    ctx.fill();
+};
+
+SymbolMorph.prototype.renderSymbolCloud = function (ctx, color) {
+    // draw a cloud
+    var w = this.symbolWidth(),
+        h = this.size,
+        r1 = h * 2 / 5,
+        r2 = h / 4,
+        r3 = h * 3 / 10,
+        r4 = h / 5;
+
+    ctx.fillStyle = color.toString();
+    ctx.beginPath();
+    ctx.arc(r2, h - r2, r2, radians(90), radians(259), false);
+    ctx.arc(w / 20 * 5, h / 9 * 4, r4, radians(165), radians(300), false);
+    ctx.arc(w / 20 * 11, r1, r1, radians(200), radians(357), false);
+    ctx.arc(w - r3, h - r3, r3, radians(269), radians(90), false);
+    ctx.closePath();
+    ctx.fill();
+};
+
+SymbolMorph.prototype.renderSymbolCloudGradient = function (ctx, color) {
+    // draw a cloud
+    var w = this.symbolWidth(),
+        h = this.size,
+        gradient,
+        r1 = h * 2 / 5,
+        r2 = h / 4,
+        r3 = h * 3 / 10,
+        r4 = h / 5;
+
+    gradient = ctx.createRadialGradient(
+        0,
+        0,
+        0,
+        0,
+        0,
+        w
+    );
+    gradient.addColorStop(0, color.lighter(25).toString());
+    gradient.addColorStop(1, color.darker(25).toString());
+    ctx.fillStyle = gradient;
+    ctx.beginPath();
+    ctx.arc(r2, h - r2, r2, radians(90), radians(259), false);
+    ctx.arc(w / 20 * 5, h / 9 * 4, r4, radians(165), radians(300), false);
+    ctx.arc(w / 20 * 11, r1, r1, radians(200), radians(357), false);
+    ctx.arc(w - r3, h - r3, r3, radians(269), radians(90), false);
+    ctx.closePath();
+    ctx.fill();
+};
+
+SymbolMorph.prototype.renderSymbolCloudOutline = function (ctx, color) {
+    // draw cloud
+    var w = this.symbolWidth(),
+        h = this.size,
+        r1 = h * 2 / 5,
+        r2 = h / 4,
+        r3 = h * 3 / 10,
+        r4 = h / 5;
+
+    ctx.strokeStyle = color.toString();
+    ctx.beginPath();
+    ctx.arc(r2 + 1, h - r2 - 1, r2, radians(90), Math.PI, false);
+    ctx.arc(w / 20 * 5, h / 9 * 4, r4, radians(150), radians(300), false);
+    ctx.arc(w / 20 * 11, r1 + 1, r1, radians(210), radians(335), false);
+    ctx.arc(w - r3 - 1, h - r3 - 1, r3, radians(280), radians(90), false);
+    ctx.closePath();
+    ctx.stroke();
+};
+
+SymbolMorph.prototype.renderSymbolTurnRight = function (ctx, color) {
+    // draw a right-turning arrow
+    var w = this.symbolWidth(),
+        l = Math.max(w / 10, 1),
+        r = w / 2;
+
+    ctx.lineWidth = l;
+    ctx.strokeStyle = color.toString();
+    ctx.beginPath();
+    ctx.arc(r, r * 2, r - l / 2, 0, radians(-90), false);
+    ctx.stroke();
+
+    ctx.fillStyle = color.toString();
+    ctx.beginPath();
+    ctx.moveTo(w, r);
+    ctx.lineTo(r, 0);
+    ctx.lineTo(r, r * 2);
+    ctx.closePath();
+    ctx.fill();
+};
+
+SymbolMorph.prototype.renderSymbolTurnNormal = function (ctx, color) {
+    // draw a return-turning arrow
+    var w = this.symbolWidth(),
+        l = Math.max(w / 10, 1),
+        r = w / 2;
+
+    ctx.lineWidth = l;
+    ctx.strokeStyle = color.toString();
+    ctx.beginPath();
+    ctx.arc(r, r * (4 / 3), r - l / 2, radians(270), radians(90), false);
+    ctx.stroke();
+
+    ctx.fillStyle = color.toString();
+    ctx.beginPath();
+    ctx.moveTo(0, this.size / 1.375);
+    ctx.lineTo(r, this.size / 2);
+    ctx.lineTo(r, this.size);
+    ctx.closePath();
+    ctx.fill();
+};
+
+SymbolMorph.prototype.renderSymbolTurnLeft = function (ctx, color) {
+    // draw a left-turning arrow
+    var w = this.symbolWidth(),
+        l = Math.max(w / 10, 1),
+        r = w / 2;
+
+    ctx.lineWidth = l;
+    ctx.strokeStyle = color.toString();
+    ctx.beginPath();
+    ctx.arc(r, r * 2, r - l / 2, Math.PI, radians(-90), true);
+    ctx.stroke();
+
+    ctx.fillStyle = color.toString();
+    ctx.beginPath();
+    ctx.moveTo(0, r);
+    ctx.lineTo(r, 0);
+    ctx.lineTo(r, r * 2);
+    ctx.closePath();
+    ctx.fill();
+};
+
+SymbolMorph.prototype.renderSymbolTurnAround = function (ctx, color) {
+    // draw a right-around-turning arrow
+    var w = this.symbolWidth(),
+        l = Math.max(w / 10, 1),
+        r = w / 2;
+
+    ctx.lineWidth = l;
+    ctx.strokeStyle = color.toString();
+    ctx.beginPath();
+    ctx.arc(r, r, r - l / 2, radians(-45), radians(225), false);
+    ctx.stroke();
+    ctx.fillStyle = color.toString();
+    ctx.beginPath();
+    ctx.moveTo(0, r * 0.1);
+    ctx.lineTo(r * 0.8, 0);
+    ctx.lineTo(r * 0.7, r * 0.7);
+    ctx.closePath();
+    ctx.fill();
+};
+
+SymbolMorph.prototype.renderSymbolStorage = function (ctx, color) {
+    // draw a stack of three disks
+    var w = this.symbolWidth(),
+        h = this.size,
+        r = h,
+        unit = h / 11;
+
+    function drawDisk(bottom) {
+        ctx.fillStyle = color.toString();
+        ctx.beginPath();
+        ctx.arc(w / 2, bottom - h, r, radians(60), radians(120), false);
+        ctx.lineTo(0, bottom - unit * 2);
+        ctx.arc(
+            w / 2,
+            bottom - h - unit * 2,
+            r,
+            radians(120),
+            radians(60),
+            true
+        );
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.fillStyle = color.darker(25).toString();
+        ctx.beginPath();
+        ctx.arc(
+            w / 2,
+            bottom + unit * 6 + 1,
+            r,
+            radians(-120), // 60
+            radians(-60), // 120
+            false // true
+        );
+        ctx.stroke();
+    }
+
+    ctx.strokeStyle = color.toString();
+    drawDisk(h);
+    drawDisk(h - unit * 3);
+    drawDisk(h - unit * 6);
+};
+
+SymbolMorph.prototype.renderSymbolPresentation = function (ctx, color) {
+    // draw a poster stand
+    var w = this.symbolWidth(),
+        h = this.size,
+        bottom = h * 0.625;
+
+    ctx.fillStyle = WHITE.toString();
+    ctx.strokeStyle = color.toString();
+
+    ctx.lineWidth = w / 15;
+
+    ctx.beginPath();
+    ctx.moveTo(w / 2, h / 3);
+    ctx.lineTo(w / 6, h);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(w / 2, h / 3);
+    ctx.lineTo(w * 5 / 6, h);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(w, 0);
+    ctx.lineTo(w, bottom);
+    ctx.lineTo(0, bottom);
+    ctx.moveTo(0, 0);
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+};
+
+SymbolMorph.prototype.renderSymbolPoster = function (ctx, color) {
+    // draw a poster stand
+    var w = this.symbolWidth(),
+        h = this.size,
+        bottom = h * 0.75,
+        edge = h / 5;
+
+    ctx.fillStyle = color.toString();
+    ctx.strokeStyle = color.toString();
+
+    ctx.lineWidth = w / 15;
+
+    ctx.beginPath();
+    ctx.moveTo(w / 2, h / 3);
+    ctx.lineTo(w / 6, h);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(w / 2, h / 3);
+    ctx.lineTo(w / 2, h);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(w / 2, h / 3);
+    ctx.lineTo(w * 5 / 6, h);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(w, 0);
+    ctx.lineTo(w, bottom - edge);
+    ctx.lineTo(w - edge, bottom - edge);
+    ctx.lineTo(w - edge, bottom);
+    ctx.lineTo(0, bottom);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.fillStyle = color.darker(25).toString();
+    ctx.beginPath();
+    ctx.moveTo(w, bottom - edge);
+    ctx.lineTo(w - edge, bottom - edge);
+    ctx.lineTo(w - edge, bottom);
+    ctx.closePath();
+    ctx.fill();
+};
+
+SymbolMorph.prototype.renderSymbolFlash = function (ctx, color) {
+    // draw a lightning bolt
+    var w = this.symbolWidth(),
+        h = this.size,
+        w3 = w / 3,
+        h3 = h / 3,
+        off = h3 / 3;
+
+    ctx.fillStyle = color.toString();
+    ctx.beginPath();
+    ctx.moveTo(w3, 0);
+    ctx.lineTo(0, h3);
+    ctx.lineTo(w3, h3);
+    ctx.lineTo(0, h3 * 2);
+    ctx.lineTo(w3, h3 * 2);
+    ctx.lineTo(0, h);
+    ctx.lineTo(w, h3 * 2 - off);
+    ctx.lineTo(w3 * 2, h3 * 2 - off);
+    ctx.lineTo(w, h3 - off);
+    ctx.lineTo(w3 * 2, h3 - off);
+    ctx.lineTo(w, 0);
+    ctx.closePath();
+    ctx.fill();
+};
+
+SymbolMorph.prototype.renderSymbolBrush = function (ctx, color) {
+    // draw a paintbrush
+    var w = this.symbolWidth(),
+        h = this.size,
+        l = Math.max(w / 30, 0.5);
+
+    ctx.fillStyle = color.toString();
+    ctx.lineWidth = l * 2;
+    ctx.beginPath();
+    ctx.moveTo(w / 8 * 3, h / 2);
+    ctx.quadraticCurveTo(0, h / 2, l, h - l);
+    ctx.quadraticCurveTo(w / 2, h, w / 2, h / 8 * 5);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.lineJoin = 'round';
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = color.toString();
+
+    ctx.moveTo(w / 8 * 3, h / 2);
+    ctx.lineTo(w * 0.75, l);
+    ctx.quadraticCurveTo(w, 0, w - l, h * 0.25);
+    ctx.stroke();
+
+    ctx.moveTo(w / 2, h / 8 * 5);
+    ctx.lineTo(w - l, h * 0.25);
+    ctx.stroke();
+};
+
+SymbolMorph.prototype.renderSymbolTick = function (ctx, color) {
+    // draw a check mark
+    var w = this.symbolWidth() / 3;
+
+    ctx.strokeStyle = color.toString();
+    ctx.lineWidth = Math.max(w / 20, 0.5) * 3;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.beginPath();
+    ctx.moveTo(w * 3/4, w * 2);
+    ctx.lineTo(w * 5/4, w * 5/2);
+    ctx.lineTo(w * 9/4, w / 2);
+    ctx.stroke();
+};
+
+SymbolMorph.prototype.renderSymbolCheckedBox = function (ctx, color) {
+    // draw a rectangle with a check mark
+    this.renderSymbolRectangle(ctx, color);
+    this.renderSymbolTick(ctx, color);
+};
+
+SymbolMorph.prototype.renderSymbolCrok = function (ctx, color) {
+    // draw a slash mark
+    var w = this.symbolWidth() / 3;
+
+    ctx.strokeStyle = color.toString();
+    ctx.lineWidth = Math.max(w / 20, 0.5) * 3;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.beginPath();
+    ctx.moveTo(w / 2, w / 2);
+    ctx.lineTo(w * 5/2, w * 5/2);
+    ctx.moveTo(w / 2, w * 5/2);
+    ctx.lineTo(w * 5/2, w / 2);
+    ctx.stroke();
+};
+
+SymbolMorph.prototype.renderSymbolSlashedBox = function (ctx, color) {
+    // draw a rectangle with a slash mark
+    this.renderSymbolRectangle(ctx, color);
+    this.renderSymbolCrok(ctx, color);
+};
+
+SymbolMorph.prototype.renderSymbolRectangle = function (ctx, color) {
+    // draw a rectangle
+    var w = this.symbolWidth(),
+        h = this.size,
+        l = Math.max(w / 20, 0.5);
+
+    ctx.strokeStyle = color.toString();
+    ctx.lineWidth = l * 2;
+    ctx.beginPath();
+    ctx.moveTo(l, l);
+    ctx.lineTo(w - l, l);
+    ctx.lineTo(w - l, h - l);
+    ctx.lineTo(l, h - l);
+    ctx.closePath();
+    ctx.stroke();
+};
+
+SymbolMorph.prototype.renderSymbolRectangleSolid = function (ctx, color) {
+    // draw a solid rectangle
+    var w = this.symbolWidth(),
+        h = this.size;
+
+    ctx.fillStyle = color.toString();
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(w, 0);
+    ctx.lineTo(w, h);
+    ctx.lineTo(0, h);
+    ctx.closePath();
+    ctx.fill();
+};
+
+SymbolMorph.prototype.renderSymbolCircle = function (ctx, color) {
+    // draw a circle
+    var w = this.symbolWidth(),
+        l = Math.max(w / 20, 0.5);
+
+    ctx.strokeStyle = color.toString();
+    ctx.lineWidth = l * 2;
+    ctx.beginPath();
+    ctx.arc(w / 2, w / 2, w / 2 - l, 0, 2 * Math.PI, false);
+    ctx.stroke();
+};
+
+SymbolMorph.prototype.renderSymbolCircleSolid = function (ctx, color) {
+    // draw a solid circle
+    var w = this.symbolWidth(),
+        h = this.size;
+
+    ctx.fillStyle = color.toString();
+    ctx.beginPath();
+    ctx.arc(w / 2, h / 2, w / 2, 0, 2 * Math.PI, false);
+    ctx.fill();
+};
+
+SymbolMorph.prototype.renderSymbolLine = function (ctx, color) {
+    // draw a diagonal line
+    var w = this.symbolWidth(),
+        h = this.size,
+        l = Math.max(w / 20, 0.5);
+
+    ctx.strokeStyle = color.toString();
+    ctx.lineWidth = l * 2;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(l, l);
+    ctx.lineTo(w - l, h - l);
+    ctx.stroke();
+};
+
+SymbolMorph.prototype.renderSymbolCross = function (ctx, color) {
+    // draw a plus sign cross
+    var w = this.symbolWidth(),
+        l = Math.max(w / 20, 0.5);
+
+    ctx.strokeStyle = color.toString();
+    ctx.lineWidth = l * 2;
+    ctx.lineCap = 'round';
+    ctx.beginPath();
+    ctx.moveTo(l, w / 2);
+    ctx.lineTo(w - l, w / 2);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(w / 2, l);
+    ctx.lineTo(w / 2, w - l);
+    ctx.stroke();
+};
+
+SymbolMorph.prototype.renderSymbolCrosshairs = function (ctx, color) {
+    // draw a crosshairs
+    var w = this.symbolWidth(),
+        h = this.size,
+        l = 0.5;
+
+    ctx.strokeStyle = color.toString();
+    ctx.lineWidth = l * 2;
+    ctx.beginPath();
+    ctx.moveTo(l, h / 2);
+    ctx.lineTo(w - l, h / 2);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(w / 2, l);
+    ctx.lineTo(w / 2, h - l);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(w / 2, h / 2);
+    ctx.arc(w / 2, w / 2, w / 3 - l, 0, 2 * Math.PI, false);
+    ctx.stroke();
+};
+
+SymbolMorph.prototype.renderSymbolPaintbucket = function (ctx, color) {
+    // draw a paint bucket
+    var w = this.symbolWidth(),
+        h = this.size,
+        n = w / 5,
+        l = Math.max(w / 30, 0.5);
+
+    ctx.strokeStyle = color.toString();
+    ctx.lineWidth = l * 2;
+    ctx.beginPath();
+    ctx.moveTo(n * 2, n);
+    ctx.lineTo(n * 4, n * 3);
+    ctx.lineTo(n * 3, n * 4);
+    ctx.quadraticCurveTo(n * 2, h, n, n * 4);
+    ctx.quadraticCurveTo(0, n * 3, n, n * 2);
+    ctx.closePath();
+    ctx.stroke();
+
+    ctx.lineWidth = l;
+    ctx.moveTo(n * 2, n * 2.5);
+    ctx.arc(n * 2, n * 2.5, l, 0, 2 * Math.PI, false);
+    ctx.stroke();
+
+    ctx.moveTo(n * 2, n * 2.5);
+    ctx.lineTo(n * 2, n / 2 + l);
+    ctx.stroke();
+
+    ctx.arc(n * 1.5, n / 2 + l, n / 2, 0, Math.PI, true);
+    ctx.stroke();
+
+    ctx.moveTo(n, n / 2 + l);
+    ctx.lineTo(n, n * 2);
+    ctx.stroke();
+
+    ctx.fillStyle = color.toString();
+    ctx.beginPath();
+    ctx.moveTo(n * 3.5, n * 3.5);
+    ctx.quadraticCurveTo(w, n * 3.5, w - l, h);
+    ctx.lineTo(w, h);
+    ctx.quadraticCurveTo(w, n * 2, n * 2.5, n * 1.5);
+    ctx.lineTo(n * 4, n * 3);
+    ctx.closePath();
+    ctx.fill();
+};
+
+SymbolMorph.prototype.renderSymbolEraser = function (ctx, color) {
+    // draw an eraser
+    var w = this.symbolWidth(),
+        h = this.size,
+        n = w / 4,
+        l = Math.max(w / 20, 0.5);
+
+    ctx.strokeStyle = color.toString();
+    ctx.lineWidth = l * 2;
+    ctx.beginPath();
+    ctx.moveTo(n * 3, l);
+    ctx.lineTo(l, n * 3);
+    ctx.quadraticCurveTo(n, h, n * 2, n * 3);
+    ctx.lineTo(w - l, n);
+    ctx.closePath();
+    ctx.stroke();
+
+    ctx.fillStyle = color.toString();
+    ctx.beginPath();
+    ctx.moveTo(n * 3, 0);
+    ctx.lineTo(n * 1.5, n * 1.5);
+    ctx.lineTo(n * 2.5, n * 2.5);
+    ctx.lineTo(w, n);
+    ctx.closePath();
+    ctx.fill();
+};
+
+SymbolMorph.prototype.renderSymbolPipette = function (ctx, color) {
+    // draw an eyedropper
+    var w = this.symbolWidth(),
+        h = this.size,
+        n = w / 4,
+        n2 = n / 2,
+        l = Math.max(w / 20, 0.5);
+
+    ctx.strokeStyle = color.toString();
+    ctx.lineWidth = l * 2;
+    ctx.beginPath();
+    ctx.moveTo(l, h - l);
+    ctx.quadraticCurveTo(n2, h - n2, n2, h - n);
+    ctx.lineTo(n * 2, n * 1.5);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(l, h - l);
+    ctx.quadraticCurveTo(n2, h - n2, n, h - n2);
+    ctx.lineTo(n * 2.5, n * 2);
+    ctx.stroke();
+
+    ctx.fillStyle = color.toString();
+    ctx.arc(n * 3, n, n - l, 0, 2 * Math.PI, false);
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.moveTo(n * 2, n);
+    ctx.lineTo(n * 3, n * 2);
+    ctx.stroke();
+};
+
+SymbolMorph.prototype.renderSymbolSpeechBubble = function (ctx, color) {
+    // draw a speech bubble
+    var w = this.symbolWidth(),
+        h = this.size,
+        n = w / 3,
+        l = Math.max(w / 20, 0.5);
+
+    ctx.fillStyle = color.toString();
+    ctx.lineWidth = l * 2;
+    ctx.beginPath();
+    ctx.moveTo(n, n * 2);
+    ctx.quadraticCurveTo(l, n * 2, l, n);
+    ctx.quadraticCurveTo(l, l, n, l);
+    ctx.lineTo(n * 2, l);
+    ctx.quadraticCurveTo(w - l, l, w - l, n);
+    ctx.quadraticCurveTo(w - l, n * 2, n * 2, n * 2);
+    ctx.lineTo(n / 2, h - l);
+    ctx.closePath();
+    ctx.fill();
+};
+
+SymbolMorph.prototype.renderSymbolSpeechBubbleOutline = function (
+    ctx,
+    color
+) {
+    // draw a speech bubble
+    var w = this.symbolWidth(),
+        h = this.size,
+        n = w / 3,
+        l = Math.max(w / 20, 0.5);
+
+    ctx.strokeStyle = color.toString();
+    ctx.lineWidth = l * 2;
+    ctx.beginPath();
+    ctx.moveTo(n, n * 2);
+    ctx.quadraticCurveTo(l, n * 2, l, n);
+    ctx.quadraticCurveTo(l, l, n, l);
+    ctx.lineTo(n * 2, l);
+    ctx.quadraticCurveTo(w - l, l, w - l, n);
+    ctx.quadraticCurveTo(w - l, n * 2, n * 2, n * 2);
+    ctx.lineTo(n / 2, h - l);
+    ctx.closePath();
+    ctx.stroke();
+};
+
+SymbolMorph.prototype.renderSymbolLoop = function (ctx, aColor) {
+    var w = this.symbolWidth(),
+        h = this.size,
+        w2 = w / 2,
+        w4 = w2 / 2,
+        h2 = h / 2,
+        l = Math.max(h / 10, 0.5);
+
+    ctx.lineWidth = l * 2;
+    ctx.strokeStyle = aColor.toString();
+    ctx.beginPath();
+    ctx.moveTo(0, h - l);
+    ctx.lineTo(w2, h - l);
+    ctx.arc(w2, h2, h2 - l, radians(90), 0, true);
+    ctx.stroke();
+    ctx.fillStyle = aColor.toString();
+    ctx.beginPath();
+    ctx.moveTo(w4 * 3 - l, 0);
+    ctx.lineTo(w2 - l, h2);
+    ctx.lineTo(w, h2);
+    ctx.closePath();
+    ctx.fill();
+};
+
+SymbolMorph.prototype.renderSymbolTurnBack = function (ctx, aColor) {
+    var w = this.symbolWidth(),
+        h = this.size,
+        w2 = w / 2,
+        h2 = h / 2,
+        l = Math.max(w / 20, 0.5);
+
+    ctx.fillStyle = aColor.toString();
+    ctx.lineWidth = l * 2;
+    ctx.beginPath();
+    ctx.moveTo(0, h2);
+    ctx.lineTo(w2, 0);
+    ctx.lineTo(w2, h);
+    ctx.closePath();
+    ctx.fill();
+    ctx.lineWidth = l * 3;
+    ctx.strokeStyle = aColor.toString();
+    ctx.beginPath();
+    ctx.arc(w2, h, h2, 0, radians(-90), true);
+    ctx.stroke();
+};
+
+SymbolMorph.prototype.renderSymbolTurnForward = function (ctx, aColor) {
+    var w = this.symbolWidth(),
+        h = this.size,
+        w2 = w / 2,
+        h2 = h / 2,
+        l = Math.max(w / 20, 0.5);
+
+    ctx.fillStyle = aColor.toString();
+    ctx.lineWidth = l * 2;
+    ctx.beginPath();
+    ctx.moveTo(w, h2);
+    ctx.lineTo(w2, 0);
+    ctx.lineTo(w2, h);
+    ctx.closePath();
+    ctx.fill();
+    ctx.lineWidth = l * 3;
+    ctx.strokeStyle = aColor.toString();
+    ctx.beginPath();
+    ctx.arc(w2, h, h2, -Math.PI, radians(-90), false);
+    ctx.stroke();
+};
+
+SymbolMorph.prototype.renderSymbolArrowUp = function (ctx, color) {
+    // draw an up arrow
+    var w = this.symbolWidth(),
+        h = this.size,
+        n = w / 2,
+        l = Math.max(w / 20, 0.5);
+
+    ctx.fillStyle = color.toString();
+    ctx.lineWidth = l * 2;
+    ctx.beginPath();
+    ctx.moveTo(l, n);
+    ctx.lineTo(n, l);
+    ctx.lineTo(w - l, n);
+    ctx.lineTo(w * 0.65, n);
+    ctx.lineTo(w * 0.65, h - l);
+    ctx.lineTo(w * 0.35, h - l);
+    ctx.lineTo(w * 0.35, n);
+    ctx.closePath();
+    ctx.fill();
+};
+
+SymbolMorph.prototype.renderSymbolArrowUpOutline = function (ctx, color) {
+    // draw an up arrow
+    var w = this.symbolWidth(),
+        h = this.size,
+        n = w / 2,
+        l = Math.max(w / 20, 0.5);
+
+    ctx.strokeStyle = color.toString();
+    ctx.lineWidth = l * 2;
+    ctx.beginPath();
+    ctx.moveTo(l, n);
+    ctx.lineTo(n, l);
+    ctx.lineTo(w - l, n);
+    ctx.lineTo(w * 0.65, n);
+    ctx.lineTo(w * 0.65, h - l);
+    ctx.lineTo(w * 0.35, h - l);
+    ctx.lineTo(w * 0.35, n);
+    ctx.closePath();
+    ctx.stroke();
+};
+
+SymbolMorph.prototype.renderSymbolArrowUpThin = function (ctx, color) {
+    // draw a thin up arrow
+    var w = this.symbolWidth(),
+        h = this.size,
+        n = w / 3,
+        l = Math.max(w / 20, 0.5);
+
+    ctx.strokeStyle = color.toString();
+    ctx.lineWidth = l * 2;
+    ctx.beginPath();
+    ctx.moveTo(w - n, n);
+    ctx.lineTo(w / 2, l * 2);
+    ctx.lineTo(n, n);
+    ctx.moveTo(w / 2, l * 2);
+    ctx.lineTo(w / 2, h - l);
+    ctx.stroke();
+};
+
+SymbolMorph.prototype.renderSymbolArrowUpDownThin = function (ctx, color) {
+    // draw a thin up-down arrow
+    var w = this.symbolWidth(),
+        h = this.size,
+        n = w / 3,
+        l = Math.max(w / 20, 0.5);
+
+    ctx.strokeStyle = color.toString();
+    ctx.lineWidth = l * 2;
+    ctx.beginPath();
+    ctx.moveTo(w - n, n);
+    ctx.lineTo(w / 2, l * 2);
+    ctx.lineTo(n, n);
+    ctx.moveTo(w - n, h - n);
+    ctx.lineTo(w / 2, h - l * 2);
+    ctx.lineTo(n, h - n);
+    ctx.moveTo(w / 2, l * 2);
+    ctx.lineTo(w / 2, h - l * 2);
+    ctx.stroke();
+};
+
+SymbolMorph.prototype.renderSymbolArrowDown = function (ctx, color) {
+    // draw a down arrow
+    var w = this.symbolWidth();
+    ctx.save();
+    ctx.translate(w, w);
+    ctx.rotate(Math.PI);
+    this.renderSymbolArrowUp(ctx, color);
+    ctx.restore();
+};
+
+SymbolMorph.prototype.renderSymbolArrowDownOutline = function (ctx, color) {
+    // draw a down arrow
+    var w = this.symbolWidth();
+    ctx.save();
+    ctx.translate(w, w);
+    ctx.rotate(Math.PI);
+    this.renderSymbolArrowUpOutline(ctx, color);
+    ctx.restore();
+};
+
+SymbolMorph.prototype.renderSymbolArrowDownThin = function (ctx, color) {
+    // draw a thin down arrow
+    var w = this.symbolWidth();
+    ctx.save();
+    ctx.translate(w, w);
+    ctx.rotate(Math.PI);
+    this.renderSymbolArrowUpThin(ctx, color);
+    ctx.restore();
+};
+
+SymbolMorph.prototype.renderSymbolArrowLeft = function (ctx, color) {
+    // draw a left arrow
+    var w = this.symbolWidth();
+    ctx.save();
+    ctx.translate(0, w);
+    ctx.rotate(radians(-90));
+    this.renderSymbolArrowUp(ctx, color);
+    ctx.restore();
+};
+
+SymbolMorph.prototype.renderSymbolArrowLeftOutline = function (ctx, color) {
+    // draw a left arrow
+    var w = this.symbolWidth();
+    ctx.save();
+    ctx.translate(0, w);
+    ctx.rotate(radians(-90));
+    this.renderSymbolArrowUpOutline(ctx, color);
+    ctx.restore();
+};
+
+SymbolMorph.prototype.renderSymbolArrowLeftThin = function (ctx, color) {
+    // draw a thin left arrow
+    var w = this.symbolWidth();
+    ctx.save();
+    ctx.translate(0, w);
+    ctx.rotate(radians(-90));
+    this.renderSymbolArrowUpThin(ctx, color);
+    ctx.restore();
+};
+
+SymbolMorph.prototype.renderSymbolArrowLeftRightThin = function (ctx, color) {
+    // draw a thin left-right arrow
+    var w = this.symbolWidth();
+    ctx.save();
+    ctx.translate(0, w);
+    ctx.rotate(radians(-90));
+    this.renderSymbolArrowUpDownThin(ctx, color);
+    ctx.restore();
+};
+
+SymbolMorph.prototype.renderSymbolArrowRight = function (ctx, color) {
+    // draw a right arrow
+    var w = this.symbolWidth();
+    ctx.save();
+    ctx.translate(w, 0);
+    ctx.rotate(radians(90));
+    this.renderSymbolArrowUp(ctx, color);
+    ctx.restore();
+};
+
+SymbolMorph.prototype.renderSymbolArrowRightOutline = function (ctx, color) {
+    // draw a right arrow
+    var w = this.symbolWidth();
+    ctx.save();
+    ctx.translate(w, 0);
+    ctx.rotate(radians(90));
+    this.renderSymbolArrowUpOutline(ctx, color);
+    ctx.restore();
+};
+
+SymbolMorph.prototype.renderSymbolArrowRightThin = function (ctx, color) {
+    // draw a thin right arrow
+    var w = this.symbolWidth();
+    ctx.save();
+    ctx.translate(w, 0);
+    ctx.rotate(radians(90));
+    this.renderSymbolArrowUpThin(ctx, color);
+    ctx.restore();
+};
+
+SymbolMorph.prototype.renderSymbolRobot = function (ctx, color) {
+    // draw a humanoid robot
+    var w = this.symbolWidth(),
+        h = this.size,
+        n = w / 6,
+        n2 = n / 2,
+        l = Math.max(w / 20, 0.5);
+
+    ctx.fillStyle = color.toString();
+    //ctx.lineWidth = l * 2;
+
+    ctx.beginPath();
+    ctx.moveTo(n + l, n);
+    ctx.lineTo(n * 2, n);
+    ctx.lineTo(n * 2.5, n * 1.5);
+    ctx.lineTo(n * 3.5, n * 1.5);
+    ctx.lineTo(n * 4, n);
+    ctx.lineTo(n * 5 - l, n);
+    ctx.lineTo(n * 4, n * 3);
+    ctx.lineTo(n * 4, n * 4 - l);
+    ctx.lineTo(n * 2, n * 4 - l);
+    ctx.lineTo(n * 2, n * 3);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.moveTo(n * 2.75, n + l);
+    ctx.lineTo(n * 2.4, n);
+    ctx.lineTo(n * 2.2, 0);
+    ctx.lineTo(n * 3.8, 0);
+    ctx.lineTo(n * 3.6, n);
+    ctx.lineTo(n * 3.25, n + l);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.moveTo(n * 2.5, n * 4);
+    ctx.lineTo(n, n * 4);
+    ctx.lineTo(n2 + l, h);
+    ctx.lineTo(n * 2, h);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.moveTo(n * 3.5, n * 4);
+    ctx.lineTo(n * 5, n * 4);
+    ctx.lineTo(w - (n2 + l), h);
+    ctx.lineTo(n * 4, h);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.moveTo(n, n);
+    ctx.lineTo(l, n * 1.5);
+    ctx.lineTo(l, n * 3.25);
+    ctx.lineTo(n * 1.5, n * 3.5);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.moveTo(n * 5, n);
+    ctx.lineTo(w - l, n * 1.5);
+    ctx.lineTo(w - l, n * 3.25);
+    ctx.lineTo(n * 4.5, n * 3.5);
+    ctx.closePath();
+    ctx.fill();
+};
+
+SymbolMorph.prototype.renderSymbolMagnifyingGlass = function (ctx, color) {
+    // draw a magnifying glass
+    var w = this.symbolWidth(),
+        h = this.size,
+        gradient,
+        r = w * 0.3,
+        x = w * 2 / 3 - Math.sqrt(r),
+        y = h / 3 + Math.sqrt(r),
+        l = Math.max(w / 5, 0.5);
+
+    ctx.strokeStyle = color.toString();
+
+    gradient = ctx.createRadialGradient(
+        x,
+        y,
+        0,
+        x + r,
+        y + r,
+        w
+    );
+
+    gradient.addColorStop(0, color.inverted().lighter(50).toString());
+    gradient.addColorStop(1, color.inverted().darker(25).toString());
+    ctx.fillStyle = gradient;
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, 2 * Math.PI, false);
+    ctx.fill();
+
+    ctx.lineWidth = l / 2;
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, 2 * Math.PI, false);
+    ctx.stroke();
+
+    ctx.lineWidth = l;
+    ctx.beginPath();
+    ctx.moveTo(l / 2, h - l / 2);
+    ctx.lineTo(x - Math.sqrt(r + l), y + Math.sqrt(r + l));
+    ctx.closePath();
+    ctx.stroke();
+};
+
+SymbolMorph.prototype.renderSymbolMagnifierOutline = function (ctx, color) {
+    // draw a magnifying glass
+    var w = this.symbolWidth(),
+        h = this.size,
+        r = w * 0.3,
+        x = w * 2 / 3 - Math.sqrt(r),
+        y = h / 3 + Math.sqrt(r),
+        l = Math.max(w / 5, 0.5);
+
+    ctx.strokeStyle = color.toString();
+
+    ctx.lineWidth = l * 0.5;
+    ctx.beginPath();
+    ctx.arc(x, y, r, 0, 2 * Math.PI, false);
+    ctx.stroke();
+
+    ctx.lineWidth = l;
+    ctx.beginPath();
+    ctx.moveTo(l / 2, h - l / 2);
+    ctx.lineTo(x - Math.sqrt(r + l), y + Math.sqrt(r + l));
+    ctx.closePath();
+    ctx.stroke();
+};
+
+
+SymbolMorph.prototype.renderSymbolSelection = function (ctx, color) {
+    // draw a filled arrow and a dashed rectangle
+    var w = this.symbolWidth(),
+        h = this.size;
+
+    ctx.save();
+    ctx.setLineDash([3]);
+    this.renderSymbolRectangle(ctx, color);
+    ctx.restore();
+
+    ctx.save();
+    ctx.fillStyle = color.toString();
+    ctx.translate(0.7 * w, 0.4 * h);
+    ctx.scale(0.5, 0.5);
+    ctx.rotate(radians(135));
+    this.renderSymbolArrowDownOutline(ctx, color);
+    ctx.fill();
+    ctx.restore();
+};
+
+SymbolMorph.prototype.renderSymbolOctagonOutline = function (ctx, color) {
+    // draw an octagon
+    var side = this.symbolWidth(),
+        vert = (side - (side * 0.383)) / 2,
+        l = Math.max(side / 20, 0.5);
+
+    ctx.strokeStyle = color.toString();
+    ctx.lineWidth = l * 2;
+    ctx.beginPath();
+    ctx.moveTo(vert, l);
+    ctx.lineTo(side - vert, l);
+    ctx.lineTo(side - l, vert);
+    ctx.lineTo(side - l, side - vert);
+    ctx.lineTo(side - vert, side - l);
+    ctx.lineTo(vert, side - l);
+    ctx.lineTo(l, side - vert);
+    ctx.lineTo(l, vert);
+    ctx.closePath();
+    ctx.stroke();
+};
+
+SymbolMorph.prototype.renderSymbolClosedBrushPath =
+	SymbolMorph.prototype.renderSymbolCloudOutline;
+
+SymbolMorph.prototype.renderSymbolNotes = function (ctx, color) {
+    // draw two musical notes
+    var size = this.symbolWidth(),
+        r = size / 6,
+        l = Math.max(r / 3, 1);
+
+    ctx.strokeStyle = color.toString();
+    ctx.fillStyle = color.toString();
+
+    ctx.beginPath();
+    ctx.arc(r, size - r, r, 0, 2 * Math.PI, false);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(size - r, size - (r * 2), r, 0, 2 * Math.PI, false);
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.moveTo(r * 2 - l, r);
+    ctx.lineTo(size, 0);
+    ctx.lineTo(size, r);
+    ctx.lineTo(r * 2 - l, r * 2);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.lineWidth = l;
+    ctx.beginPath();
+    ctx.moveTo(r * 2 - (l / 2), size - r);
+    ctx.lineTo(r * 2 - (l / 2), r + l);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(size - (l / 2), size - (r * 2));
+    ctx.lineTo(size - (l / 2), l);
+    ctx.stroke();
+};
+
+SymbolMorph.prototype.renderSymbolCamera = function (ctx, color) {
+    // draw a camera
+    var w = this.symbolWidth(),
+        h = this.size,
+        r = w * 0.16,
+        l = Math.max(w / 20, 0.5);
+
+    ctx.lineWidth = l * 2;
+
+    // camera body
+    ctx.fillStyle = color.toString();
+    ctx.beginPath();
+    ctx.moveTo(l, h * 5 / 6);
+    ctx.lineTo(w - l, h * 5 / 6);
+    ctx.lineTo(w - l, h / 4);
+    ctx.lineTo(w * 3 / 4 , h / 4);
+    ctx.lineTo(w * 5 / 8 , l);
+    ctx.lineTo(w * 3 / 8 , l);
+    ctx.lineTo(w / 4 , h / 4);
+    ctx.lineTo(l , h / 4);
+    ctx.lineTo(l, h * 5 / 6);
+
+    // camera lens
+    ctx.arc(w / 2, h / 2, r, 0, 2 * Math.PI, false);
+
+    ctx.clip();
+    ctx.fillRect(0, 0, w, h);
+};
+
+SymbolMorph.prototype.renderSymbolCameraOutline = function (ctx, color) {
+    // draw a camera
+    var w = this.symbolWidth(),
+        h = this.size,
+        r = w * 0.16,
+        l = Math.max(w / 20, 0.5);
+
+    ctx.lineWidth = l;
+
+    // camera body
+    ctx.strokeStyle = color.toString();
+    ctx.beginPath();
+    ctx.moveTo(l, h * 5 / 6);
+    ctx.lineTo(w - l, h * 5 / 6);
+    ctx.lineTo(w - l, h / 4);
+    ctx.lineTo(w * 3 / 4 , h / 4);
+    ctx.lineTo(w * 5 / 8 , l);
+    ctx.lineTo(w * 3 / 8 , l);
+    ctx.lineTo(w / 4 , h / 4);
+    ctx.lineTo(l , h / 4);
+    ctx.lineTo(l, h * 5 / 6);
+    ctx.stroke();
+    ctx.closePath();
+
+    // camera lens
+    ctx.beginPath();
+    ctx.arc(w / 2, h / 2, r, 0, 2 * Math.PI, false);
+    ctx.stroke();
+    ctx.closePath();
+};
+
+SymbolMorph.prototype.renderSymbolVideo = function (ctx, color) {
+    // draw a camera
+    var w = this.symbolWidth(),
+        h = this.size,
+        r = w * 0.16,
+        l = Math.max(w / 20, 0.5);
+
+    ctx.lineWidth = l * 2;
+
+    // camera body
+    ctx.fillStyle = color.toString();
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(w * 0.75, 0);
+    ctx.lineTo(w * 0.75, h * 0.25);
+    ctx.lineTo(w, 0);
+    ctx.lineTo(w, h);
+    ctx.lineTo(w * 0.75, h * 0.75);
+    ctx.lineTo(w * 0.75, h);
+    ctx.lineTo(0, h);
+    ctx.lineTo(0, 0);
+    ctx.fill();
+};
+
+SymbolMorph.prototype.renderSymbolVideoOutline = function (ctx, color) {
+    // draw a camera
+    var w = this.symbolWidth(),
+        h = this.size,
+        r = w * 0.16,
+        l = Math.max(w / 20, 0.5);
+
+    ctx.lineWidth = l * 2;
+
+    // camera body
+    ctx.strokeStyle = color.toString();
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.lineTo(w * 0.75, 0);
+    ctx.lineTo(w * 0.75, h * 0.25);
+    ctx.lineTo(w, 0);
+    ctx.lineTo(w, h);
+    ctx.lineTo(w * 0.75, h * 0.75);
+    ctx.lineTo(w * 0.75, h);
+    ctx.lineTo(0, h);
+    ctx.lineTo(0, 0);
+    ctx.stroke();
+};
+
+SymbolMorph.prototype.renderSymbolLocation = function (ctx, color) {
+    // draw a map pin
+    var w = this.symbolWidth(),
+        h = this.size,
+        r = w / 2;
+
+    // pin
+    ctx.fillStyle = color.toString();
+    ctx.beginPath();
+
+    ctx.moveTo(0, r);
+    ctx.arc(r, r, r, -Math.PI, 0, false);
+    ctx.lineTo(r, h);
+    ctx.lineTo(0, r);
+
+    // hole
+    ctx.arc(r, r, r * 0.5, 0, 2 * Math.PI, false);
+
+    ctx.clip('evenodd');
+    ctx.fillRect(0, 0, w, h);
+};
+
+SymbolMorph.prototype.renderSymbolFootprints = function (ctx, color) {
+    // draw a pair of (shoe) footprints
+    var w = this.symbolWidth(),
+        u = w / 10,
+        r = u * 1.5;
+
+    ctx.fillStyle = color.toString();
+
+    // left shoe
+    // tip
+    ctx.beginPath();
+    ctx.arc(r, r, r, radians(-200), 0, false);
+    ctx.lineTo(r * 2, u * 5.5);
+    ctx.lineTo(u, u * 6);
+    ctx.closePath();
+    ctx.fill();
+    // heel
+    ctx.beginPath();
+    ctx.arc(u * 2.25, u * 6.75, u , radians(-40), radians(-170), false);
+    ctx.closePath();
+    ctx.fill();
+
+    // right shoe
+    // tip
+    ctx.beginPath();
+    ctx.arc(w - r, u * 4.5, r, -Math.PI, radians(20), false);
+    ctx.lineTo(w - u, u * 8.5);
+    ctx.lineTo(w - (r * 2), u * 8);
+    ctx.closePath();
+    ctx.fill();
+    // heel
+    ctx.beginPath();
+    ctx.arc(w - (u * 2.25), u * 9, u, 0, radians(-150), false);
+    ctx.closePath();
+    ctx.fill();
+};
+
+SymbolMorph.prototype.renderSymbolKeyboard = function (ctx, color) {
+    // draw a typing keyboard
+    var h = this.size,
+        u = h / 10,
+        k = h / 5,
+        row, col;
+
+    ctx.fillStyle = color.toString();
+    for (row = 0; row < 2; row += 1) {
+		for (col = 0; col < 5; col += 1) {
+			ctx.fillRect(
+      			((u + k) * col) + u,
+          		((u + k) * row) + u,
+           		k,
+           		k
+			);
+   		}
+  	}
+	ctx.fillRect(u * 4, u * 7, k * 4, k);
+};
+
+SymbolMorph.prototype.renderSymbolKeyboardFilled = function (ctx, color) {
+    // draw a typing keyboard
+    var w = this.symbolWidth(),
+        h = this.size,
+        u = h / 10,
+        k = h / 5,
+        row, col;
+
+    ctx.fillStyle = color.toString();
+    ctx.beginPath();
+    ctx.rect(0, 0, w, h);
+    for (row = 0; row < 2; row += 1) {
+        for (col = 0; col < 5; col += 1) {
+            ctx.rect(
+                  ((u + k) * col) + u,
+                  ((u + k) * row) + u,
+                   k,
+                   k
+            );
+           }
+      }
+    ctx.rect(u * 4, u * 7, k * 4, k);
+
+    ctx.clip('evenodd');
+    ctx.fillRect(0, 0, w, h);
+};
+
+SymbolMorph.prototype.renderSymbolGlobeBig = function (ctx, color) {
+    this.renderSymbolGlobe(ctx, color, true);
+};
+
+SymbolMorph.prototype.renderSymbolGlobe = function (ctx, color, detailed) {
+    // draw a stylized globe
+    var w = this.symbolWidth(),
+        l = Math.max(w / 30, 0.5);
+
+    ctx.strokeStyle = color.toString();
+    ctx.lineWidth = l * 2;
+
+    ctx.beginPath();
+    ctx.arc(w / 2, w / 2, w / 2 - l, 0, 2 * Math.PI, false);
+    ctx.stroke();
+
+    if (detailed) {
+        ctx.moveTo(l * 4, w / 5);
+        ctx.lineTo(w - l * 4, w / 5);
+        ctx.stroke();
+        ctx.moveTo(w / 2, 0);
+        ctx.lineTo(w / 2, w);
+        ctx.stroke();
+        ctx.moveTo(l * 4, w * 4 / 5);
+        ctx.lineTo(w - l * 4, w * 4 / 5);
+        ctx.stroke();
+    };
+    
+    // single line version, looks better when small:
+    ctx.beginPath();
+    ctx.moveTo(w / 2, l / 2);
+    ctx.arcTo(0, w / 2, w / 2, w, w * 2 / 3);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(0, w / 2);
+    ctx.lineTo(w, w / 2);
+    ctx.stroke();
+
+    ctx.beginPath();
+    ctx.moveTo(w / 2, l / 2);
+    ctx.arcTo(w, w / 2, w / 2, w, w * 2 / 3);
+    ctx.stroke();
+};
+
+SymbolMorph.prototype.renderSymbolList = function (ctx, color) {
+    // draw a stylized list
+    var w = this.symbolWidth(),
+        h = this.size,
+        padding = h / 10,
+        item = h / 5,
+        row;
+
+    ctx.fillStyle = color.toString();
+    ctx.beginPath();
+    ctx.rect(0, 0, w, h);
+    for (row = 0; row < 4; row += 1) {
+        ctx.rect(
+            padding,
+            ((padding + item) * row) + padding,
+            w - item,
+            item
+        );
+    }
+    ctx.clip('evenodd');
+    ctx.fillRect(0, 0, w, h);
+};
+
+SymbolMorph.prototype.renderSymbolVerticalEllipsis = function (ctx, color) {
+    // draw 3 solid circles
+    var r = this.symbolWidth() / 2;
+
+    ctx.fillStyle = color.toString();
+    ctx.beginPath();
+    ctx.arc(r, r, r, radians(0), 2 * Math.PI, false);
+    ctx.arc(r, r * 5, r, radians(0), 2 * Math.PI, false);
+    ctx.arc(r, r * 9, r, radians(0), 2 * Math.PI, false);
+    ctx.fill();
+};
+
+SymbolMorph.prototype.renderSymbolFlipHorizontal = function (ctx, color) {
+    var w = this.symbolWidth(),
+        h = this.size,
+        c = w / 2,
+        off = w / 15;
+    
+    ctx.strokeStyle = color.toString();
+    ctx.lineWidth = w / 15;
+    ctx.beginPath();
+    ctx.moveTo(0 + off, h - off / 2);
+    ctx.lineTo(c - off * 1.2, h - off / 2);
+    ctx.lineTo(c - off * 1.2, off * 2);
+    ctx.closePath();
+    ctx.stroke();
+    
+    ctx.fillStyle = color.toString();
+    ctx.lineWidth = w / 15;
+    ctx.beginPath();
+    ctx.moveTo(w - off, h - off / 2);
+    ctx.lineTo(c + off * 1.2, h - off / 2);
+    ctx.lineTo(c + off * 1.2, off * 2);
+    ctx.closePath();
+    ctx.stroke();
+    ctx.fill();
+};
+    
+SymbolMorph.prototype.renderSymbolFlipVertical = function (ctx, color) {
+    ctx.translate(0, this.size);
+    ctx.rotate(radians(-90));
+    this.renderSymbolFlipHorizontal(ctx, color);
+};
+
+SymbolMorph.prototype.renderSymbolTrash = function (ctx, color) {
+    var w = this.symbolWidth(),
+        h = this.size,
+        step = w / 10;
+
+    function stripe(x) {
+        var half = step / 2;
+        ctx.moveTo(x - half, step * 4);
+        ctx.arc(x, step * 4, half, Math.PI, 0);
+        ctx.lineTo(x + half, step * 8.5);
+        ctx.arc(x, step * 8.5, half, 0, Math.PI);
+        ctx.lineTo(x - half, step * 4);
+    }
+
+    // body of the can
+    ctx.fillStyle = color.toString();
+    ctx.beginPath();
+    ctx.moveTo(step, step * 2.5);
+    ctx.lineTo(step * 1.5, step * 9.5);
+    ctx.lineTo(step * 2.5, h);
+    ctx.lineTo(step * 7.5, h);
+    ctx.lineTo(step * 8.5, step * 9.5);
+    ctx.lineTo(step * 9, step * 2.5);
+    ctx.lineTo(step, step * 2.5);
+
+    // vertical stripes
+    stripe(w * 0.3);
+    stripe(w * 0.5);
+    stripe(w * 0.7);
+
+    ctx.save();
+    ctx.clip();
+    ctx.fillRect(0, 0, w, h);
+    ctx.restore();
+
+    // the lid
+    ctx.lineWidth = step;
+    ctx.lineJoin = 'round';
+    ctx.strokeStyle = color.toString();
+    ctx.lineWidth = step;
+    ctx.beginPath();
+    ctx.moveTo(step / 2, step * 1.5);
+    ctx.lineTo(step * 9.5, step * 1.5);
+    ctx.stroke();
+
+    // the handle on the lid
+    ctx.lineWidth = step / 2;
+    ctx.beginPath();
+    ctx.moveTo(step * 3, step * 1.5);
+    ctx.lineTo(step * 4, step * 0.25);
+    ctx.lineTo(step * 6, step * 0.25);
+    ctx.lineTo(step * 7, step * 1.5);
+    ctx.stroke();
+};
+
+SymbolMorph.prototype.renderSymbolTrashFull = function (ctx, color) {
+    var w = this.symbolWidth(),
+        h = this.size,
+        step = w / 10;
+
+    function stripe(x) {
+        var half = step / 2;
+        ctx.moveTo(x - half, step * 5.5);
+        ctx.arc(x, step * 5.5, half, Math.PI, 0);
+        ctx.lineTo(x + half, step * 8.5);
+        ctx.arc(x, step * 8.5, half, 0, Math.PI);
+        ctx.lineTo(x - half, step * 5.5);
+    }
+
+    // body of the can
+    ctx.fillStyle = color.toString();
+    ctx.beginPath();
+    ctx.moveTo(step, step * 4);
+    ctx.lineTo(step * 1.5, step * 9.5);
+    ctx.lineTo(step * 2.5, h);
+    ctx.lineTo(step * 7.5, h);
+    ctx.lineTo(step * 8.5, step * 9.5);
+    ctx.lineTo(step * 9, step * 4);
+    ctx.lineTo(step, step * 4);
+
+    // vertical stripes
+    stripe(w * 0.3);
+    stripe(w * 0.5);
+    stripe(w * 0.7);
+
+    ctx.save();
+    ctx.clip();
+    ctx.fillRect(0, 0, w, h);
+    ctx.restore();
+
+    // document
+    ctx.beginPath();
+    ctx.moveTo(step * 2, 0);
+    ctx.lineTo(step * 6, 0);
+    ctx.lineTo(step * 8, step * 2);
+    ctx.lineTo(step * 8, step * 3.5);
+    ctx.lineTo(step * 2, step * 3.5);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.fillStyle = color.darker(25).toString();
+    ctx.beginPath();
+    ctx.moveTo(step * 6, 0);
+    ctx.lineTo(step * 8, step * 2);
+    ctx.lineTo(step * 6, step * 2);
+    ctx.closePath();
+    ctx.fill();
+};
+
+(function () {
+    var bright = new Color(240, 240, 240),
+        dark = new Color(20, 20, 20),
+        offset = new Point(-1, -1);
+       
+    SymbolMorph.prototype.addToDemoMenu([
+        'add a symbol...',
+        SymbolMorph.prototype.names.map(sym => [
+            new SymbolMorph(
+                sym,
+                30,
+                bright,
+                offset,
+                dark
+            ),
+            sym
+        ])
+    ]);
+})();
+
+// PushButtonMorph /////////////////////////////////////////////////////
+
+// I am a Button with rounded corners and 3D-ish graphical effects
+
+// PushButtonMorph inherits from TriggerMorph:
+
+PushButtonMorph.prototype = new TriggerMorph;
+PushButtonMorph.prototype.constructor = PushButtonMorph;
+PushButtonMorph.uber = TriggerMorph.prototype;
+
+// PushButtonMorph preferences settings:
+
+PushButtonMorph.prototype.fontSize = 10; (PushButtonMorph
+).prototype.fontStyle = 'sans-serif'; (PushButtonMorph
+).prototype.labelColor = BLACK; (PushButtonMorph.prototype
+).labelShadowColor = WHITE; (PushButtonMorph.prototype
+).labelShadowOffset = new Point(1, 1); (PushButtonMorph
+).prototype.color = new Color(220, 220, 220); (PushButtonMorph
+).prototype.pressColor = new Color(115, 180, 240
+);   PushButtonMorph.prototype.highlightColor = (
+PushButtonMorph).prototype.pressColor.lighter(50); 
+PushButtonMorph.prototype.outlineGradient = false;
+PushButtonMorph.prototype.outlineColor = new Color(
+30, 30, 30, 0.5); (PushButtonMorph.prototype.contrast
+) = 60; PushButtonMorph.prototype.edge = 2;
+PushButtonMorph.prototype.corner = 5;
+PushButtonMorph.prototype.outline = 1;
+PushButtonMorph.prototype.padding = 3;
+
+// PushButtonMorph instance creation:
+
+function PushButtonMorph(
+    target,
+    action,
+    labelString,
+    environment,
+    hint
+) {
+    this.init(
+        target,
+        action,
+        labelString,
+        environment,
+        hint
+    );
+};
+
+PushButtonMorph.prototype.init = function (
+target, action, labelString, environment,
+hint) {
+    // additional properties:
+    this.is3D = false; // for "flat" design exceptions
+    this.target = target || null;
+    this.action = action || null;
+    this.environment = environment || null;
+    this.labelString = labelString || null;
+    this.label = null;
+    this.labelMinExtent = ZERO;
+    this.hint = hint || null;
+    this.isDisabled = false;
+
+    // initialize inherited properties:
+    TriggerMorph.uber.init.call(this);
+
+    // override inherited properites:
+    this.color = PushButtonMorph.prototype.color;
+    this.createLabel(); this.fixLayout(); (this
+    ).rerender();  this.cursorStyle = 'pointer';
+};
+
+// PushButtonMorph layout:
+
+PushButtonMorph.prototype.fixLayout = function () {
+    // make sure I at least encompass my label
+    if (this.label !== null) {
+        this.updateLabelColors();
+        var padding = this.padding * 2 + this.outline * 2 + this.edge * 2;
+        this.bounds.setWidth(
+            Math.max(this.label.width(), this.labelMinExtent.x) + padding
+        );
+        this.bounds.setHeight(
+            Math.max(
+                this.label instanceof StringMorph ?
+                    this.label.rawHeight() : this.label.height(),
+                this.labelMinExtent.y
+            ) + padding
+        );  this.label.setCenter(this.center());
+    };
+};
+
+// PushButtonMorph events
+
+PushButtonMorph.prototype.mouseDownLeft = function () {
+    PushButtonMorph.uber.mouseDownLeft.call(this);
+    if (this.label) {
+        this.label.setCenter(this.center().add(1));
+    };
+};
+
+PushButtonMorph.prototype.mouseClickLeft = function () {
+    if (this.isDisabled) {return; }
+    PushButtonMorph.uber.mouseClickLeft.call(this);
+    if (this.label) {
+        this.label.setCenter(this.center());
+    };
+};
+
+PushButtonMorph.prototype.mouseLeave = function () {
+    PushButtonMorph.uber.mouseLeave.call(this);
+    if (this.label) {
+        this.label.setCenter(this.center());
+    };
+};
+
+// PushButtonMorph drawing:
+
+PushButtonMorph.prototype.render = function (
+    ctx) {var isFlat = MorphicPreferences.isFlat && !this.is3D;
+          if (this.userState === 'highlight'
+        )  {this.drawOutline(ctx
+        );  this.drawBackground(
+        ctx, (isFlat ? (this.highlightColor).lighter(this.contrast) : this.highlightColor)
+        );  this.drawEdges(
+            ctx, this.highlightColor,
+            this.highlightColor.lighter(this.contrast),
+            this.highlightColor.darker(this.contrast)
+        );
+    } else if (this.userState === 'pressed') {
+        this.drawOutline(ctx);
+        this.drawBackground(ctx, (isFlat ? (this.pressColor).lighter(this.contrast) : this.pressColor));
+        this.drawEdges(
+            ctx,
+            this.pressColor,
+            this.pressColor.darker(this.contrast),
+            this.pressColor.lighter(this.contrast)
+        );
+    } else {
+        this.drawOutline(ctx);
+        this.drawBackground(ctx, (isFlat ? (this.color).lighter(this.contrast) : this.color));
+        this.drawEdges(
+            ctx,
+            this.color,
+            this.color.lighter(this.contrast),
+            this.color.darker(this.contrast)
+        );
+    };};
+
+PushButtonMorph.prototype.drawOutline = function (ctx) {
+    var outlineStyle,
+        isFlat = MorphicPreferences.isFlat && !this.is3D;
+
+    if (this.outline) {
+    if (this.outlineGradient) {
+        outlineStyle = ctx.createLinearGradient(
+            0,
+            0,
+            0,
+            this.height()
+        );
+        outlineStyle.addColorStop(0, this.outlineColor.darker().toString());
+        outlineStyle.addColorStop(1, (isFlat ? this.outlineColor.darker().toString() : 'white'));
+    } else {
+        outlineStyle = this.outlineColor.toString();
+    };  ctx.fillStyle = outlineStyle;
+    ctx.beginPath();
+    this.outlinePath(
+        ctx,
+        this.corner, 0
+    );  ctx.closePath();
+    ctx.fill();};
+};
+
+PushButtonMorph.prototype.drawBackground = function (ctx, color) {
+    ctx.fillStyle = color.toString();
+    ctx.beginPath();
+    this.outlinePath(ctx,
+        Math.max((this.corner
+        ) - this.outline, 0
+        ),  this.outline);
+        ctx.closePath();
+    ctx.fill();
+    ctx.lineWidth = this.outline;
+};
+
+PushButtonMorph.prototype.drawEdges = function (
+    ctx,
+    color,
+    topColor,
+    bottomColor
+)  {if (!(MorphicPreferences.isFlat && !(this.is3D))) {
+    var minInset = Math.max(this.corner, this.outline + this.edge),
+        w = this.width(),
+        h = this.height(),
+        gradient;
+
+    // top:
+    gradient = ctx.createLinearGradient(
+        0, this.outline,
+        0, this.outline + this.edge
+    );
+    gradient.addColorStop(0, topColor.toString());
+    gradient.addColorStop(1, color.toString());
+
+    ctx.strokeStyle = gradient;
+    ctx.lineCap = 'round';
+    ctx.lineWidth = this.edge;
+    ctx.beginPath();
+    ctx.moveTo(minInset, this.outline + this.edge / 2);
+    ctx.lineTo(w - minInset, this.outline + this.edge / 2);
+    ctx.stroke();
+
+    // top-left corner:
+    gradient = ctx.createRadialGradient(
+        this.corner,
+        this.corner,
+        Math.max(this.corner - this.outline - this.edge, 0),
+        this.corner,
+        this.corner,
+        Math.max(this.corner - this.outline, 0)
+    );
+    gradient.addColorStop(0, color.toString());
+    gradient.addColorStop(1, topColor.toString());
+
+    ctx.strokeStyle = gradient;
+    ctx.lineCap = 'round';
+    ctx.lineWidth = this.edge;
+    ctx.beginPath();
+    ctx.arc(
+        this.corner,
+        this.corner,
+        Math.max(this.corner - this.outline - this.edge / 2, 0),
+        radians(180),
+        radians(270),
+        false
+    );
+    ctx.stroke();
+
+    // left:
+    gradient = ctx.createLinearGradient(
+        this.outline,
+        0,
+        this.outline + this.edge,
+        0
+    );
+    gradient.addColorStop(0, topColor.toString());
+    gradient.addColorStop(1, color.toString());
+
+    ctx.strokeStyle = gradient;
+    ctx.lineCap = 'round';
+    ctx.lineWidth = this.edge;
+    ctx.beginPath();
+    ctx.moveTo(this.outline + this.edge / 2, minInset);
+    ctx.lineTo(this.outline + this.edge / 2, h - minInset);
+    ctx.stroke();
+
+    // bottom:
+    gradient = ctx.createLinearGradient(
+        0,
+        h - this.outline,
+        0,
+        h - this.outline - this.edge
+    );
+    gradient.addColorStop(0, bottomColor.toString());
+    gradient.addColorStop(1, color.toString());
+
+    ctx.strokeStyle = gradient;
+    ctx.lineCap = 'round';
+    ctx.lineWidth = this.edge;
+    ctx.beginPath();
+    ctx.moveTo(minInset, h - this.outline - this.edge / 2);
+    ctx.lineTo(w - minInset, h - this.outline - this.edge / 2);
+    ctx.stroke();
+
+    // bottom-right corner:
+    gradient = ctx.createRadialGradient(
+        w - this.corner,
+        h - this.corner,
+        Math.max(this.corner - this.outline - this.edge, 0),
+        w - this.corner,
+        h - this.corner,
+        Math.max(this.corner - this.outline, 0)
+    );
+    gradient.addColorStop(0, color.toString());
+    gradient.addColorStop(1, bottomColor.toString());
+
+    ctx.strokeStyle = gradient;
+    ctx.lineCap = 'round';
+    ctx.lineWidth = this.edge;
+    ctx.beginPath();
+    ctx.arc(
+        w - this.corner,
+        h - this.corner,
+        Math.max(this.corner - this.outline - this.edge / 2, 0),
+        radians(0),
+        radians(90
+        ), false
+    );  ctx.stroke();
+
+    // right:
+    gradient = ctx.createLinearGradient(
+        w - this.outline,
+        0,
+        w - this.outline - this.edge,
+        0
+    );  gradient.addColorStop(0, bottomColor.toString(
+    )); gradient.addColorStop(1, color.toString());
+
+    ctx.strokeStyle = gradient; ctx.lineCap = 'round';
+    ctx.lineWidth = this.edge;  ctx.beginPath(
+    );  ctx.moveTo(w - this.outline - this.edge / 2,
+    minInset); ctx.lineTo(w - this.outline - this.edge / 2,
+    h - minInset); ctx.stroke();};};
+
+PushButtonMorph.prototype.outlinePath = BoxMorph.prototype.outlinePath;
+
+PushButtonMorph.prototype.createLabel = function () {
+    var shading = !MorphicPreferences.isFlat || this.is3D;
+
+    if (this.label !== null) {
+        this.label.destroy();
+    };  if (this.labelString instanceof SymbolMorph) {
+        this.label = this.labelString.fullCopy();
+        if (shading) {
+            this.label.shadowOffset = this.labelShadowOffset;
+            this.label.shadowColor = this.labelShadowColor;
+        };  this.label.color = this.labelColor;
+    } else {
+        this.label = new StringMorph(
+            localize(this.labelString),
+            this.fontSize,
+            this.fontStyle,
+            true,
+            false,
+            false,
+            shading ? this.labelShadowOffset : null,
+            this.labelShadowColor,
+            this.labelColor
+        );
+    };  this.add(this.label);
+};
+
+PushButtonMorph.prototype.updateLabelColors = function () {
+    var shading = !MorphicPreferences.isFlat || this.is3D;
+    if (this.label) {
+        this.label.color = this.labelColor;
+        this.label.fontSize = this.fontSize;
+        if (shading) {
+            this.label.shadowOffset = this.labelShadowOffset;
+            this.label.shadowColor = this.labelShadowColor;
+        };  this.label.fixLayout(true); // just me
+    };
+};
+
+// PushButtonMorph states
+
+PushButtonMorph.prototype.disable = function () {
+    this.isDisabled = true;
+    this.forAllChildren(child =>
+        child.alpha = 0.3
+    );  this.rerender();
+};
+
+PushButtonMorph.prototype.enable = function () {
+    this.isDisabled = false;
+    this.forAllChildren(child =>
+        child.alpha = 1
+    );  this.rerender();
+};
+
+// ToggleButtonMorph ///////////////////////////////////////////////////////
+
+/*
+    I am a two-state PushButton. When my state is "true" I keep my "pressed"
+    background color. I can also be set to not auto-layout my bounds, in
+    which case my label will left-align.
+*/
+
+// ToggleButtonMorph inherits from PushButtonMorph:
+
+ToggleButtonMorph.prototype = new PushButtonMorph;
+ToggleButtonMorph.prototype.constructor = ToggleButtonMorph;
+ToggleButtonMorph.uber = PushButtonMorph.prototype;
+
+// ToggleButton settings
+
+ToggleButtonMorph.prototype.contrast = 30;
+ToggleButtonMorph.prototype.labelPressColor = null;
+
+// ToggleButtonMorph instance creation:
+
+function ToggleButtonMorph(
+    colors, // color overrides, <array>: [normal, highlight, pressed]
+    target,
+    action, // a toggle function
+    labelString,
+    query, // predicate/selector
+    environment,
+    hint,
+    minWidth, // <num> optional, if specified label will left-align
+    hasPreview, // <bool> show press color on left edge (e.g. category)
+    isPicture // treat label as picture, i.e. don't apply typography
+) {
+    this.init(
+        colors,
+        target,
+        action,
+        labelString,
+        query,
+        environment,
+        hint,
+        minWidth,
+        hasPreview,
+        isPicture
+    );
+}
+
+ToggleButtonMorph.prototype.init = function (
+    colors,
+    target,
+    action,
+    labelString,
+    query,
+    environment,
+    hint,
+    minWidth,
+    hasPreview,
+    isPicture
+) {
+    // additional properties:
+    this.state = false;
+    this.query = query || (() => true);
+    this.minWidth = minWidth || null;
+    this.hasPreview = hasPreview || false;
+    this.isPicture = isPicture || false;
+    this.hasNeutralBackground = false;
+    this.trueStateLabel = null;
+
+    // initialize inherited properties:
+    ToggleButtonMorph.uber.init.call(
+    this, target, action, labelString,
+    environment, hint);
+
+    // override default colors if others are specified
+    if (colors) {this.color = colors[0
+        ]; this.pressColor = colors[2];
+        this.highlightColor = colors[1];
+    };  this.refresh(); this.rerender();};
+
+// ToggleButtonMorph events
+
+ToggleButtonMorph.prototype.mouseEnter = function () {
+var contents = this.hint instanceof Function ? this.hint(
+) : this.hint; if (!this.state || this.hasNeutralBackground
+) {this.userState = 'highlight'; this.rerender();
+}; if (contents) {this.bubbleHelp(contents);};};
+
+ToggleButtonMorph.prototype.mouseLeave = function () {
+    if (!this.state || this.hasNeutralBackground) {
+        this.userState = 'normal';
+        this.rerender();
+    };  if (this.schedule) {
+        this.schedule.isActive = false;
+    };  if (this.hint) {
+        (world.hand
+        ).destroyTemporaries();
+    };
+};
+
+ToggleButtonMorph.prototype.mouseDownLeft = function () {if (
+!this.state) {this.userState = 'pressed'; this.rerender();};};
+
+ToggleButtonMorph.prototype.mouseClickLeft = function () {
+    if (!this.state) {
+        this.userState = 'highlight';
+        this.rerender();
+    }
+    this.trigger(); // allow me to be triggered again to force-update others
+};
+
+// ToggleButtonMorph action
+
+ToggleButtonMorph.prototype.trigger = function () {
+    ToggleButtonMorph.uber.trigger.call(this);
+    this.refresh();
+};
+
+ToggleButtonMorph.prototype.refresh = function () {
+/*
+    if query is a function:
+    execute the query with target as environment (can be null)
+    for lambdafied (inline) actions
+
+    else if query is a String:
+    treat it as function property of target and execute it
+    for selector-like queries
+*/
+    if (typeof this.query === 'function') {
+        this.state = this.query.call(this.target);
+    } else { // assume it's a String
+        this.state = this.target[this.query]();
+    }
+    if (this.state) {
+        this.userState = 'pressed';
+        if (this.labelPressColor) {
+            this.label.setColor(this.labelPressColor);
+        }
+        if (this.trueStateLabel) {
+            this.label.hide();
+            this.trueStateLabel.show();
+        }
+    } else {
+        this.userState = 'normal';
+        if (this.labelPressColor) {
+            this.label.setColor(this.labelColor);
+        }
+        if (this.trueStateLabel) {
+            this.label.show();
+            this.trueStateLabel.hide();
+        }
+    }
+    this.rerender();
+};
+
+// ToggleButtonMorph layout:
+
+ToggleButtonMorph.prototype.fixLayout = function () {
+    if (this.label !== null) {
+        var padding = this.padding * 2 + this.outline * 2 + this.edge * 2,
+            lw;
+
+        this.updateLabelColors();
+        lw = Math.max(this.label.width(), this.labelMinExtent.x);
+        this.bounds.setWidth(this.minWidth ?
+                Math.max(this.minWidth, lw) + padding
+                    : lw + padding
+        );
+        this.bounds.setHeight(
+            Math.max(this.label instanceof StringMorph ?
+                    this.label.rawHeight() :
+                        this.label.height(), this.labelMinExtent.y) + padding
+        );
+        this.label.setCenter(this.center());
+        if (this.trueStateLabel) {
+            this.trueStateLabel.setCenter(this.center());
+        }
+        if (this.minWidth) { // left-align along my corner
+            this.label.setLeft(
+                this.left()
+                    + this.outline
+                    + this.edge
+                    + this.corner
+                    + this.padding
+            );
+        }
+    }
+};
+
+// ToggleButtonMorph drawing
+
+ToggleButtonMorph.prototype.render = function (ctx) {
+/*
+    basically the same as inherited from PushButtonMorph, except for
+    not inverting the pressed 3D-ish border (because it stays that way),
+    and optionally coloring the left edge in the press-color, previewing
+    the selection color (e.g. in the case of Snap palette-category
+    selector. the latter is done in the drawEdges() method.
+*/
+    switch (this.userState) {
+    case 'highlight':
+        this.drawOutline(ctx);
+        this.drawBackground(ctx, this.highlightColor);
+        this.drawEdges(
+            ctx,
+            this.highlightColor,
+            this.highlightColor.lighter(this.contrast),
+            this.highlightColor.darker(this.contrast)
+        );
+        break;
+    case 'pressed':
+        // note: don't invert the 3D-ish edges for 'pressed' state, because
+        // it will stay that way, and should not look inverted (or should it?)
+        this.drawOutline(ctx);
+        this.drawBackground(ctx, this.getPressRenderColor());
+        this.drawEdges(
+            ctx,
+            this.pressColor,
+            this.pressColor.lighter(40),
+            this.pressColor.darker(40)
+        );
+        break;
+    default:
+        this.drawOutline(ctx);
+        this.drawBackground(ctx, this.color);
+        this.drawEdges(
+            ctx,
+            this.color,
+            this.color.lighter(this.contrast),
+            this.color.darker(this.contrast)
+        );
+    }
+};
+
+ToggleButtonMorph.prototype.getPressRenderColor = function () {
+    // can be overridden by my children
+    return this.pressColor;
+};
+
+ToggleButtonMorph.prototype.drawEdges = function (
+    ctx,
+    color,
+    topColor,
+    bottomColor
+) {
+    var gradient;
+
+    ToggleButtonMorph.uber.drawEdges.call(
+        this,
+        ctx,
+        color,
+        topColor,
+        bottomColor
+    ); var isFlat = MorphicPreferences.isFlat;
+
+    if (this.hasPreview) { // indicate the possible selection color
+        gradient = ctx.createLinearGradient(
+            0,
+            0,
+            this.corner,
+            0
+        );
+        gradient.addColorStop(0, (isFlat ? this.pressColor : this.pressColor.lighter(40)).toString());
+        gradient.addColorStop(1, (isFlat ? this.pressColor : this.pressColor.darker(40)).toString());
+        ctx.fillStyle = gradient;
+        ctx.beginPath();
+        this.previewPath(
+            ctx,
+            Math.max(this.corner - this.outline, 0),
+            this.outline
+        );
+        ctx.closePath();
+        ctx.fill();
+    }
+};
+
+ToggleButtonMorph.prototype.previewPath = function (ctx, radius, inset) {
+    var offset = radius + inset,
+        h = this.height();
+
+    // top left:
+    ctx.arc(
+        offset,
+        offset,
+        radius,
+        radians(-180),
+        radians(-90),
+        false
+    );
+    // bottom left:
+    ctx.arc(
+        offset,
+        h - offset,
+        radius,
+        radians(90),
+        radians(180),
+        false
+    );
+};
+
+ToggleButtonMorph.prototype.createLabel = function () {
+    var shading = !MorphicPreferences.isFlat || this.is3D;
+
+    if (this.label !== null) {
+        this.label.destroy();
+    }
+    if (this.trueStateLabel !== null) {
+        this.trueStateLabel.destroy();
+    }
+    if (this.labelString instanceof Array && this.labelString.length === 2) {
+        if (this.labelString[0] instanceof SymbolMorph) {
+            this.label = this.labelString[0].fullCopy();
+            this.trueStateLabel = this.labelString[1].fullCopy();
+            if (!this.isPicture) {
+                this.label.shadowOffset = shading ?
+                        this.labelShadowOffset : ZERO;
+                this.label.shadowColor = this.labelShadowColor;
+                this.label.color = this.labelColor;
+                this.label.fixLayout();
+                this.label.rerender();
+
+                this.trueStateLabel.shadowOffset = shading ?
+                        this.labelShadowOffset : ZERO;
+                this.trueStateLabel.shadowColor = this.labelShadowColor;
+                this.trueStateLabel.color = this.labelColor;
+                this.trueStateLabel.fixLayout();
+                this.trueStateLabel.rerender();
+            }
+        } else if (this.labelString[0] instanceof Morph) {
+            this.label = this.labelString[0].fullCopy();
+            this.trueStateLabel = this.labelString[1].fullCopy();
+        } else {
+            this.label = new StringMorph(
+                localize(this.labelString[0]),
+                this.fontSize,
+                this.fontStyle,
+                true,
+                false,
+                false,
+                shading ? this.labelShadowOffset : null,
+                this.labelShadowColor,
+                this.labelColor
+            );
+            this.trueStateLabel = new StringMorph(
+                localize(this.labelString[1]),
+                this.fontSize,
+                this.fontStyle,
+                true,
+                false,
+                false,
+                shading ? this.labelShadowOffset : null,
+                this.labelShadowColor,
+                this.labelColor
+            );
+        }
+    } else {
+        if (this.labelString instanceof SymbolMorph) {
+            this.label = this.labelString.fullCopy();
+            if (!this.isPicture) {
+                this.label.shadowOffset = shading ?
+                        this.labelShadowOffset : ZERO;
+                this.label.shadowColor = this.labelShadowColor;
+                this.label.color = this.labelColor;
+                this.label.fixLayout();
+                this.label.rerender();
+            }
+        } else if (this.labelString instanceof Morph) {
+            this.label = this.labelString.fullCopy();
+        } else {
+            this.label = new StringMorph(
+                localize(this.labelString),
+                this.fontSize,
+                this.fontStyle,
+                true,
+                false,
+                false,
+                shading ? this.labelShadowOffset : ZERO,
+                this.labelShadowColor,
+                this.labelColor
+            );
+        }
+    }
+    this.add(this.label);
+    if (this.trueStateLabel) {
+        this.add(this.trueStateLabel);
+    }
+};
+
+ToggleButtonMorph.prototype.updateLabelColors = function () {
+    var shading = !MorphicPreferences.isFlat || this.is3D;
+    ToggleButtonMorph.uber.updateLabelColors.call(this);
+    if (this.trueStateLabel) {
+        this.trueStateLabel.color = this.labelColor;
+        if (shading) {
+            this.trueStateLabel.shadowOffset = this.labelShadowOffset;
+            this.trueStateLabel.shadowColor = this.labelShadowColor;
+        }
+        this.trueStateLabel.fixLayout(true); // just me
+    }
+};
+
+// TabMorph ///////////////////////////////////////////////////////
+
+// TabMorph inherits from ToggleButtonMorph:
+
+TabMorph.prototype = new ToggleButtonMorph;
+TabMorph.prototype.constructor = TabMorph;
+TabMorph.uber = ToggleButtonMorph.prototype;
+
+// TabMorph instance creation:
+
+function TabMorph(
+    colors, // color overrides, <array>: [normal, highlight, pressed]
+    target,
+    action, // a toggle function
+    labelString,
+    query, // predicate/selector
+    environment,
+    hint
+) {
+    this.init(
+        colors,
+        target,
+        action,
+        labelString,
+        query,
+        environment,
+        hint
+    );
+}
+
+// TabMorph layout:
+
+TabMorph.prototype.fixLayout = function () {
+    if (!isNil(this.label)) {
+        this.updateLabelColors();
+        this.setExtent(new Point(
+            this.label.width()
+                + this.padding * 2
+                + this.corner * 3
+                + this.edge * 2,
+            (this.label instanceof StringMorph ?
+             this.label.rawHeight() : this.label.height())
+                + (this.padding * 2) + this.edge
+        ));  this.label.setCenter(this.center());};};
+
+// TabMorph action:
+
+TabMorph.prototype.refresh = function () {
+    if (this.state) { // bring to front
+        if (this.parent) {
+            this.parent.add(
+            this);};};
+    TabMorph.uber.refresh.call(this);
+};
+
+// TabMorph drawing:
+
+TabMorph.prototype.drawBackground = function (context, color) {
+    var w = this.width(),
+        h = this.height(),
+        c = this.corner;
+
+    context.fillStyle = color.toString();
+    context.beginPath();
+    context.moveTo(0, h);
+    context.bezierCurveTo(c, h, c, 0, c * 2, 0);
+    context.lineTo(w - c * 2, 0);
+    context.bezierCurveTo(w - c, 0, w - c, h, w, h);
+    context.closePath();
+    context.fill();
+};
+
+TabMorph.prototype.drawOutline = function () {
+    nop();
+};
+
+TabMorph.prototype.drawEdges = function (
+    context,
+    color,
+    topColor,
+    bottomColor
+) {
+    var isFlat = MorphicPreferences.isFlat,
+        w = this.width(), h = this.height(),
+        c = this.corner, e = this.edge,
+        eh = e / 2, gradient;
+
+    gradient = context.createLinearGradient(0, 0, w, 0);
+    gradient.addColorStop(0, (isFlat ? bottomColor : topColor).toString());
+    gradient.addColorStop(1, bottomColor.toString());
+
+    context.strokeStyle = gradient;
+    context.lineCap = 'round';
+    context.lineWidth = e;
+
+    context.beginPath();
+    context.moveTo(0, h + eh);
+    context.bezierCurveTo(c, h, c, 0, c * 2, eh);
+    context.lineTo(w - c * 2, eh);
+    context.bezierCurveTo(w - c, 0, w - c, h, w, h + eh);
+    context.stroke();
+};
+
+// ToggleMorph ///////////////////////////////////////////////////////
+
+/*
+    I am a PushButton which toggles a check mark (becoming check box)
+    or a bullet (becoming a radio button). I can have both or either an
+    additional label and an additional pictogram, whereas the pictogram
+    can be either an instance of (any) Morph, in which case the pictogram
+    will be an interactive toggle itself or a Canvas, in which case it
+    is just going to be a picture.
+*/
+
+// ToggleMorph inherits from PushButtonMorph:
+
+ToggleMorph.prototype = new PushButtonMorph;
+ToggleMorph.prototype.constructor = ToggleMorph;
+ToggleMorph.uber = PushButtonMorph.prototype;
+
+// ToggleMorph instance creation:
+
+function ToggleMorph(
+    style, // 'checkbox' or 'radiobutton'
+    target,
+    action, // a toggle function
+    labelString,
+    query, // predicate/selector
+    environment,
+    hint,
+    element, // optional Morph or Canvas to display
+    builder // method which constructs the element (only for Morphs)
+) {
+    this.init(
+        style,
+        target,
+        action,
+        labelString,
+        query,
+        environment,
+        hint,
+        element,
+        builder
+    );
+};
+
+ToggleMorph.prototype.init = function (
+    style,
+    target,
+    action,
+    labelString,
+    query,
+    environment,
+    hint,
+    element,
+    builder
+) {
+    // additional properties:
+    this.padding = 1;
+    style = style || 'checkbox';
+    this.corner = (style === 'checkbox' ?
+    0 : (fontHeight(this.fontSize) / 2
+    ) + this.outline + this.padding);
+    this.state = false; this.query = (
+    query || (() => true)); this.tick = null;
+    this.captionString = labelString || null;
+    this.labelAlignment = 'right';
+    this.element = element || null;
+    this.builder = builder || null;
+    this.toggleElement = null;
+
+    // initialize inherited properties:
+    ToggleMorph.uber.init.call(
+        this,
+        target,
+        action,
+        (style === 'checkbox'
+        ) ? '\u2713' : '\u25CF',
+        environment,
+        hint
+    );  this.fixLayout(
+    );  this.refresh();
+};
+
+// ToggleMorph layout:
+
+ToggleMorph.prototype.fixLayout = function () {
+    var padding = this.padding * 2 + this.outline * 2,
+        y;
+    if (this.tick !== null) {
+        this.bounds.setHeight(this.tick.rawHeight() + padding);
+        this.bounds.setWidth(this.tick.width() + padding);
+        this.bounds.setWidth(Math.max(this.width(), this.height()));
+        this.bounds.setHeight(Math.max(this.width(), this.height()));
+        this.tick.setCenter(this.center());
+    };  if (this.state) {
+        this.tick.show();
+    } else {
+        this.tick.hide();
+    };  if (this.toggleElement && (this.labelAlignment === 'right')) {
+        y = this.top() + (this.height() - this.toggleElement.height()) / 2;
+        this.toggleElement.setPosition(new Point(
+            this.right() + padding,
+            y
+        ));
+    };  if (this.label !== null) {
+        y = this.top() + (this.height() - this.label.height()) / 2;
+        if (this.labelAlignment === 'right') {
+            this.label.setPosition(new Point(
+                this.toggleElement ?
+                        this.toggleElement instanceof ToggleElementMorph ?
+                                this.toggleElement.right()
+                                : this.toggleElement.right() + padding
+                        : this.right() + padding,
+                y
+            ));
+        } else {
+            this.label.setPosition(new Point(
+                this.left() - this.label.width() - padding,
+                y
+            ));
+        };
+    };
+};
+
+ToggleMorph.prototype.createLabel = function () {
+    var shading = !MorphicPreferences.isFlat || this.is3D;
+
+    if (this.label === null) {
+        if (this.captionString) {
+            this.label = new TextMorph(
+                localize(this.captionString),
+                this.fontSize,
+                this.fontStyle,
+                true);
+            this.add(
+            this.label);
+        }
+    }
+    if (this.tick === null) {
+        this.tick = new StringMorph(
+            localize(this.labelString),
+            this.fontSize,
+            this.fontStyle,
+            true,    false,
+            false, (shading
+            ) ? new Point(1, 1
+            ) : null, new Color(
+            240, 240, 240));
+        this.add(this.tick);
+    }
+    if (this.toggleElement === null) {
+        if (this.element) {
+            if (this.element instanceof Morph) {
+                if (this.element.isTemplate) {
+                    this.toggleElement = this.element;
+                    if (!this.element.mouseDownLeft) {
+                        this.element.mouseDownLeft = nop;
+                    }
+                } else {
+                    this.toggleElement = new ToggleElementMorph(
+                        this.target,
+                        this.action,
+                        this.element,
+                        this.query,
+                        this.environment,
+                        this.hint,
+                        this.builder
+                    );
+                }
+            } else if (this.element instanceof HTMLCanvasElement) {
+                this.toggleElement = new Morph();
+                this.toggleElement.isCachingImage = true;
+                this.toggleElement.bounds.setExtent(new Point(
+                    this.element.width,
+                    this.element.height
+                ));
+                this.toggleElement.cachedImage = this.element;
+            }
+            this.add(this.toggleElement);
+        };
+    };
+};
+
+// ToggleMorph action:
+
+ToggleMorph.prototype.trigger = function (
+) {ToggleMorph.uber.trigger.call(this
+); this.refresh();};
+
+ToggleMorph.prototype.refresh = function () {
+    /*
+    if query is a function:
+    execute the query with target as environment (can be null)
+    for lambdafied (inline) actions
+
+    else if query is a String:
+    treat it as function property of target and execute it
+    for selector-like queries
+    */
+    if (typeof this.query === 'function') {
+        this.state = this.query.call(this.target);
+    } else { // assume it's a String
+        this.state = this.target[this.query]();
+    };  if (this.state) {
+        this.tick.show();
+    } else {
+        this.tick.hide();
+    };  if (this.toggleElement && this.toggleElement.refresh &&
+            !this.toggleElement.isToggleLabel) {
+        this.toggleElement.refresh();
+    };
+};
+
+// ToggleMorph events
+
+ToggleMorph.prototype.mouseDownLeft = function () {
+    PushButtonMorph.uber.mouseDownLeft.call(this);
+    if (this.tick) {
+        this.tick.setCenter(this.center().add(1));
+    }
+};
+
+ToggleMorph.prototype.mouseClickLeft = function () {
+    PushButtonMorph.uber.mouseClickLeft.call(this);
+    if (this.tick) {
+        this.tick.setCenter(this.center());
+    }
+};
+
+ToggleMorph.prototype.mouseLeave = function () {
+    PushButtonMorph.uber.mouseLeave.call(this);
+    if (this.tick) {
+        this.tick.setCenter(this.center());
+    }
+};
+
+// ToggleElementMorph /////////////////////////////////////////////////////
+/*
+    I am a picture of a Morph ("element") which acts as a toggle button.
+    I am different from ToggleButton in that I neither create a label nor
+    draw button outlines. Instead I display my element morph in specified
+    contrasts of a given color, symbolizing whether it is selected or not
+*/
+
+// ToggleElementMorph inherits from TriggerMorph:
+
+ToggleElementMorph.prototype = new TriggerMorph;
+ToggleElementMorph.prototype.constructor = ToggleElementMorph;
+ToggleElementMorph.uber = TriggerMorph.prototype;
+
+// ToggleElementMorph preferences settings
+
+ToggleElementMorph.prototype.contrast = 50;
+ToggleElementMorph.prototype.shadowOffset = new Point(2, 2);
+ToggleElementMorph.prototype.shadowAlpha = 0.6;
+ToggleElementMorph.prototype.fontSize = 10; // only for (optional) labels
+ToggleElementMorph.prototype.inactiveColor = new Color(180, 180, 180);
+
+// ToggleElementMorph instance creation:
+
+function ToggleElementMorph(
+    target,
+    action,
+    element,
+    query,
+    environment,
+    hint,
+    builder,
+    labelString
+) {
+    this.init(
+        target,
+        action,
+        element,
+        query,
+        environment,
+        hint,
+        builder,
+        labelString
+    );
+}
+
+ToggleElementMorph.prototype.init = function (
+    target,
+    action,
+    element, // mandatory
+    query,
+    environment,
+    hint,
+    builder, // optional function name that rebuilds the element
+    labelString
+) {
+    // additional properties:
+    this.target = target || null;
+    this.action = action || null;
+    this.element = element;
+    this.query = query || (() => true);
+    this.environment = environment || null;
+    this.hint = hint || null;
+    this.builder = builder || 'nop';
+    this.captionString = labelString || null;
+    this.labelAlignment = 'right';
+    this.state = false;
+
+    // initialize inherited properties:
+    TriggerMorph.uber.init.call(this);
+
+    // override inherited properties:
+    this.color = element.color;
+    this.createLabel();
+
+    this.cursorStyle = 'pointer';
+};
+
+// ToggleElementMorph drawing:
+
+ToggleElementMorph.prototype.render = function (ctx) {
+    var shading = !MorphicPreferences.isFlat || this.is3D,
+        shadow = () => {
+            if (shading) {
+                this.element.addShadow(
+                    this.shadowOffset,
+                    this.userState === 'normal' ? 0 : this.shadowAlpha
+                );
+            };
+        };
+
+    this.color = this.element.color;
+    this.element.removeShadow();
+    this.element[this.builder]();
+    if (this.userState !== 'pressed') {
+        this.element.removeShadow();
+        this.element.setColor(this.inactiveColor);
+        this.element[this.builder](this.contrast);
+        if (this.userState === 'highlight') {
+            this.element.removeShadow();
+            this.element.setColor(this.color.lighter(this.contrast));
+            this.element[this.builder](this.contrast);
+        }
+    }
+    if (this.element.doWithAlpha) {
+        ctx.drawImage(
+            this.element.doWithAlpha(
+                1,  () => {
+                    shadow();
+                    return this.element.fullImage();
+                }), 0, 0
+        );
+    } else {shadow();
+        ctx.drawImage(
+        (this.element
+        ).fullImage(
+        ), 0, 0);};
+
+    // reset element
+    this.element.removeShadow();
+    this.element.setColor(this.color);
+    this.element[this.builder]();
+};
+
+ToggleElementMorph.prototype.setColor = function (aColor) {
+    this.element.setColor(aColor);
+    this.fixLayout();
+    this.refresh();
+};
+
+// ToggleElementMorph layout:
+
+ToggleElementMorph.prototype.fixLayout = function () {
+    this.element.fixLayout();
+    this.bounds.setExtent(
+        this.element.fullBounds().extent().add(
+            this.shadowBlur * 2
+        )
+    );
+};
+
+ToggleElementMorph.prototype.createLabel = function () {
+    var y;
+    if (this.captionString) {
+        this.label = new StringMorph(
+            this.captionString,
+            this.fontSize,
+            this.fontStyle,
+            true
+        );  this.add(
+        this.label);
+        y = this.top() + (this.height() - this.label.height()) / 2;
+        if (this.labelAlignment === 'right') {
+            this.label.setPosition(new Point(
+                this.right(),
+                y
+            ));
+        } else {
+            this.label.setPosition(new Point(
+                this.left() - this.label.width(),
+                y
+            ));
+        };
+    };
+};
+
+// ToggleElementMorph action
+
+ToggleElementMorph.prototype.trigger
+    = ToggleButtonMorph.prototype.trigger;
+
+ToggleElementMorph.prototype.refresh
+    = ToggleButtonMorph.prototype.refresh;
+
+// ToggleElementMorph events
+
+ToggleElementMorph.prototype.mouseEnter
+    = ToggleButtonMorph.prototype.mouseEnter;
+
+ToggleElementMorph.prototype.mouseLeave
+    = ToggleButtonMorph.prototype.mouseLeave;
+
+ToggleElementMorph.prototype.mouseDownLeft
+    = ToggleButtonMorph.prototype.mouseDownLeft;
+
+ToggleElementMorph.prototype.mouseClickLeft
+    = ToggleButtonMorph.prototype.mouseClickLeft;
+
+// DialogBoxMorph /////////////////////////////////////////////////////
+
+/*
+    I am a DialogBox frame.
+
+    Note:
+    -----
+    my key property keeps track of my purpose to prevent multiple instances
+    on the same or similar objects
+*/
+
+// DialogBoxMorph inherits from Morph:
+
+DialogBoxMorph.prototype = new Morph;
+DialogBoxMorph.prototype.constructor = DialogBoxMorph;
+DialogBoxMorph.uber = Morph.prototype;
+
+// DialogBoxMorph preferences settings:
+
+DialogBoxMorph.prototype.fontSize = 12;
+DialogBoxMorph.prototype.titleFontSize = 14;
+DialogBoxMorph.prototype.fontStyle = 'sans-serif';
+
+DialogBoxMorph.prototype.color = PushButtonMorph.prototype.color;
+DialogBoxMorph.prototype.titleTextColor = WHITE;
+DialogBoxMorph.prototype.titleBarColor
+    = PushButtonMorph.prototype.pressColor;
+
+DialogBoxMorph.prototype.contrast = 40;
+
+DialogBoxMorph.prototype.corner = 12;
+DialogBoxMorph.prototype.padding = 14;
+DialogBoxMorph.prototype.titlePadding = 6;
+
+DialogBoxMorph.prototype.buttonContrast = 50;
+DialogBoxMorph.prototype.buttonFontSize = 12;
+DialogBoxMorph.prototype.buttonCorner = 12;
+DialogBoxMorph.prototype.buttonEdge = 6;
+DialogBoxMorph.prototype.buttonPadding = 0;
+DialogBoxMorph.prototype.buttonOutline = 3;
+DialogBoxMorph.prototype.buttonOutlineColor
+    = PushButtonMorph.prototype.color;
+DialogBoxMorph.prototype.buttonOutlineGradient = true;
+
+DialogBoxMorph.prototype.instances = {}; // prevent multiple instances
+
+// DialogBoxMorph instance creation:
+
+function DialogBoxMorph(target, action,
+environment) {this.init(target,
+action, environment);};
+
+DialogBoxMorph.prototype.init = function (target, action, environment) {
+    // additional properties:
+    this.is3D = false; // for "flat" design exceptions
+    this.target = target || null;
+    this.action = action || null;
+    this.environment = environment || null;
+    this.key = null; // keep track of my purpose to prevent mulitple instances
+
+    this.labelString = null;
+    this.label = null;
+    this.head = null;
+    this.body = null;
+    this.buttons = null;
+
+    // initialize inherited properties:
+    DialogBoxMorph.uber.init.call(this);
+
+    // override inherited properites:
+    this.isDraggable = true;
+    this.noDropShadow = true;
+    this.fullShadowSource = false;
+    this.color = PushButtonMorph.prototype.color;
+    this.createLabel();
+    this.createButtons();
+    this.setExtent(new Point(300, 150));
+    this.cursorStyle = 'move';
+    this.cursorGrabStyle = 'move';
+};
+
+// DialogBoxMorph ops
+DialogBoxMorph.prototype.inform = function (
+    title,
+    textString,
+    world,
+    pic
+) {
+    var txt = new TextMorph(
+        textString,
+        this.fontSize,
+        this.fontStyle,
+        true,
+        false,
+        'center',
+        null,
+        null,
+        MorphicPreferences.isFlat ? null : new Point(1, 1),
+        WHITE
+    );
+
+    if (!this.key) {
+        this.key = 'inform' + title + textString;
+    };
+
+    txt.enableLinks = true; // let the user click on URLs to open in new tab
+    this.labelString = title;
+    this.createLabel();
+    if (pic) {this.setPicture(pic); }
+    if (textString) {
+        this.addBody(txt);
+    };
+    this.addButton('ok', 'OK');
+    this.fixLayout();
+    this.popUp(world);
+};
+
+DialogBoxMorph.prototype.askYesNo = function (
+    title,
+    textString,
+    world,
+    pic
+) {
+    var txt = new TextMorph(
+        textString,
+        this.fontSize,
+        this.fontStyle,
+        true,
+        false,
+        'center',
+        null,
+        null,
+        MorphicPreferences.isFlat ? null : new Point(1, 1),
+        WHITE
+    );
+
+    if (!this.key) {
+        this.key = 'decide' + title + textString;
+    }
+
+    this.labelString = title;
+    this.createLabel();
+    if (pic) {this.setPicture(pic); }
+    this.addBody(txt);
+    this.addButton('ok', 'Yes');
+    this.addButton('cancel', 'No');
+    this.fixLayout();
+    this.popUp(world);
+};
+
+DialogBoxMorph.prototype.prompt = function (
+    title,
+    defaultString,
+    world,
+    pic,
+    choices, // optional dictionary for drop-down of choices
+    isReadOnly, // optional when using choices
+    isNumeric, // optional
+    sliderMin, // optional for numeric sliders
+    sliderMax, // optional for numeric sliders
+    sliderAction, // optional single-arg function for numeric slider
+    decimals = 2 // optional number of decimal digits
+) {
+    var sld,
+        head,
+        precision = Math.pow(10, decimals),
+        txt = new InputFieldMorph(
+            defaultString,
+            isNumeric || false, // numeric?
+            choices || null, // drop-down dict, optional
+            choices ? isReadOnly || false : false
+        );
+    txt.setWidth((this instanceof BlockDialogMorph) ? 335 : 250);
+    if (isNumeric) {
+        if (pic) {
+            head = new AlignmentMorph('column', this.padding);
+            pic.setPosition(head.position());
+            head.add(pic);
+        }
+        if (!isNil(sliderMin) && !isNil(sliderMax)) {
+            sld = new SliderMorph(
+                sliderMin * precision,
+                sliderMax * precision,
+                parseFloat(defaultString) * precision,
+                (sliderMax - sliderMin) / 10 * precision, // knob size
+                'horizontal'
+            );
+            sld.alpha = 1;
+            sld.color = this.color.lighter(50);
+            sld.setHeight(txt.height() * 0.7);
+            sld.setWidth(txt.width());
+            sld.action = num => {
+                if (sliderAction) {
+                    sliderAction(num / precision);
+                }
+                txt.setContents(num / precision);
+                txt.edit();
+            };
+            if (!head) {
+                head = new AlignmentMorph('column', this.padding);
+            }
+            head.add(sld);
+        }
+        if (head) {
+            head.fixLayout();
+            this.setPicture(head);
+            head.fixLayout();
+        }
+    } else {
+        if (pic) {this.setPicture(pic); }
+    }
+
+    this.reactToChoice = function (inp) {
+        if (sld) {
+            sld.value = inp * precision;
+            sld.fixLayout();
+            sld.rerender();
+        }
+        if (sliderAction) {
+            sliderAction(inp);
+        }
+    };
+
+    txt.reactToInput = function () {
+        var inp = txt.getValue();
+        if (sld) {
+            inp = Math.max(inp, sliderMin);
+            sld.value = inp * precision;
+            sld.fixLayout();
+            sld.rerender();
+        }
+        if (sliderAction) {
+            sliderAction(inp);
+        }
+    };
+
+    this.labelString = title;
+    this.createLabel();
+
+    if (!this.key) {
+        this.key = 'prompt' + title + defaultString;
+    }
+
+    this.addBody(txt);
+    txt.fixLayout();
+    this.addButton('ok', 'OK');
+    this.addButton('cancel', 'Cancel');
+    this.fixLayout();
+    this.popUp(world);
+};
+
+DialogBoxMorph.prototype.promptCode = function (
+    title,
+    defaultString,
+    world,
+    pic,
+    instructions
+) {
+    var frame = new ScrollFrameMorph,
+        text = new TextMorph(defaultString || ''),
+        bdy = new AlignmentMorph('column', this.padding),
+        size = pic ? Math.max(pic.width, 400) : 400;
+
+    this.getInput = function () {
+        return text.text;
+    };
+
+    function remarkText(string) {
+        return new TextMorph(
+            localize(string),
+            10,
+            null, // style
+            false, // bold
+            null, // italic
+            null, // alignment
+            null, // width
+            null, // font name
+            MorphicPreferences.isFlat ? null : new Point(1, 1),
+            WHITE // shadowColor
+        );
+    };  frame.padding = 6;
+    frame.setWidth(size);
+    frame.acceptsDrops = false;
+    frame.contents.acceptsDrops = false;
+
+    text.acceptedFontName = 'morphicGlobalCodeScript'; text.fontSize = 11;
+    text.setPosition(frame.topLeft().add(frame.padding));
+    text.enableSelecting(); text.isEditable = true;
+
+    frame.setHeight(size / 4);
+    frame.fixLayout = nop;
+    frame.edge = InputFieldMorph.prototype.edge;
+    frame.fontSize = InputFieldMorph.prototype.fontSize;
+    frame.typeInPadding = InputFieldMorph.prototype.typeInPadding;
+    frame.contrast = InputFieldMorph.prototype.contrast;
+    frame.render = InputFieldMorph.prototype.render;
+    frame.drawRectBorder = InputFieldMorph.prototype.drawRectBorder;
+
+    frame.addContents(text);
+    text.fixLayout();
+
+    if (pic) {this.setPicture(pic); }
+
+    this.labelString = title;
+    this.createLabel();
+
+    if (!this.key) {
+        this.key = 'promptCode' + title + defaultString;
+    };  bdy.setColor(this.color);
+    bdy.add(frame);
+    if (instructions) {
+        bdy.add(remarkText(instructions));
+    };  bdy.fixLayout();
+    this.addBody(bdy);
+    this.addButton('ok', 'OK');
+    this.addButton('cancel', 'Cancel');
+    this.fixLayout();
+    this.popUp(world);
+    text.edit();
+};
+
+DialogBoxMorph.prototype.promptVector = function (
+    title,
+    point,
+    deflt,
+    xLabel,
+    yLabel,
+    world,
+    pic,
+    msg
+) {
+    var vec = new AlignmentMorph('row', 4),
+        xInp = new InputFieldMorph(point.x.toString(), true),
+        yInp = new InputFieldMorph(point.y.toString(), true),
+        xCol = new AlignmentMorph('column', 2),
+        yCol = new AlignmentMorph('column', 2),
+        inp = new AlignmentMorph('column', 2),
+        bdy = new AlignmentMorph('column', this.padding);
+
+    function labelText(string) {
+        return new TextMorph(
+            localize(string),
+            10,
+            null, // style
+            false, // bold
+            null, // italic
+            null, // alignment
+            null, // width
+            null, // font name
+            MorphicPreferences.isFlat ? null : new Point(1, 1),
+            WHITE // shadowColor
+        );
+    }
+
+    inp.alignment = 'left';
+    inp.setColor(this.color);
+    bdy.setColor(this.color);
+    xCol.alignment = 'left';
+    xCol.setColor(this.color);
+    yCol.alignment = 'left';
+    yCol.setColor(this.color);
+
+    xCol.add(labelText(xLabel));
+    xCol.add(xInp);
+    yCol.add(labelText(yLabel));
+    yCol.add(yInp);
+    vec.add(xCol);
+    vec.add(yCol);
+    inp.add(vec);
+
+    if (msg) {
+        bdy.add(labelText(msg));
+    };
+
+    bdy.add(inp);
+
+    vec.fixLayout();
+    xCol.fixLayout();
+    yCol.fixLayout();
+    inp.fixLayout();
+    bdy.fixLayout();
+
+    this.labelString = title;
+    this.createLabel();
+    if (pic) {this.setPicture(pic); }
+
+    this.addBody(bdy);
+
+    this.addButton('ok', 'OK');
+
+    if (deflt instanceof Point) {
+        this.addButton(
+            () => {
+                xInp.setContents(deflt.x.toString());
+                yInp.setContents(deflt.y.toString());
+            },
+            'Default'
+
+        );
+    }
+
+    this.addButton('cancel', 'Cancel');
+    this.fixLayout();
+
+    this.edit = function () {
+        xInp.edit();
+    };
+
+    this.getInput = function () {
+        return new Point(xInp.getValue(), yInp.getValue());
+    };
+
+    if (!this.key) {
+        this.key = 'vector' + title;
+    }
+
+    this.popUp(world);
+};
+
+DialogBoxMorph.prototype.promptRGB = function (
+    title,
+    color,
+    world,
+    pic,
+    msg
+) {
+    var clr = new AlignmentMorph('row', 4),
+        iw = this.fontSize * 4,
+        rInp = new InputFieldMorph(color.r.toString(), true),
+        gInp = new InputFieldMorph(color.g.toString(), true),
+        bInp = new InputFieldMorph(color.b.toString(), true),
+        rCol = new AlignmentMorph('column', 2),// +++
+        gCol = new AlignmentMorph('column', 2),
+        bCol = new AlignmentMorph('column', 2),
+        inp = new AlignmentMorph('column', 2),
+        bdy = new AlignmentMorph('column', this.padding);
+
+    function labelText(string) {
+        return new TextMorph(
+            localize(string),
+            10,
+            null, // style
+            false, // bold
+            null, // italic
+            null, // alignment
+            null, // width
+            null, // font name
+            MorphicPreferences.isFlat ? null : new Point(1, 1),
+            WHITE // shadowColor
+        );
+    }
+
+    function constrain(num) {
+        return Math.max(0, Math.min(num, 255));
+    }
+
+    rInp.contents().minWidth = iw;
+    rInp.setWidth(iw);
+    gInp.contents().minWidth = iw;
+    gInp.setWidth(iw);
+    bInp.contents().minWidth = iw;
+    bInp.setWidth(iw);
+
+    inp.alignment = 'left';
+    inp.setColor(this.color);
+    bdy.setColor(this.color);
+    rCol.alignment = 'left';
+    rCol.setColor(this.color);
+    gCol.alignment = 'left';
+    gCol.setColor(this.color);
+    bCol.alignment = 'left';
+    bCol.setColor(this.color);
+
+    rCol.add(labelText('red'));
+    rCol.add(rInp);
+    gCol.add(labelText('green'));
+    gCol.add(gInp);
+    bCol.add(labelText('blue'));
+    bCol.add(bInp); // +++
+    clr.add(rCol);
+    clr.add(gCol);
+    clr.add(bCol);
+    inp.add(clr);
+
+    if (msg) {
+        bdy.add(labelText(msg));
+    }
+
+    bdy.add(inp);
+
+    clr.fixLayout();
+    rCol.fixLayout();
+    gCol.fixLayout();
+    bCol.fixLayout();
+    inp.fixLayout();
+    bdy.fixLayout();
+
+    this.labelString = title;
+    this.createLabel();
+    if (pic) {this.setPicture(pic); }
+
+    this.addBody(bdy);
+
+    this.addButton('ok', 'OK');
+
+    this.addButton('cancel', 'Cancel');
+    this.fixLayout();
+
+    this.edit = function () {
+        rInp.edit();
+    };
+
+    this.getInput = function () {
+        return new Color(
+            constrain(rInp.getValue()),
+            constrain(gInp.getValue()),
+            constrain(bInp.getValue())
+        );
+    };
+
+    if (!this.key) {
+        this.key = 'RGB' + title;
+    };
+
+    this.popUp(world);
+};  DialogBoxMorph.prototype.promptRGBA = function (
+    title,
+    color,
+    world,
+    pic,
+    msg,
+    target,
+    targetColor
+) {
+    var clr = new AlignmentMorph('row', 5),
+        iw = this.fontSize * 4,
+        rInp = new InputFieldMorph(color.r.toString(), true),
+        gInp = new InputFieldMorph(color.g.toString(), true),
+        bInp = new InputFieldMorph(color.b.toString(), true),
+        aInp = new InputFieldMorph(color.a.toString(), true),
+        rCol = new AlignmentMorph('column', 2),
+        gCol = new AlignmentMorph('column', 2),
+        bCol = new AlignmentMorph('column', 2),
+        aCol = new AlignmentMorph('column', 2),
+        settingsUI = new Morph; settingsUI.setColor(this.color);
+        settingsUI.bounds.corner = new Point(40, 40);
+        inp = new AlignmentMorph('column', 2),
+        bdy = new AlignmentMorph('column', this.padding);
+
+    function labelText(string) {
+        return new TextMorph(
+            localize(string),
+            10,
+            null, // style
+            false, // bold
+            null, // italic
+            null, // alignment
+            null, // width
+            null, // font name
+            MorphicPreferences.isFlat ? null : new Point(1, 1),
+            WHITE // shadowColor
+        );
+    };
+
+    function constrainRGB (num) {return Math.max(0, Math.min(num, 255));};
+    function constrainAlpha (num) {return Math.max(0, Math.min(num, 1));};
+
+    rInp.contents().minWidth = iw;
+    rInp.setWidth(iw);
+    gInp.contents().minWidth = iw;
+    gInp.setWidth(iw);
+    bInp.contents().minWidth = iw;
+    bInp.setWidth(iw);
+    aInp.contents().minWidth = iw;
+    aInp.setWidth(iw);
+
+var settingsButton = new PushButtonMorph; settingsButton.children.pop(); settingsButton.add(
+new SymbolMorph('gearBig', 12)); settingsButton.children[0].bounds.origin = new Point(13, 20);
+settingsButton.children[0].bounds.corner = new Point((settingsButton.children[0].bounds.origin.x + 12),
+(settingsButton.children[0].bounds.origin.y + 16)); settingsButton.bounds.origin = new Point(9, 16);
+settingsButton.bounds.corner = new Point((settingsButton.bounds.origin.x + 20),
+(settingsButton.bounds.origin.y + 20)); settingsButton.hint = 'Change the\nnumber inputs\nto sliders.';
+settingsButton.action = function anonymous () {target.color = new Color(constrainRGB(rInp.getValue()),
+constrainRGB(gInp.getValue()), constrainRGB(bInp.getValue()), constrainAlpha(aInp.getValue())); target.rerender();
+target.spawnRGBAEditorDialog(target, targetColor); dialog.destroy();}; inp.alignment = 'left';
+inp.setColor(this.color); bdy.setColor(this.color); rCol.alignment = 'left'; rCol.setColor(this.color);
+gCol.alignment = 'left'; gCol.setColor(this.color); bCol.alignment = 'left'; bCol.setColor(this.color);
+aCol.alignment = 'left'; aCol.setColor(this.color); rCol.add(labelText('Red:')); rCol.add(rInp);
+gCol.add(labelText('Green:')); gCol.add(gInp); bCol.add(labelText('Blue:')); bCol.add(bInp);
+aCol.add(labelText('Alpha:')); aCol.add(aInp); settingsUI.add(labelText('Settings:'));
+settingsUI.add(settingsButton); clr.add(rCol); clr.add(gCol); clr.add(bCol); clr.add(aCol);
+clr.add(settingsUI); inp.add(clr); if (msg) {bdy.add(labelText(msg));}; bdy.add(inp); clr.fixLayout();
+rCol.fixLayout(); gCol.fixLayout(); bCol.fixLayout(); aCol.fixLayout(); settingsUI.fixLayout();
+inp.fixLayout(); bdy.fixLayout(); this.labelString = title; this.createLabel(); if (pic) {
+this.setPicture(pic);}; this.addBody(bdy); this.addButton((function () {target.color = (
+this.getInput()); target.rerender(); if (target.constructor.name === 'ColorSlotMorph') {
+world.children[0].recordUnsavedChanges();}; this.destroy();}), 'OK'); this.addButton((function anonymous (
+) {target.color = targetColor; target.rerender(); this.destroy();}), 'Cancel'); this.fixLayout();
+this.getInput = function () {return new Color(constrainRGB(rInp.getValue()), constrainRGB(gInp.getValue()),
+constrainRGB(bInp.getValue()), constrainAlpha(aInp.getValue()));}; var dialog = this; this.popUp(world);};
+DialogBoxMorph.prototype.promptCategory = function (title, name, color, world, pic, msg) {var row =
+new AlignmentMorph('row', 5), field = new InputFieldMorph(name), picker = new BoxMorph(2, 1), inp =
+new AlignmentMorph('column', 2), bdy = new AlignmentMorph('column', this.padding), side;
+function labelText(string) {return new TextMorph(localize(string), 10, null, false, null,
+null, null, null, MorphicPreferences.isFlat ? null : new Point(1, 1), WHITE);};
+picker.cursorStyle = 'pointer'; field.setWidth(160); side = field.height() * 0.8;
+picker.setExtent(new Point(side, side)); picker.setColor(color);
+picker.mouseClickLeft = (() => picker.spawnRGBAEditorDialog(picker));
+
+    inp.alignment = 'left';
+    inp.setColor(this.color);
+    bdy.setColor(this.color);
+    row.setColor(this.color);
+
+    row.add(field);
+    row.add(picker);
+    inp.add(row);
+
+    if (msg) {
+        bdy.add(labelText(msg));
+    }; bdy.add(inp);
+
+    row.fixLayout();
+    field.fixLayout();
+    picker.fixLayout();
+    inp.fixLayout();
+    bdy.fixLayout();
+
+    this.labelString = title;
+    this.createLabel();  if (
+    pic) {this.setPicture(pic
+    );};  this.addBody(bdy);
+    this.addButton('ok', 'OK'
+    ); this.addButton('cancel',
+    'Cancel'); this.fixLayout();
+    this.edit = function (
+    ) {field.edit();};
+
+    this.getInput = function () {
+        return {
+            name: field.getValue(),
+            color: picker.color.copy()
+        };
+    };
+
+    if (!this.key) {this.key = (
+    'category').concat(title);};
+
+    this.popUp(world);
+};
+
+DialogBoxMorph.prototype.accept = function () {
+    /*
+    if target is a function, use it as callback:
+    execute target as callback function with action as argument
+    in the environment as optionally specified.
+    Note: if action is also a function, instead of becoming
+    the argument itself it will be called to answer the argument.
+    for selections, Yes/No Choices etc:
+
+    else (if target is not a function):
+
+        if action is a function:
+        execute the action with target as environment (can be null)
+        for lambdafied (inline) actions
+
+        else if action is a String:
+        treat it as function property of target and execute it
+        for selector-like actions
+    */
+    if (this.action) {
+        if (typeof this.target === 'function') {
+            if (typeof this.action === 'function') {
+                this.target.call(this.environment,
+                this.action.call());} else {
+                this.target.call(this.environment,
+                this.action);};
+        } else {
+            if (typeof this.action === 'function') {
+                this.action.call(this.target, this.getInput());
+            } else { // assume it's a String
+                this.target[this.action](this.getInput());
+            };
+        };
+    };  this.destroy();
+};
+
+DialogBoxMorph.prototype.withKey = function (
+key) {this.key = key; return this;};
+
+DialogBoxMorph.prototype.popUp = function (
+world) {if (world) {if (this.key) {if ((this
+).instances[0]) {if ((this.instances[0])[(
+this).key]) {(this.instances[0])[this.key
+].destroy();}; (this.instances[0])[(this
+).key] = this;} else {this.instances[
+0] = {}; (this.instances[0])[this.key
+] = this;};}; world.add(this); (world
+).keyboardFocus = this; this.setCenter(
+world.center()); this.edit();};};
+
+DialogBoxMorph.prototype.destroy = function (
+) {DialogBoxMorph.uber.destroy.call(this);
+if (this.key) {(this.instances).pop();};};
+
+DialogBoxMorph.prototype.ok = function () {
+    this.accept();
+};
+
+DialogBoxMorph.prototype.cancel = function () {
+    this.destroy();
+};
+
+DialogBoxMorph.prototype.edit = function () {
+    this.children.forEach(c => {
+        if (c.edit) {
+            c.edit();
+        };
+    });
+};
+
+DialogBoxMorph.prototype.getInput = function () {
+    if (this.body instanceof InputFieldMorph) {
+        return this.body.getValue();
+    };  return null;
+};
+
+DialogBoxMorph.prototype.justDropped = function (hand) {
+    hand.world.keyboardFocus = this;
+    this.edit();
+};
+
+DialogBoxMorph.prototype.destroy = function () {
+    world.keyboardFocus = null;
+    world.hand.destroyTemporaries();
+    DialogBoxMorph.uber.destroy.call(this);
+};
+
+DialogBoxMorph.prototype.normalizeSpaces = function (string) {
+    var ans = '', i, c, flag = false;
+
+    for (i = 0; i < string.length; i += 1) {
+        c = string[i];
+        if (c === ' ') {
+            if (flag) {
+                ans += c;
+                flag = false;
+            };
+        } else {
+            ans += c;
+            flag = true;
+        };
+    };  return ans.trim();
+};
+
+// DialogBoxMorph submorph construction
+
+DialogBoxMorph.prototype.createLabel = function () {
+    var shading = !MorphicPreferences.isFlat || this.is3D;
+
+    if (this.label) {
+        this.label.destroy();
+    };  if (this.labelString) {
+        this.label = new StringMorph(
+            localize(this.labelString
+            ),   this.titleFontSize,
+            this.fontStyle,  true,
+            false,   false,
+            shading ? new Point(2, 1) : null,
+            this.titleBarColor.darker(this.contrast)
+        );  this.label.color = this.titleTextColor;
+        this.label.fixLayout();
+        this.add(this.label);
+    };
+};
+
+DialogBoxMorph.prototype.createButtons = (
+    function () {if (this.buttons) {
+        this.buttons.destroy();
+    };  this.buttons = new AlignmentMorph('row',
+    this.padding); this.add(this.buttons);
+});
+
+DialogBoxMorph.prototype.addButton = function (action, label) {
+    var button = new PushButtonMorph(this,    (action || 'ok'
+        ),  ((label instanceof SymbolMorph) ? label : (
+        '  ' + localize((label || 'OK')) + '  '))
+    );  button.fontSize = this.buttonFontSize;
+    button.corner = this.buttonCorner;
+    button.edge = this.buttonEdge;
+    button.outline = this.buttonOutline;
+    button.outlineColor = this.buttonOutlineColor;
+    button.outlineGradient = this.buttonOutlineGradient;
+    button.padding = this.buttonPadding;
+    button.contrast = this.buttonContrast;
+    button.fixLayout();
+    this.buttons.add(button);
+    return button;
+};
+
+DialogBoxMorph.prototype.setPicture = function (aMorphOrCanvas) {
+    var morph;
+    if (aMorphOrCanvas instanceof Morph) {
+        morph = aMorphOrCanvas;
+    } else {
+        morph = new Morph();
+        morph.isCachingImage = true;
+        morph.cachedImage = aMorphOrCanvas;
+        morph.bounds.setWidth(aMorphOrCanvas.width);
+        morph.bounds.setHeight(aMorphOrCanvas.height);
+    }
+    this.addHead(morph);
+};
+
+DialogBoxMorph.prototype.addHead = function (aMorph) {
+    if (this.head) {
+        this.head.destroy();
+    }
+    this.head = aMorph;
+    this.add(this.head);
+};
+
+DialogBoxMorph.prototype.addBody = function (aMorph) {
+    if (this.body) {
+        this.body.destroy();
+    }
+    this.body = aMorph;
+    this.add(this.body);
+};
+
+// DialogBoxMorph layout
+
+DialogBoxMorph.prototype.fixLayout = function () {
+    // determine by extent and arrange my components
+    var th = fontHeight(this.titleFontSize) + this.titlePadding * 2, w;
+
+    if (this.head) {
+        this.head.setPosition(this.position().add(new Point(
+            this.padding,
+            th + this.padding
+        )));
+        this.bounds.setWidth(this.head.width() + this.padding * 2);
+        this.bounds.setHeight(
+            this.head.height()
+                + this.padding * 2
+                + th
+        );
+    }
+
+    if (this.body) {
+        if (this.head) {
+            this.body.setPosition(this.head.bottomLeft().add(new Point(
+                0,
+                this.padding
+            )));
+            this.bounds.setWidth(Math.max(
+                this.width(),
+                this.body.width() + this.padding * 2
+            ));
+            this.bounds.setHeight(
+                this.height()
+                    + this.body.height()
+                    + this.padding
+            );
+            w = this.width();
+            this.head.setLeft(
+                this.left()
+                    + Math.round((w - this.head.width()) / 2)
+            );
+            this.body.setLeft(
+                this.left()
+                    + Math.round((w - this.body.width()) / 2)
+            );
+        } else {
+            this.body.setPosition(this.position().add(new Point(
+                this.padding,
+                th + this.padding
+            )));
+            this.bounds.setWidth(this.body.width() + this.padding * 2);
+            this.bounds.setHeight(
+                this.body.height()
+                    + this.padding * 2
+                    + th
+            );
+        }
+    }
+
+    if (this.label) {
+        this.label.setCenter(this.center());
+        this.label.setTop(this.top() + (th - this.label.height()) / 2);
+    }
+
+    if (this.buttons && (this.buttons.children.length > 0)) {
+        this.buttons.fixLayout();
+        this.bounds.setHeight(
+            this.height()
+                    + this.buttons.height()
+                    + this.padding
+        );
+        this.bounds.setWidth(Math.max(
+                this.width(),
+                this.buttons.width()
+                        + (2 * this.padding)
+            )
+        );
+        this.buttons.setCenter(this.center());
+        this.buttons.setBottom(this.bottom() - this.padding);
+    }
+
+    // refresh a shallow shadow
+    this.removeShadow();
+    this.addShadow();
+};
+
+// DialogBoxMorph keyboard events
+
+DialogBoxMorph.prototype.processKeyPress = nop;
+
+DialogBoxMorph.prototype.processKeyDown = function (event) {
+    // this.inspectKeyEvent(event);
+    switch (event.keyCode) {
+    case 13:
+        this.ok();
+        break;
+    case 27:
+        this.cancel();
+        break;
+    default:
+        nop();
+        // this.inspectKeyEvent(event);
+    };};
+
+// DialogBoxMorph drawing
+
+DialogBoxMorph.prototype.render = function (ctx) {
+    var gradient,
+        w = this.width(),
+        h = this.height(),
+        th = Math.floor(
+            fontHeight(this.titleFontSize) + this.titlePadding * 2
+        ),
+        shift = this.corner / 2,
+        x,
+        y,
+        isFlat = MorphicPreferences.isFlat && !this.is3D;
+
+    // this.alpha = isFlat ? 0.9 : 1;
+
+    // title bar
+    if (isFlat) {
+        ctx.fillStyle = this.titleBarColor.toString();
+    } else {
+        gradient = ctx.createLinearGradient(0, 0, 0, th);
+        gradient.addColorStop(
+            0,
+            this.titleBarColor.lighter(this.contrast / 2).toString()
+        );
+        gradient.addColorStop(
+            1,
+            this.titleBarColor.darker(this.contrast).toString()
+        );
+        ctx.fillStyle = gradient;
+    }
+    ctx.beginPath();
+    this.outlinePathTitle(
+        ctx,
+        this.corner
+    );
+    ctx.closePath();
+    ctx.fill();
+
+    // flat shape
+    // body
+    ctx.fillStyle = this.color.toString();
+    ctx.beginPath();
+    this.outlinePathBody(
+        ctx,
+        this.corner
+    );
+    ctx.closePath();
+    ctx.fill();
+
+    if (isFlat) {
+        return;
+    }
+
+    // 3D-effect
+    // bottom left corner
+    gradient = ctx.createLinearGradient(
+        0,
+        h - this.corner,
+        0,
+        h
+    );
+    gradient.addColorStop(0, this.color.toString());
+    gradient.addColorStop(1, this.color.darker(this.contrast.toString()));
+
+    ctx.lineWidth = this.corner;
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = gradient;
+
+    ctx.beginPath();
+    ctx.moveTo(this.corner, h - shift);
+    ctx.lineTo(this.corner + 1, h - shift);
+    ctx.stroke();
+
+    // bottom edge
+    gradient = ctx.createLinearGradient(
+        0,
+        h - this.corner,
+        0,
+        h
+    );
+    gradient.addColorStop(0, this.color.toString());
+    gradient.addColorStop(1, this.color.darker(this.contrast.toString()));
+
+    ctx.lineWidth = this.corner;
+    ctx.lineCap = 'butt';
+    ctx.strokeStyle = gradient;
+
+    ctx.beginPath();
+    ctx.moveTo(this.corner, h - shift);
+    ctx.lineTo(w - this.corner, h - shift);
+    ctx.stroke();
+
+    // right body edge
+    gradient = ctx.createLinearGradient(
+        w - this.corner,
+        0,
+        w,
+        0
+    );
+    gradient.addColorStop(0, this.color.toString());
+    gradient.addColorStop(1, this.color.darker(this.contrast).toString());
+
+    ctx.lineWidth = this.corner;
+    ctx.lineCap = 'butt';
+    ctx.strokeStyle = gradient;
+
+    ctx.beginPath();
+    ctx.moveTo(w - shift, th);
+    ctx.lineTo(w - shift, h - this.corner);
+    ctx.stroke();
+
+    // bottom right corner
+    x = w - this.corner;
+    y = h - this.corner;
+
+    gradient = ctx.createRadialGradient(
+        x,
+        y,
+        0,
+        x,
+        y,
+        this.corner
+    );
+    gradient.addColorStop(0, this.color.toString());
+    gradient.addColorStop(1, this.color.darker(this.contrast.toString()));
+
+    ctx.lineCap = 'butt';
+
+    ctx.strokeStyle = gradient;
+
+    ctx.beginPath();
+    ctx.arc(
+        x,
+        y,
+        shift,
+        Math.PI / 2,
+        0, true);
+    ctx.stroke();
+
+    // left body edge
+    gradient = ctx.createLinearGradient(
+        0,
+        0,
+        this.corner,
+        0
+    );
+    gradient.addColorStop(
+        0,
+        this.color.lighter(this.contrast).toString()
+    );
+    gradient.addColorStop(1, this.color.toString());
+
+    ctx.lineCap = 'butt';
+    ctx.strokeStyle = gradient;
+
+    ctx.beginPath();
+    ctx.moveTo(shift, th);
+    ctx.lineTo(shift, h - this.corner * 2);
+    ctx.stroke();
+
+    // left vertical bottom corner
+    gradient = ctx.createLinearGradient(
+        0,
+        0,
+        this.corner,
+        0
+    );
+    gradient.addColorStop(
+        0,
+        this.color.lighter(this.contrast).toString()
+    );
+    gradient.addColorStop(1, this.color.toString());
+
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = gradient;
+
+    ctx.beginPath();
+    ctx.moveTo(shift, h - this.corner * 2);
+    ctx.lineTo(shift, h - this.corner - shift);
+    ctx.stroke();
+};
+
+DialogBoxMorph.prototype.outlinePathTitle = function (ctx, radius) {
+    var w = this.width(),
+        h = Math.ceil(fontHeight(this.titleFontSize)) + this.titlePadding * 2;
+
+    // top left:
+    ctx.arc(
+        radius,
+        radius,
+        radius,
+        -(Math.PI),
+        Math.PI / -2,
+        false
+    );
+    // top right:
+    ctx.arc(
+        w - radius,
+        radius,
+        radius,
+        Math.PI / -2,
+        0, false);
+    // bottom right:
+    ctx.lineTo(w, h);
+
+    // bottom left:
+    ctx.lineTo(0, h);
+};
+
+DialogBoxMorph.prototype.outlinePathBody = function (ctx, radius) {
+    var w = this.width(),
+        h = this.height(),
+        th = Math.floor(fontHeight(this.titleFontSize)) +
+            this.titlePadding * 2;
+
+    // top left:
+    ctx.moveTo(0, th);
+
+    // top right:
+    ctx.lineTo(w, th);
+
+    // bottom right:
+    ctx.arc(
+        w - radius,
+        h - radius,
+        radius,
+        radians(0),
+        radians(90),
+        false
+    );
+    // bottom left:
+    ctx.arc(
+        radius,
+        h - radius,
+        radius,
+        radians(90),
+        radians(180),
+        false
+    );
+};
+
+// AlignmentMorph /////////////////////////////////////////////////////
+
+// I am a reified layout, either a row or a column of submorphs
+
+// AlignmentMorph inherits from Morph:
+
+AlignmentMorph.prototype = new Morph();
+AlignmentMorph.prototype.constructor = AlignmentMorph;
+AlignmentMorph.uber = Morph.prototype;
+
+// AlignmentMorph instance creation:
+
+function AlignmentMorph(orientation, padding) {
+    this.init(orientation, padding);
+}
+
+AlignmentMorph.prototype.init = function (orientation, padding) {
+    // additional properties:
+    this.orientation = orientation || 'row'; // or 'column'
+    this.alignment = 'center'; // or 'left' in a column
+    this.padding = padding || 0;
+    this.respectHiddens = false;
+
+    // initialize inherited properties:
+    AlignmentMorph.uber.init.call(this);
+
+    // override inherited properites:
+};
+
+// AlignmentMorph displaying and layout
+
+AlignmentMorph.prototype.render = function (ctx) {
+    // override to not draw anything, as alignments are just containers
+    // for layout of their components
+    nop(ctx);
+};
+
+AlignmentMorph.prototype.fixLayout = function () {
+    var last = null,
+        newBounds;
+    if (this.children.length === 0) {
+        return null;
+    }
+    this.children.forEach(c => {
+        var cfb = c.fullBounds(),
+            lfb;
+        if (c.isVisible || this.respectHiddens) {
+            if (last) {
+                lfb = last.fullBounds();
+                if (this.orientation === 'row') {
+                    c.setPosition(
+                        lfb.topRight().add(new Point(
+                            this.padding,
+                            (lfb.height() - cfb.height()) / 2
+                        ))
+                    );
+                } else { // orientation === 'column'
+                    c.setPosition(
+                        lfb.bottomLeft().add(new Point(
+                            this.alignment === 'center' ?
+                                    (lfb.width() - cfb.width()) / 2
+                                            : 0,
+                            this.padding
+                        ))
+                    );
+                }
+                cfb = c.fullBounds();
+                newBounds = newBounds.merge(cfb);
+            } else {
+                newBounds = cfb;
+            }
+            last = c;
+        }
+    });
+    this.bounds = newBounds;
+};
+
+// InputFieldMorph //////////////////////////////////////////////////////
+
+// InputFieldMorph inherits from Morph:
+
+InputFieldMorph.prototype = new Morph;
+InputFieldMorph.prototype.constructor = InputFieldMorph;
+InputFieldMorph.uber = Morph.prototype;
+
+// InputFieldMorph settings
+
+InputFieldMorph.prototype.edge = 2;
+InputFieldMorph.prototype.fontSize = 12;
+InputFieldMorph.prototype.typeInPadding = 2;
+InputFieldMorph.prototype.contrast = 65;
+
+// InputFieldMorph instance creation:
+
+function InputFieldMorph(text, isNumeric, choiceDict, isReadOnly) {
+    this.init(text, isNumeric, choiceDict, isReadOnly);
+}
+
+InputFieldMorph.prototype.init = function (
+    text,
+    isNumeric,
+    choiceDict,
+    isReadOnly
+) {
+    var contents = new StringFieldMorph(
+            (contains([0, '0'], text) ? '0' : (text || '')),
+            null, null, null, null, null,
+            asABool(isNumeric)
+        ),
+        arrow = new ArrowMorph(
+            'down',
+            0,
+            Math.max(Math.floor(this.fontSize / 6), 1)
+        );
+
+    this.choices = choiceDict || null; // object, function or selector
+    this.isReadOnly = isReadOnly || false;
+    this.isNumeric = isNumeric || false;
+
+    contents.alpha = 0;
+    contents.fontSize = this.fontSize;
+    contents.fixLayout();
+
+    this.oldContentsExtent = contents.extent();
+
+    InputFieldMorph.uber.init.call(this);
+    this.color = WHITE;
+    this.add(contents);
+    this.add(arrow);
+    contents.isDraggable = false;
+    this.fixLayout();
+};
+
+// InputFieldMorph accessing:
+
+InputFieldMorph.prototype.contents = function () {
+    return detect(
+        this.children,
+        child => child instanceof StringFieldMorph
+    );
+};
+
+InputFieldMorph.prototype.arrow = function () {
+    return detect(
+        this.children,
+        child => child instanceof ArrowMorph
+    );
+};
+
+InputFieldMorph.prototype.setChoice = function (aStringOrFloat) {
+    this.setContents(aStringOrFloat);
+    this.escalateEvent('reactToChoice', aStringOrFloat);
+};
+
+InputFieldMorph.prototype.setContents = function (aStringOrFloat) {
+    var cnts = this.contents();
+    cnts.text.text = aStringOrFloat;
+    if (aStringOrFloat === undefined) {
+        return null;
+    }
+    if (aStringOrFloat === null) {
+        cnts.text.text = '';
+    } else if (aStringOrFloat.toString) {
+        cnts.text.text = aStringOrFloat.toString();
+    }
+    cnts.text.fixLayout();
+    cnts.changed();
+    cnts.fixLayout();
+    cnts.rerender();
+};
+
+InputFieldMorph.prototype.edit = function () {
+    var c = this.contents();
+    c.text.edit();
+    c.text.selectAll();
+};
+
+InputFieldMorph.prototype.setIsNumeric = function (bool) {
+    var value; this.isNumeric = bool;
+    (this.contents()).isNumeric = bool;
+    (this.contents()).text.isNumeric = bool;
+
+    // adjust my shown value to conform with the numeric flag
+    value = this.getValue();
+    if (this.isNumeric) {
+        value = parseFloat(value);
+        if (isNaN(value)) {
+            value = null;
+        }
+    }
+    this.setContents(value);
+};
+
+// InputFieldMorph drop-down menu:
+
+InputFieldMorph.prototype.dropDownMenu = function () {
+    var choices = this.choices,
+        key,
+        menu = new MenuMorph(
+            this.setChoice,
+            null,
+            this,
+            this.fontSize
+        );
+
+    if (choices instanceof Function) {
+        choices = choices.call(this);
+    } else if (isString(choices)) {
+        choices = this[choices]();
+    }
+    if (!choices) {
+        return null;
+    }
+    menu.addItem(' ', null);
+    if (choices instanceof Array) {
+        choices.forEach(choice => menu.addItem(choice[0], choice[1]));
+    } else { // assuming a dictionary
+        for (key in choices) {
+            if (Object.prototype.hasOwnProperty.call(choices, key)) {
+                if (key[0] === '~') {
+                    menu.addLine();
+                } else {
+                    menu.addItem(key, choices[key]
+                );};};};}; if (menu.items.length > 0
+    ) {menu.popUpAtHand(world);} else {return null;};};
+
+// InputFieldMorph layout:
+
+InputFieldMorph.prototype.fixLayout = function () {
+    var contents = this.contents(),
+        arrow = this.arrow();
+
+    if (!contents) {return null; }
+    contents.isNumeric = this.isNumeric;
+    contents.isEditable = (!this.isReadOnly);
+    if (this.choices) {
+        arrow.setSize(this.fontSize);
+        arrow.show();
+    } else {
+        arrow.setSize(0);
+        arrow.hide();
+    };  this.bounds.setHeight(
+        contents.height() + ((
+        this.edge + this.typeInPadding) * 2)
+    );  this.bounds.setWidth(Math.max(
+        contents.minWidth
+            + this.edge * 2
+            + this.typeInPadding * 2,
+        this.width()
+    ));
+
+    contents.setWidth(
+        this.width() - this.edge - this.typeInPadding -
+            (this.choices ? arrow.width() + this.typeInPadding : 0)
+    );
+
+    contents.setPosition(new Point(
+        this.edge,
+        this.edge
+    ).add(this.typeInPadding).add(this.position()));
+
+    arrow.setPosition(new Point(
+        this.right() - arrow.width() - this.edge,
+        contents.top()
+    )); if (this.isReadOnly) {
+        this.cursorStyle = null;
+    } else {
+        this.cursorStyle = 'text';
+    };};
+
+// InputFieldMorph events:
+
+InputFieldMorph.prototype.mouseClickLeft = function (
+pos) {if ((this.arrow()).bounds.containsPoint(pos)) {
+this.dropDownMenu();} else if (this.isReadOnly) {
+this.dropDownMenu();} else {this.escalateEvent(
+'mouseClickLeft', pos);};};
+
+// InputFieldMorph retrieving:
+
+InputFieldMorph.prototype.getValue = function (
+) {var num, contents = this.contents(); if ((this
+).isNumeric) {num = parseFloat(contents.text.text
+); if (!isNaN(num)) {return num;};}; return (
+this.normalizeSpaces(contents.string()));};
+
+InputFieldMorph.prototype.normalizeSpaces
+    = DialogBoxMorph.prototype.normalizeSpaces;
+
+// InputFieldMorph drawing:
+
+InputFieldMorph.prototype.render = function (ctx) {
+    var borderColor;
+
+    if (this.parent) {
+        if (this.parent.color.eq(WHITE)) {
+            this.color = this.parent.color.darker(this.contrast / 10);
+        } else {
+            this.color = this.parent.color.lighter(this.contrast * 3/4);
+        }
+        borderColor = this.parent.color;
+    } else {
+        borderColor = new Color(120, 120, 120);
+    }
+    ctx.fillStyle = this.color.toString();
+
+    // cache my border colors
+    this.cachedClr = borderColor.toString();
+    this.cachedClrBright = borderColor.lighter(this.contrast)
+        .toString();
+    this.cachedClrDark = borderColor.darker(this.contrast).toString();
+
+    ctx.fillRect(
+        this.edge,
+        this.edge,
+        this.width() - this.edge * 2,
+        this.height() - this.edge * 2
+    );
+
+    this.drawRectBorder(ctx);
+};
+
+InputFieldMorph.prototype.drawRectBorder = function (ctx) {
+    var shift = this.edge / 2, gradient;
+
+    if ((MorphicPreferences.isFlat
+    ) && !(this.is3D)) {return;};
+
+    ctx.lineWidth = this.edge;
+    ctx.lineJoin = 'round';
+    ctx.lineCap = 'round';
+
+    if (useBlurredShadows) {
+        ctx.shadowOffsetY = shift;
+        ctx.shadowBlur = this.edge * 4;
+        ctx.shadowColor = this.cachedClrDark;
+    };  gradient = ctx.createLinearGradient(
+        0, 0, 0, this.edge);
+
+    gradient.addColorStop(0, this.cachedClr);
+    gradient.addColorStop(1, this.cachedClrDark);
+    ctx.strokeStyle = gradient;
+    ctx.beginPath();
+    ctx.moveTo(this.edge, shift);
+    ctx.lineTo((this.width() - (
+    this.edge + shift)), shift);
+    ctx.stroke();
+
+    ctx.shadowOffsetY = 0;
+
+    gradient = ctx.createLinearGradient(
+        0, 0, this.edge, 0);
+    gradient.addColorStop(0, this.cachedClr);
+    gradient.addColorStop(1, this.cachedClrDark);
+    ctx.strokeStyle = gradient;
+    ctx.beginPath();
+    ctx.moveTo(shift, this.edge);
+    ctx.lineTo(shift, (this.height() - (this.edge + shift)));
+    ctx.stroke();
+
+    ctx.shadowOffsetX = 0;
+    ctx.shadowOffsetY = 0;
+    ctx.shadowBlur = 0;
+
+    gradient = ctx.createLinearGradient(
+        0, (this.height() - this.edge),
+        0, this.height());
+    gradient.addColorStop(0, this.cachedClrBright
+    ); gradient.addColorStop(1, this.cachedClr);
+    ctx.strokeStyle = gradient; ctx.beginPath();
+    ctx.moveTo(this.edge, (this.height() - shift)
+    ); ctx.lineTo((this.width() - this.edge), (
+    this.height() - shift)); ctx.stroke();
+
+    gradient = ctx.createLinearGradient(
+        this.width() - this.edge,
+        0, this.width(), 0
+    );  gradient.addColorStop(0, this.cachedClrBright
+    );  gradient.addColorStop(1, this.cachedClr);
+    ctx.strokeStyle = gradient; ctx.beginPath();
+    ctx.moveTo(this.width() - shift, this.edge);
+    ctx.lineTo(this.width() - shift, this.height(
+    ) - this.edge); ctx.stroke();};
+
+// PianoMenuMorph //////////////////////////////////////////////////////
+/* 
+    I am a menu that looks like a piano keyboard.
+*/
+
+// PianoMenuMorph inherits from MenuMorph
+
+PianoMenuMorph.prototype = new MenuMorph;
+(PianoMenuMorph.prototype.constructor
+) = PianoMenuMorph; (PianoMenuMorph
+).uber = MenuMorph.prototype;
+
+// PianoMenuMorph instance creation:
+
+function PianoMenuMorph(target, environment,
+fontSize, soundType) {this.init(target,
+environment, fontSize, soundType);};
+
+PianoMenuMorph.prototype.init = function (
+target, environment, fontSize, soundType,
+visibleOctaves) {var choices, key; (this
+).soundType = soundType; (PianoMenuMorph
+).uber.init.call(this, target, null,
+environment, fontSize); if (isNil(
+visibleOctaves)) {visibleOctaves = 2;
+}; this.visibleOctaves = visibleOctaves;
+this.octave = 4 - (3 % this.visibleOctaves
+); choices = {'C' : 1, 'D' : 3, 'C#' : 2,
+'E' : 5, 'Eb' : 4, 'F' : 6, 'G' : 8,
+'F#' : 7, 'A' : 10, 'Ab' : 9, 'B' : 12,
+'Bb' : 11}; for (var octave = 0; ((octave
+) < this.visibleOctaves); octave++) {for (
+key in choices) {if ((Object.prototype
+).hasOwnProperty.call(choices, key)) {
+this.addItem(key, (choices[key] + ((12
+) * octave)));};};}; this.addItem('C',
+choices.C + (12 * this.visibleOctaves));};
+
+PianoMenuMorph.prototype.createItems = function () {var item, fb, x,
+y, label, blackkey, key, keycolor, keywidth, keyheight, keyposition;
+this.children.forEach(m => m.destroy()); this.children = []; if (!(
+this.isListContents)) {this.edge = (5 * (1 - MorphicPreferences.isFlat
+)); this.border = (2 - MorphicPreferences.isFlat);}; this.color = WHITE;
+this.borderColor = new Color(60, 60, 60); this.bounds.setExtent(ZERO);
+x = (this.left() + 1); y = ((this.top() + (this.fontSize * 3/2)) + 2);
+label = new StringMorph('', this.fontSize); this.items.forEach((tuple
+) => {blackkey = ((tuple[0]).length > 1); key = new BoxMorph(1, 1); if (
+blackkey) {keycolor = BLACK; keywidth = this.fontSize; keyheight = ((this
+).fontSize * 5/2); keyposition = new Point(((x + 2) - (this.fontSize * 2)),
+y);} else {keycolor = WHITE; keywidth = (this.fontSize * 3/2); keyheight = (
+this.fontSize * 4); keyposition = new Point((x + 1), y); x += (keywidth - 1
+);}; key.setColor(keycolor); key.setWidth(keywidth); key.setHeight(keyheight
+); item = new PianoKeyMorph(this.target, tuple[1], [key, tuple[0]], ((this
+).fontSize || MorphicPreferences.menuFontSize), (MorphicPreferences
+).menuFontName, this.environment, tuple[2], tuple[3], tuple[4], tuple[
+5], tuple[6], label); item.setPosition(keyposition); this.add(item);});
+fb = this.fullBounds(); label.setPosition(new Point(((fb.width() / 2) - (
+this.fontSize * 8/5)), 2)); this.add(label); var downOctave = (new ArrowMorph(
+'left', fontHeight(this.fontSize), Math.max(Math.floor(this.fontSize / 6), 1))
+); downOctave.setPosition(new Point(5, 3)); downOctave.mouseClickLeft = ((
+) => this.octaveDown()); this.add(downOctave); var upOctave = (new ArrowMorph(
+'right', fontHeight(this.fontSize), Math.max(Math.floor(this.fontSize / 6),
+1))); upOctave.setPosition(new Point((fb.width() - (upOctave.width() + 2)),
+3)); upOctave.mouseClickLeft = (() => this.octaveUp()); this.add(upOctave
+); fb = this.fullBounds(); this.bounds.setExtent(fb.extent().add(2));};
+
+// PianoMenuMorph keyboard selecting a key:
+
+PianoMenuMorph.prototype.select = function(
+aPianoKeyItem) {this.unselectAllItems();
+aPianoKeyItem.mouseEnter(); (this.selection
+) = aPianoKeyItem; (world.keyboardFocus
+) = this; this.hasFocus = true;};
+
+PianoMenuMorph.prototype.unselectAllItems = function (
+) {this.children.forEach(item => {if (item instanceof (
+MenuItemMorph)) {item.mouseLeave();};}); this.changed();};
+
+PianoMenuMorph.prototype.selectKey = function (midiNum, octave) {
+    var key, note, visibleOctave;
+    
+    if (isNil(midiNum)) {return;};
+
+    if (isNil(octave)) {
+        octave = Math.floor((midiNum / 12) - 1);
+        var octaveIndex = ((octave + 1) % this.visibleOctaves);
+
+        visibleOctave = (octave - octaveIndex);
+        note = 1 + ((midiNum % 12) + (12 * octaveIndex));
+    } else {
+        note = ((midiNum - 1) % (12 * this.visibleOctaves)) + 1;
+        visibleOctave = this.octave;
+    };  this.octave = visibleOctave;
+    
+    key = detect(this.children,
+        (each => (each.pitch === Math.round(note)))
+    );  if (key) {this.select(key);} else {
+    this.selectKey(1, this.octave);};};
+
+// PianoMenuMorph keyboard navigation & entry:
+
+PianoMenuMorph.prototype.processKeyDown = function (event) {
+    // console.log(event.keyCode);
+    switch (event.keyCode) {
+    case 13: // 'enter'
+    case 32: // 'space'
+        if (this.selection) {
+            this.selection.mouseClickLeft();
+        };  return;
+    case 27: // 'esc'
+        return this.destroy();
+    case 37: // 'left arrow'
+    case 40: // 'down arrow'
+    case 189: // -
+        return event.shiftKey ?
+            this.octaveDown()
+            : this.selectDown();
+    case 38: // 'up arrow'
+    case 39: // 'right arrow'
+    case 187: // +
+    case 220: // #
+        return event.shiftKey ?
+            this.octaveUp()
+            : this.selectUp();
+    default:
+        switch(event.key) {
+        case 'c':
+            return this.selectKey(1, this.octave);
+        case 'C':
+            return this.selectKey(13, this.octave);
+        case 'd':
+            return this.selectKey(3, this.octave);
+        case 'D':
+            return this.selectKey(15, this.octave);
+        case 'e':
+            return this.selectKey(5, this.octave);
+        case 'E':
+            return this.selectKey(17, this.octave);
+        case 'f':
+            return this.selectKey(6, this.octave);
+        case 'F':
+            return this.selectKey(18, this.octave);
+        case 'g':
+            return this.selectKey(8, this.octave);
+        case 'G':
+            return this.selectKey(20, this.octave);
+        case 'a':
+            return this.selectKey(10, this.octave);
+        case 'A':
+            return this.selectKey(22, this.octave);
+        case 'b':
+        case 'h':
+            return this.selectKey(12, this.octave);
+        case 'B':
+        case 'H':
+            return this.selectKey(24, this.octave);
+        default:
+            nop();
+        }
+    }
+};
+
+PianoMenuMorph.prototype.selectUp = function () {
+    this.selectKey(
+        this.selection ?
+            Math.min((this.selection.action + 1), 143)
+            : 1
+    );
+};
+
+PianoMenuMorph.prototype.selectDown = function () {
+    this.selectKey(
+        this.selection ?
+            Math.max((this.selection.action - 1), 0)
+            : 1
+    );
+};
+
+PianoMenuMorph.prototype.octaveUp = function () {
+    this.octave += this.visibleOctaves;
+    this.octave = Math.min(this.octave, (10 - (11 % this.visibleOctaves)));
+
+    if (this.selection) {
+        this.selection.mouseEnter();
+    }
+};
+
+PianoMenuMorph.prototype.octaveDown = function () {
+    this.octave -= this.visibleOctaves;
+    this.octave = Math.max(-1, this.octave);
+
+    if (this.selection) {
+        this.selection.mouseEnter();
+    }
+};
+
+PianoMenuMorph.prototype.destroy = function () {
+    this.children.forEach(key => {
+        if (key.note) {
+            key.note.stop();
+        }
+    });
+    PianoMenuMorph.uber.destroy.call(this);
+};
+
+
+// PianoKeyMorph ///////////////////////////////////////////////////////
+
+PianoKeyMorph.prototype = new MenuItemMorph;
+PianoKeyMorph.prototype.constructor = PianoKeyMorph;
+PianoKeyMorph.uber = MenuItemMorph.prototype;
+
+function PianoKeyMorph(
+    target,
+    action,
+    labelString, // can also be a Morph or a Canvas or a tuple: [icon, string]
+    fontSize,
+    fontStyle,
+    environment,
+    hint,
+    color,
+    bold,
+    italic,
+    doubleClickAction, // optional when used as list morph item
+    label
+) {
+    this.init(
+        target,
+        action,
+        labelString,
+        fontSize,
+        fontStyle,
+        environment,
+        hint,
+        color,
+        bold,
+        italic,
+        doubleClickAction,
+        label
+    );
+    this.feedback = label;
+}
+
+PianoKeyMorph.prototype.init = function (
+    target,
+    action,
+    labelString,
+    fontSize,
+    fontStyle,
+    environment,
+    hint,
+    color,
+    bold,
+    italic,
+    doubleClickAction,
+    label
+) {
+    // additional "note" property for sound output:
+    this.note = new Note(action);
+    this.pitch = action;
+    PianoKeyMorph.uber.init.call(
+        this,
+        target,
+        action,
+        labelString,
+        fontSize,
+        fontStyle,
+        environment,
+        hint,
+        color,
+        bold,
+        italic,
+        doubleClickAction,
+        label
+    );  this.cursorStyle = 'pointer';
+};
+
+PianoKeyMorph.prototype.createLabel = function () {
+    var icon;
+    if (!isNil(this.label)) {
+        this.label.destroy();
+    }
+
+    // assume its pattern is: [icon, string]
+    this.label = new Morph();
+    icon = this.createIcon(this.labelString[0]);
+    this.label.add(icon);
+    this.bounds.setExtent(icon.extent());
+    this.label.bounds = this.position().extent(this.label.extent());
+    this.label.bounds.setExtent(ZERO);
+    this.add(this.label);
+};
+
+PianoKeyMorph.prototype.mouseEnter = function () {
+    var piano = this.parentThatIsA(PianoMenuMorph),
+        soundType = piano ? piano.soundType : 1,
+        octave = Math.floor((this.action - 1) / 12),
+        octaveOffset = 0;
+        
+    if (piano) {
+        piano.unselectAllItems();
+        piano.selection = this;
+        piano.world.keyboardFocus = piano;
+        piano.hasFocus = true;
+        octave = piano.octave;
+    };  octaveOffset = Math.floor((this.pitch - 1) / 12);
+    this.action = (this.pitch - 1) + (12 * (octave + 1));
+    this.note.pitch = this.action;
+    
+    this.label.children[0].hide();
+    this.userState = 'highlight';
+    this.rerender();
+    this.feedback.text = `${this.labelString[1]}${octave + octaveOffset} (${this.action})`;
+    this.feedback.fixLayout();
+    this.note.play(soundType);
+    setTimeout(
+        (() => this.note.stop(true)),
+        500
+    );
+};
+
+PianoKeyMorph.prototype.mouseLeave = function () {
+    this.note.stop(true);
+    this.label.children[0].show();
+    this.userState = 'normal';
+    this.rerender();
+};
 
 /* Saving script by default. */ var saveAs = saveAs || function(e) {
     "use strict";
