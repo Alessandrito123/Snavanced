@@ -236,9 +236,9 @@ var scale = Math.round(Math.min(Math.max(num, 1/2), 10
 ).hatWidth = 70 * scale; this.rfBorder = 3 * scale; (this
 ).edge = scale; this.minWidth = 0; this.dent = 8 * scale;
 this.cSlotPadding = this.dent / 2; this.labelPadding = (
-this).cSlotPadding; this.fontSize = this.hatHeight; (this
-).bottomPadding = this.rfBorder; this.typeInPadding = (
-scale); this.labelFontName = ((localStorage[
+this).cSlotPadding; this.fontSize = this.hatHeight;
+this.bottomPadding = this.rfBorder; (this.typeInPadding
+) = scale; this.labelFontName = ((localStorage[
 '-snap-setting-language'] === 'tok') ? (
 'blockTokiPonaFont') : 'blockGlobalFont'
 ); this.labelFontStyle = 'sans-serif'; (this
@@ -1230,32 +1230,32 @@ SyntaxElementMorph.prototype.labelParts = {
     '%wardrobe': {
         type: 'symbol',
         name: 'poster',
-        scale: 1.2
+        scale: 6/5
     },
     '%turtle': {
         type: 'symbol',
         name: 'turtle',
-        scale: 1.2
+        scale: 6/5
     },
     '%turtleOutline': {
         type: 'symbol',
         name: 'turtleOutline',
-        scale: 1.2
+        scale: 6/5
     },
     '%pipette': {
         type: 'symbol',
         name: 'pipette',
-        scale: 1.2
+        scale: 6/5
     },
     '%notes': {
         type: 'symbol',
         name: 'notes',
-        scale: 1.2
+        scale: 6/5
     },
     '%verticalEllipsis': {
         type: 'symbol',
         name: 'verticalEllipsis',
-        scale: 1.2
+        scale: 6/5
     },
     '%list': {
         type: 'symbol',
@@ -1268,7 +1268,7 @@ SyntaxElementMorph.prototype.labelParts = {
     '%loopArrow': {
         type: 'symbol',
         name: 'loop',
-        scale: 0.54,
+        scale: 27/50,
         tags: 'fading'
     },
 
@@ -1943,7 +1943,7 @@ SyntaxElementMorph.prototype.labelPart = function (spec) {
             part = new InputSlotMorph(
             90, true, {'§_dir': null,
              '(90) right' : 90,
-             '(270) left' : -90,
+             '(270) left' : 270,
              '(0) up' : 0,
              '(180) down' : 180,
              'random' : ['random']
@@ -2758,16 +2758,16 @@ function BlockLabelMorph(
 BlockLabelMorph.prototype.getRenderColor = function () {
     var block = this.parentThatIsA(BlockMorph);
     if (MorphicPreferences.isFlat) {
-        return block.alpha > 0.5 ? this.color
-            : block.color.solid().darker(Math.max(block.alpha * 200, 0.1));
+        return block.alpha > 1/2 ? this.color
+            : block.color.solid().darker(Math.max(block.alpha * 200, 1/10));
     }
-    return block.alpha > 0.5 ? this.color
-        : block.color.solid().lighter(Math.max(block.alpha * 200, 0.1));
+    return block.alpha > 1/2 ? this.color
+        : block.color.solid().lighter(Math.max(block.alpha * 200, 1/10));
 
 };
 
 BlockLabelMorph.prototype.getShadowRenderColor = function () {
-    return this.parentThatIsA(BlockMorph).alpha > 0.5 ?
+    return this.parentThatIsA(BlockMorph).alpha > 1/2 ?
         this.shadowColor
             : CLEAR;
 };
@@ -2797,11 +2797,11 @@ BlockSymbolMorph.prototype.getRenderColor = function () {
         if (this.isFading) {
             return this.color.mixed(block.alpha, WHITE);
         };  if (this.color.eq(WHITE)) {
-            return this.parent.alpha > 0.5 ? this.color
-                : block.color.solid().darker(Math.max(block.alpha * 200, 0.1));
+            return this.parent.alpha > 1/2 ? this.color
+                : block.color.solid().darker(Math.max(block.alpha * 200, 1/10));
         };  if (this.color.eq(BLACK)) {
-            return this.parent.alpha > 0.5 ? this.color
-                : block.color.solid().darker(Math.max(block.alpha * 200, 0.1));
+            return this.parent.alpha > 1/2 ? this.color
+                : block.color.solid().darker(Math.max(block.alpha * 200, 1/10));
         };  return this.color;
     };  if (this.isFading) {
         return this.color.mixed(
@@ -2809,16 +2809,16 @@ BlockSymbolMorph.prototype.getRenderColor = function () {
             SpriteMorph.prototype.paletteColor
         );
     };  if (this.color.eq(BLACK)) {
-        return block.alpha > 0.5 ? this.color
-            : block.color.solid().lighter(Math.max(block.alpha * 200, 0.1));
+        return block.alpha > 1/2 ? this.color
+            : block.color.solid().lighter(Math.max(block.alpha * 200, 1/10));
     };  if (this.color.eq(WHITE)) {
-        return this.parent.alpha > 0.5 ? this.color
-            : block.color.solid().lighter(Math.max(block.alpha * 200, 0.1));
+        return this.parent.alpha > 1/2 ? this.color
+            : block.color.solid().lighter(Math.max(block.alpha * 200, 1/10));
     };  return this.color;
 };
 
 BlockSymbolMorph.prototype.getShadowRenderColor = function () {
-return ((this.parent).alpha > 0.5 ? this.shadowColor : CLEAR);};
+return ((this.parent).alpha > 1/2 ? this.shadowColor : CLEAR);};
 
 // BlockMorph //////////////////////////////////////////////////////////
 
@@ -4735,31 +4735,16 @@ BlockMorph.prototype.codeMappingHeader = function () {
 
 // Variable refactoring
 
-BlockMorph.prototype.refactorThisVar = function (justTheTemplate) {
-    // Rename all occurrences of the variable this block is holding,
-    // taking care of its lexical scope
-
-    var receiver = this.scriptTarget(),
-        oldName = this.instantiationSpec || this.blockSpec,
-        cpy = this.fullCopy();
-
-    cpy.addShadow();
-
-    new DialogBoxMorph(this, renameVarTo, this).prompt(
-        'Variable name',
-        oldName,
-        this.world(),
-        cpy.doWithAlpha(1, () => cpy.fullImage()), // pic
-        InputSlotMorph.prototype.getVarNamesDict.call(this)
-    );
-
-    function renameVarTo (newName) {
-        newName = newName.trim();
-        if (newName === '') {return;};
-
-        var block;
-
-        if (this.parent instanceof SyntaxElementMorph) {
+BlockMorph.prototype.refactorThisVar = function (justTheTemplate
+) {/* Rename all occurrences of the variable this block is holding,
+taking care of its lexical scope */ var receiver = this.scriptTarget(
+), oldName = (this.instantiationSpec || this.blockSpec), cpy = (this
+).fullCopy(); cpy.addShadow(); (new DialogBoxMorph(this, renameVarTo,
+this)).prompt('Variable name', oldName, world, cpy.doWithAlpha(1,
+() => cpy.fullImage()), (InputSlotMorph.prototype.getVarNamesDict
+).call(this)); function renameVarTo (newName) {newName = (newName
+).trim(); if (newName === '') {return;}; var block; if ((this.parent
+) instanceof SyntaxElementMorph) {
 
             // commented out by jens and reformulated below
             // in an attempt to catch some bugs in v6:
@@ -5058,19 +5043,19 @@ m => {if (m instanceof BlockMorph
 
 // BlockMorph drawing
 
-BlockMorph.prototype.childChanged = function () {
-    // react to a change in one of my children,
-    // default is to just pass this message on upwards
-    // override this method for Morphs that need to adjust accordingly
-    if (this.parent) {
-        this.shouldRerender = true;
-        this.parent.childChanged(this);
-    };
-};
+BlockMorph.prototype.childChanged = function (
+) {/* react to a change in one of my children,
+default is to just pass this message on upwards
+override this method for Morphs that need to
+adjust accordingly */ if (this.parent) {
+this.shouldRerender = true; (this
+).parent.childChanged(this);};};
 
-BlockMorph.prototype.render = function (ctx) {if (this.shouldRerender) {
-this.selectedImage = this.getBodyImage();}; if (!isNil(this.selectedImage
-)) {ctx.drawImage(this.selectedImage, 0, 0);};};
+BlockMorph.prototype.render = function (ctx) {
+if (this.shouldRerender) {(this.selectedImage
+) = this.getBodyImage();}; if (!isNil((this
+).selectedImage)) {ctx.drawImage((this
+).selectedImage, 0, 0);};};
 
 BlockMorph.prototype.backupRender = function (ctx) {
     this.cachedClr = this.color.toString();
@@ -5785,7 +5770,7 @@ CommandBlockMorph.prototype.dentLeft = function () {
 CommandBlockMorph.prototype.dentCenter = function () {
     return this.dentLeft()
         + this.corner
-        + (this.dent * 0.5);
+        + (this.dent / 2);
 };
 
 CommandBlockMorph.prototype.attachTargets = function () {
@@ -7373,7 +7358,7 @@ ScriptsMorph.prototype.getRenderColor = function () {
 
 ScriptsMorph.prototype.renderCachedTexture = function (ctx) {
     // support blocks-to-text slider
-    if (SyntaxElementMorph.prototype.alpha > 0.8) {
+    if (SyntaxElementMorph.prototype.alpha > 4/5) {
         ScriptsMorph.uber.renderCachedTexture.call(this, ctx);
     }
 };
@@ -7517,7 +7502,7 @@ ScriptsMorph.prototype.showCSlotWrapFeedback = function (srcBlock, trgBlock) {
     this.add(this.feedbackMorph);
     clr = srcBlock.color.lighter(40);
     this.feedbackMorph.color = clr.copy();
-    this.feedbackMorph.color.a = 0.1;
+    this.feedbackMorph.color.a = 1/10;
     this.feedbackMorph.borderColor = clr;
     this.feedbackMorph.rerender();
 };
@@ -9898,13 +9883,8 @@ searching) {var dict = {
             'bottom' : ['bottom'],
             'volume' : ['volume'],
             'balance' : ['balance']
-        },
-        block,
-        objName,
-        rcvr,
-        stage,
-        obj,
-        varNames;
+        },  block, objName, rcvr,
+        stage, obj, varNames;
 
     if (searching) {return dict;};
 
@@ -10463,10 +10443,10 @@ function InputSlotStringMorph(
     if (MorphicPreferences.isFlat) {
         if (this.isEditable) {
             return this.color;
-        };  return this.parent.alpha > 0.5 ? this.color : BLACK;
-    };  return this.parent.alpha > 0.25 ? this.color : WHITE;
+        };  return this.parent.alpha > 1/2 ? this.color : BLACK;
+    };  return this.parent.alpha > 1/4 ? this.color : WHITE;
 };  InputSlotStringMorph.prototype.getShadowRenderColor = function () {
-    return this.parent.alpha > 0.25 ? this.shadowColor : CLEAR;
+    return this.parent.alpha > 1/4 ? this.shadowColor : CLEAR;
 };
 
 // InputSlotTextMorph ///////////////////////////////////////////////

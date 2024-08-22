@@ -1933,28 +1933,16 @@ function Morph () {this.init();};
 
 // Morph initialization:
 
-Morph.prototype.init = function (
-) {Morph.uber.init.call(this); (this
-).isMorph = true; (this.cachedImage
-) = null; this.isCachingImage = false;
-this.shouldRerender = false; (this
-).bounds = new Rectangle(0, 0, 50,
-40); this.holes = []; (this.color
-) = new Color(80, 80, 80); (this
-).cachedTexture = null; (this
-).texture = null; (this.alpha
-) = 1; this.isVisible = true;
-this.fullShadowSource = true;
-this.noDropShadow = false;
-this.acceptsDrops = false;
-this.isDraggable = false;
-this.isTemplate = false;
-this.isFreeForm = false;
-this.customContextMenu = null;
-this.lastTime = Date.now();
-this.fps = 0; (this.onNextStep
-) = null; this.cursorStyle = (null
-); this.cursorGrabStyle = null;};
+Morph.prototype.init = function () {Morph.uber.init.call(this); (this
+).isMorph = true; this.cachedImage = null; this.isCachingImage = false;
+this.shouldRerender = false; this.bounds = new Rectangle(0, 0, 50, 40);
+this.holes = []; this.color = new Color(80, 80, 80); (this.cachedTexture
+) = null; this.texture = null; this.alpha = 1; this.acceptsDrops = false;
+this.fullShadowSource = true; this.isVisible = true; this.isDraggable = (
+false); this.isHighContrast = false; this.noDropShadow = false; (this
+).isTemplate = false; this.isFreeForm = false; (this.customContextMenu
+) = null; this.lastTime = Date.now(); this.fps = 0; (this.onNextStep
+) = null; this.cursorStyle = null; this.cursorGrabStyle = null;};
 
 // Morph string representation: e.g. 'a Morph 2 [20@45 | 130@250]'
 
@@ -2344,7 +2332,7 @@ Morph.prototype.drawOn = function (ctx,
         pos.x, pos.y); this.render(ctx); if (
         MorphicPreferences.showHoles) {
             ctx.translate(-pos.x, -pos.y);
-            ctx.globalAlpha = 0.25;
+            ctx.globalAlpha = 1/4;
             ctx.fillStyle = 'white';
             this.holes.forEach(hole => {
                 var sect = hole.translateBy(
@@ -2362,13 +2350,14 @@ Morph.prototype.fullDrawOn = function (aContext, aRect) {if (
 this.isVisible) {this.drawOn(aContext, aRect); (this.children
 ).forEach(child => child.fullDrawOn(aContext, aRect));};};
 
-Morph.prototype.getBodyImage = function () {var img;
-if ((this.cachedImage) && !this.shouldRerender) {return (
-this.cachedImage);}; img = newCanvas(this.integerExtent(
-), false, this.cachedImage); (img.imageSmoothingEnabled
-) = false; if (this.isCachingImage) {(this.cachedImage
-) = img;}; this.backupRender(img.getContext('2d'));
-this.shouldRerender = false; return img;};
+Morph.prototype.getBodyImage = function () {var img; if (
+this.cachedImage && !this.shouldRerender) {return (this
+).cachedImage;}; img = newCanvas(this.integerExtent(),
+false, this.cachedImage); img.imageSmoothingEnabled = (
+false); if (this.isCachingImage) {this.cachedImage = img;
+}; var ctx = img.getContext('2d'); if (this.isHighContrast
+) {ctx.filter = "contrast(2)";}; this.backupRender(
+ctx); this.shouldRerender = false; return img;};
 
 Morph.prototype.drawBodyOn = function (ctx,
     rect) {var clipped = rect.intersect(
@@ -2400,12 +2389,9 @@ Morph.prototype.drawBodyOn = function (ctx,
                     Math.ceil(sect.height()
                 ));});};}; ctx.restore();};
 
-Morph.prototype.recordBodyImage = function () {
-var fb = this.bounds, img = newCanvas(
-fb.extent()), ctx = img.getContext('2d');
-ctx.translate(-fb.origin.x, -fb.origin.y
-); if (this.isVisible) {this.drawBodyOn(
-ctx, fb);}; return img;};
+Morph.prototype.recordDrawOn = function (aContext, aRect) {if (
+this.isVisible) {this.drawBodyOn(aContext, aRect); (this.children
+).forEach(child => child.recordDrawOn(aContext, aRect));};};
 
 Morph.prototype.show = function () {if (!this.isVisible
 ) {this.isVisible = true; this.changed();};}; (Morph
@@ -2423,14 +2409,20 @@ fb.extent()), ctx = img.getContext('2d');
 ctx.translate(-fb.origin.x, -fb.origin.y);
 this.fullDrawOn(ctx, fb); return img;};
 
+Morph.prototype.recordBodyImage = function () {
+var fb = this.fullBounds(), img = newCanvas(
+fb.extent()), ctx = img.getContext('2d');
+ctx.translate(-fb.origin.x, -fb.origin.y);
+this.recordDrawOn(ctx, fb); return img;};
+
 // Morph screenshot:
 
 Morph.prototype.screenshot = function () {var aWorld = (world || this.world()); if (aWorld.currentKey === 16) {var canvas = this.fullImage(
-); IDE_Morph.prototype.saveFileAs(canvas.toDataURL(), 'image/png', 'screenshot');} else {this.nextSteps([(function () {this.rerender();}), (
-function () {var canvas = newCanvas(this.bounds.extent()); var ctx = canvas.getContext('2d'); var width = this.bounds.width(); var height = (
-this.bounds.height()); var i = 0; while (i < (width * height)) {ctx.fillStyle = aWorld.getGlobalPixelColor(new Point(((i % width) + (this.bounds
-).origin.x), (Math.floor(i / width) + this.bounds.origin.y))).toString(); ctx.fillRect((i % width), Math.floor(i / width), 1,
-1); i++;}; IDE_Morph.prototype.saveFileAs(canvas.toDataURL(), 'image/png', 'screenshot');})]);};};
+); IDE_Morph.prototype.saveFileAs(canvas.toDataURL(), 'image/png', 'screenshot');} else {this.nextSteps([(function () {this.rerender();
+}), (function () {var canvas = newCanvas(this.bounds.extent()); var ctx = canvas.getContext('2d'); var width = this.bounds.width();
+var height = this.bounds.height(); var i = 0; while (i < (width * height)) {ctx.fillStyle = aWorld.getGlobalPixelColor(new Point(
+((i % width) + this.bounds.origin.x), (Math.floor(i / width) + this.bounds.origin.y))).toString(); ctx.fillRect((i % width),
+Math.floor(i / width), 1, 1); i++;}; IDE_Morph.prototype.saveFileAs(canvas.toDataURL(), 'image/png', 'screenshot');})]);};};
 
 // Morph shadow:
 

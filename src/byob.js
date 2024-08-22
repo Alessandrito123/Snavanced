@@ -3003,8 +3003,8 @@ BlockLabelPlaceHolderMorph.prototype.render = function (ctx) {
             cx,
             cy,
             r,
-            radians(0),
-            radians(360),
+            0,
+            2 * Math.PI,
             false
         );
         ctx.closePath();
@@ -3125,7 +3125,7 @@ InputSlotDialogMorph.prototype.init = function (
     category
 ) {
     var scale = SyntaxElementMorph.prototype.scale,
-        fh = fontHeight(10) / 1.2 * scale; // "raw height"
+        fh = ((fontHeight(10) * scale * 5) / 6);
 
     // additional properties:
     this.fragment = fragment || new BlockLabelFragment();
@@ -3148,10 +3148,10 @@ InputSlotDialogMorph.prototype.init = function (
     this.types = new AlignmentMorph('row', this.padding);
     this.types.respectHiddens = true; // prevent the arrow from flipping
     this.add(this.types);
-    this.slots = new BoxMorph();
+    this.slots = new BoxMorph;
     this.slots.color = new Color(55, 55, 55); // same as palette
     this.slots.borderColor = this.slots.color.lighter(50);
-    this.slots.setExtent(new Point((fh + 10) * 24, (fh + 10 * scale) * 10.4));
+    this.slots.setExtent(new Point((fh + 10) * 24, (fh + 10 * scale) * 52/5));
     this.add(this.slots);
     this.createSlotTypeButtons();
     this.fixSlotsLayout();
@@ -3176,7 +3176,8 @@ InputSlotDialogMorph.prototype.createTypeButtons = function () {
 
     block = new JaggedBlockMorph;
     block.add(new TemplateSlotMorph(localize('Input Name')));
-    block.setColor(clr); this.addBlockTypeButton(
+    block.setColor(clr);
+    this.addBlockTypeButton(
         () => this.setType('%s'),
         block,
         () => this.fragment.type !== null
@@ -3379,74 +3380,69 @@ arity === 'multiple') {this.fragment.setToMultipleInput();} else if (arity === '
 InputSlotDialogMorph.prototype.setSlotOptions = function (text) {this.fragment.options = text;}; InputSlotDialogMorph.prototype.addSlotTypeButton = function (label, spec) {var action = () => {this.setSlotType(
 spec instanceof Array ? spec[0] : spec);}, query, element = new JaggedBlockMorph((spec instanceof Array) ? spec[0] : spec), button; query = () => {return spec instanceof Array ? contains(spec,
 this.fragment.singleInputType()) : this.fragment.singleInputType() === spec;}; element.setCategory(this.category); element.rebuild(); button = new ToggleMorph('radiobutton', this, action, label, query, null, null,
-element.doWithAlpha(1, () => element.fullImage()), 'rebuild'); button.edge = this.buttonEdge / 2; button.outline = this.buttonOutline / 2; button.outlineColor = this.buttonOutlineColor;
-button.outlineGradient = this.buttonOutlineGradient; button.fixLayout(); button.label.isBold = false; button.label.setColor(WHITE); this.slots.add(button); return button;};
-InputSlotDialogMorph.prototype.addSlotArityButton = function (action, label, query) {var button = new ToggleMorph('radiobutton', this, action, label, query, null, null); button.edge = this.buttonEdge / 2;
-button.outline = this.buttonOutline / 2; button.outlineColor = this.buttonOutlineColor; button.outlineGradient = this.buttonOutlineGradient; button.fixLayout(); /* button.label.isBold = false; */
-button.label.setColor(WHITE); this.slots.add(button); return button;}; InputSlotDialogMorph.prototype.fixSlotsLayout = function () {var slots = this.slots, scale = SyntaxElementMorph.prototype.scale,
-xPadding = 10 * scale, ypadding = 12.5 * scale, size = 15, bh = (fontHeight(10) / 1.5 + 15) * scale, ah = (fontHeight(10) / 1 + 10) * scale, cols = [slots.left() + xPadding, slots.left() + slots.width(
-) * (1.25 / 3), slots.left() + slots.width() * (2 / 3)], rows = [slots.top() + ypadding, slots.top() + ypadding + bh, slots.top() + ypadding + bh * 2, slots.top() + ypadding + bh * 3.0625, slots.top(
-) + ypadding + bh * 4, slots.top() + ypadding + bh * 5, slots.top() + ypadding + bh * 5 + ah, slots.top() + ypadding + bh * 5 + ah * 2], idx, row = -1, col; for (idx = 0; idx < size; idx += 1) {col = idx % 3; if (
-idx % 3 === 0) {row += 1;} slots.children[idx].setPosition(new Point(cols[col], rows[row]));}; col = 0; row = 5; for (idx = size; idx < size + 3; idx += 1) {slots.children[idx].setPosition(new Point(cols[col],
-rows[row + idx - size]));}; this.slots.defaultInputLabel.setPosition(this.slots.radioButtonSingle.label.topRight().add(new Point(5, 0))); this.slots.defaultInputField.setCenter(this.slots.defaultInputLabel.center(
-).add(new Point(this.slots.defaultInputField.width() / 2 + this.slots.defaultInputLabel.width() / 2 + 5, 0))); this.slots.defaultSwitch.setCenter(this.slots.defaultInputLabel.center().add(new Point(
-this.slots.defaultSwitch.width() / 2 + this.slots.defaultInputLabel.width() / 2 + 5, 0))); this.slots.loopArrow.setPosition(this.slots.defaultInputLabel.position());
-this.slots.settingsButton.setPosition(this.slots.bottomRight().subtract(this.slots.settingsButton.extent().add(this.padding + this.slots.border))); this.slots.changed();};
-InputSlotDialogMorph.prototype.addSlotsMenu = function anonymous () {this.slots.userMenu = (() => {if ((typeof this.fragment.type) === 'string') {if (this.fragment.type.includes(
-'%mult')) {return this.variadicSlotsMenu();} else if (contains(['%cmd', '%r', '%p', '%instr', '%cmdRing', '%repRing', '%predRing'], this.fragment.type)) {return this.scriptSlotsMenu(
-);} else if (contains(['%cs', '%c', '%cl', '%ca', '%loop', '%cla'], this.fragment.type)) {return this.cShapeSlotsMenu();} else if (contains(['%words', '%nums', '%lists', '%colors'],
-this.fragment.type)) {var menu = new MenuMorph(this), on = new SymbolMorph('checkedBox', MorphicPreferences.menuFontSize * 0.75), off = new SymbolMorph('rectangle', (
-MorphicPreferences.menuFontSize * 0.75)); menu.addPair((this.fragment.type === '%words' ? on : off), (function () {this.fragment.type = '%words';}), localize(
-'for any types')); menu.addPair((this.fragment.type === '%nums' ? on : off), (function () {this.fragment.type = '%nums';}), localize('for number types'
-)); menu.addPair((this.fragment.type === '%lists' ? on : off), (function () {this.fragment.type = '%lists';}), localize('for list types'));
-menu.addPair((this.fragment.type === '%colors' ? on : off), (function () {this.fragment.type = '%colors';}), localize('for color types'
-)); return menu;} else if (contains(['%b', '%boolUE', '%bool', '%bUE'], this.fragment.type)) {var menu = new MenuMorph(this),
-on = new SymbolMorph('checkedBox', MorphicPreferences.menuFontSize * 0.75), off = new SymbolMorph('rectangle', MorphicPreferences.menuFontSize * 0.75);
-menu.addPair((contains(['%boolUE', '%bUE'], this.fragment.type) ? on : off), (function () {if (contains(['%boolUE', '%bUE'], this.fragment.type)) {switch (this.fragment.type) {case '%boolUE': this.fragment.type = '%b'; break; case '%bUE': this.fragment.type = '%bool'; break; default: nop();};} else {switch (this.fragment.type) {case '%b':
-this.fragment.type = '%boolUE'; break; case '%bool': this.fragment.type = '%bUE'; break; default: nop();};}}), localize('unevaluated'));
-menu.addLine(); menu.addMenu(localize('types'), this.booleanSlotsMenu()); return menu;
-} else if (contains(['%s', '%n', '%txt', '%mlt', '%code', '%anyUE', '%numericUE', '%textingUE', '%linesUE', '%codeUE'], this.fragment.type)) {var menu = new MenuMorph(this), on = new SymbolMorph('checkedBox',
-MorphicPreferences.menuFontSize * 0.75), off = new SymbolMorph('rectangle', MorphicPreferences.menuFontSize * 0.75); menu.addPair((this.fragment.hasOptions() ? on : off), (function () {new DialogBoxMorph(this,
-options => this.fragment.options = options.trim(), this).promptCode('Input Slot Options', this.fragment.options, this.world(), null, localize('Enter one option per line.\n' +
-'Optionally use "=" as key/value delimiter ' + 'and {} for submenus. ' + 'e.g.\n   the answer=42'));}), localize('options') + '...'); menu.addPair((this.fragment.isReadOnly ? on : off),
-(() => this.fragment.isReadOnly = !this.fragment.isReadOnly), localize('read-only')); menu.addPair((this.fragment.isStatic ? on : off), (() => this.fragment.isStatic = !this.fragment.isStatic),
-localize('static')); menu.addPair((contains(['%anyUE', '%numericUE', '%textingUE', '%linesUE', '%codeUE'], this.fragment.type) ? on : off), (function () {if (contains(['%anyUE', '%numericUE',
-'%textingUE', '%linesUE', '%codeUE'], this.fragment.type)) {switch (this.fragment.type) {case '%anyUE': this.fragment.type = '%s'; break; case '%numericUE': this.fragment.type = '%n'; break;
-case '%textingUE': this.fragment.type = '%txt'; break; case '%linesUE': this.fragment.type = '%mlt'; break; case '%codeUE': this.fragment.type = '%code'; break; default: nop();};} else {switch (
-this.fragment.type) {case '%s': this.fragment.type = '%anyUE'; break; case '%n': this.fragment.type = '%numericUE'; break; case '%txt': this.fragment.type = '%textingUE'; break; case '%mlt':
-this.fragment.type = '%linesUE'; break; case '%code': this.fragment.type = '%codeUE'; break; default: nop();};};}), localize('unevaluated'));
-menu.addLine(); menu.addMenu(localize('menu'), this.specialOptionsMenu()); menu.addLine(); menu.addMenu(localize('shapes'), this.stringSlotsMenu()); if (this.world().currentKey === 16) {menu.addMenu(
-localize('extensions'), this.extensionOptionsMenu());}; return menu;};}; return InputSlotDialogMorph.prototype.noOptions();});};
-InputSlotDialogMorph.prototype.cShapeSlotsMenu = function () {var menu = new MenuMorph(this.setSlotType, null, this), myself = this, on = new SymbolMorph('checkedBox',
-MorphicPreferences.menuFontSize * 0.75), off = new SymbolMorph('rectangle', MorphicPreferences.menuFontSize * 0.75); function addSpecialSlotType(label, spec) {menu.addPair((myself.fragment.type === spec ? on : off
-), spec, localize(label));}; if (contains(['%cs', '%c', '%cl'],myself.fragment.type)) {addSpecialSlotType('as static', '%cl'); addSpecialSlotType('as report-drop', '%cs');} else if (contains(['%ca', '%loop',
-'%cla'], myself.fragment.type)) {addSpecialSlotType('as static', '%cla'); addSpecialSlotType('as report-drop', '%ca');}; return menu;};
-InputSlotDialogMorph.prototype.scriptSlotsMenu = function () {var menu = new MenuMorph(this.setSlotType, null, this), myself = this, on = new SymbolMorph('checkedBox', MorphicPreferences.menuFontSize * 0.75),
-off = new SymbolMorph('rectangle', MorphicPreferences.menuFontSize * 0.75); function addSpecialSlotType(label, spec) {menu.addPair((myself.fragment.type === spec ? on : off), spec, localize(label));}; if (
-contains(['%cmdRing', '%repRing', '%predRing'], myself.fragment.type)) {addSpecialSlotType('as script', '%cmdRing'); addSpecialSlotType('as block', '%repRing');} else if (contains(['%cmd', '%r', '%p', '%instr'],
-myself.fragment.type)) {addSpecialSlotType('as command', '%cmd'); addSpecialSlotType('as reporter', '%r'); addSpecialSlotType('as predicate', '%p'); addSpecialSlotType('as all-block', '%instr');}; return menu;};
-InputSlotDialogMorph.prototype.stringSlotsMenu = function anonymous () {var menu = new MenuMorph(this.setSlotType, null, this), myself = this, on = new SymbolMorph('checkedBox', MorphicPreferences.menuFontSize *
-0.75), off = new SymbolMorph('rectangle', (MorphicPreferences.menuFontSize * 0.75)); function addSpecialSlotType(label, spec) {menu.addPair((myself.fragment.type === spec ? on : off), spec, localize(label));};
-if (contains(['%anyUE', '%numericUE', '%textingUE', '%linesUE', '%codeUE'],myself.fragment.type)) {addSpecialSlotType('normal', '%anyUE'); addSpecialSlotType('numerical', '%numericUE'); addSpecialSlotType(
-'text-reader', '%textingUE'); addSpecialSlotType('multiline', '%linesUE'); addSpecialSlotType('simple-code', '%codeUE');} else {addSpecialSlotType('normal', '%s'); addSpecialSlotType('numerical', '%n');
-addSpecialSlotType('text-reader', '%txt'); addSpecialSlotType('multiline', '%mlt'); addSpecialSlotType('JS code', '%code');}; return menu;}; InputSlotDialogMorph.prototype.booleanSlotsMenu = function () {
-var menu = new MenuMorph(this.setSlotType, null, this), myself = this, on = new SymbolMorph('checkedBox', MorphicPreferences.menuFontSize * 0.75), off = new SymbolMorph('rectangle', MorphicPreferences.menuFontSize
-* 0.75); function addSpecialSlotType(label, spec) {menu.addPair((myself.fragment.type === spec ? on : off), spec, localize(label));}; if (contains(['%boolUE', '%bUE'], myself.fragment.type)) {
-addSpecialSlotType('tiny', '%boolUE'); addSpecialSlotType('big', '%bUE');} else {addSpecialSlotType('tiny', '%b'); addSpecialSlotType('big', '%bool');}; return menu;};
-InputSlotDialogMorph.prototype.specialOptionsMenu = function () {var menu = new MenuMorph(this.setSlotOptions, null, this), myself = this, on = new SymbolMorph('checkedBox',
-(MorphicPreferences.menuFontSize * 0.75)), off = new SymbolMorph('rectangle', MorphicPreferences.menuFontSize * 0.75); function addSpecialOptions(label, selector) {
-menu.addPair((myself.fragment.options === selector ? on : off), selector, localize(label));}; addSpecialOptions('\(none\)', ''); addSpecialOptions('messages', '§_messagesMenu'); addSpecialOptions(
-'objects', '§_objectsMenu'); addSpecialOptions('costumes', '§_costumesMenu'); addSpecialOptions('sounds', '§_soundsMenu'); addSpecialOptions('variables', '§_getVarNamesDict'); addSpecialOptions('piano keyboard',
-'§_pianoKeyboardMenu'); addSpecialOptions('360° dial', '§_directionDialMenu'); addSpecialOptions('data types', '§_typesMenu'); addSpecialOptions('midi system', '§_midsMenu'); return menu;};
-InputSlotDialogMorph.prototype.extensionOptionsMenu = function () {var menu = new MenuMorph(this.setSlotOptions, null, this), myself = this, selectors = Array.from(SnapExtensions.menus.keys()), on = new SymbolMorph('checkedBox', MorphicPreferences.menuFontSize * 0.75), off = new SymbolMorph('rectangle', MorphicPreferences.menuFontSize * 0.75); function addSpecialOptions(label, selector) {menu.addPair((
-myself.fragment.options === selector ? on : off), selector, localize(label));}; selectors.forEach(sel => {addSpecialOptions(sel.slice(4), '§_ext_' + sel);}); return menu;};
-InputSlotDialogMorph.prototype.show = function () {this.isVisible = true; this.changed();}; InputSlotDialogMorph.prototype.hide = function () {this.isVisible = false; this.changed();};
-InputSlotDialogMorph.prototype.editSeparator = function () {new DialogBoxMorph(this, str => this.fragment.separator = str, this).prompt("Name the separator...", (this.fragment.separator || ''), this.world());};
-InputSlotDialogMorph.prototype.variadicSlotsMenu = function () {var menu = new MenuMorph(this), on = new SymbolMorph('checkedBox', MorphicPreferences.menuFontSize * 0.75), off = new SymbolMorph(
-'rectangle', MorphicPreferences.menuFontSize * 0.75); menu.addPair((this.fragment.separator ? on : off), 'editSeparator', localize('separator') + '...'); return menu;};
-InputSlotDialogMorph.prototype.noOptions = function anonymous () {var dialog = new DialogBoxMorph; var txt = new TextMorph('There are no options\nto put here.', DialogBoxMorph.prototype.fontSize,
-DialogBoxMorph.prototype.fontStyle, true, false, 'center', null, null, MorphicPreferences.isFlat ? null : new Point(1, 1), WHITE); dialog.key = 'NOINPUTOPTIONSONTHERE'; dialog.labelString = 'Uhh...';
-dialog.createLabel(); dialog.addBody(txt); dialog.addButton('ok', 'OK'); dialog.fixLayout(); dialog.rerender(); return dialog;};
+element.doWithAlpha(1, () => element.fullImage()), 'rebuild'); button.edge = this.buttonEdge / 2; button.outline = this.buttonOutline / 2; button.outlineColor = this.buttonOutlineColor; button.outlineGradient = (
+this.buttonOutlineGradient); button.fixLayout(); button.label.isBold = false; button.label.setColor(WHITE); this.slots.add(button); return button;}; InputSlotDialogMorph.prototype.addSlotArityButton = function (
+action, label, query) {var button = new ToggleMorph('radiobutton', this, action, label, query, null, null); button.edge = this.buttonEdge / 2; button.outline = this.buttonOutline / 2; button.outlineColor = (this
+).buttonOutlineColor; button.outlineGradient = this.buttonOutlineGradient; button.fixLayout(); button.label.setColor(WHITE); this.slots.add(button); return button;}; (InputSlotDialogMorph.prototype.fixSlotsLayout
+) = function () {var slots = this.slots, scale = SyntaxElementMorph.prototype.scale, xPadding = 10 * scale, ypadding = 12.5 * scale, size = 15, bh = (fontHeight(10) / 1.5 + 15) * scale, ah = (fontHeight(10) + 10
+) * scale, cols = [slots.left() + xPadding, slots.left() + slots.width() * 1/3, slots.left() + slots.width() * 2/3], rows = [slots.top() + ypadding, slots.top() + ypadding + bh, slots.top() + ypadding + bh * 2,
+slots.top() + ypadding + bh * 3, slots.top() + ypadding + bh * 4, slots.top() + ypadding + bh * 5, slots.top() + ypadding + bh * 5 + ah, slots.top() + ypadding + bh * 5 + ah * 2], idx, row = -1, col; for (idx = (
+0); idx < size; idx += 1) {col = idx % 3; if (idx % 3 === 0) {row += 1;} slots.children[idx].setPosition(new Point(cols[col], rows[row]));}; col = 0; row = 5; for (idx = size; idx < size + 3; idx += 1) {
+slots.children[idx].setPosition(new Point(cols[col], rows[row + idx - size]));}; this.slots.defaultInputLabel.setPosition(this.slots.radioButtonSingle.label.topRight().add(new Point(5, 0))); (this.slots
+).defaultInputField.setCenter(this.slots.defaultInputLabel.center().add(new Point(this.slots.defaultInputField.width() / 2 + this.slots.defaultInputLabel.width() / 2 + 5, 0))); (this.slots.defaultSwitch
+).setCenter(this.slots.defaultInputLabel.center().add(new Point(this.slots.defaultSwitch.width() / 2 + this.slots.defaultInputLabel.width() / 2 + 5, 0))); this.slots.loopArrow.setPosition((this.slots
+).defaultInputLabel.position()); this.slots.settingsButton.setPosition(this.slots.bottomRight().subtract(this.slots.settingsButton.extent().add(this.padding + this.slots.border))); this.slots.changed(
+);}; InputSlotDialogMorph.prototype.addSlotsMenu = function anonymous () {this.slots.userMenu = (() => {if ((typeof this.fragment.type) === 'string') {if (this.fragment.type.includes('%mult')) {
+return this.variadicSlotsMenu();} else if (contains(['%cmd', '%r', '%p', '%instr', '%cmdRing', '%repRing', '%predRing'], this.fragment.type)) {return this.scriptSlotsMenu();} else if (contains([
+'%cs', '%c', '%cl', '%ca', '%loop', '%cla'], this.fragment.type)) {return this.cShapeSlotsMenu();} else if (contains(['%words', '%nums', '%lists', '%colors'], this.fragment.type)) {var menu = (
+new MenuMorph(this)), on = new SymbolMorph('checkedBox', MorphicPreferences.menuFontSize * 3/4), off = new SymbolMorph('rectangle', MorphicPreferences.menuFontSize * 3/4); menu.addPair(((this
+).fragment.type === '%words' ? on : off), (function () {this.fragment.type = '%words';}), localize('for any types')); menu.addPair((this.fragment.type === '%nums' ? on : off), (function () {
+this.fragment.type = '%nums';}), localize('for number types')); menu.addPair((this.fragment.type === '%lists' ? on : off), (function () {this.fragment.type = '%lists';}), localize('for list types'
+)); menu.addPair((this.fragment.type === '%colors' ? on : off), (function () {this.fragment.type = '%colors';}), localize('for color types')); return menu;} else if (contains(['%b', '%boolUE', '%bool',
+'%bUE'], this.fragment.type)) {var menu = new MenuMorph(this), on = new SymbolMorph('checkedBox', MorphicPreferences.menuFontSize * 3/4), off = new SymbolMorph('rectangle', (MorphicPreferences.menuFontSize
+) * 3/4); menu.addPair((contains(['%boolUE', '%bUE'], this.fragment.type) ? on : off), (function () {if (contains(['%boolUE', '%bUE'], this.fragment.type)) {switch (this.fragment.type) {case '%boolUE':
+this.fragment.type = '%b'; break; case '%bUE': this.fragment.type = '%bool'; break; default: nop();};} else {switch (this.fragment.type) {case '%b': this.fragment.type = '%boolUE'; break; case '%bool':
+this.fragment.type = '%bUE'; break; default: nop();};}}), localize('unevaluated')); menu.addLine(); menu.addMenu(localize('types'), this.booleanSlotsMenu()); return menu;} else if (contains(['%s',
+'%n', '%txt', '%mlt', '%code', '%anyUE', '%numericUE', '%textingUE', '%linesUE', '%codeUE'], this.fragment.type)) {var menu = new MenuMorph(this), on = new SymbolMorph('checkedBox', (MorphicPreferences
+).menuFontSize * 3/4), off = new SymbolMorph('rectangle', MorphicPreferences.menuFontSize * 3/4); menu.addPair((this.fragment.hasOptions() ? on : off), (function () {new DialogBoxMorph(this, ((options
+) => (this.fragment.options = options.trim())), this).promptCode('Input Slot Options', this.fragment.options, this.world(), null, localize(('Enter one option per line.\nOptionally use "=" as key/value'
+) + 'delimiter and {} for submenus. e.g.\n   the answer=42'));}), localize('options') + '...'); menu.addPair((this.fragment.isReadOnly ? on : off), (() => this.fragment.isReadOnly = !((this.fragment
+).isReadOnly)), localize('read-only')); menu.addPair((this.fragment.isStatic ? on : off), (() => this.fragment.isStatic = !this.fragment.isStatic), localize('static')); menu.addPair((contains(['%anyUE',
+'%numericUE', '%textingUE', '%linesUE', '%codeUE'], this.fragment.type) ? on : off), (function () {if (contains(['%anyUE', '%numericUE', '%textingUE', '%linesUE', '%codeUE'], this.fragment.type)) {
+switch (this.fragment.type) {case '%anyUE': this.fragment.type = '%s'; break; case '%numericUE': this.fragment.type = '%n'; break; case '%textingUE': this.fragment.type = '%txt'; break; case '%linesUE':
+this.fragment.type = '%mlt'; break; case '%codeUE': this.fragment.type = '%code'; break; default: nop();};} else {switch (this.fragment.type) {case '%s': this.fragment.type = '%anyUE'; break; case '%n':
+this.fragment.type = '%numericUE'; break; case '%txt': this.fragment.type = '%textingUE'; break; case '%mlt': this.fragment.type = '%linesUE'; break; case '%code': this.fragment.type = '%codeUE'; break;
+default: nop();};};}), localize('unevaluated')); menu.addLine(); menu.addMenu(localize('menu'), this.specialOptionsMenu()); menu.addLine(); menu.addMenu(localize('shapes'), this.stringSlotsMenu()); if (
+world.currentKey === 16) {menu.addMenu(localize('extensions'), this.extensionOptionsMenu());}; return menu;};}; return InputSlotDialogMorph.prototype.noOptions();});}; (InputSlotDialogMorph.prototype
+).cShapeSlotsMenu = function () {var menu = new MenuMorph(this.setSlotType, null, this), myself = this, on = new SymbolMorph('checkedBox', MorphicPreferences.menuFontSize * 3/4), off = new SymbolMorph(
+'rectangle', MorphicPreferences.menuFontSize * 3/4); function addSpecialSlotType(label, spec) {menu.addPair((myself.fragment.type === spec ? on : off), spec, localize(label));}; if (contains(['%cs', '%c',
+'%cl'],myself.fragment.type)) {addSpecialSlotType('as static', '%cl'); addSpecialSlotType('as report-drop', '%cs');} else if (contains(['%ca', '%loop', '%cla'], myself.fragment.type)) {addSpecialSlotType(
+'as static', '%cla'); addSpecialSlotType('as report-drop', '%ca');}; return menu;}; InputSlotDialogMorph.prototype.scriptSlotsMenu = function () {var menu = new MenuMorph(this.setSlotType, null, this),
+myself = this, on = new SymbolMorph('checkedBox', MorphicPreferences.menuFontSize * 3/4), off = new SymbolMorph('rectangle', MorphicPreferences.menuFontSize * 3/4); function addSpecialSlotType(label, spec
+) {menu.addPair((myself.fragment.type === spec ? on : off), spec, localize(label));}; if (contains(['%cmdRing', '%repRing', '%predRing'], myself.fragment.type)) {addSpecialSlotType('as script', '%cmdRing'
+); addSpecialSlotType('as block', '%repRing');} else if (contains(['%cmd', '%r', '%p', '%instr'], myself.fragment.type)) {addSpecialSlotType('as command', '%cmd'); addSpecialSlotType('as reporter', '%r'
+); addSpecialSlotType('as predicate', '%p'); addSpecialSlotType('as all-block', '%instr');}; return menu;}; InputSlotDialogMorph.prototype.stringSlotsMenu = function () {var menu = new MenuMorph((this
+).setSlotType, null, this), myself = this, on = new SymbolMorph('checkedBox', MorphicPreferences.menuFontSize * 3/4), off = new SymbolMorph('rectangle', (MorphicPreferences.menuFontSize * 3/4));
+function addSpecialSlotType(label, spec) {menu.addPair((myself.fragment.type === spec ? on : off), spec, localize(label));}; if (contains(['%anyUE', '%numericUE', '%textingUE', '%linesUE', '%codeUE'
+], myself.fragment.type)) {addSpecialSlotType('normal', '%anyUE'); addSpecialSlotType('numerical', '%numericUE'); addSpecialSlotType('text-reader', '%textingUE'); addSpecialSlotType('multiline',
+'%linesUE'); addSpecialSlotType('simple-code', '%codeUE');} else {addSpecialSlotType('normal', '%s'); addSpecialSlotType('numerical', '%n'); addSpecialSlotType('text-reader', '%txt'); addSpecialSlotType(
+'multiline', '%mlt'); addSpecialSlotType('JS code', '%code');}; return menu;}; InputSlotDialogMorph.prototype.booleanSlotsMenu = function () {var menu = new MenuMorph(this.setSlotType, null, this), myself = (
+this), on = new SymbolMorph('checkedBox', MorphicPreferences.menuFontSize * 3/4), off = new SymbolMorph('rectangle', MorphicPreferences.menuFontSize * 3/4); function addSpecialSlotType(label, spec) {(menu
+).addPair((myself.fragment.type === spec ? on : off), spec, localize(label));}; if (contains(['%boolUE', '%bUE'], myself.fragment.type)) {addSpecialSlotType('tiny', '%boolUE'); addSpecialSlotType('big',
+'%bUE');} else {addSpecialSlotType('tiny', '%b'); addSpecialSlotType('big', '%bool');}; return menu;}; InputSlotDialogMorph.prototype.specialOptionsMenu = function () {var menu = new MenuMorph((this
+).setSlotOptions, null, this), myself = this, on = new SymbolMorph('checkedBox', (MorphicPreferences.menuFontSize * 3/4)), off = new SymbolMorph('rectangle', MorphicPreferences.menuFontSize * 3/4);
+function addSpecialOptions(label, selector) {menu.addPair((myself.fragment.options === selector ? on : off), selector, localize(label));}; addSpecialOptions('\(none\)', ''); addSpecialOptions('messages',
+'§_messagesMenu'); addSpecialOptions('objects', '§_objectsMenu'); addSpecialOptions('costumes', '§_costumesMenu'); addSpecialOptions('sounds', '§_soundsMenu'); addSpecialOptions('variables', '§_getVarNamesDict'
+); addSpecialOptions('piano keyboard', '§_pianoKeyboardMenu'); addSpecialOptions('360° dial', '§_directionDialMenu'); addSpecialOptions('data types', '§_typesMenu'); addSpecialOptions('midi system', '§_midsMenu'
+); return menu;}; InputSlotDialogMorph.prototype.extensionOptionsMenu = function () {var menu = new MenuMorph(this.setSlotOptions, null, this), myself = this, selectors = Array.from(SnapExtensions.menus.keys()),
+on = new SymbolMorph('checkedBox', MorphicPreferences.menuFontSize * 3/4), off = new SymbolMorph('rectangle', MorphicPreferences.menuFontSize * 3/4); function addSpecialOptions(label, selector) {menu.addPair(((
+myself.fragment.options === selector) ? on : off), selector, localize(label));}; selectors.forEach(sel => {addSpecialOptions(sel.slice(4), '§_ext_' + sel);}); return menu;}; (InputSlotDialogMorph.prototype.show
+) = function () {this.isVisible = true; this.changed();}; InputSlotDialogMorph.prototype.hide = function () {this.isVisible = false; this.changed();}; InputSlotDialogMorph.prototype.editSeparator = function () {
+new DialogBoxMorph(this, str => this.fragment.separator = str, this).prompt("Name the separator...", (this.fragment.separator || ''), world);}; InputSlotDialogMorph.prototype.variadicSlotsMenu = function () {
+var menu = new MenuMorph(this), on = new SymbolMorph('checkedBox', MorphicPreferences.menuFontSize * 3/4), off = new SymbolMorph('rectangle', MorphicPreferences.menuFontSize * 3/4); menu.addPair(((this.fragment
+).separator ? on : off), 'editSeparator', localize('separator') + '...'); return menu;}; InputSlotDialogMorph.prototype.noOptions = function () {var dialog = new DialogBoxMorph; var txt = new TextMorph(
+'There are no options\nto put here.', DialogBoxMorph.prototype.fontSize, DialogBoxMorph.prototype.fontStyle, true, false, 'center', null, null, (MorphicPreferences.isFlat ? null : new Point(1, 1)), WHITE
+); dialog.key = 'NOINPUTOPTIONSONTHERE'; dialog.labelString = 'Uhh...'; dialog.createLabel(); dialog.addBody(txt); dialog.addButton('ok', 'OK'); dialog.fixLayout(); dialog.rerender(); return dialog;};
 
 // VariableDialogMorph ////////////////////////////////////////////////////
 

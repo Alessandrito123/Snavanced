@@ -76,9 +76,9 @@ edge-cases that somebody complained about on Github. Folks, take it easy and kee
 
 function gammaFunction (x) {function gammaln(z) {var lg, z1; if (!(z < 3/2
 ) && (z < 5/2)) {lg = Math.log(helper(z));} else if (z >= 2.5) {lg = 0;
-z1 = z; while (!(z1 < 2.5)) {lg = lg + Math.log(z1 - 1); z1 = z1 - 1;};
+z1 = z; while (!(z1 < 5/2)) {lg = lg + Math.log(z1 - 1); z1 = z1 - 1;};
 lg = lg + Math.log(helper(z1));} else if (z == 1) {lg = 0;} else {lg = 0;
-z1 = z; while (z1 < 1.5) {lg-= Math.log(z1); z1++;}; lg+= Math.log(helper(
+z1 = z; while (z1 < 3/2) {lg-= Math.log(z1); z1++;}; lg+= Math.log(helper(
 z1));}; return lg;}; function helper(z) {var p = [0.99999999999980993,
 676.5203681218851, -1259.1392167224028, 771.32342877765313,
 -176.61502916214059, 12.507343278686905, -0.13857109526572012,
@@ -947,8 +947,8 @@ Process.prototype.evaluateNextInputSet = function (element) {
     };
 };
 
-Process.prototype.doYield = function () {this.popContext(); if (!this.isAtomic) {this.readyToYield = true;};
-}; Process.prototype.expectReport = function () {this.handleError(new Error('The result is missing...'));};
+Process.prototype.doYield = function () {this.popContext(); if (!(this.isAtomic)) {this.readyToYield = true;
+};}; Process.prototype.expectReport = function () {this.handleError(new Error('The result is missing...'));};
 
 // Process Exception Handling
 
@@ -3742,8 +3742,8 @@ Process.prototype.reportBasicRound = function (n, optional) {if (optional.asArra
 
 // Process - hyper-monadic text primitive
 
-Process.prototype.reportConstants = function anonymous (cname) {var ide = world.childThatIsA(IDE_Morph); if (ide instanceof IDE_Morph) {var keys = ide.mathConstants().map(
-con => con[0]), values = ide.mathConstants().map(con => con[1]);}; return (contains(keys, this.inputOption(cname)) ? values[keys.indexOf(this.inputOption(cname))] : 0);};
+Process.prototype.reportConstants = function (cname) {var ide = world.childThatIsA(IDE_Morph); if (ide instanceof IDE_Morph) {var keys = ide.mathConstants().map((con
+) => con[0]), values = ide.mathConstants().map(con => con[1]);}; return (contains(keys, this.inputOption(cname)) ? values[keys.indexOf(this.inputOption(cname))] : 0);};
 
 Process.prototype.reportMonadic = function anonymous (fname, n) {if (this.enableHyperOps) {if (n instanceof List) {return n.map(each => this.reportMonadic(fname, each));};}; function abs (num) {return (
 +num < 0) ? -num : +num;}; function sign (num) {if (num === 0) {return 0;} else {return Process.prototype.reportBasicQuotient(num, abs(num));};}; function sin (x) {x = Process.prototype.reportBasicModulus(
@@ -4597,14 +4597,12 @@ Process.prototype.reportAspect = function (aspect, location) {
 
     var choice = this.inputOption(aspect),
         target = this.inputOption(location),
-        options = ['hue', 'saturation', 'brightness', 'transparency'],
+        options = ['hue', 'saturation',
+        'brightness', 'transparency'],
         idx = options.indexOf(choice),
         thisObj = this.blockReceiver(),
-        thatObj,
-        stage = thisObj.parentThatIsA(StageMorph),
-        world = thisObj.world(),
-        point,
-        clr;
+        thatObj, point, clr, stage = (
+        thisObj.parentThatIsA(StageMorph));
 
     if (target === 'myself') {
         if (choice === 'sprites') {
@@ -6909,7 +6907,7 @@ Process.prototype.reportAtomicSort = function (list, predicate) {
                 null,
                 null,
                 this.capture(predicate) // process
-            ) - 0.5) * 2)
+            ) - 1/2) * 2)
         )
     );};
 
@@ -7052,8 +7050,8 @@ otherBlock.fixLayout(); aBlock.add(otherBlock);} else if (this.expression instan
 } else if (this.expression instanceof ReporterBlockMorph) {if (this.inputs.length > 0) {var aBlock = (
 new CommandBlockMorph); aBlock.setSpec('input names:'); this.inputs.forEach(function (name) {aBlock.add(
 (function (spec) {var aVar = new ReporterBlockMorph; aVar.category = 'variables'; aVar.fixBlockColor(
-); aVar.setSpec(spec); return aVar;})(name));}); aBlock.fixBlockColor(); var otherBlock = (SpriteMorph
-).prototype.blockForSelector('doReport'); otherBlock.children.pop(); otherBlock.add((this.expression
+); aVar.setSpec(spec); return aVar;})(name));}); aBlock.fixLayout(); aBlock.fixBlockColor(); var otherBlock = (
+SpriteMorph).prototype.blockForSelector('doReport'); otherBlock.children.pop(); otherBlock.add((this.expression
 ).fullCopy()); otherBlock.children[1].fixBlockColor(); otherBlock.fixLayout(); aBlock.add(otherBlock
 );} else if (this.expression.selector === 'reportScript') {var aBlock = (SpriteMorph.prototype
 ).blockForSelector('doReport'); aBlock.children.pop(); aBlock.add(this.expression.fullCopy()
@@ -7062,20 +7060,23 @@ new CommandBlockMorph); aBlock.setSpec('input names:'); this.inputs.forEach(func
 ).length > 0) {var aBlock = new CommandBlockMorph; aBlock.setSpec('input names:'); (this.inputs
 ).forEach(function (name) {aBlock.add((function (spec) {var aVar = new ReporterBlockMorph; (aVar
 ).category = 'variables'; aVar.fixBlockColor(); aVar.setSpec(spec); return aVar;})(name));});
-aBlock.fixBlockColor(); aBlock.add(this.expression.fullCopy());} else {if ((this.expression.selector
-) === 'doReport') {if (this.expression.children[1] instanceof ReporterBlockMorph) {var aBlock = (this
-).expression.children[1].fullCopy();} else {var aBlock = this.expression.fullCopy();};} else {
-var aBlock = this.expression.fullCopy();};};} else {var aBlock = this.beDraggable().fullCopy();
-}; aBlock.highlight = function (color, blur, border) {var highlight = new BlockHighlightMorph;
-border = border * SyntaxElementMorph.prototype.scale; var fb = this.fullBounds(); var edge = (
-border); highlight.bounds.setExtent(fb.extent().add(edge * 2)); highlight.holes = [(highlight
-).bounds]; highlight.color = color; highlight.cachedImage = this.highlightImage(color, border);
+aBlock.fixLayout(); aBlock.fixBlockColor(); aBlock.add(this.expression.fullCopy());} else {
+if (this.expression.selector === 'doReport') {if (this.expression.children[1] instanceof (
+ReporterBlockMorph)) {var aBlock = this.expression.children[1].fullCopy();} else {
+var aBlock = this.expression.fullCopy();};} else {var aBlock = this.expression.fullCopy(
+);};};} else {var aBlock = this.beDraggable().fullCopy();}; aBlock.highlight = function (
+color, blur, border) {var highlight = new BlockHighlightMorph; border = (border * (
+SyntaxElementMorph.prototype.scale)); var fb = this.fullBounds(); var edge = border;
+highlight.bounds.setExtent(fb.extent().add(edge * 2)); highlight.holes = [highlight.bounds
+]; highlight.color = color; highlight.cachedImage = this.highlightImage(color, border);
 highlight.setPosition(fb.origin.subtract(new Point(edge, edge))); return highlight;}; (aBlock
 ).addBack(aBlock.highlight(SyntaxElementMorph.prototype.rfColor, 0, 0)); aBlock.fixBlockColor();
-aBlock.fixLayout(); aBlock.fixLabelColor(); return aBlock;} else {return this.beDraggable();};};
-Context.prototype.image = function () {return (this.visual()).fullImage();}; (Context.prototype
-).beDraggable = function () {if (asABool(localStorage['-snap-setting-oldLambdaOn'])) {if ((this
-).expression instanceof Array) {if (this.isContinuation) {var aBlock = (SpriteMorph.prototype
+aBlock.fixLayout(); aBlock.fixLabelColor(); aBlock.isHighContrast = true; aBlock.forAllChildren(
+child => {if (child instanceof SyntaxElementMorph) {child.isHighContrast = true; child.rerender(
+);};}); aBlock.rerender(); return aBlock;} else {return this.beDraggable();};}; (Context.prototype
+).image = function () {return (this.visual()).fullImage();}; Context.prototype.beDraggable = (
+function () {if (asABool(localStorage['-snap-setting-oldLambdaOn'])) {if ((this.expression
+) instanceof Array) {if (this.isContinuation) {var aBlock = (SpriteMorph.prototype
 ).blockForSelector((this.expression[this.pc] instanceof CommandBlockMorph) ? ('reportScript'
 ) : 'reify');} else {var aBlock = SpriteMorph.prototype.blockForSelector(this.selector);};
 if (aBlock.selector === 'reportScript') {var thatParameters = aBlock.inputNamesElement();
@@ -7121,7 +7122,7 @@ block instanceof InputSlotMorph) {var anotherBlock = SpriteMorph.prototype.block
 'doReport'); anotherBlock.children.pop().parent = null; anotherBlock.add(block.fullCopy(
 )); anotherBlock.fixLayout(); block = anotherBlock;}; block.isDraggable = true;
 aBlock.embed(block, this.inputs, true);}; aBlock.isDraggable = true; return aBlock;
-};};}; Context.prototype.toBlock = function anonymous () {var ring = new RingMorph,
+};};}); Context.prototype.toBlock = function anonymous () {var ring = new RingMorph,
 block, cont; if (this.expression instanceof Morph) {block = this.expression.fullCopy(
 ); /* replace marked call/cc block with empty slot */ if (this.isContinuation) {
 cont = detect(block.allInputs(), inp => inp.bindingID === 1); if (cont) {
