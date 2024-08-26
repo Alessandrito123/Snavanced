@@ -53,14 +53,12 @@
 
 // Global stuff ////////////////////////////////////////////////////////
 
-/*global ArgMorph, BlockMorph, CommandBlockMorph, CommandSlotMorph, Morph,
-ZERO, MultiArgMorph, Point, ReporterBlockMorph, SyntaxElementMorph, HatBlockMorph,
-contains, Costume, degrees, detect, nop, radians, ReporterSlotMorph, CSlotMorph,
-Sound, IDE_Morph, ArgLabelMorph, localize, XML_Element, hex_sha512, TableDialogMorph,
-StageMorph, SpriteMorph, StagePrompterMorph, Note, modules, isString, copy, Map,
-isNil, WatcherMorph, List, ListWatcherMorph, alert, console, TableMorph, BLACK,
-TableFrameMorph, ColorSlotMorph, isSnapObject, newCanvas, Symbol, SVG_Costume,
-SnapExtensions, AlignmentMorph, TextMorph, Cloud*/
+/* global ArgMorph, BlockMorph, CommandBlockMorph, CommandSlotMorph, Morph, ZERO, MultiArgMorph, BLACK, Point,
+ReporterBlockMorph, SyntaxElementMorph, HatBlockMorph, contains, Costume, degrees, detect, nop, radians,
+ReporterSlotMorph, CSlotMorph, Sound, IDE_Morph, ArgLabelMorph, localize, XML_Element, hex_sha512,
+TableDialogMorph, StageMorph, SpriteMorph, StagePrompterMorph, Note, modules, isString, copy,
+Map, isNil, WatcherMorph, List, ListWatcherMorph, alert, console, TableMorph, TableFrameMorph,
+ColorSlotMorph, isSnapObject, newCanvas, Symbol, SVG_Costume, SnapExtensions, AlignmentMorph, TextMorph, Cloud */
 
 var Numeral = function (number, base) {number = asANum(number); numeral = new Number(asANum(number)); numeral.base = base; numeral.textRepresentation = ''; if ((base < 2) || (base > 36)) {
 throw Error('You put in here an illegal base!');}; var dividend = Math.trunc(Math.abs(number)), showChar = (char => ((char < 10) ? char : String.fromCharCode(char + 55)).toString()); while (
@@ -72,21 +70,12 @@ return numeral;}, ComplexNumber = function (real, imag) {try {var number = new N
 ).i) == 0) && (+number < Infinity)) {number.enableEditing = true;}; return number;}, asAComplexNum = function (n) {var real = +(asANum(n)); try {var imag = (isNil(n.i) ? 0 : +(asANum(n.i)
 ));} catch (error) {var imag = 0;}; return (new ComplexNumber(real, imag));}; ThreadManager, Process, Context, Variable, VariableFrame; const NONNUMBERS = [true, false, '']; (() => {for (
 var i = 9; i <= 13; i += 1) {NONNUMBERS.push(String.fromCharCode(i));}; NONNUMBERS.push(String.fromCharCode(160)); /* "zum Schneckengang verdorben, was Adlerflug geworden wäre" collecting
-edge-cases that somebody complained about on Github. Folks, take it easy and keep it fun, okay? This type of things like this is patently ugly and slows Snap!. Thanks, for this. :-( */})();
-
-function gammaFunction (x) {function gammaln(z) {var lg, z1; if (!(z < 3/2
-) && (z < 5/2)) {lg = Math.log(helper(z));} else if (z >= 2.5) {lg = 0;
-z1 = z; while (!(z1 < 5/2)) {lg = lg + Math.log(z1 - 1); z1 = z1 - 1;};
-lg = lg + Math.log(helper(z1));} else if (z == 1) {lg = 0;} else {lg = 0;
-z1 = z; while (z1 < 3/2) {lg-= Math.log(z1); z1++;}; lg+= Math.log(helper(
-z1));}; return lg;}; function helper(z) {var p = [0.99999999999980993,
-676.5203681218851, -1259.1392167224028, 771.32342877765313,
--176.61502916214059, 12.507343278686905, -0.13857109526572012,
-9.9843695780195716e-6, 1.5056327351493116e-7]; var g = 7; z--;
-var a = p[0], t = (z + g + 1/2); for (var i = 1; (i < p.length);
-i++) {a += (p[i] / (z + i));}; return (Math.sqrt(2 * Math.PI) * (
-Math.pow(t, (z + 1/2)) * (Math.exp(-t) * a)));}; var result = (
-Math.exp(gammaln(x))); return (isNaN(result) ? 0 : result);};
+edge-cases that somebody complained about on Github. Folks, take it easy and keep it fun, okay? This type of things like this is patently ugly and slows Snap!. Thanks, for this. :-( */})(
+); function gammaFunction (x) {function gammaln(z) {var lg, z1; if (!(z < 3/2) && (z < 5/2)) {lg = Math.log(helper(z));} else if (!(z < 5/2)) {lg = 0; z1 = z; while (!(z1 < 5/2)) {z1--;
+lg+= Math.log(z1);}; lg+= Math.log(helper(z1));} else if (z == 1) {lg = 0;} else {lg = 0; z1 = z; while (z1 < 3/2) {lg-= Math.log(z1); z1++;}; lg+= Math.log(helper(z1));}; return lg;
+}; function helper(z) {var p = [0.99999999999980993, 676.5203681218851, -1259.1392167224028, 771.32342877765313, -176.61502916214059, 12.507343278686905, -0.13857109526572012,
+9.9843695780195716e-6, 1.5056327351493116e-7]; z--; var g = 7, a = p[0], t = (z + g + 1/2); for (var i = 1; (i < p.length); i++) {a += (p[i] / (z + i));}; return (Math.sqrt(
+2 * Math.PI) * (t ** (z + 1/2)) * Math.exp(-t) * a);}; var result = Math.exp(gammaln(x)); return (isNaN(result) ? 0 : result);};
 
 function snapEquals(a, b) {if (isNil(a) || isNil(b)) {
 return a === b;}; if (a.equalTo || b.equalTo) {if (
@@ -5814,46 +5803,23 @@ Process.prototype.reportBasicAttributeOf = function (attribute, name) {
         }
     }
     return '';
-}; Process.prototype.reportGet = function anonymous (query) {var thisObj = this.blockReceiver(), stage, objName; if (thisObj) {switch (this.inputOption(query)) {case 'draggable?': return thisObj.isDraggable;
-case 'name': return thisObj.name; case 'rotation style': return thisObj.rotationStyle || 0; case 'synchronous?': return thisObj.rotatesWithAnchor; case 'direction': return thisObj.direction(); case 'x position':
-return thisObj.xPosition(); case 'y position': return thisObj.yPosition(); case 'costume #': return thisObj.getCostumeIdx(); case 'costumes': return thisObj.reportCostumes(); case 'current costume':
-return thisObj.costume; case 'hidden?': return !thisObj.isVisible; case 'layer': stage = thisObj.parentThatIsA(StageMorph); result = stage.children.filter(each => each instanceof SpriteMorph); return (
-result.indexOf(thisObj) + 1); case 'size': return (thisObj.scale * 100); case 'brightness effect': case 'color effect': case 'fisheye effect': case 'ghost effect': case 'mosaic effect': case 'pixelate effect':
-case 'whirl effect': case 'comic effect': case 'negative effect': case 'confetti effect': case 'duplicate effect': case 'saturation effect': case 'red effect': case 'green effect': case 'blue effect':
-return thisObj.getEffect((this.inputOption(query)).split(' effect')[0]); case 'instrument': return this.instrument; case 'sounds': return thisObj.sounds; case 'tempo': return world.children[0].stage.tempo;
-case 'volume': return thisObj.volume; case 'pen RGBA': return thisObj.color; case 'pen down?': return thisObj.isDown; case 'pen size': return thisObj.size; case 'anchor': return (thisObj.anchor || '');
-case 'children': return new List(thisObj.specimens ? thisObj.specimens() : []); case 'parent': return thisObj.exemplar || ''; case 'parts': return new List(thisObj.parts); default: return '';};} else {
-return '';};}; Process.prototype.myGettables = function (query) {var thisObj = this.blockReceiver(); switch (query) {case 'temporary?': return thisObj.isTemporary || false; case 'clones':
-stage = thisObj.parentThatIsA(StageMorph); objName = thisObj.name || thisObj.cloneOriginName; return new List(stage.children.filter(each => each.isTemporary && (each !== thisObj) && (each.cloneOriginName ===
-objName))); case 'other clones': return thisObj.isTemporary ? this.reportGet(['clones']) : new List(); case 'neighbors': return thisObj.neighbors(); case 'dangling?': return !thisObj.rotatesWithAnchor;
-case 'rotation x': return thisObj.xPosition(); case 'rotation y': return thisObj.yPosition(); case 'center x': return thisObj.xCenter(); case 'center y': return thisObj.yCenter(); case 'left':
-return thisObj.xLeft(); case 'right': return thisObj.xRight(); case 'top': return thisObj.yTop(); case 'bottom': return thisObj.yBottom(); case 'stage': return thisObj.parentThatIsA(StageMorph); case 'scripts':
-return new List(thisObj.scripts.children.filter(each => each instanceof BlockMorph).map(each => each.fullCopy().reify()));
-case 'blocks': return new List(
-                thisObj.parentThatIsA(StageMorph).globalBlocks.concat(
-                    thisObj.allBlocks(true)
-                ).filter(
-                    def => !def.isHelper
-                ).map(
-                    def => def.blockInstance().reify()
-                ).concat(
-                    SpriteMorph.prototype.categories.reduce(
-                        (blocks, category) => blocks.concat(
-                            thisObj.getPrimitiveTemplates(
-                                category
-                            ).filter(
-                                each => each instanceof BlockMorph &&
-                                    !(each instanceof HatBlockMorph)
-                            ).map(block => {
-                                let instance = block.fullCopy();
-                                instance.isTemplate = false;
-                                return instance.reify();
-                            })
-                        ),
-                        []
-                    )
-                )
-            );
+}; Process.prototype.reportGet = function (query) {var thisObj = this.blockReceiver(), stage, objName; if (thisObj) {switch (this.inputOption(query)) {case 'draggable?': return thisObj.isDraggable; case 'name':
+return thisObj.name; case 'rotation style': return thisObj.rotationStyle || 0; case 'synchronous?': return thisObj.rotatesWithAnchor; case 'direction': return thisObj.direction(); case 'x position': return (
+thisObj.xPosition()); case 'y position': return thisObj.yPosition(); case 'costume #': return thisObj.getCostumeIdx(); case 'costumes': return thisObj.reportCostumes(); case 'current costume': return (thisObj
+).costume; case 'hidden?': return !thisObj.isVisible; case 'layer': stage = thisObj.parentThatIsA(StageMorph); result = stage.children.filter(each => each instanceof SpriteMorph); return (result.indexOf(thisObj
+) + 1); case 'size': return (thisObj.scale * 100); case 'brightness effect': case 'color effect': case 'fisheye effect': case 'ghost effect': case 'mosaic effect': case 'pixelate effect': case 'whirl effect':
+case 'comic effect': case 'negative effect': case 'confetti effect': case 'duplicate effect': case 'saturation effect': case 'red effect': case 'green effect': case 'blue effect': return thisObj.getEffect(
+(this.inputOption(query)).split(' effect')[0]); case 'instrument': return this.instrument; case 'sounds': return thisObj.sounds; case 'tempo': return world.children[0].stage.tempo; case 'volume': return (
+thisObj).volume; case 'pen RGBA': return thisObj.color; case 'pen down?': return thisObj.isDown; case 'pen size': return thisObj.size; case 'anchor': return (thisObj.anchor || ''); case 'children':
+return new List(thisObj.specimens ? thisObj.specimens() : []); case 'parent': return thisObj.exemplar || ''; case 'parts': return new List(thisObj.parts); default: return '';};} else {return '';};};
+Process.prototype.myGettables = function (query) {var thisObj = this.blockReceiver(); switch (query) {case 'temporary?': return thisObj.isTemporary || false; case 'clones': stage = thisObj.parentThatIsA(
+StageMorph); objName = thisObj.name || thisObj.cloneOriginName; return new List(stage.children.filter(each => each.isTemporary && (each !== thisObj) && (each.cloneOriginName === objName))); case 'other clones':
+return thisObj.isTemporary ? this.reportGet(['clones']) : new List(); case 'neighbors': return thisObj.neighbors(); case 'dangling?': return !thisObj.rotatesWithAnchor; case 'rotation x': return thisObj.xPosition(
+); case 'rotation y': return thisObj.yPosition(); case 'center x': return thisObj.xCenter(); case 'center y': return thisObj.yCenter(); case 'left': return thisObj.xLeft(); case 'right': return thisObj.xRight(
+); case 'top': return thisObj.yTop(); case 'bottom': return thisObj.yBottom(); case 'stage': return thisObj.parentThatIsA(StageMorph); case 'scripts': return new List(thisObj.scripts.children.filter(each => (
+each instanceof BlockMorph)).map(each => each.fullCopy().reify())); case 'blocks': return new List(thisObj.parentThatIsA(StageMorph).globalBlocks.concat(thisObj.allBlocks(true)).filter(def => !(def.isHelper)
+).map(def => (def.blockInstance()).reify()).concat(SpriteMorph.prototype.categories.reduce((blocks, category) => blocks.concat(thisObj.getPrimitiveTemplates(category).filter((each => (each instanceof BlockMorph
+)) && !(each instanceof HatBlockMorph)).map(block => {let instance = block.fullCopy(); instance.isTemplate = false; return instance.reify();})), [])));
         case 'categories': return new List(thisObj.allCategories());
         case 'width':
             if (thisObj instanceof StageMorph) {
@@ -6354,16 +6320,15 @@ Process.prototype.doPlayFrequencyForSecs = function (hz, secs) {
             this.context.activeNote.stop();
             this.context.activeNote = null;
         }; return null;
-    }; this.pushContext('doYield');
-    this.pushContext();
-};
+    };  this.pushContext('doYield');
+    this.pushContext();};
 
-Process.prototype.doSetInstrument = function anonymous (num) {var textInstrument = undefined; if (!(this.reportTypeOf(num) === 'number')) {textInstrument = world.childThatIsA(IDE_Morph).mids.filter(mid => (
-mid.name === num.toString()))[0];}; if (!isNil(textInstrument)) {this.instrument = (world.childThatIsA(IDE_Morph).mids.indexOf(textInstrument) + 1);} else {this.instrument = Math.min(Math.max(asANum(num), 1
-), world.childThatIsA(IDE_Morph).mids.length);}; this.blockReceiver().instrument = Math.min(Math.max(this.instrument, 1), world.childThatIsA(IDE_Morph).mids.length); if (this.receiver.freqPlayer) {
-this.receiver.freqPlayer.setInstrument(Math.min(Math.max(this.instrument, 1), 4));};}; /* Now you can set the instrument using text too. :-) */
+Process.prototype.doSetInstrument = function (num) {var textInstrument = undefined; if (!(this.reportTypeOf(num) === 'number')) {textInstrument = world.childThatIsA(IDE_Morph).mids.filter(
+mid => (mid.name === num.toString()))[0];}; if (!isNil(textInstrument)) {this.instrument = (world.childThatIsA(IDE_Morph).mids.indexOf(textInstrument) + 1);} else {this.instrument = Math.min(
+Math.max(asANum(num), 1), world.childThatIsA(IDE_Morph).mids.length);}; this.blockReceiver().instrument = Math.min(Math.max(this.instrument, 1), world.childThatIsA(IDE_Morph).mids.length
+); if (this.receiver.freqPlayer) {this.receiver.freqPlayer.setInstrument(Math.min(Math.max(this.instrument, 1), 4));};}; /* Now you can set the instrument using text too. :-) */
 
-/* var aMorph = new SoundVisualizerMorph(list); aMorph.setHeight(360); aMorph.setWidth(480); return new Costume(aMorph.fullImage()); var list = [], i = 0, n = 9.75; while (i < 44100) {list.push(
+/* var aMorph = new SoundVisualizerMorph(list); aMorph.setHeight(360); aMorph.setWidth(480); return new Costume(aMorph.fullImage()); var list = [], i = 0, n = 39/4; while (i < 44100) {list.push(
 Math.sin(radians((i + 1) * (2 ** n)) / 122.5)); i++;}; var list = [], i = 0; while (i < 44100) {list.push(Math.sin(2 * radians((i + 1) * (2 ** ((n - 59) / 12))))); i++;}; return new List(list); */
 
 // Process image processing primitives
@@ -6544,12 +6509,12 @@ if (this.context) {this.context.stopMusic(
 );}; this.context = (this.context ? (this
 ).context.parentContext : null);};
 
-Process.prototype.returnValueToParentContext = function anonymous (value) {if (!(value === undefined)) {var target = (this.context ? (this.context.parentContext || this.homeContext) : this.homeContext
-); target.addInput(value); /* if the script has been clicked on by the user in visible stepping mode, show the result of evaluating a reporter in a speech balloon. Thanks, Vic! */ /* Finished. */ if (
-this.enableSingleStepping && this.isClicked && (this.context.expression instanceof ReporterBlockMorph)) {let anchor = this.context.expression; if (!anchor.world()) {/* find a place to display the result
-of custom reporters */ anchor = this.topBlock;}; if (value instanceof List) {anchor.showBubble(value.isTable() ? new TableFrameMorph(new TableMorph(value, 10)) : new ListWatcherMorph(value), this.exportResult,
-this.receiver);} else {anchor.showBubble(value, this.exportResult, this.receiver);};};};}; Process.prototype.reportStackSize = function anonymous () {return (this.context ? this.context.stackSize() : 0);};
-Process.prototype.reportFrameCount = function anonymous () {return this.frameCount;}; Process.prototype.reportYieldCount = function anonymous () {return this.yieldCount;};
+Process.prototype.returnValueToParentContext = function (value) {if (!(value === undefined)) {var target = (this.context ? (this.context.parentContext || this.homeContext) : this.homeContext
+); target.addInput(value); /* if the script has been clicked on by the user in visible stepping mode, show the result of evaluating a reporter in a speech balloon. Thanks, Vic! */ if ((this
+).enableSingleStepping && this.isClicked && (this.context.expression instanceof ReporterBlockMorph)) {let anchor = this.context.expression; if (!anchor.world()) {/* find a place to display the
+result of custom reporters */ anchor = this.topBlock;}; if (value instanceof List) {anchor.showBubble(value.isTable() ? new TableFrameMorph(new TableMorph(value, 10)) : new ListWatcherMorph(
+value), this.exportResult, this.receiver);} else {anchor.showBubble(value, this.exportResult, this.receiver);};};};}; Process.prototype.reportStackSize = function () {return (this.context ? (this
+).context.stackSize() : 0);}; Process.prototype.reportFrameCount = function anonymous () {return this.frameCount;}; Process.prototype.reportYieldCount = function anonymous () {return this.yieldCount;};
 
 // Process single-stepping
 
@@ -7037,61 +7002,59 @@ expr[0]) + ']';};}; return 'Context >> ' + expr + ' ' + this.variables;}; Contex
 ) {var aBlock = new CommandBlockMorph; aBlock.category = 'control'; aBlock.setSpec('BY %r B'); aBlock.fixLayout(
 ); aBlock.fixBlockColor(); return new Context(null, aBlock.fullCopy());}; Context.prototype.visual = function (
 ) {if (asABool(localStorage['-snap-setting-oldLambdaOn'])) {if (this.isContinuation) {if ((this.expression
-) instanceof Array) {var aBlock = this.expression[this.pc].fullCopy();} else if ((this.expression
-) instanceof Morph) {var aBlock = this.beDraggable().fullCopy();} else {var aBlock = (new Context
-).beDraggable();};} else if ((this.selector === 'reify') && (this.inputs.length > 0) && !((this
-).expression instanceof Morph)) {var aBlock = new CommandBlockMorph; aBlock.setSpec('input names:');
-this.inputs.forEach(function (name) {aBlock.add((function (spec) {var aVar = new ReporterBlockMorph;
-aVar.category = 'variables'; aVar.fixBlockColor(); aVar.setSpec(spec); return aVar;})(name));}
-); aBlock.fixBlockColor(); var otherBlock = SpriteMorph.prototype.blockForSelector('doReport');
-otherBlock.fixLayout(); aBlock.add(otherBlock);} else if (this.expression instanceof InputSlotMorph
-) {var aBlock = this.beDraggable().blockSlot().nestedBlock().fullCopy();} else if ((this.expression
-) instanceof BooleanSlotMorph) {var aBlock = this.beDraggable().blockSlot().nestedBlock().fullCopy();
-} else if (this.expression instanceof ReporterBlockMorph) {if (this.inputs.length > 0) {var aBlock = (
-new CommandBlockMorph); aBlock.setSpec('input names:'); this.inputs.forEach(function (name) {aBlock.add(
-(function (spec) {var aVar = new ReporterBlockMorph; aVar.category = 'variables'; aVar.fixBlockColor(
-); aVar.setSpec(spec); return aVar;})(name));}); aBlock.fixLayout(); aBlock.fixBlockColor(); var otherBlock = (
-SpriteMorph).prototype.blockForSelector('doReport'); otherBlock.children.pop(); otherBlock.add((this.expression
-).fullCopy()); otherBlock.children[1].fixBlockColor(); otherBlock.fixLayout(); aBlock.add(otherBlock
-);} else if (this.expression.selector === 'reportScript') {var aBlock = (SpriteMorph.prototype
-).blockForSelector('doReport'); aBlock.children.pop(); aBlock.add(this.expression.fullCopy()
-); aBlock.children[1].fixBlockColor();} else {var aBlock = this.expression.fullCopy(); (aBlock
-).fixBlockColor();};} else if (this.expression instanceof CommandBlockMorph) {if ((this.inputs
-).length > 0) {var aBlock = new CommandBlockMorph; aBlock.setSpec('input names:'); (this.inputs
-).forEach(function (name) {aBlock.add((function (spec) {var aVar = new ReporterBlockMorph; (aVar
-).category = 'variables'; aVar.fixBlockColor(); aVar.setSpec(spec); return aVar;})(name));});
-aBlock.fixLayout(); aBlock.fixBlockColor(); aBlock.add(this.expression.fullCopy());} else {
-if (this.expression.selector === 'doReport') {if (this.expression.children[1] instanceof (
-ReporterBlockMorph)) {var aBlock = this.expression.children[1].fullCopy();} else {
-var aBlock = this.expression.fullCopy();};} else {var aBlock = this.expression.fullCopy(
-);};};} else {var aBlock = this.beDraggable().fullCopy();}; aBlock.highlight = function (
-color, blur, border) {var highlight = new BlockHighlightMorph; border = (border * (
-SyntaxElementMorph.prototype.scale)); var fb = this.fullBounds(); var edge = border;
-highlight.bounds.setExtent(fb.extent().add(edge * 2)); highlight.holes = [highlight.bounds
-]; highlight.color = color; highlight.cachedImage = this.highlightImage(color, border);
-highlight.setPosition(fb.origin.subtract(new Point(edge, edge))); return highlight;}; (aBlock
-).addBack(aBlock.highlight(SyntaxElementMorph.prototype.rfColor, 0, 0)); aBlock.fixBlockColor();
-aBlock.fixLayout(); aBlock.fixLabelColor(); aBlock.isHighContrast = true; aBlock.forAllChildren(
-child => {if (child instanceof SyntaxElementMorph) {child.isHighContrast = true; child.rerender(
-);};}); aBlock.rerender(); return aBlock;} else {return this.beDraggable();};}; (Context.prototype
-).image = function () {return (this.visual()).fullImage();}; Context.prototype.beDraggable = (
-function () {if (asABool(localStorage['-snap-setting-oldLambdaOn'])) {if ((this.expression
-) instanceof Array) {if (this.isContinuation) {var aBlock = (SpriteMorph.prototype
-).blockForSelector((this.expression[this.pc] instanceof CommandBlockMorph) ? ('reportScript'
-) : 'reify');} else {var aBlock = SpriteMorph.prototype.blockForSelector(this.selector);};
-if (aBlock.selector === 'reportScript') {var thatParameters = aBlock.inputNamesElement();
-var thatC = aBlock.blockSlot();} else {var thatParameters = aBlock.inputNamesElement();
-var thatC = aBlock.blockSlot();}; this.inputs.forEach(function (input) {(thatParameters
-).addInput(input);}); if ((this.expression[this.pc] instanceof Morph) && this.isContinuation
-) {thatC.nestedBlock(this.expression[this.pc].fullCopy());};} else if (!((this.expression
-) instanceof Morph)) {var aBlock = SpriteMorph.prototype.blockForSelector('reportScript');
-var thatParameters = aBlock.inputNamesElement(); this.inputs.forEach(function (input) {
-thatParameters.addInput(input);});} else if (this.expression instanceof InputSlotMorph) {
+) instanceof Array) {var aBlock = this.expression[this.pc].fullCopy();} else if (this.expression instanceof Morph
+) {var aBlock = this.beDraggable().fullCopy();} else {var aBlock = (new Context).beDraggable();};} else if ((
+this.selector === 'reify') && (this.inputs.length > 0) && !(this.expression instanceof Morph)) {var aBlock = (
+new CommandBlockMorph); aBlock.setSpec('input names:'); this.inputs.forEach(function (name) {aBlock.add((
+function (spec) {var aVar = new ReporterBlockMorph; aVar.category = 'variables'; aVar.fixBlockColor();
+aVar.setSpec(spec); return aVar;})(name));}); aBlock.fixBlockColor(); var otherBlock = (SpriteMorph
+).prototype.blockForSelector('doReport'); otherBlock.fixLayout(); aBlock.add(otherBlock); (aBlock
+).fixLayout();} else if (this.expression instanceof InputSlotMorph) {var aBlock = (this.beDraggable(
+)).blockSlot().nestedBlock().fullCopy();} else if (this.expression instanceof BooleanSlotMorph) {
+var aBlock = this.beDraggable().blockSlot().nestedBlock().fullCopy();} else if ((this.expression
+) instanceof ReporterBlockMorph) {if (this.inputs.length > 0) {var aBlock = new CommandBlockMorph;
+aBlock.setSpec('input names:'); this.inputs.forEach(function (name) {aBlock.add((function (spec) {
+var aVar = new ReporterBlockMorph; aVar.category = 'variables'; aVar.fixBlockColor(); aVar.setSpec(
+spec); return aVar;})(name));}); aBlock.fixLayout(); aBlock.fixBlockColor(); var otherBlock = (
+SpriteMorph).prototype.blockForSelector('doReport'); otherBlock.children.pop(); otherBlock.add(
+this.expression.fullCopy()); otherBlock.children[1].fixBlockColor(); otherBlock.fixLayout();
+aBlock.add(otherBlock); aBlock.fixLayout();} else if (this.expression.selector === 'reportScript'
+) {var aBlock = SpriteMorph.prototype.blockForSelector('doReport'); aBlock.children.pop(); (aBlock
+).add(this.expression.fullCopy()); aBlock.children[1].fixBlockColor(); aBlock.fixLayout();} else {
+var aBlock = this.expression.fullCopy(); aBlock.fixBlockColor();};} else if ((this.expression
+) instanceof CommandBlockMorph) {if (this.inputs.length > 0) {var aBlock = new CommandBlockMorph;
+aBlock.setSpec('input names:'); this.inputs.forEach(function (name) {aBlock.add((function (spec) {
+var aVar = new ReporterBlockMorph; aVar.category = 'variables'; aVar.fixBlockColor(); aVar.setSpec(
+spec); return aVar;})(name));}); aBlock.fixLayout(); aBlock.fixBlockColor(); aBlock.add((this
+).expression.fullCopy());} else {if (this.expression.selector === 'doReport') {if ((this.expression
+).children[1] instanceof ReporterBlockMorph) {var aBlock = this.expression.children[1].fullCopy();
+} else {var aBlock = this.expression.fullCopy();};} else {var aBlock = this.expression.fullCopy();
+};};} else {var aBlock = this.beDraggable().fullCopy();}; aBlock.highlight = function (color, blur,
+border) {var highlight = new BlockHighlightMorph; border = (border * (SyntaxElementMorph.prototype
+).scale); var fb = this.fullBounds(); var edge = border; highlight.bounds.setExtent(fb.extent().add(
+edge * 2)); highlight.holes = [highlight.bounds]; highlight.color = color; highlight.cachedImage = (
+this).highlightImage(color, border); highlight.setPosition(fb.origin.subtract(new Point(edge, edge)
+)); return highlight;}; aBlock.addBack(aBlock.highlight(SyntaxElementMorph.prototype.rfColor, 0, 0)
+); aBlock.fixBlockColor(); aBlock.fixLayout(); aBlock.fixLabelColor(); aBlock.isHighContrast = true;
+aBlock.forAllChildren(child => {if (child instanceof SyntaxElementMorph) {child.isHighContrast = true;
+child.rerender();};}); aBlock.rerender(); return aBlock;} else {return this.beDraggable();};}; (Context
+).prototype.image = function () {return (this.visual()).fullImage();}; Context.prototype.beDraggable = (
+function () {if (asABool(localStorage['-snap-setting-oldLambdaOn'])) {if (this.expression instanceof Array
+) {if (this.isContinuation) {var aBlock = SpriteMorph.prototype.blockForSelector((this.expression[this.pc
+] instanceof CommandBlockMorph) ? 'reportScript' : 'reify');} else {var aBlock = (SpriteMorph.prototype
+).blockForSelector(this.selector);}; if (aBlock.selector === 'reportScript') {var thatParameters = (
+aBlock).inputNamesElement(); var thatC = aBlock.blockSlot();} else {var thatParameters = (aBlock
+).inputNamesElement(); var thatC = aBlock.blockSlot();}; this.inputs.forEach(function (input) {
+thatParameters.addInput(input);}); if ((this.expression[this.pc] instanceof Morph) && (this
+).isContinuation) {thatC.nestedBlock(this.expression[this.pc].fullCopy());};} else if (!(
+this.expression instanceof Morph)) {var aBlock = SpriteMorph.prototype.blockForSelector(
+'reportScript'); var thatParameters = aBlock.inputNamesElement(); this.inputs.forEach(function (
+input) {thatParameters.addInput(input);});} else if (this.expression instanceof InputSlotMorph) {
 var aBlock = SpriteMorph.prototype.blockForSelector('reportScript'); var thatParameters = (
 aBlock.inputNamesElement()); this.inputs.forEach(function (input) {thatParameters.addInput(
 input);}); var otherBlock = SpriteMorph.prototype.blockForSelector('doReport'); (otherBlock
 ).children.pop().parent = null; otherBlock.add(this.expression.fullCopy()); (otherBlock
-).fixLayout(); aBlock.blockSlot().nestedBlock(otherBlock); aBlock.fixLayout();} else if (
+).fixLayout(); aBlock.blockSlot().nestedBlock(otherBlock); aBlock.fixLayout(); otherBlock.fixLayout();} else if (
 this.expression instanceof BooleanSlotMorph) {var aBlock = SpriteMorph.prototype.blockForSelector(
 'reify'); var thatParameters = aBlock.inputNamesElement(); this.inputs.forEach(function (input) {thatParameters.addInput(input);});
 if (this.expression.evaluate() === true) {var otherBlock = SpriteMorph.prototype.blockForSelector('reportTrue', true);
@@ -7120,9 +7083,9 @@ var anotherBlock = SpriteMorph.prototype.blockForSelector('reportBoolean'
 0].fullChanged(); anotherBlock.fullChanged(); block = anotherBlock;} else if (
 block instanceof InputSlotMorph) {var anotherBlock = SpriteMorph.prototype.blockForSelector(
 'doReport'); anotherBlock.children.pop().parent = null; anotherBlock.add(block.fullCopy(
-)); anotherBlock.fixLayout(); block = anotherBlock;}; block.isDraggable = true;
-aBlock.embed(block, this.inputs, true);}; aBlock.isDraggable = true; return aBlock;
-};};}); Context.prototype.toBlock = function anonymous () {var ring = new RingMorph,
+)); anotherBlock.fixLayout(); block = anotherBlock;}; block.isDraggable = true; (aBlock
+).embed(block, this.inputs, true);}; aBlock.isDraggable = true; aBlock.fixLayout();
+return aBlock;};};}); Context.prototype.toBlock = function () {var ring = new RingMorph,
 block, cont; if (this.expression instanceof Morph) {block = this.expression.fullCopy(
 ); /* replace marked call/cc block with empty slot */ if (this.isContinuation) {
 cont = detect(block.allInputs(), inp => inp.bindingID === 1); if (cont) {
@@ -7134,7 +7097,7 @@ this.inputs); return ring;}; /* otherwise show an empty ring */ ring.selector = 
 'reify').concat(asABool(localStorage['-snap-setting-oldLambdaOn']) ? '' : 'Reporter');
 ring.setSpec(asABool(localStorage['-snap-setting-oldLambdaOn']
 ) ? 'the %f block %parms' : '%rr %ringparms');
-// also show my inputs, unless I'm a continuation
+// also show my inputs, unless I am a continuation
 if (!this.isContinuation) {this.inputs.forEach(
 inp => ring.childThatIsA(MultiArgMorph).addInput(inp));};
 return ring;}; Context.prototype.rawContinuation = function (isReporter) {
