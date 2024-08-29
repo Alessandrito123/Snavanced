@@ -236,13 +236,13 @@ var scale = Math.round(Math.min(Math.max(num, 1/2), 10
 ).hatWidth = 70 * scale; this.rfBorder = 3 * scale; (this
 ).edge = scale; this.minWidth = 0; this.dent = 8 * scale;
 this.cSlotPadding = this.dent / 2; this.labelPadding = (
-this).cSlotPadding; this.fontSize = this.hatHeight;
-this.bottomPadding = this.rfBorder; (this.typeInPadding
+this).cSlotPadding; this.fontSize = (10 * scale); (this
+).bottomPadding = this.rfBorder; (this.typeInPadding
 ) = scale; this.labelFontName = ((localStorage[
 '-snap-setting-language'] === 'tok') ? (
 'blockTokiPonaFont') : 'blockGlobalFont'
 ); this.labelFontStyle = 'sans-serif'; (this
-).labelSize = (12 + (contains(['blockGlobalFont',
+).labelSize = (10 + (contains(['blockGlobalFont',
 'blockTokiPonaFont'], this.labelFontName) ? ({
 'blockGlobalFont' : 0, 'blockTokiPonaFont' : 4
 })[this.labelFontName] : 0)) * scale; (this
@@ -1268,7 +1268,7 @@ SyntaxElementMorph.prototype.labelParts = {
     '%loopArrow': {
         type: 'symbol',
         name: 'loop',
-        scale: 27/50,
+        scale: 7/10,
         tags: 'fading'
     },
 
@@ -1287,7 +1287,7 @@ SyntaxElementMorph.prototype.labelParts = {
     },
     '%extraGroup': {
         type: 'multi',
-       tags: 'static',
+        tags: 'static',
         slots: '%rr',
         label: '\)\(',
         max: 1
@@ -5578,14 +5578,12 @@ BlockMorph.prototype.prepareToBeGrabbed = function (hand) {
 };
 
 BlockMorph.prototype.justDropped = function () {
-    delete this.alpha;
-    this.allComments().forEach(comment =>
-        comment.stopFollowing()
-    );  this.fixLayout();
-    this.rerender(); this.forAllChildren(
-    child => {if (child instanceof CSlotMorph
-    ) {child.fixLayout();}; child.rerender();});
-};
+delete this.alpha; (this.allComments()).forEach(
+comment => comment.stopFollowing()); (this
+).fixBlockColor(); this.fixLayout(); (this
+).rerender(); this.forAllChildren(child => {
+if (child instanceof CSlotMorph) {(child
+).fixLayout();}; child.rerender();});};
 
 BlockMorph.prototype.allComments = function () {
     return this.allChildren().filter(block =>
@@ -10365,42 +10363,35 @@ InputSlotMorph.prototype.backupRender = function (ctx) {
             this.edge + this.typeInPadding,
             this.edge);};};
 
-InputSlotMorph.prototype.drawRoundBorder = function (ctx,
-borderColor) {var shift = this.edge / 2, r = Math.max((
-this.height() - (this.edge * 2)) / 2, 0); ctx.lineCap = (
-'round'); ctx.lineWidth = this.edge; ctx.lineJoin = 'round';
-if (useBlurredShadows) {ctx.shadowOffsetX = shift; (ctx
-).shadowOffsetY = shift; ctx.shadowBlur = this.edge;
-ctx.shadowColor = (this.color.darker(80).withAlpha(
-1/2)).toString();}; ctx.strokeStyle = ((borderColor
-).darker(this.contrast).withAlpha(1/2)).toString();
-ctx.beginPath(); ctx.lineTo(shift, this.height() - (
-r + this.edge)); ctx.arc(r, r, r - shift, Math.PI,
-Math.PI / -2, false); ctx.lineTo(this.width() - (
-r + this.edge), shift); ctx.stroke(); r = Math.max(
-this.height() / 2, this.edge); (ctx.shadowOffsetX
-) = 0; ctx.shadowOffsetY = 0; ctx.shadowBlur = 0;
-ctx.strokeStyle = (borderColor.lighter(this.contrast
-).withAlpha(1/2)).toString(); ctx.beginPath(); (ctx
-).arc(this.width() - r, r, r - shift, 0, Math.PI / 2,
-false); ctx.lineTo(r, this.height() - shift); (ctx
-).stroke();}; (InputSlotMorph.prototype.drawRectBorder
-) = function (ctx, borderColor) {var shift = ((this.edge
-) / 2); ctx.lineJoin = 'round'; ctx.lineWidth = this.edge;
-if (useBlurredShadows) {ctx.shadowOffsetX = shift; (ctx
-).shadowOffsetY = shift; ctx.shadowBlur = this.edge;
-ctx.shadowColor = (this.color.darker(80).withAlpha(
-1/2)).toString();}; ctx.strokeStyle = ((borderColor
-).darker(this.contrast).withAlpha(1/2)).toString();
-ctx.lineCap = 'butt'; ctx.beginPath(); ctx.moveTo(
-this.width() - this.edge, shift); ctx.lineTo(shift,
-shift); ctx.lineTo(shift, this.height() - this.edge);
-ctx.stroke(); ctx.shadowBlur = 0; ctx.shadowOffsetX = 0;
-ctx.shadowOffsetY = 0; ctx.strokeStyle = ((borderColor
-).lighter(this.contrast).withAlpha(1/2)).toString();
-ctx.beginPath(); ctx.moveTo(0, this.height() - shift);
-ctx.lineTo(this.width() - shift, this.height() - shift
-); ctx.lineTo(this.width() - shift, 0); ctx.stroke();};
+InputSlotMorph.prototype.drawRoundBorder = function (ctx, borderColor) {
+var shift = this.edge / 2, r = Math.max(this.height() / 2, this.edge);
+ctx.lineCap = 'round'; ctx.lineWidth = this.edge; ctx.lineJoin = 'round';
+if (useBlurredShadows) {ctx.shadowOffsetX = shift; ctx.shadowOffsetY = (
+shift); ctx.shadowBlur = this.edge; ctx.shadowColor = (this.color.darker(
+80).withAlpha(1/2)).toString();}; ctx.strokeStyle = (borderColor.darker(
+this.contrast).withAlpha(1/2)).toString(); ctx.lineCap = 'butt'; (ctx
+).beginPath(); ctx.strokeStyle = (borderColor.darker(this.contrast
+).withAlpha(1/2)).toString(); ctx.beginPath(); ctx.arc(r, r, ((r
+) - shift), Math.PI, Math.PI * 3/2, false); ctx.lineTo(this.width(
+) - (r + this.edge), shift); ctx.stroke(); ctx.shadowOffsetX = 0;
+ctx.shadowOffsetY = 0; ctx.shadowBlur = 0; ctx.strokeStyle = (
+borderColor.lighter(this.contrast).withAlpha(1/2)).toString();
+ctx.beginPath(); ctx.arc(this.width() - r, r, r - shift, 0,
+Math.PI / 2, false); ctx.lineTo(r, this.height() - shift);
+ctx.stroke();}; InputSlotMorph.prototype.drawRectBorder = (
+function (ctx, borderColor) {var shift = this.edge / 2;
+ctx.lineJoin = 'round'; ctx.lineWidth = this.edge; if (
+useBlurredShadows) {ctx.shadowOffsetX = shift; (ctx
+).shadowOffsetY = shift; ctx.shadowBlur = this.edge; (ctx.shadowColor
+) = (this.color.darker(80).withAlpha(1/2)).toString();}; (ctx.strokeStyle
+) = (borderColor.darker(this.contrast).withAlpha(1/2)).toString(); (ctx
+).lineCap = 'butt'; ctx.beginPath(); ctx.moveTo(this.width() - this.edge,
+shift); ctx.lineTo(shift, shift); ctx.lineTo(shift, this.height() - (this
+).edge); ctx.stroke(); ctx.shadowBlur = 0; ctx.shadowOffsetX = 0; (ctx
+).shadowOffsetY = 0; ctx.strokeStyle = (borderColor.lighter(this.contrast
+).withAlpha(1/2)).toString(); ctx.beginPath(); ctx.moveTo(0, this.height(
+) - shift); ctx.lineTo(this.width() - shift, this.height() - shift); (ctx
+).lineTo(this.width() - shift, 0); ctx.stroke();}); /* Render borders. */
 
 // InputSlotStringMorph ///////////////////////////////////////////////
 
@@ -11206,12 +11197,12 @@ function StringSyntaxMorph(oldText, newText, spec) {this.init(oldText, newText, 
 
 StringSyntaxMorph.prototype.init = function (oldText, newText, spec) {
 StringSyntaxMorph.uber.init.call(this); this.arrow = new ArrowMorph(
-'right', (this.scale * 27/2), Math.max(Math.floor((this.labelSize
-) / 6), 1), BLACK, true); this.oldText = oldText; this.newText = newText;
+'right', this.fontSize * 9/8, Math.max(Math.floor(this.fontSize / 6),
+1), BLACK, true); this.oldText = oldText; this.newText = newText;
 this.label = new BlockLabelMorph(oldText, this.labelSize, (this
 ).labelFontStyle, true, false, false, ((MorphicPreferences.isFlat
 ) ? ZERO : this.embossing), BLACK, WHITE, this.labelFontName); (this
-).setExtent(new Point(this.label.bounds.width(), this.labelSize * 9/8
+).setExtent(new Point(this.label.bounds.width(), this.fontSize * 9/8
 )); this.add(this.label); this.label.setPosition(ZERO); this.add((this
 ).arrow); this.arrow.setPosition(new Point(this.label.bounds.corner.x,
 this.label.bounds.corner.y - this.label.bounds.extent().y)); (this.arrow
@@ -11230,10 +11221,10 @@ StringSyntaxMorph.prototype.toggleText = function () {if (this.label.text === th
 this.label.text = this.newText; this.arrow.direction = 'left'; this.label.fixLayout();
 this.arrow.setPosition(new Point(this.label.bounds.corner.x + (this.arrow.bounds.width() / 2),
 this.label.bounds.corner.y - this.label.bounds.extent().y)); this.setExtent(new Point(
-this.label.bounds.width(), this.labelSize * 9/8));} else {this.label.text = this.oldText;
+this.label.bounds.width(), this.fontSize * 9/8));} else {this.label.text = this.oldText;
 this.arrow.direction = 'right'; this.label.fixLayout(); this.arrow.setPosition(new Point(
 this.label.bounds.corner.x, this.label.bounds.corner.y - this.label.bounds.extent().y));
-this.setExtent(new Point(this.label.bounds.width(), this.labelSize * 9/8));};
+this.setExtent(new Point(this.label.bounds.width(), this.fontSize * 9/8));};
 this.fixLayout(); this.parentThatIsA(BlockMorph).fixLayout();};
 
 StringSyntaxMorph.prototype.getSpec = function () {return this.labelSpec;};
@@ -11559,7 +11550,66 @@ MultiArgMorph.prototype.fixLayout = function () {
     ).forAllChildren(child => child.rerender());};
     this.forAllChildren(child => child.rerender());};
 
-MultiArgMorph.prototype.fixArrowsLayout = function () {var label = this.label(), arrows = this.arrows(), leftArrow = arrows.children[0], rightArrow = arrows.children[1], listSymbol = arrows.children[2],
+MultiArgMorph.prototype.fixArrowsLayout = function () {
+    var label = this.label(),
+        arrows = this.arrows(),
+        leftArrow = arrows.children[0],
+        rightArrow = arrows.children[1],
+        listSymbol = arrows.children[2],
+        inpCount = this.inputs().length,
+        dim = new Point(rightArrow.width() / 2, rightArrow.height()),
+        centerList = true;
+if (this.hidden) {if (this.isStatic) {listSymbol.hide();}; if (this.hiddenInput) {if (this.hiddenInput.isVisible
+) {if (label) {label.show();}; leftArrow.show(); rightArrow.hide(); arrows.setExtent(dim);} else {if (label) {label.hide();}; leftArrow.hide(); rightArrow.show(); rightArrow.setPosition(arrows.position().subtract(
+new Point(dim.x, 0))); arrows.setExtent(dim);};};} else {
+    leftArrow.show();
+    listSymbol.show();
+    rightArrow.show();
+    arrows.setHeight(dim.y);
+    if (this.isStatic) {
+        listSymbol.hide();
+    }
+    if (inpCount < (this.minInputs + 1)) { // hide left arrow
+        if (label) {
+            label.hide();
+        }
+        leftArrow.hide();
+        if (this.isStatic) {
+            arrows.setWidth(dim.x);
+        } else {
+            arrows.setWidth((dim.x * 1.2) + listSymbol.width());
+            listSymbol.setCenter(arrows.center());
+            listSymbol.setLeft(arrows.left());
+            centerList = false;
+        }
+    } else if (this.is3ArgRingInHOF() && inpCount > 2) { // hide right arrow
+        rightArrow.hide();
+        arrows.width(dim.x);
+    } else { // show both arrows
+        if (label) {
+            label.show();
+        }
+        arrows.setWidth((dim.x * 2.4) + (this.isStatic ? 0 : listSymbol.width()));
+        if (this.maxInputs && inpCount > this.maxInputs - 1) {
+            // hide right arrow
+            rightArrow.hide();
+            arrows.setWidth(dim.x);
+        }
+    }
+    leftArrow.setCenter(arrows.center());
+    leftArrow.setLeft(arrows.left());
+    rightArrow.setCenter(arrows.center());
+    rightArrow.setRight(arrows.right());
+    if (centerList) {
+        listSymbol.setCenter(arrows.center());
+    };};
+    listSymbol.moveBy((listSymbol.shadowOffset).multiplyBy(
+    new Point(1/8, 1/2))); arrows.rerender(); if ((this
+    ).parent instanceof Morph) {this.parent.fixLayout();
+    this.parent.forAllChildren(child => child.rerender());
+    }; this.forAllChildren(child => child.rerender());};
+
+/* MultiArgMorph.prototype.fixArrowsLayout = function () {var label = this.label(), arrows = this.arrows(), leftArrow = arrows.children[0], rightArrow = arrows.children[1], listSymbol = arrows.children[2],
 inpCount = this.inputs().length, dim = new Point(rightArrow.width() / 2, rightArrow.height()); if (this.hidden) {if (this.isStatic) {listSymbol.hide();}; if (this.hiddenInput) {if (this.hiddenInput.isVisible
 ) {if (label) {label.show();}; leftArrow.show(); rightArrow.hide(); arrows.setExtent(dim);} else {if (label) {label.hide();}; leftArrow.hide(); rightArrow.show(); rightArrow.setPosition(arrows.position().subtract(
 new Point(dim.x, 0))); arrows.setExtent(dim);};};} else {leftArrow.show(); listSymbol.show(); rightArrow.show(); if (this.isStatic) {listSymbol.hide();}; if (inpCount < (this.minInputs + 1)) {
@@ -11568,8 +11618,11 @@ new Point(dim.x, 0))); arrows.setExtent(dim);};};} else {leftArrow.show(); listS
         arrows.setExtent(new Point(
         (dim.x + (listSymbol.isVisible
         ? (listSymbol.width() * 2) : 0
-        )), dim.y)); listSymbol.setCenter(
-        arrows.center()); listSymbol.setLeft(
+        )), dim.y)); if (this.isStatic) {
+        listSymbol.setLeft(
+        arrows.left());} else {
+        listSymbol.setCenter(
+        arrows.center());}; listSymbol.setLeft(
         arrows.left() + (MorphicPreferences.isFlat
         ? 0 : (listSymbol.width() / 2)));
         rightArrow.setCenter(arrows.center()
@@ -11597,7 +11650,7 @@ new Point(dim.x, 0))); arrows.setExtent(dim);};};} else {leftArrow.show(); listS
     this.parent.fixLayout(); (this.parent
     ).forAllChildren(child => child.rerender());};
     this.forAllChildren(child => child.rerender());
-};
+}; */
 
 MultiArgMorph.prototype.fixHolesLayout = function () {
     var pos;
@@ -12182,6 +12235,7 @@ FunctionSlotMorph.uber.init.call(this); this.isPredicate =
 asABool(isPredicate); this.color = this.rfColor.lighter(
 ).lighter(10); this.cursorStyle = 'default';};
 FunctionSlotMorph.prototype.getSpec = (() => '%f');
+FunctionSlotMorph.prototype.nestedBlock = (() => null);
 
 // FunctionSlotMorph drawing:
 
@@ -12205,9 +12259,6 @@ FunctionSlotMorph.prototype.backupRender = function (ctx) {
         this.drawRounded(ctx);
     };
 };
-
-FunctionSlotMorph.prototype.drawRounded = nop;
-FunctionSlotMorph.prototype.drawDiamond = nop;
 
 // ReporterSlotMorph ///////////////////////////////////////////////////
 
@@ -12262,8 +12313,8 @@ var rounding = this.rounding;};
         r,
         r,
         r,
-        radians(-180),
-        radians(-90),
+        -(Math.PI),
+        -(Math.PI / 2),
         false
     );
 
@@ -12272,8 +12323,8 @@ var rounding = this.rounding;};
         w - r,
         r,
         r,
-        radians(-90),
-        radians(-0),
+        -(Math.PI / 2),
+        0,
         false
     );
 
@@ -12282,8 +12333,8 @@ var rounding = this.rounding;};
         w - r,
         h - r,
         r,
-        radians(0),
-        radians(90),
+        0,
+        (Math.PI / 2),
         false
     );
 
@@ -12292,8 +12343,8 @@ var rounding = this.rounding;};
         r,
         h - r,
         r,
-        radians(90),
-        radians(180),
+        (Math.PI / 2),
+        Math.PI,
         false
     );
 
@@ -12314,8 +12365,8 @@ var rounding = this.rounding;};
         r,
         h - r,
         Math.max(r - shift, 0),
-        radians(90),
-        radians(180),
+        (Math.PI / 2),
+        Math.PI,
         false
     );
     ctx.stroke();
@@ -12327,8 +12378,8 @@ var rounding = this.rounding;};
         w - r,
         r,
         Math.max(r - shift, 0),
-        radians(-90),
-        radians(0),
+        -(Math.PI / 2),
+        0,
         false
     );
     ctx.stroke();
@@ -12374,8 +12425,8 @@ var rounding = this.rounding;};
         r,
         r,
         Math.max(r - shift, 0),
-        radians(180),
-        radians(270),
+        Math.PI,
+        (Math.PI * 3/2),
         false
     );
     ctx.stroke();
@@ -12411,8 +12462,8 @@ var rounding = this.rounding;};
         w - r,
         h - r,
         Math.max(r - shift, 0),
-        radians(0),
-        radians(90),
+        0,
+        (Math.PI / 2),
         false
     );
     ctx.stroke();
@@ -12638,6 +12689,9 @@ ReporterSlotMorph.prototype.fixLayout = function () {
     }
 };
 
+FunctionSlotMorph.prototype.drawRounded = ReporterSlotMorph.prototype.drawModifiedRounded;
+FunctionSlotMorph.prototype.drawDiamond = ReporterSlotMorph.prototype.drawModifiedDiamond;
+
 // RingReporterSlotMorph ///////////////////////////////////////////////////
 
 /*
@@ -12773,8 +12827,8 @@ RingReporterSlotMorph.prototype.outlinePathOval = function (ctx, offset, roundin
         r + this.edge + ox,
         r + this.edge + oy,
         r,
-        radians(-180),
-        radians(-90),
+        -(Math.PI),
+        -(Math.PI / 2),
         false
     );};
 
@@ -12786,8 +12840,8 @@ RingReporterSlotMorph.prototype.outlinePathOval = function (ctx, offset, roundin
         w - r - this.edge + ox,
         r + this.edge + oy,
         r,
-        radians(-90),
-        radians(-0),
+        -(Math.PI / 2),
+        0,
         false
     );};
 
@@ -12799,8 +12853,8 @@ RingReporterSlotMorph.prototype.outlinePathOval = function (ctx, offset, roundin
         w - r - this.edge + ox,
         h - r - this.edge + oy,
         r,
-        radians(0),
-        radians(90),
+        0,
+        (Math.PI / 2),
         false
     );};
 
@@ -12812,8 +12866,8 @@ RingReporterSlotMorph.prototype.outlinePathOval = function (ctx, offset, roundin
         r + this.edge + ox,
         h - r - this.edge + oy,
         r,
-        radians(90),
-        radians(180),
+        (Math.PI / 2),
+        Math.PI,
         false
     );};
 
@@ -12844,8 +12898,8 @@ RingReporterSlotMorph.prototype.drawEdgesOval = function (ctx, rounding) {
         r,
         h - r,
         Math.max(r - shift, 0),
-        radians(90),
-        radians(180),
+        (Math.PI / 2),
+        Math.PI,
         false
     );};
     ctx.stroke();
@@ -12860,8 +12914,8 @@ RingReporterSlotMorph.prototype.drawEdgesOval = function (ctx, rounding) {
         w - r,
         r,
         Math.max(r - shift, 0),
-        radians(-90),
-        radians(0),
+        -(Math.PI / 2),
+        0,
         false
     );};
     ctx.stroke();
@@ -12910,8 +12964,8 @@ RingReporterSlotMorph.prototype.drawEdgesOval = function (ctx, rounding) {
         r,
         r,
         Math.max(r - shift, 0),
-        radians(180),
-        radians(270),
+        Math.PI,
+        (Math.PI * 3/2),
         false
     );};
     ctx.stroke();
@@ -12950,8 +13004,8 @@ RingReporterSlotMorph.prototype.drawEdgesOval = function (ctx, rounding) {
         w - r,
         h - r,
         Math.max(r - shift, 0),
-        radians(0),
-        radians(90),
+        0,
+        (Math.PI / 2),
         false
     );};
     ctx.stroke();
@@ -13268,39 +13322,31 @@ CommentMorph.prototype.init = function (contents) {
     105)); this.arrow.mouseClickLeft = (() => (
     this).toggleExpand()); this.contents = new TextMorph(
     (contents || localize('Please edit\nthis comment.')),
-        SyntaxElementMorph.prototype.fontSize,
-    'sans-serif', false, false, null,
-    null, 'blockGlobalFont', 0, null);
-    this.contents.isEditable = true;
-    this.contents.enableSelecting();
-    this.contents.maxWidth = ((this
-    ).contents.width() + (2 * scale
-    )); this.contents.fixLayout();
-    this.handle = new HandleMorph(
-        this.contents, 80,
-        this.fontSize * 2,
-        4, 4, 'moveHorizontal'
-    );  this.handle.color = (this.arrow
-    ).color; (this.handle).setExtent(
-    new Point(11 * scale, 11 * scale
-    )); this.anchor = null;
+    SyntaxElementMorph.prototype.fontSize, 'sans-serif',
+    false, false, null, null, 'blockGlobalFont', 0, null
+    ); this.contents.isEditable = true; (this.contents
+    ).enableSelecting(); this.contents.maxWidth = (
+    Math.round((this.contents).width()) + (4 * scale
+    )); this.contents.fixLayout(); this.handle = (
+    new HandleMorph(this.contents, (this.contents
+    ).maxWidth, (this.fontSize * 2), 4, 4, ('move'
+    ).concat('Horizontal'))); this.handle.color = (
+    this.arrow).color; this.handle.setExtent(new Point(
+    12 * scale, 12 * scale)); this.anchor = null;
 
     CommentMorph.uber.init.call(
-        this,
-        this.rounding,
-        scale,
-        new Color(255, 255, 160)
-    );  this.color = new Color(255,
+    this, this.rounding, scale,
+    new Color(255, 255, 160));
+    this.color = new Color(255,
     255, 210); this.isDraggable = (
     true); this.cursorStyle = 'grab';
     this.titleBar.cursorStyle = 'grab';
     this.cursorGrabStyle = 'grabbing';
-    this.titleBar.cursorGrabStyle = 'grabbing';
-    this.add(this.titleBar);
-    this.add(this.arrow);
-    this.add(this.contents);
-    this.add(this.handle);
-    this.fixLayout();};
+    this.titleBar.cursorGrabStyle = (
+    'grabbing'); this.add(this.titleBar
+    ); this.add(this.arrow); this.add(
+    this.contents); this.add((this
+    ).handle); this.fixLayout();};
 
 // CommentMorph ops:
 
@@ -13351,8 +13397,7 @@ CommentMorph.prototype.layoutChanged = function () {
 };
 
 CommentMorph.prototype.fixLayout = function () {
-    var label,
-        tw = this.contents.width() + 2 * this.padding;
+var label, tw = this.contents.width() + 2 * this.padding;
 
     if (this.title) {
         this.title.destroy();
@@ -13467,20 +13512,6 @@ CommentMorph.prototype.userMenu = function () {
 CommentMorph.prototype.userDestroy = (
 function () {this.selectForEdit().destroy();});
 
-// CommentMorph hiding and showing:
-
-/*
-    override the inherited behavior to recursively hide/show all
-    children, so that my instances get restored correctly when
-    switching back out of app mode.
-*/
-
-CommentMorph.prototype.hide = function () {
-this.isVisible = false; this.changed();};
-
-CommentMorph.prototype.show = function () {
-this.isVisible = true; this.changed();};
-
 // CommentMorph dragging & dropping
 
 CommentMorph.prototype.prepareToBeGrabbed = function (hand) {
@@ -13564,35 +13595,18 @@ CommentMorph.prototype.align = function (topBlock, ignoreLayer) {
     }
 };
 
-CommentMorph.prototype.startFollowing = function (topBlock, world) {
-    this.align(topBlock);
-    world.add(this);
-    this.addShadow();
-    this.stickyOffset = this.position().subtract(this.block.position());
-    this.step = () => {
-        if (!this.block) { // kludge - only needed for "redo"
-            this.stopFollowing();
-            return;
-        }
-        this.setPosition(this.block.position().add(this.stickyOffset));
-    };
-};
-
-CommentMorph.prototype.stopFollowing = function () {
-    this.removeShadow();
-    delete this.step;
-};
-
-CommentMorph.prototype.destroy = function () {
-    if (this.block) {
-        this.block.comment = null;
-    }
-    CommentMorph.uber.destroy.call(this);
-};
-
-CommentMorph.prototype.stackHeight = function () {
-    return this.height();
-};
+CommentMorph.prototype.startFollowing = function (topBlock, world
+) {this.align(topBlock); world.add(this); this.addShadow(); (this
+).stickyOffset = (this.position()).subtract(this.block.position(
+)); this.step = (() => {if (!(this.block)) {this.stopFollowing(
+); return;}; this.setPosition((this.block.position()).add((this
+).stickyOffset));});}; CommentMorph.prototype.stopFollowing = (
+function () {this.removeShadow(); delete this.step;});
+CommentMorph.prototype.destroy = function (
+) {if (this.block) {this.block.comment = null;
+}; CommentMorph.uber.destroy.call(this);};
+CommentMorph.prototype.stackHeight = (
+function () {return this.height();});
 
 // ScriptFocusMorph //////////////////////////////////////////////////////////
 

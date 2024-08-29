@@ -233,7 +233,7 @@ IDE_Morph.prototype.init = function (isAutoFill
     this.globalVariables = this.scene.globalVariables;
     this.currentSprite = this.scene.addDefaultSprite();
     this.sprites = this.scene.sprites;
-    this.currentCategory = this.scene.unifiedPalette ? 'unified' : 'other';
+    this.currentCategory = this.scene.unifiedPalette ? 'unified' : 'motion';
     this.currentTab = 'scripts';
     this.logo = null;
     this.controlBar = null;
@@ -5131,7 +5131,7 @@ IDE_Morph.prototype.editNotes = function () {
     text.edit();
 };
 
-IDE_Morph.prototype.newProject = function () {IDE_Morph.showMotorBlocks = false; this.flushBlocksCache('other'); this.refreshPalette(
+IDE_Morph.prototype.newProject = function () {IDE_Morph.showMotorBlocks = false; this.flushBlocksCache('motion'); this.refreshPalette(
 ); this.categories.refreshEmpty(); var project = new Project(); project.addDefaultScene(); this.openProject(project);};
 
 IDE_Morph.prototype.createNewScene = function () {var setting = this.isAddingScenes; this.isAddingScenes = true; this.newProject(); this.isAddingScenes = setting;};
@@ -5925,7 +5925,7 @@ IDE_Morph.prototype.openProjectName = function (name) {
 
 IDE_Morph.prototype.openProject = function (project) {
     IDE_Morph.showMotorBlocks = false;
-    this.flushBlocksCache('other');
+    this.flushBlocksCache('motion');
     this.refreshPalette();
     this.categories.refreshEmpty();
     if (this.isAddingScenes) {
@@ -5975,7 +5975,7 @@ IDE_Morph.prototype.switchToScene = function (
     }); scene.applyGlobalSettings();
     if (!((SpriteMorph.prototype.allCategories(
         )).includes(this.currentCategory))) {
-        this.currentCategory = 'other';
+        this.currentCategory = 'motion';
     };  if (!this.setUnifiedPalette(scene.unifiedPalette)) {
         this.createCategories();
         this.createPaletteHandle();
@@ -6363,7 +6363,7 @@ IDE_Morph.prototype.toggleUnifiedPalette = function () {this.setUnifiedPalette(!
 
 IDE_Morph.prototype.setUnifiedPalette = function (bool) {if ((this.scene.unifiedPalette === bool
 ) && (bool === (this.currentCategory === 'unified'))) {return false;}; (this.scene.unifiedPalette
-) = bool; this.currentCategory = bool ? 'unified' : 'other'; this.createCategories(); (this
+) = bool; this.currentCategory = bool ? 'unified' : 'motion'; this.createCategories(); (this
 ).createPaletteHandle(); this.categories.fixLayout(); this.fixLayout(); this.flushBlocksCache(
 ); this.categories.refreshEmpty(); this.currentSprite.palette(this.currentCategory); (this
 ).refreshPalette(true); return true;}; IDE_Morph.prototype.toggleCategoryNames = function (
