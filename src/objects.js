@@ -3048,10 +3048,8 @@ category = 'other', all = false) {var blocks = [], myself = this, varNames, inhe
             query,
             null,
             (query() ? 'Remove viewer from stage' : 'View on stage')
-        );
-        toggleButton.target = toggleButton;
-        return toggleButton;
-    }; SnapExtensions.buttons.palette.forEach(buttonDescriptor => {
+        );  toggleButton.target = toggleButton; return toggleButton;
+    };  SnapExtensions.buttons.palette.forEach(buttonDescriptor => {
         if (buttonDescriptor.category === category) {
             blocks.push(this.customPaletteButton(buttonDescriptor));
         };

@@ -223,8 +223,8 @@ SyntaxElementMorph.uber = Morph.prototype;
         rfColor         - <Color> for reified outlines and slot backgrounds
 */
 
-SyntaxElementMorph.prototype.rfColor = new Color(127.5,
-127.5, 127.5); SyntaxElementMorph.prototype.contrast = 65;
+SyntaxElementMorph.prototype.rfColor = new Color(128,
+128, 128); SyntaxElementMorph.prototype.contrast = 65;
 SyntaxElementMorph.prototype.listOfContractives = ['%rcv',
 '%scndN']; /* The contractives are inside of multiargs. */
 SyntaxElementMorph.prototype.setScale = function (num) {
@@ -2417,19 +2417,25 @@ SyntaxElementMorph.prototype.showBubble = function (value, exportPic,
         ide = this.parentThatIsA(IDE_Morph) || ((target instanceof Morph
         ) ? target.parentThatIsA(IDE_Morph) : world.childThatIsA(IDE_Morph
         )), anchor = this, pos = this.rightCenter().add(new Point(2, 0)),
-        sf = this.parentThatIsA(ScrollFrameMorph), wrrld = world;
+        sf = this.parentThatIsA(ScrollFrameMorph);
     if (value === undefined) {return null;};
-        if (value instanceof ListWatcherMorph) {
+    if (value instanceof ListWatcherMorph) {
         morphToShow = value;
         morphToShow.update(true);
         morphToShow.step = value.update;
         morphToShow.isDraggable = false;
-        morphToShow.expand(this.parentThatIsA(ScrollFrameMorph).extent());
+        var frame = this.parentThatIsA(
+        ScrollFrameMorph); if ((frame
+        ) instanceof Morph) {(morphToShow
+        ).expand(frame.extent());};
         isClickable = true;
     } else if (value instanceof TableFrameMorph) {
         morphToShow = value;
         morphToShow.isDraggable = false;
-        morphToShow.expand(this.parentThatIsA(ScrollFrameMorph).extent());
+        var frame = this.parentThatIsA(
+        ScrollFrameMorph); if ((frame
+        ) instanceof Morph) {(morphToShow
+        ).expand(frame.extent());};
         isClickable = true;
     } else if (value instanceof Morph) {
         if (isSnapObject(value)) {
@@ -2653,7 +2659,7 @@ SyntaxElementMorph.prototype.showBubble = function (value, exportPic,
         morphToShow, null,   Math.max(
         this.rounding - 2, 6),   0
     ); bubble.popUp(
-        wrrld,
+        world,
         pos,
         isClickable
     );  if (exportPic) {
@@ -5458,10 +5464,8 @@ BlockMorph.prototype.hasBlockVars = function () {
 BlockMorph.prototype.pickUp = function (wrrld) {
     // used when duplicating and grabbing a block via its context menu
     // position the duplicate's top-left corner at the mouse pointer
-    var world = wrrld || world;
-    this.setPosition(world.hand.position().subtract(this.rounding));
-    world.hand.grab(this);
-};
+    var wrrld = wrrld || world; this.setPosition((wrrld.hand.position(
+    )).subtract(this.rounding)); wrrld.hand.grab(this);};
 
 // BlockMorph events
 

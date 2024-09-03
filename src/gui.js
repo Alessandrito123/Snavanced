@@ -280,8 +280,7 @@ IDE_Morph.prototype.init = function (isAutoFill
 
     if (asABool(this.getSetting('enableFPSViewer'))) {this.fpsViewer = new IDE_FPSMorph;
     this.fpsViewer.color = IDE_Morph.prototype.buttonLabelColor; this.add(this.fpsViewer
-    ); this.fpsViewer.fixLayoutAndPosition();};
-};
+    ); this.fpsViewer.fixLayoutAndPosition();};};
 
 // IDE_Morph preferences settings and skins
 
@@ -505,7 +504,7 @@ IDE_Morph.prototype.setLightDesign = function () {
     SceneIconMorph.prototype.labelColor
         = IDE_Morph.prototype.buttonLabelColor;
 
-    IDE_Morph.prototype.flagColor = new Color(0, 127.5, 0);
+    IDE_Morph.prototype.flagColor = new Color(0, 128, 0);
     SyntaxElementMorph.prototype.contrast = 25;
     ScriptsMorph.prototype.feedbackColor = WHITE;
     if (this.fpsViewer instanceof IDE_FPSMorph) {
@@ -558,7 +557,7 @@ IDE_Morph.prototype.setTurboDesign = function () {
     SceneIconMorph.prototype.labelColor
         = IDE_Morph.prototype.buttonLabelColor;
 
-    IDE_Morph.prototype.flagColor = new Color(0, 127.5, 0);
+    IDE_Morph.prototype.flagColor = new Color(0, 128, 0);
     SyntaxElementMorph.prototype.contrast = 25;
     ScriptsMorph.prototype.feedbackColor = WHITE;
     if (this.fpsViewer instanceof IDE_FPSMorph) {
@@ -611,7 +610,7 @@ IDE_Morph.prototype.setScratchyDesign = function () {
     SceneIconMorph.prototype.labelColor
         = IDE_Morph.prototype.buttonLabelColor;
 
-    IDE_Morph.prototype.flagColor = new Color(0, 127.5, 0);
+    IDE_Morph.prototype.flagColor = new Color(0, 128, 0);
     SyntaxElementMorph.prototype.contrast = 25;
     ScriptsMorph.prototype.feedbackColor = WHITE;
     if (this.fpsViewer instanceof IDE_FPSMorph) {
@@ -665,7 +664,7 @@ IDE_Morph.prototype.setAnimatedDesign = function () {
     SceneIconMorph.prototype.labelColor
         = IDE_Morph.prototype.buttonLabelColor;
 
-    IDE_Morph.prototype.flagColor = new Color(255, 127.5, 0);
+    IDE_Morph.prototype.flagColor = new Color(255, 128, 0);
     SyntaxElementMorph.prototype.contrast = 25;
     ScriptsMorph.prototype.feedbackColor = WHITE;
     if (this.fpsViewer instanceof IDE_FPSMorph) {
@@ -719,7 +718,7 @@ IDE_Morph.prototype.setPenguinDesign = function () {
     SceneIconMorph.prototype.labelColor
         = IDE_Morph.prototype.buttonLabelColor;
 
-    IDE_Morph.prototype.flagColor = new Color(0, 152.5, 255);
+    IDE_Morph.prototype.flagColor = new Color(0, 153, 255);
     SyntaxElementMorph.prototype.contrast = 25;
     ScriptsMorph.prototype.feedbackColor = WHITE;
     if (this.fpsViewer instanceof IDE_FPSMorph) {
@@ -1581,7 +1580,7 @@ backpack.reactToDropOf = (droppedMorph, hand) => {
             ide.initializeBackpack();
 };
 
-backpack.fixLayout = function() {var frame = this.parent.spriteEditor;
+backpack.fixLayout = function () {var frame = this.parent.spriteEditor;
 this.setLeft(frame.left()); this.setWidth(frame.width()); this.setBottom(
 frame.bottom()); this.setHeight(Math.round(((SyntaxElementMorph.prototype
 ).scale || 1) * 80)); this.rerender(); this.toggleButton.fixLayout();
@@ -4877,7 +4876,7 @@ IDE_Morph.prototype.undelete = function (aSprite, pos) {
     var rnd = Process.prototype.reportBasicRandom;
 
     aSprite.setCenter(pos);
-    this.world().add(aSprite);
+    world.add(aSprite);
     aSprite.glideTo(
         this.stage.center().subtract(aSprite.extent().divideBy(2)),
         this.isAnimating ? 100 : 0,
@@ -4901,9 +4900,9 @@ IDE_Morph.prototype.undelete = function (aSprite, pos) {
 
 // IDE_Morph menu actions
 
-IDE_Morph.prototype.certificate = function () {pic = new Image; pic.onload = function () {certificate = newCanvas(new Point(pic.width, pic.height), true);
-ctx = certificate.getContext('2d'); ctx.drawImage(pic, 0, 0); new DialogBoxMorph().inform('Cerificate of Appreciation', null, world, certificate);
-}; pic.src = 'src/certificate.svg';}; /* The certificate is here to see the persons that I'm inspired to make my mod. Thanks! :-) */
+IDE_Morph.prototype.certificate = function () {pic = new Image; pic.onload = function () {certificate = newCanvas(new Point(pic.width, pic.height),
+true); ctx = certificate.getContext('2d'); ctx.drawImage(pic, 0, 0); (new DialogBoxMorph).inform('Cerificate of Appreciation', null, world, certificate
+);}; pic.src = 'src/certificate.svg';}; /* The certificate is here to see the people who I am inspired to make my mod. Thanks! :-) */
 
 IDE_Morph.prototype.aboutSnap = function () {var dlg, aboutTxt, noticeTxt, creditsTxt, versions = '', translations, module, btn1, btn2, btn3, licenseBtn, translatorsBtn, world = this.world();
     aboutTxt = 'Snavanced! ' + SnavancedVersion + ' - Programming Mode (' + LastUpdated + ') \nBuild Your Own Blocks - a reimplementation of Scratch.\n'
@@ -5064,7 +5063,7 @@ IDE_Morph.prototype.scenesMenu = function () {
         pos = this.controlBar.projectButton.bottomLeft(),
         tick = new SymbolMorph(
             'tick',
-            MorphicPreferences.menuFontSize * 0.75
+            MorphicPreferences.menuFontSize * 3/4
         ),
         empty = tick.fullCopy();
 
@@ -5140,16 +5139,16 @@ IDE_Morph.prototype.createNewCategory = function () {new DialogBoxMorph(this, ca
 'Blocks category name:');}; IDE_Morph.prototype.addPaletteCategory = function (name, color) {if (name === '') {return;}; SpriteMorph.prototype.customCategories.set(name, color); this.createCategories();
 this.categories.refreshEmpty(); this.createPaletteHandle(); this.categories.fixLayout(); this.fixLayout();};
 
-IDE_Morph.prototype.renameUserCategory = function anonymous (pos) {var menu = new MenuMorph(this.renamePaletteCategory, null, this); /* sort alphabetically */ Array.from(
-SpriteMorph.prototype.customCategories.keys()).forEach(name => menu.addItem(name, name, null, null, null, null, null, null, true)); if (pos) {menu.popup(this.world(), pos
+IDE_Morph.prototype.renameUserCategory = function (pos) {var menu = new MenuMorph(this.renamePaletteCategory, null, this); /* sort alphabetically */ Array.from(
+SpriteMorph.prototype.customCategories.keys()).forEach(name => menu.addItem(name, name, null, null, null, null, null, null, true)); if (pos) {menu.popup(world, pos
 );} else {menu.popUpAtHand(this.world());};}; /* renames a category created by any user or your category, so you can edit all categories you want, but edit to do good. :)  */
 
-IDE_Morph.prototype.recolorUserCategory = function anonymous (pos) {var menu = new MenuMorph(this.recolorPaletteCategory, null, this); /* sort alphabetically */ Array.from(
-SpriteMorph.prototype.customCategories.keys()).forEach(name => menu.addItem(name, name, null, null, null, null, null, null, true)); if (pos) {menu.popup(this.world(), pos
+IDE_Morph.prototype.recolorUserCategory = function (pos) {var menu = new MenuMorph(this.recolorPaletteCategory, null, this); /* sort alphabetically */ Array.from(
+SpriteMorph.prototype.customCategories.keys()).forEach(name => menu.addItem(name, name, null, null, null, null, null, null, true)); if (pos) {menu.popup(world, pos
 );} else {menu.popUpAtHand(this.world());};}; /* recolor a category created by any user or your category, so you can edit all categories you want, but edit to do good. :)  */
 
-IDE_Morph.prototype.deleteUserCategory = function anonymous (pos) {var menu = new MenuMorph(this.deletePaletteCategory, null, this); /* sort alphabetically */ Array.from(
-SpriteMorph.prototype.customCategories.keys()).forEach(name => menu.addItem(name, name, null, null, null, null, null, null, true)); if (pos) {menu.popup(this.world(), pos
+IDE_Morph.prototype.deleteUserCategory = function (pos) {var menu = new MenuMorph(this.deletePaletteCategory, null, this); /* sort alphabetically */ Array.from(
+SpriteMorph.prototype.customCategories.keys()).forEach(name => menu.addItem(name, name, null, null, null, null, null, null, true)); if (pos) {menu.popup(world, pos
 );} else {menu.popUpAtHand(this.world());};}; /* deletes a category created by any user or your category, so you can edit all categories you want, but edit to do good. :)  */
 
 IDE_Morph.prototype.renamePaletteCategory = function (name) {
@@ -5326,7 +5325,7 @@ IDE_Morph.prototype.removeUnusedBlocks = function () {
         new BlockRemovalDialogMorph(
             unused,
             this
-        ).popUp(this.world());
+        ).popUp(world);
     } else {
         this.inform(
             'Remove unused blocks',
@@ -6587,7 +6586,7 @@ var projectData;
 // IDE_Morph blocks fading
 
 IDE_Morph.prototype.userFadeBlocks = function () {var dlg,
-initial = (1 - SyntaxElementMorph.prototype.alpha) * 100; dlg = (
+initial = ((1 - SyntaxElementMorph.prototype.alpha) * 100); dlg = (
 new DialogBoxMorph(null, num => this.setBlockTransparency(num, true
 ))).withKey('fadeBlocks'); if (MorphicPreferences.isTouchDevice) {(dlg
 ).isDraggable = false;}; dlg.cancel = () => {this.setBlockTransparency(
@@ -6616,10 +6615,8 @@ IDE_Morph.prototype.userSetStageSize = function () {
 new Point(480, 360), 'Stage width', 'Stage height',
 world, null, null);};
 
-IDE_Morph.prototype.setStageExtent = function (aPoint) {
-    var myself = this,
-        world = this.world(),
-        ext = aPoint.max(new Point(0, 0));
+IDE_Morph.prototype.setStageExtent = function (aPoint
+) {var myself = this, ext = aPoint.max(new Point(0, 0));
 
     function zoom() {
         myself.step = function () {
@@ -6668,198 +6665,11 @@ IDE_Morph.prototype.userSetDragThreshold = function () {
     ).prompt(
         "Dragging threshold",
         MorphicPreferences.grabThreshold.toString(),
-        this.world(),
+        world,
         null, // pic
         null, // choices
         null, // read only
         true // numeric
-    );
-};
-
-// IDE_Morph cloud interface
-
-IDE_Morph.prototype.initializeCloud = function () {
-    var world = this.world();
-    new DialogBoxMorph(
-        null,
-        user => this.cloud.login(
-            user.username.toLowerCase(),
-            user.password,
-            user.choice,
-            (username, role, response) => {
-                sessionStorage.username = username;
-                this.controlBar.cloudButton.refresh();
-                this.source = 'cloud';
-                if (!isNil(response.days_left)) {
-                    var duration = response.days_left + ' day' +
-                        (response.days_left > 1 ? 's' : '');
-                    new DialogBoxMorph().inform(
-                        'Unverified account: ' + duration + ' left' +
-                        'You are now logged in, and your account\n' +
-                        'is enabled for ' + duration + '.\n' +
-                        'Please use the verification link that\n' +
-                        'was sent to your email address when you\n' +
-                        'signed up.\n\n' +
-                        'If you cannot find that email, please\n' +
-                        'check your spam folder. If you still\n' +
-                        'cannot find it, please use the "Resend\n' +
-                        'Verification Email..." option in the cloud\n' +
-                        'menu.\n\n' +
-                        'You have ' + duration + ' left.',
-                        world,
-                        this.cloudIcon(null, new Color(0, 180, 0))
-                    );
-                } else {
-                    this.showMessage(response.message, 2);
-                }
-            },
-            this.cloudError()
-        )
-    ).withKey('cloudlogin').promptCredentials(
-        'Sign in',
-        'login',
-        null,
-        null,
-        null,
-        null,
-        'stay signed in on this computer\nuntil logging out',
-        world,
-        this.cloudIcon(),
-        this.cloudMsg
-    );
-};
-
-IDE_Morph.prototype.createCloudAccount = function () {
-    var world = this.world();
-
-    new DialogBoxMorph(
-        null,
-        user => this.cloud.signup(
-            user.username,
-            user.password,
-            user.passwordRepeat,
-            user.email,
-            (txt, title) => new DialogBoxMorph().inform(
-                title,
-                txt + '.\n\nYou can now log in.',
-                world,
-                this.cloudIcon(null, new Color(0, 180, 0))
-            ),
-            this.cloudError()
-        )
-    ).withKey('cloudsignup').promptCredentials(
-        'Sign up',
-        'signup',
-        'https://snap.berkeley.edu/tos.html',
-        'Terms of Service...',
-        'https://snap.berkeley.edu/privacy.html',
-        'Privacy...',
-        'I have read and agree\nto the Terms of Service',
-        world,
-        this.cloudIcon(),
-        this.cloudMsg
-    );
-};
-
-IDE_Morph.prototype.resetCloudPassword = function () {
-    var world = this.world();
-
-    new DialogBoxMorph(
-        null,
-        user => this.cloud.resetPassword(
-            user.username,
-            (txt, title) => new DialogBoxMorph().inform(
-                title,
-                txt +
-                    '\n\nAn e-mail with a link to\n' +
-                    'reset your password\n' +
-                    'has been sent to the address provided',
-                world,
-                this.cloudIcon(null, new Color(0, 180, 0))
-            ),
-            this.cloudError()
-        )
-    ).withKey('cloudresetpassword').promptCredentials(
-        'Reset password',
-        'resetPassword',
-        null,
-        null,
-        null,
-        null,
-        null,
-        world,
-        this.cloudIcon(),
-        this.cloudMsg
-    );
-};
-
-IDE_Morph.prototype.resendVerification = function () {
-    var world = this.world();
-
-    new DialogBoxMorph(
-        null,
-        user => this.cloud.resendVerification(
-            user.username,
-            (txt, title) => new DialogBoxMorph().inform(
-                title,
-                txt,
-                world,
-                this.cloudIcon(null, new Color(0, 180, 0))
-            ),
-            this.cloudError()
-        )
-    ).withKey('cloudresendverification').promptCredentials(
-        'Resend verification email',
-        'resendVerification',
-        null,
-        null,
-        null,
-        null,
-        null,
-        world,
-        this.cloudIcon(),
-        this.cloudMsg
-    );
-};
-
-IDE_Morph.prototype.changeCloudPassword = function () {
-    var world = this.world();
-
-    new DialogBoxMorph(
-        null,
-        user => this.cloud.changePassword(
-            user.oldpassword,
-            user.password,
-            user.passwordRepeat,
-            () => this.showMessage('password has been changed.', 2),
-            this.cloudError()
-        )
-    ).withKey('cloudpassword').promptCredentials(
-        'Change Password',
-        'changePassword',
-        null,
-        null,
-        null,
-        null,
-        null,
-        world,
-        this.cloudIcon(),
-        this.cloudMsg
-    );
-};
-
-IDE_Morph.prototype.logout = function () {
-    this.cloud.logout(
-        () => {
-            delete(sessionStorage.username);
-            this.controlBar.cloudButton.refresh();
-            this.showMessage('disconnected.', 2);
-        },
-        () => {
-            delete(sessionStorage.username);
-            this.controlBar.cloudButton.refresh();
-            this.showMessage('disconnected.', 2);
-        }
     );
 };
 
@@ -6892,7 +6702,7 @@ IDE_Morph.prototype.verifyProject = function (body) {
     // Ensure the project is less than 10MB and serializes correctly.
     var encodedBody = JSON.stringify(body);
     if (encodedBody.length > Cloud.MAX_FILE_SIZE) {
-        new DialogBoxMorph().inform(
+       (new DialogBoxMorph).inform(
             'Snap!Cloud - Cannot Save Project',
             'The media inside this project exceeds 10 MB.\n' +
                 'Please reduce the size of costumes or sounds.\n',
@@ -7286,18 +7096,18 @@ IDE_Morph.prototype.prompt = function (message, callback, choices, key) {
 
 // IDE_Morph adds a welcome dialog to the end user or developer
 
-IDE_Morph.prototype.welcomeDialog = function () {var dlg, txt; dlg = new DialogBoxMorph; txt = new TextMorph((localize('Welcome, ')).concat(this.getUser(), localize(
-'!!!\nA random tip for today:\n\n'), this.getRandomTip()), dlg.fontSize, dlg.fontStyle, true, false, 'center', null, null, MorphicPreferences.isFlat ? null : new Point(
-1, 1), WHITE); dlg.labelString = localize('Welcome, guy!!!'); dlg.key = 'Welcome!!!'; dlg.createLabel(); dlg.addBody(txt); dlg.addButton(null, localize('Thanks for that!!!'
-)); dlg.fixLayout(); dlg.popUp(this.world());}; /* Very good. :~) */
+IDE_Morph.prototype.welcomeDialog = function () {var dlg, txt; dlg = new DialogBoxMorph; txt = new TextMorph((localize('Welcome, ')).concat(
+this.getUser(), localize('!!!\nA random tip for today:\n\n'), this.getRandomTip()), dlg.fontSize, dlg.fontStyle, true, false, 'center', null,
+null, MorphicPreferences.isFlat ? null : new Point(1, 1), WHITE); dlg.labelString = localize('Welcome, guy!!!'); dlg.key = 'Welcome!!!';
+dlg.createLabel(); dlg.addBody(txt); dlg.addButton(null, localize('Thanks for that!!!')); dlg.fixLayout(); dlg.popUp(world);}; (IDE_Morph
+).prototype.getUser = function () {var thisUser = this.getSetting('user'); if (isNil(thisUser)) {return localize('Guest');} else {return thisUser;};};
 
-IDE_Morph.prototype.getUser = function () {var thisUser = this.getSetting('user'
-); if (isNil(thisUser)) {return localize('Guest');} else {return thisUser;};};
+IDE_Morph.prototype.isNonWebStandardBrowser = function (
+) {var ua = navigator.userAgent; return ((ua.indexOf(
+"MSIE ") > -1) || (ua.indexOf("Trident/") > -1));};
 
-IDE_Morph.prototype.isNonWebStandardBrowser = function anonymous () {var ua = navigator.userAgent; return ua.indexOf("MSIE ") > -1 || ua.indexOf("Trident/") > -1;};
-
-IDE_Morph.prototype.getRandomTip = function () {var numberOfTip = (0 - Math.round(0 - Math.random() * 30)); var aRandomTip = ''; if (this.isNonWebStandardBrowser(
-)) {aRandomTip = 'If do you want to run Snavanced!\nto the best graphics and speed,\nrun this with Google Chrome, Firefox,\nor another browser which it\'s a web-standards. 🤨';
+IDE_Morph.prototype.getRandomTip = function () {var numberOfTip = (0 - Math.round(0 - (Math.random() * 30))); var aRandomTip = ''; if (this.isNonWebStandardBrowser(
+)) {aRandomTip = 'If do you want to run Snavanced!\nto the best graphics and speed,\nrun this with Google Chrome, Firefox,\nor another browser which it is a web-standards. 🤨';
 } else if (numberOfTip === 0) {aRandomTip = 'Snap! is a broadly\ninviting programming language\nfor kids and adults that\'s also a platform\nfor serious study of computer science. 🙂';
 } else if (numberOfTip === 1) {aRandomTip = '\"Anything you can do from the GUI,\nyou should be able to do from\nthe programming language\nand viceversa.\"\nMike Eisenberg, d. 3/12/2019 Rest In Peace. 😭';
 } else if (numberOfTip === 2) {aRandomTip = 'BYOB is Build Your Own Blocks.\nA mod for Scratch 1.4. Too old! 🙂';
@@ -7307,10 +7117,10 @@ IDE_Morph.prototype.getRandomTip = function () {var numberOfTip = (0 - Math.roun
 } else if (numberOfTip === 6) {aRandomTip = 'Did you know what, Snavanced!\nadded more features than Snap!, just look!';
 } else if (numberOfTip === 7) {aRandomTip = '\u0049\u0020\u0064\u006F\u006E\u0027\u0074\u0020\u006B\u006E\u006F\u0077\u0020\u0077\u0068\u0061\u0074\u0020\u0069\u0074\u0027\u0073\u0020\u0073\u0075\u0070\u0070\u006F\u0073\u0065\u0064\u0020\u0074\u006F\u0020\u006D\u0065\u0061\u006E\u000A\u0074\u0068\u0061\u0074\u0020\u0049\u0027\u006D\u0020\u0073\u006F\u0020\u0073\u0061\u0064\u002C\u0020\u0061\u0020\u0066\u0061\u0069\u0072\u0079\u0020\u0074\u0061\u006C\u0065\u0020\u0066\u0072\u006F\u006D\u0020\u0061\u006E\u0063\u0069\u0065\u006E\u0074\u0020\u0074\u0069\u006D\u0065\u0073\u002C\u000A\u0049\u0020\u0063\u0061\u006E\u0027\u0074\u0020\u0067\u0065\u0074\u0020\u0074\u0068\u0061\u0074\u0020\u006F\u0075\u0074\u0020\u006F\u0066\u0020\u006D\u0079\u0020\u006D\u0069\u006E\u0064\u002E\u000A\u0054\u0068\u0065\u0020\u0061\u0069\u0072\u0020\u0069\u0073\u0020\u0063\u006F\u006F\u006C\u0020\u0061\u006E\u0064\u0020\u0069\u0074\u0020\u0069\u0073\u0020\u0067\u0065\u0074\u0074\u0069\u006E\u0067\u0020\u0064\u0061\u0072\u006B\u002C\u0020\u0061\u006E\u0064\u0020\u0074\u0068\u0065\u0020\u0052\u0068\u0069\u006E\u0065\u0020\u0066\u006C\u006F\u0077\u0073\u0020\u0063\u0061\u006C\u006D\u006C\u0079\u003B\u000A\u0074\u0068\u0065\u0020\u0070\u0065\u0061\u006B\u0020\u006F\u0066\u0020\u0074\u0068\u0065\u0020\u006D\u006F\u0075\u006E\u0074\u0061\u0069\u006E\u0020\u0073\u0070\u0061\u0072\u006B\u006C\u0065\u0073\u0020\u0069\u006E\u0020\u0074\u0068\u0065\u0020\u0065\u0076\u0065\u006E\u0069\u006E\u0067\u0020\u0073\u0075\u006E\u0073\u0068\u0069\u006E\u0065\u002E\u000A\u0054\u0068\u0065\u0020\u006D\u006F\u0073\u0074\u0020\u0062\u0065\u0061\u0075\u0074\u0069\u0066\u0075\u006C\u0020\u006D\u0061\u0069\u0064\u0065\u006E\u0020\u0073\u0069\u0074\u0073\u0020\u0077\u006F\u006E\u0064\u0065\u0072\u0066\u0075\u006C\u006C\u0079\u0020\u0075\u0070\u0020\u0074\u0068\u0065\u0072\u0065\u002C\u000A\u0068\u0065\u0072\u0020\u0067\u006F\u006C\u0064\u0065\u006E\u0020\u006A\u0065\u0077\u0065\u006C\u0072\u0079\u0020\u0066\u006C\u0061\u0073\u0068\u0065\u0073\u002C\u0020\u0073\u0068\u0065\u0020\u0063\u006F\u006D\u0062\u0073\u0020\u0068\u0065\u0072\u0020\u0067\u006F\u006C\u0064\u0065\u006E\u0020\u0068\u0061\u0069\u0072\u002C\u000A\u0073\u0068\u0065\u0020\u0063\u006F\u006D\u0062\u0073\u0020\u0069\u0074\u0020\u0077\u0069\u0074\u0068\u0020\u0061\u0020\u0067\u006F\u006C\u0064\u0065\u006E\u0020\u0063\u006F\u006D\u0062\u002C\u0020\u0061\u006E\u0064\u0020\u0073\u0069\u006E\u0067\u0073\u0020\u0061\u0020\u0073\u006F\u006E\u0067\u0020\u0077\u0068\u0069\u006C\u0065\u0020\u0064\u006F\u0069\u006E\u0067\u0020\u0069\u0074\u003B\u000A\u0069\u0074\u0020\u0068\u0061\u0073\u0020\u0061\u0020\u0077\u006F\u006E\u0064\u0072\u006F\u0075\u0073\u002C\u0020\u0070\u006F\u0077\u0065\u0072\u0066\u0075\u006C\u0020\u006D\u0065\u006C\u006F\u0064\u0079\u002E\u000A\u0054\u0068\u0065\u0020\u0073\u0061\u0069\u006C\u006F\u0072\u0020\u0069\u006E\u0020\u0074\u0068\u0065\u0020\u006C\u0069\u0074\u0074\u006C\u0065\u0020\u0073\u0068\u0069\u0070\u0020\u0069\u0073\u0020\u0073\u0065\u0069\u007A\u0065\u0064\u0020\u0077\u0069\u0074\u0068\u0020\u0077\u0069\u006C\u0064\u0020\u0070\u0061\u0069\u006E\u003B\u000A\u0068\u0065\u0020\u0064\u006F\u0065\u0073\u006E\u0027\u0074\u0020\u006C\u006F\u006F\u006B\u0020\u0061\u0074\u0020\u0074\u0068\u0065\u0020\u0063\u006C\u0069\u0066\u0066\u0073\u002C\u0020\u0068\u0065\u0020\u006A\u0075\u0073\u0074\u0020\u006C\u006F\u006F\u006B\u0073\u0020\u0075\u0070\u0020\u0069\u006E\u0074\u006F\u0020\u0074\u0068\u0065\u0020\u0073\u006B\u0079\u002E\u000A\u0049\u0020\u0074\u0068\u0069\u006E\u006B\u0020\u0069\u006E\u0020\u0074\u0068\u0065\u0020\u0065\u006E\u0064\u0020\u0074\u0068\u0065\u0020\u0077\u0061\u0076\u0065\u0073\u0020\u0077\u0069\u006C\u006C\u0020\u0073\u0077\u0061\u006C\u006C\u006F\u0077\u0020\u0075\u0070\u0020\u0074\u0068\u0065\u0020\u0073\u006B\u0069\u0070\u0070\u0065\u0072\u0020\u0061\u006E\u0064\u0020\u0062\u0061\u0072\u0067\u0065\u002C\u000A\u0061\u006E\u0064\u0020\u0074\u0068\u0061\u0074\u0020\u0068\u0061\u0073\u0020\u0062\u0065\u0065\u006E\u0020\u0064\u006F\u006E\u0065\u0020\u0077\u0069\u0074\u0068\u0020\u0068\u0065\u0072\u0020\u0073\u0069\u006E\u0067\u0069\u006E\u0067\u002C\u0020\u0074\u0068\u0065\u0020\u004C\u006F\u0072\u0065\u006C\u0065\u0069\u002E';}
 else if (numberOfTip === 8) {aRandomTip = 'There\'s a mod of Snap! called NetsBlox. 🙂\nIf do you want to try it, go to:\nhttps://editor.netsblox.org';}
-else if (numberOfTip === 9) {aRandomTip = 'Did you know what, Snavanced!\nit\'s called that because the GameBoy Advance,\nis the next generation of GameBoy. 🙂';}
+else if (numberOfTip === 9) {aRandomTip = 'Did you know what, Snavanced!\nit is called that because the GameBoy Advance,\nthe next generation of GameBoy. 🙂';}
 else if (numberOfTip === 10) {aRandomTip = 'Did you know what, Snavanced!\nis a probably succesor of the self Snap!. 🙂';}
 else if (numberOfTip === 11) {aRandomTip = 'Did you know what, Snavanced!\nis based too much of BYOB. 🙂';}
-else if (numberOfTip === 12) {aRandomTip = 'Did you know what, Snavanced!\nis a bit slow. It\'s not intentional. 😕';}
+else if (numberOfTip === 12) {aRandomTip = 'Did you know what, Snavanced!\nis a bit slow. It is not intentional. 😕';}
 else if (numberOfTip === 13) {aRandomTip = 'Did you know what, Snavanced!\nhas the new and the old \n\"λ blocks\" in the same mod. 😄';}
 else if (numberOfTip === 14) {if (isNil(this.getSetting('user'))) {
 aRandomTip = 'If you don\'t want to have a username yet,\n you simply leave your username\nin blank, and you will be a \"Guest\". 🙂';
@@ -7323,8 +7133,8 @@ else if (numberOfTip === 19) {aRandomTip = 'If we have to pay some money to get 
 else if (numberOfTip === 20) {aRandomTip = 'The Snap!\'s mascot, Alonzo,\nhave the name of Alonzo Church. 🙂';}
 else if (numberOfTip === 21) {aRandomTip = 'Jens Mönig, the creator of Snap!, BYOB, Chirp, GP and Microblocks\nwas a Scratch Team member in some point. 😲';}
 else if (numberOfTip === 22) {aRandomTip = 'Our partner @bluebaritone21 is the user\nwho give to us the name of the mod. 🙂';}
-else if (numberOfTip === 23) {aRandomTip = 'Like the code said, Snavanced! is compatible\nin the >80% of the actual Snap!. 🙂';}
-else if (numberOfTip === 24) {aRandomTip = 'In the old BYOB 3.1.1,\nSnavanced! is compatible\nat the >90% in that. 🙂';}
+else if (numberOfTip === 23) {aRandomTip = 'Like the code said, Snavanced! is compatible\nin the >90% of the actual Snap!. 🙂';}
+else if (numberOfTip === 24) {aRandomTip = 'In the old BYOB 3.1.1,\nSnavanced! is compatible\nat the >95% in that. 🙂';}
 else if (numberOfTip === 25) {aRandomTip = 'Do you want to modify this mod?\nIt\'s too easy, just change this. 😄';}
 else if (numberOfTip === 26) {aRandomTip = 'Snavanced! is working on the\nLEGO WeDo 1.0 and 2.0 motors,\nit\'s just on progress. 🙂';}
 else if (numberOfTip === 27) {aRandomTip = 'Any tip will not be offensive,\nplease send or make good tips. 😕';}

@@ -3383,20 +3383,20 @@ Morph.prototype.overlappingPixels = function (otherMorph) {
     ];
 };
 
-Morph.prototype.spawnRGBAEditorDialog = function anonymous (selectedTarget, optionalColor) {if (selectedTarget
+Morph.prototype.spawnRGBAEditorDialog = function (selectedTarget, optionalColor) {if (selectedTarget
 instanceof Morph) {var targetMorph = selectedTarget; if (optionalColor instanceof Color) {var savedColor =
 optionalColor;} else {var savedColor = selectedTarget.color;}; var dialog = new DialogBoxMorph;
 dialog.labelString = 'Color Editor'; dialog.createLabel(); var editor = new Morph; editor.alpha = 0;
 editor.setExtent(new Point(162.5, 100)); var rSlider = new SliderMorph(0, 255, targetMorph.color.r,
 0, 'horizontal', new Color(targetMorph.color.r, 0, 0, 1)); rSlider.setExtent(new Point(100, 12.5));
-rSlider.action = function anonymous (value) {result.color = new Color(rSlider.value, gSlider.value, bSlider.value,
+rSlider.action = function (value) {result.color = new Color(rSlider.value, gSlider.value, bSlider.value,
 (aSlider.value / 100)); targetMorph.color = result.color; targetMorph.rerender(); result.fixLayout();
 rSlider.color = new Color(rSlider.value, 0, 0, 1); rSlider.fixLayout(); rSlider.parent.children[4].text =
 'R: ' + rSlider.value + '\nG: ' + gSlider.value + '\nB: ' + bSlider.value + '\nA: ' + (aSlider.value / 100);
 rSlider.parent.children[4].fixLayout(); rSlider.parent.fixLayout(); rSlider.parent.parent.fixLayout();};
 var gSlider = new SliderMorph(0, 255, targetMorph.color.g, 0, 'horizontal',
 new Color(0, targetMorph.color.g, 0, 1));
-gSlider.setExtent(new Point(100, 12.5)); gSlider.action = function anonymous (value) {result.color =
+gSlider.setExtent(new Point(100, 12.5)); gSlider.action = function (value) {result.color =
 new Color(rSlider.value, gSlider.value, bSlider.value, (aSlider.value / 100)); targetMorph.color =
 result.color; targetMorph.rerender(); result.fixLayout(); gSlider.color = new Color(0, gSlider.value,
 0, 1); gSlider.fixLayout(); gSlider.parent.children[4].text = 'R: ' + rSlider.value + '\nG: ' + gSlider.value +
@@ -3404,14 +3404,14 @@ result.color; targetMorph.rerender(); result.fixLayout(); gSlider.color = new Co
 gSlider.parent.fixLayout(); gSlider.parent.parent.fixLayout();}; var bSlider = new SliderMorph(0, 255,
 targetMorph.color.b, 0, 'horizontal', new Color(0, 0, targetMorph.color.b, 1));
 bSlider.setExtent(new Point(100, 12.5));
-bSlider.action = function anonymous (value) {result.color = new Color(rSlider.value, gSlider.value, bSlider.value,
+bSlider.action = function (value) {result.color = new Color(rSlider.value, gSlider.value, bSlider.value,
 (aSlider.value / 100)); targetMorph.color = result.color; targetMorph.rerender(); result.fixLayout(); bSlider.color
 = new Color(0, 0, bSlider.value, 1); bSlider.fixLayout(); bSlider.parent.children[4].text = 'R: ' + rSlider.value +
 '\nG: ' + gSlider.value + '\nB: ' + bSlider.value + '\nA: ' + (aSlider.value / 100);
 bSlider.parent.children[4].fixLayout(); bSlider.parent.fixLayout(); bSlider.parent.parent.fixLayout();};
 var aSlider = new SliderMorph(0, 100, (targetMorph.color.a * 100), 0, 'horizontal',
 new Color((targetMorph.color.a * 255), (targetMorph.color.a * 255), (targetMorph.color.a * 255), 1));
-aSlider.setExtent(new Point(100, 12.5)); aSlider.action = function anonymous (value) {result.color = new Color(
+aSlider.setExtent(new Point(100, 12.5)); aSlider.action = function (value) {result.color = new Color(
 rSlider.value, gSlider.value, bSlider.value, (aSlider.value / 100)); result.fixLayout(); targetMorph.color =
 result.color; targetMorph.rerender(); aSlider.color = new Color((value * 2.55), (value * 2.55), (value * 2.55), 1);
 aSlider.fixLayout(); aSlider.parent.children[4].text = 'R: ' + rSlider.value + '\nG: ' + gSlider.value + '\nB: ' +
@@ -3435,7 +3435,7 @@ pipetteButton.children[0].bounds.origin = new Point(108.5, 73.5); pipetteButton.
 new Point((pipetteButton.children[0].bounds.origin.x + 16), (pipetteButton.children[0].bounds.origin.y + 16));
 pipetteButton.bounds.origin = new Point(104.5, 70); pipetteButton.bounds.corner = new Point(
 (pipetteButton.bounds.origin.x + 24), (pipetteButton.bounds.origin.y + 24)); pipetteButton.action =
-function anonymous() {var myself = targetMorph, hand = world.hand, posInDocument = getDocumentPositionOf(
+function () {var myself = targetMorph, hand = world.hand, posInDocument = getDocumentPositionOf(
 world.worldCanvas), mouseMoveBak = hand.processMouseMove, mouseDownBak = hand.processMouseDown,
 mouseUpBak = hand.processMouseUp; hand.processMouseMove = function (event) {var pos = hand.position(),
 clr = Morph.prototype.fullImage.call(world).getContext('2d').getImageData(pos.x, pos.y, 1, 1).data;
@@ -3453,13 +3453,13 @@ settingsButton.children[0].bounds.corner = new Point((settingsButton.children[0]
 (settingsButton.children[0].bounds.origin.y + 16)); settingsButton.bounds.origin = new Point(133, 70);
 settingsButton.bounds.corner = new Point((settingsButton.bounds.origin.x + 24),
 (settingsButton.bounds.origin.y + 24)); settingsButton.hint = 'Change the sliders\nto number inputs.';
-settingsButton.action = function anonymous () {(new DialogBoxMorph(targetMorph, (function anonymous (clr) {
+settingsButton.action = function () {(new DialogBoxMorph(targetMorph, (function (clr) {
 targetMorph.color = clr; targetMorph.rerender(); targetMorph.spawnRGBAEditorDialog(targetMorph);
 }), this)).promptRGBA("Color Editor", targetMorph.color, world, null, null, targetMorph, savedColor);
-dialog.destroy();}; editor.add(settingsButton); dialog.addBody(editor); dialog.addButton((function anonymous () {
+dialog.destroy();}; editor.add(settingsButton); dialog.addBody(editor); dialog.addButton((function () {
 targetMorph.color = result.color; targetMorph.rerender(); if (targetMorph.constructor.name === 'ColorSlotMorph'
 ) {world.children[0].recordUnsavedChanges();}; this.destroy();}), 'OK'); dialog.addButton(
-(function anonymous () {targetMorph.color = savedColor; targetMorph.rerender(); this.destroy();}), 'Cancel');
+(function () {targetMorph.color = savedColor; targetMorph.rerender(); this.destroy();}), 'Cancel');
 dialog.fixLayout(); dialog.popUp(world);} else {console.error('This must be a Morph, not a ' +
 (typeof selectedTarget) + '!');};};
 
@@ -3475,23 +3475,21 @@ FlashMorph.uber = Morph.prototype;
 
 function FlashMorph(targetMorph) {this.init(targetMorph);};
 
-FlashMorph.prototype.init = function (targetMorph) {
-FlashMorph.uber.init.call(this); this.alpha = 0;
-this.color = new Color(255, 255, 255);
-this.initialTime = Date.now();
-this.terminalTime = this.initialTime + (250 / 1.5);
-if (targetMorph instanceof Morph) {
-this.target = targetMorph;} else {
-this.target = world;};
-this.bounds.origin = this.target.bounds.origin;
-this.bounds.corner = this.target.bounds.corner;
-this.target.add(this);};
+FlashMorph.prototype.init = function (targetMorph
+) {FlashMorph.uber.init.call(this); (this.alpha
+) = 0; this.color = new Color(255, 255, 255);
+this.initialTime = Date.now(); (this.terminalTime
+) = (this.initialTime + 500/3); if ((targetMorph
+) instanceof Morph) {this.target = targetMorph;
+} else {this.target = world;}; (this.bounds
+).origin = this.target.bounds.origin; (this
+).bounds.corner = this.target.bounds.corner;
+this.target.add(this);}; (FlashMorph.prototype
+).elapsedTime = function () {return (((this
+).terminalTime - Date.now()) / 250);};
 
-FlashMorph.prototype.elapsedTime = function anonymous () {
-return (this.terminalTime - Date.now()) / 250;};
-
-FlashMorph.prototype.step = function anonymous () {this.alpha = this.elapsedTime();
-this.rerender(); if (this.elapsedTime() < 0) {this.destroy();};};
+FlashMorph.prototype.step = function () {this.alpha = this.elapsedTime(
+); this.rerender(); if (this.elapsedTime() < 0) {this.destroy();};};
 
 // ShadowMorph /////////////////////////////////////////////////////////
 
@@ -3968,8 +3966,12 @@ PenMorph.uber = Morph.prototype;
 
 function PenMorph() {this.init();};
 
-PenMorph.prototype.init = function () {if (this instanceof SpriteMorph) {this.penPoint = 'middle';} else {this.penPoint = 'tip';}; var size = MorphicPreferences.handleSize * 4; this.isWarped = false; (this
-).heading = 0; this.isDown = true; this.size = 1; this.penBounds = null;PenMorph.uber.init.call(this); this.setExtent(new Point(size, size)); this.cursorStyle = 'grab'; this.cursorGrabStyle = 'grabbing';};
+PenMorph.prototype.init = function () {if (this instanceof SpriteMorph
+) {this.penPoint = 'middle';} else {this.penPoint = 'tip';}; var size = (
+MorphicPreferences.handleSize * 4); this.isWarped = false; (this.heading
+) = 0; this.isDown = true; this.size = 1; this.penBounds = null; (PenMorph
+).uber.init.call(this); this.setExtent(new Point(size, size)); (this
+).cursorStyle = 'grab'; this.cursorGrabStyle = 'grabbing';};
 
 // PenMorph updating - optimized for warping, i.e atomic recursion
 
@@ -4070,14 +4072,12 @@ null); this.cursorGrabStyle = null;}; this.isDraggable = bool;};
 
 // PenMorph optimization for atomic recursion:
 
-PenMorph.prototype.startWarp = function () {this.isWarped = true;};
-
-PenMorph.prototype.endWarp = function () {this.isWarped = false; this.parent.changed();};
-
-PenMorph.prototype.warp = function (fun) {this.startWarp(); fun.call(this); this.endWarp();};
-
-PenMorph.prototype.warpOp = function anonymous (selector, argsArray) {
-this.startWarp(); this[selector].apply(this, argsArray); this.endWarp();};
+PenMorph.prototype.startWarp = function () {this.isWarped = true;
+}; PenMorph.prototype.endWarp = function () {this.isWarped = false;
+this.parent.changed();}; PenMorph.prototype.warpOp = function (
+selector, argsArray) {this.startWarp(); this[selector].apply(this,
+argsArray); this.endWarp();}; PenMorph.prototype.warp = function (
+fun) {this.startWarp(); fun.call(this); this.endWarp();};
 
 // PenMorph demo ops:
 // try these with WARP eg.: this.warp(function () {tree(12, 120, 20)})
@@ -4090,7 +4090,7 @@ PenMorph.prototype.sierpinski = function (length, min) {
     var i;
     if (length > min) {
         for (i = 0; i < 3; i += 1) {
-            this.sierpinski(length * 0.5, min);
+            this.sierpinski(length / 2, min);
             this.turn(120);
             this.forward(length);
         }
@@ -4106,9 +4106,9 @@ PenMorph.prototype.tree = function (level, length, angle) {
         this.size = level;
         this.forward(length);
         this.turn(angle);
-        this.tree(level - 1, length * 0.75, angle);
+        this.tree(level - 1, length * 3/4, angle);
         this.turn(angle * -2);
-        this.tree(level - 1, length * 0.75, angle);
+        this.tree(level - 1, length * 3/4, angle);
         this.turn(angle);
         this.forward(-length);
     }
@@ -4231,7 +4231,7 @@ var GrayPaletteMorph;
 
 // GrayPaletteMorph inherits from ColorPaletteMorph:
 
-GrayPaletteMorph.prototype = new ColorPaletteMorph();
+GrayPaletteMorph.prototype = new ColorPaletteMorph;
 GrayPaletteMorph.prototype.constructor = GrayPaletteMorph;
 GrayPaletteMorph.uber = ColorPaletteMorph.prototype;
 
@@ -4575,12 +4575,11 @@ CursorMorph.prototype.processInput = function (event) {
 
 // CursorMorph synching:
 
-CursorMorph.prototype.updateTextAreaPosition = function anonymous () {
-var pos = getDocumentPositionOf(this.target.world().worldCanvas),
-origin = this.target.bounds.origin.add(new Point(pos.x, pos.y));
-function number2px (n) {return Math.ceil(n) + 'px';};
-this.textarea.style.top = number2px(origin.y);
-this.textarea.style.left = number2px(origin.x);};
+CursorMorph.prototype.updateTextAreaPosition = function () {var pos = (
+getDocumentPositionOf(world.worldCanvas)), origin = (this.target.bounds
+).origin.add(new Point(pos.x, pos.y)); function number2px (n) {return (
+(Math.ceil(n)).toString()).concat('px');}; this.textarea.style.top = (
+number2px(origin.y)); this.textarea.style.left = number2px(origin.x);};
 
 CursorMorph.prototype.syncTextareaSelectionWith = function (targetMorph) {
     var start = targetMorph.startMark,
@@ -5054,7 +5053,7 @@ SpeechBubbleMorph.prototype.outlinePath = function (ctx, radius, inset) {
 
     function circle(x, y, r) {
         ctx.moveTo(x + r, y);
-        ctx.arc(x, y, r, radians(0), radians(360));
+        ctx.arc(x, y, r, 0, (2 * Math.PI));
     };  if (asABool(this.isShouting)) {
     ctx.moveTo(inset, inset);
     ctx.lineTo(w - inset, inset);
@@ -5270,13 +5269,16 @@ DialMorph.prototype = new Morph;
 DialMorph.prototype.constructor = DialMorph;
 DialMorph.uber = Morph.prototype;
 
-function DialMorph(value, radius, scale) {this.init(value, radius, scale);};
+function DialMorph(value, radius, scale
+) {this.init(value, radius, scale);};
 
-DialMorph.prototype.init = function (value, radius, scale) {this.target = null; this.action = null;
-this.scale = asANum(scale); this.value = Process.prototype.reportBasicModulus(value, 360);
-this.fillColor = null; DialMorph.uber.init.call(this); this.color = new Color(
-230, 230, 230); this.radius = (radius || MorphicPreferences.menuFontSize * 4);
-this.setExtent(new Point(this.radius * 2, this.radius * 2));};
+DialMorph.prototype.init = function (value, radius, scale) {
+this.target = null; this.action = null; this.scale = asANum(
+scale); this.value = Process.prototype.reportBasicModulus(
+value, 360); this.fillColor = null; DialMorph.uber.init.call(
+this); this.color = new Color(230, 230, 230); (this.radius
+) = (radius || (MorphicPreferences.menuFontSize * 4)); (this
+).setExtent(new Point(this.radius * 2, this.radius * 2));};
 
 // DialMorph stepping:
 
@@ -5287,22 +5289,22 @@ DialMorph.prototype.mouseDownLeft = function (pos
 this.setValue(this.getValueOf(world.hand.bounds.origin),
 (world.currentKey !== 16));} else {this.step = null;};};};
 
-DialMorph.prototype.setValue = function (value, snapToTick) {
-this.value = Process.prototype.reportBasicModulus((Math.round(
-value / ((snapToTick * 14) + 1)) * (
-(snapToTick * 14) + 1)), 360); this.changed(); this.updateTarget();};
+DialMorph.prototype.setValue = function (value, snapToTick
+) {this.value = Process.prototype.reportBasicModulus(((Math
+).round(value / ((snapToTick * 14) + 1)) * (((snapToTick
+) * 14) + 1)), 360); this.changed(); this.updateTarget();};
 
 DialMorph.prototype.getValueOf = function (
 point) {var center = this.center(), deltaX = (
 point.x - center.x), deltaY = (center.y - point.y
 ); return degrees(Math.atan2(deltaX, deltaY));};
 
-DialMorph.prototype.setExtent = function anonymous (aPoint
+DialMorph.prototype.setExtent = function (aPoint
 ) {var size = Math.min(aPoint.x, aPoint.y); this.radius = (
 size / 2); DialMorph.uber.setExtent.call(this, new Point(
 size, size));}; DialMorph.prototype.render = function (ctx
 ) {var i, angle, x1, y1, x2, y2, light = this.color.lighter(
-).toString(), face = this.radius * 0.75, inner = face * 0.85,
+).toString(), face = this.radius * 3/4, inner = face * 0.85,
 outer = face * 0.95;
 
     // draw a light border:
@@ -5477,11 +5479,9 @@ DialMorph.prototype.setTarget = function () {
 
     choices.push(this.world());
     choices.forEach(each => {
-        menu.addItem(each.toString().slice(0, 50), () => {
-            this.target = each;
-            this.setTargetSetter();
-        });
-    });
+    menu.addItem(each.toString().slice(0,
+    50), (() => {this.target = each;
+    this.setTargetSetter();}));});
     if (choices.length === 1) {
         this.target = choices[0];
         this.setTargetSetter();
@@ -6230,8 +6230,8 @@ this.target[sel]); this.currentProperty = val; if (isNil(
 val)) {txt = 'null';} else if (isString(val)) {txt = val;
 } else {txt = val.toString();}; if (currentTxt.text === txt
 ) {return;}; cnts = new TextMorph(txt); cnts.isEditable = (
-true); cnts.enableSelecting(); cnts.setReceiver(this.target
-); this.detail.setContents(cnts);};
+true); cnts.enableSelecting(); cnts.setReceiver(
+this.target); this.detail.setContents(cnts);};
 
 InspectorMorph.prototype.buildPanes = function () {
     var attribs = [], property, ctrl, ev, doubleClickAction;
@@ -6304,8 +6304,8 @@ InspectorMorph.prototype.buildPanes = function () {
     this.detail.contents.acceptsDrops = false;
     this.detail.isTextLineWrapping = true;
     this.detail.color = WHITE;
-    this.detail.hBar.alpha = 0.6;
-    this.detail.vBar.alpha = 0.6;
+    this.detail.hBar.alpha = 3/5;
+    this.detail.vBar.alpha = 3/5;
     ctrl = new TextMorph('');
     ctrl.isEditable = true;
     ctrl.enableSelecting();
@@ -6321,8 +6321,8 @@ InspectorMorph.prototype.buildPanes = function () {
         this.work.contents.acceptsDrops = false;
         this.work.isTextLineWrapping = true;
         this.work.color = WHITE;
-        this.work.hBar.alpha = 0.6;
-        this.work.vBar.alpha = 0.6;
+        this.work.hBar.alpha = 3/5;
+        this.work.vBar.alpha = 3/5;
         ev = new TextMorph('');
         ev.isEditable = true;
         ev.enableSelecting();
@@ -7081,8 +7081,7 @@ function StringMorph(
     shadowColor,
     color,
     fontName
-) {
-    this.init(
+)  {this.init(
         text,
         fontSize,
         fontStyle,
@@ -7107,8 +7106,7 @@ StringMorph.prototype.init = function (
     shadowColor,
     color,
     fontName
-) {
-    // additional properties:
+)  {// additional properties:
     this.text = (isNil(text) ? 'StringMorph' : ((text.toString instanceof Function) ? text.toString() : ''));
     this.fontSize = (fontSize || 12);
     this.isBold = bold || false;
@@ -7298,8 +7296,8 @@ StringMorph.prototype.renderWithBlanks = function (ctx, startX, y) {
             x + space / 2,
             top,
             space / 2,
-            radians(0),
-            radians(360)
+            0,
+            Math.PI * 2
         );
         ctx.fill();
         x += space;
@@ -7813,8 +7811,7 @@ function TextMorph(
     fontName,
     shadowOffset,
     shadowColor
-) {
-    this.init(text,
+)  {this.init(text,
         fontSize,
         fontStyle,
         bold,
@@ -7837,8 +7834,7 @@ TextMorph.prototype.init = function (
     fontName,
     shadowOffset,
     shadowColor
-) {
-    // additional properties:
+)  {// additional properties:
     this.text = text || (text === '' ? text : 'TextMorph');
     this.words = [];
     this.lines = [];
@@ -8391,8 +8387,7 @@ function TriggerMorph(
     labelBold,
     labelItalic,
     doubleClickAction
-) {
-    this.init(
+)  {this.init(
         target,
         action,
         labelString,
@@ -8404,8 +8399,7 @@ function TriggerMorph(
         labelBold,
         labelItalic,
         doubleClickAction
-    );
-};
+    );};
 
 TriggerMorph.prototype.init = function (
     target,
@@ -8419,14 +8413,12 @@ TriggerMorph.prototype.init = function (
     labelBold,
     labelItalic,
     doubleClickAction
-) {
-    // additional properties:
-    this.target = target || null;
-    this.action = action === 0 ? 0 : action|| null;
-    this.doubleClickAction = doubleClickAction || null;
-    this.environment = environment || null;
-    this.labelString = labelString || ' ';
-    this.label = null;
+)  {this.target = (target || null); this.action = (
+    (action === 0) ? 0 : (action || null)); (this
+    ).doubleClickAction = (doubleClickAction || (
+    null)); this.environment = (environment || (
+    null)); this.labelString = (labelString || (
+    ' ')); this.label = null;
     this.hint = hint || null; // null, String, or Function
     this.schedule = null; // animation slot for displaying hints
     this.fontSize = fontSize || MorphicPreferences.menuFontSize;
@@ -9457,7 +9449,7 @@ ListMorph.prototype.activateIndex = function (idx) {
 
 // StringFieldMorph inherit from FrameMorph:
 
-StringFieldMorph.prototype = new FrameMorph();
+StringFieldMorph.prototype = new FrameMorph;
 StringFieldMorph.prototype.constructor = StringFieldMorph;
 StringFieldMorph.uber = FrameMorph.prototype;
 
@@ -9554,15 +9546,14 @@ var BouncerMorph;
 
 // Bouncers inherit from Morph:
 
-BouncerMorph.prototype = new Morph();
+BouncerMorph.prototype = new Morph;
 BouncerMorph.prototype.constructor = BouncerMorph;
 BouncerMorph.uber = Morph.prototype;
 
 // BouncerMorph instance creation:
 
-function BouncerMorph() {
-    this.init();
-}
+function BouncerMorph (
+) {this.init();};
 
 // BouncerMorph initialization:
 
@@ -9583,20 +9574,16 @@ BouncerMorph.prototype.init = function (type, speed) {
 // BouncerMorph moving:
 
 BouncerMorph.prototype.moveUp = function () {
-    this.moveBy(new Point(0, -this.speed * 0.5));
-};
+this.moveBy(new Point(0, (this.speed / -2)));};
 
 BouncerMorph.prototype.moveDown = function () {
-    this.moveBy(new Point(0, this.speed * 0.5));
-};
+this.moveBy(new Point(0, (this.speed / 2)));};
 
 BouncerMorph.prototype.moveRight = function () {
-    this.moveBy(new Point(this.speed * 0.5, 0));
-};
+this.moveBy(new Point((this.speed / 2), 0));};
 
 BouncerMorph.prototype.moveLeft = function () {
-    this.moveBy(new Point(-this.speed * 0.5, 0));
-};
+this.moveBy(new Point((this.speed / -2), 0));};
 
 // BouncerMorph stepping:
 
@@ -10426,22 +10413,18 @@ HandMorph.prototype.destroyTemporaries = function () {
 
 // FPSMorph inherits from StringMorph:
 
-FPSMorph = function FPSMorph () {this.init(
-);}; FPSMorph.prototype = new StringMorph;
-FPSMorph.prototype.constructor = FPSMorph;
-FPSMorph.uber = StringMorph.prototype;
-FPSMorph.prototype.init = function (
-) {FPSMorph.uber.init.call(this); (this
-).startTime = performance.now(); (this
-).isVisible = false; this.fontSize = 22;
-}; FPSMorph.prototype.step = function () {
-this.text = (('FPS\: ').concat(Math.round(
-((performance.now() - this.startTime) > 0) ? (
-1000 / (performance.now() - this.startTime)) : 0
-).toString())); this.fixLayout(); if ((this.parent
-) instanceof Morph) {this.setLeft(this.parent.left()
-); this.setBottom(this.parent.bottom()); (this.parent
-).add(this); this.isVisible = true; this.startTime = performance.now();};};
+FPSMorph = function FPSMorph () {this.init();}; (FPSMorph.prototype
+) = new StringMorph; FPSMorph.prototype.constructor = FPSMorph;
+FPSMorph.uber = StringMorph.prototype; (FPSMorph.prototype.init
+) = function () {FPSMorph.uber.init.call(this); (this.startTime
+) = performance.now(); this.isVisible = false; this.fontSize = 22;
+}; FPSMorph.prototype.step = function () {this.text = (('FPS\: '
+).concat(Math.round(((performance.now() - this.startTime) > 0
+) ? (1000 / (performance.now() - this.startTime)) : 0).toString(
+))); this.fixLayout(); if (this.parent instanceof Morph) {
+this.setLeft(this.parent.left()); this.setBottom((this.parent
+).bottom()); this.parent.add(this); this.isVisible = true;
+this.startTime = performance.now();};};
 
 // WorldMorph //////////////////////////////////////////////////////////
 
@@ -10459,33 +10442,27 @@ WorldMorph.prototype.customMorphs = [];
 
 // WorldMorph instance creation:
 
-function WorldMorph(aCanvas, fillPage) {this.init(aCanvas, fillPage);};
+function WorldMorph(aCanvas, fillPage
+) {this.init(aCanvas, fillPage);};
 
 // WorldMorph initialization:
 
-WorldMorph.prototype.init = function (aCanvas,
-fillPage) {WorldMorph.uber.init.call(this); (
-this).color = new Color(205, 205, 205); (this
-).alpha = 1;   this.bounds = new Rectangle(0,
-0, aCanvas.width, aCanvas.height); (this
-).isVisible = true; this.isDraggable = false;
-this.currentKey = null; this.worldCanvas = (
-aCanvas); this.worldCanvas.getContext("2d", {
-willReadFrequently: true}); this.useFillPage = (
-fillPage); if (isNil(this.useFillPage)) {(this
-).useFillPage = true;}; this.isDevMode = false;
-this.broken = []; this.animations = []; (this.hand
-) = new HandMorph(this); this.keyboardHandler = (
-null); this.keyboardFocus = null; this.cursor = (
-null); (this.lastEditedText) = null; (this
-).activeMenu = null; this.activeHandle = (
-null); this.initKeyboardHandler(); ((this
-).resetKeyboardHandler)(); (this
-).initEventListeners(); if (
-"getBattery" in navigator) {
-navigator.getBattery().then(
-battery => {(this.batteryAPI
-) = battery;});};};
+WorldMorph.prototype.init = function (aCanvas, fillPage) {
+WorldMorph.uber.init.call(this); this.color = new Color(205,
+205, 205); this.alpha = 1; this.bounds = new Rectangle(0,
+0, aCanvas.width, aCanvas.height); this.isVisible = true;
+this.isDraggable = false; this.currentKey = null; (this
+).worldCanvas = aCanvas; this.worldCanvas.getContext("2d",
+{willReadFrequently: true}); this.useFillPage = fillPage;
+if (isNil(this.useFillPage)) {this.useFillPage = true;};
+this.isDevMode = false; this.broken = []; (this.animations
+) = []; this.keyboardHandler = null; (this.keyboardFocus
+) = null; this.cursor = null; this.lastEditedText = null;
+this.activeMenu = null; this.hand = new HandMorph(this
+); this.activeHandle = null; this.initKeyboardHandler(
+); this.resetKeyboardHandler(); this.initEventListeners(
+); if ("getBattery" in navigator) {(navigator.getBattery(
+)).then(battery => {this.batteryAPI = battery;});};};
 
 WorldMorph.prototype.beepSound = document.createElement(
 'audio'); WorldMorph.prototype.beepSound.src = 'src/beep.wav';
@@ -10507,10 +10484,9 @@ WorldMorph.prototype.updateBroken = function () {
     this.broken = [];
 };
 
-WorldMorph.prototype.stepAnimations = function () {
-    this.animations.forEach(anim => anim.step());
-    this.animations = this.animations.filter(anim => anim.isActive);
-};
+WorldMorph.prototype.stepAnimations = function () {(this
+).animations.forEach(anim => anim.step()); (this.animations
+) = this.animations.filter(anim => anim.isActive);};
 
 WorldMorph.prototype.condenseDamages = function () {
     // collapse clustered damaged rectangles into their unions,
@@ -10573,8 +10549,10 @@ WorldMorph.prototype.condenseDamages = function () {
     */
 };
 
-WorldMorph.prototype.doOneCycle = function anonymous () {
-this.stepFrame(); this.stepAnimations(); this.updateBroken();};
+(WorldMorph.prototype.doOneCycle
+) = function () {this.stepFrame(
+); this.stepAnimations();
+this.updateBroken();};
 
 WorldMorph.prototype.fillPage = function () {
     var clientHeight = window.innerHeight,
@@ -10611,16 +10589,17 @@ WorldMorph.prototype.fillPage = function () {
 
 // WorldMorph global pixel access:
 
-WorldMorph.prototype.getGlobalPixelColor = function anonymous (point) {
-/* answer the color at the given point. */ try {/* Catching errors in image */
-var dta = Morph.prototype.fullImage.call(this).getContext('2d').getImageData(point.x,
-point.y, 1, 1).data; return new Color(dta[0], dta[1], dta[2], 1);} catch {return BLACK;};};
+WorldMorph.prototype.getGlobalPixelColor = function (point) {try {
+var dta = (((Morph.prototype.fullImage.call(this)).getContext('2d'
+)).getImageData(point.x, point.y, 1, 1)).data; return (new Color(
+dta[0], dta[1], dta[2], 1));} catch {return BLACK;};}; // Done!
 
 // WorldMorph messages:
 
-WorldMorph.prototype.showMessage = function (message, secs) {
-var m = new MenuMorph(null, message), intervalHandle;
-m.popUpCenteredInWorld(this); if (secs) {intervalHandle = setInterval(
+WorldMorph.prototype.showMessage = function (
+message, secs) {var m = new MenuMorph(null,
+message), intervalHandle; m.popUpCenteredInWorld(
+this); if (secs) {intervalHandle = setInterval(
 () => {m.destroy(); clearInterval(intervalHandle
 );}, secs * 1000);}; return m;};
 
@@ -10631,8 +10610,7 @@ WorldMorph.prototype.initKeyboardHandler = function () {
     if (kbd) { // share existing handler with other worlds
         this.keyboardHandler = kbd;
         return;
-    }
-    kbd = document.createElement('textarea');
+    };  kbd = document.createElement('textarea');
     kbd.setAttribute('id', 'morphic_keyboard');
     kbd.setAttribute('style', 'caret-color:transparent;');
     kbd.style.position = 'absolute';
@@ -10723,19 +10701,11 @@ WorldMorph.prototype.initKeyboardHandler = function () {
     );
 };
 
-WorldMorph.prototype.resetKeyboardHandler = function (keepValue) {
-    var pos = getDocumentPositionOf(this.worldCanvas);
-
-    function number2px (n) {
-        return Math.ceil(n) + 'px';
-    }
-
-    if (!keepValue) {
-        this.keyboardHandler.value = '';
-    }
-    this.keyboardHandler.style.top = number2px(pos.y);
-    this.keyboardHandler.style.left = number2px(pos.x);
-};
+WorldMorph.prototype.resetKeyboardHandler = function (keepValue) {var pos = (
+getDocumentPositionOf(this.worldCanvas)), number2px = (n => ((Math.ceil(n)
+).toString()).concat('px')); if (!keepValue) {(this.keyboardHandler
+).value = '';}; this.keyboardHandler.style.top = number2px(pos.y
+); this.keyboardHandler.style.left = number2px(pos.x);};
 
 WorldMorph.prototype.initEventListeners = function () {
     var canvas = this.worldCanvas;
@@ -11741,7 +11711,7 @@ SymbolMorph.prototype.renderSymbolStepForward = function (ctx, color) {
 };
 
 SymbolMorph.prototype.renderSymbolGears = function (ctx, color
-) {var w = this.symbolWidth(), r = w / 2, e = r / 4, g = 1.625;
+) {var w = this.symbolWidth(), r = w / 2, e = r / 4, g = 13/8;
 ctx.beginPath(); ctx.lineCap = 'round'; ctx.strokeStyle = color.toString(
 ); ctx.lineWidth = this.symbolWidth() / 4; ctx.arc(r, r, w, 0, 2 * Math.PI,
 true); ctx.arc(r, r, e * 2, 0, 2 * Math.PI, false); ctx.closePath();
@@ -11778,8 +11748,8 @@ SymbolMorph.prototype.renderSymbolGearBig = function (ctx, color) {
             r,
             r,
             r * 0.8,
-            radians(i * angle - shift + angle * 0.5),
-            radians(i * angle + shift + angle * 0.5)
+            radians(i * angle - shift + angle / 2),
+            radians(i * angle + shift + angle / 2)
         );
         ctx.arc(
             r,
@@ -11792,8 +11762,8 @@ SymbolMorph.prototype.renderSymbolGearBig = function (ctx, color) {
     ctx.lineTo(w, r);
 
     // draw the holes in the middle
-    ctx.arc(r, r, r * 0.6, 0, 2 * Math.PI);
-    ctx.arc(r, r, r * 0.2, 0, 2 * Math.PI);
+    ctx.arc(r, r, r * 3/5, 0, 2 * Math.PI);
+    ctx.arc(r, r, r / 5, 0, 2 * Math.PI);
 
     // fill
     ctx.clip('evenodd');
@@ -11842,7 +11812,7 @@ SymbolMorph.prototype.renderSymbolGearPartial = function (ctx, color) {
     ctx.lineTo(w, r);
 
     // draw the hole in the middle
-    ctx.arc(r, r, r * 0.3, 0, 2 * Math.PI);
+    ctx.arc(r, r, r * 3/10, 0, 2 * Math.PI);
 
     // fill
     ctx.clip('evenodd');
@@ -11977,7 +11947,7 @@ SymbolMorph.prototype.renderSymbolGrow = function (ctx, color) {
     // draw four arrows pointing diagonally outwards
     arrows();
     ctx.translate(this.size, 0);
-    ctx.rotate(radians(90));
+    ctx.rotate(Math.PI / 2);
     arrows();
 };
 
@@ -12575,7 +12545,7 @@ SymbolMorph.prototype.renderSymbolRectangleSolid = function (ctx, color) {
 SymbolMorph.prototype.renderSymbolCircle = function (ctx, color) {
     // draw a circle
     var w = this.symbolWidth(),
-        l = Math.max(w / 20, 0.5);
+        l = Math.max(w / 20, 1/2);
 
     ctx.strokeStyle = color.toString();
     ctx.lineWidth = l * 2;
@@ -12599,7 +12569,7 @@ SymbolMorph.prototype.renderSymbolLine = function (ctx, color) {
     // draw a diagonal line
     var w = this.symbolWidth(),
         h = this.size,
-        l = Math.max(w / 20, 0.5);
+        l = Math.max(w / 20, 1/2);
 
     ctx.strokeStyle = color.toString();
     ctx.lineWidth = l * 2;
@@ -12613,7 +12583,7 @@ SymbolMorph.prototype.renderSymbolLine = function (ctx, color) {
 SymbolMorph.prototype.renderSymbolCross = function (ctx, color) {
     // draw a plus sign cross
     var w = this.symbolWidth(),
-        l = Math.max(w / 20, 0.5);
+        l = Math.max(w / 20, 1/2);
 
     ctx.strokeStyle = color.toString();
     ctx.lineWidth = l * 2;
@@ -12655,7 +12625,7 @@ SymbolMorph.prototype.renderSymbolPaintbucket = function (ctx, color) {
     var w = this.symbolWidth(),
         h = this.size,
         n = w / 5,
-        l = Math.max(w / 30, 0.5);
+        l = Math.max(w / 30, 1/2);
 
     ctx.strokeStyle = color.toString();
     ctx.lineWidth = l * 2;
@@ -12700,7 +12670,7 @@ SymbolMorph.prototype.renderSymbolEraser = function (ctx, color) {
     var w = this.symbolWidth(),
         h = this.size,
         n = w / 4,
-        l = Math.max(w / 20, 0.5);
+        l = Math.max(w / 20, 1/2);
 
     ctx.strokeStyle = color.toString();
     ctx.lineWidth = l * 2;
@@ -12728,7 +12698,7 @@ SymbolMorph.prototype.renderSymbolPipette = function (ctx, color) {
         h = this.size,
         n = w / 4,
         n2 = n / 2,
-        l = Math.max(w / 20, 0.5);
+        l = Math.max(w / 20, 1/2);
 
     ctx.strokeStyle = color.toString();
     ctx.lineWidth = l * 2;
@@ -12759,7 +12729,7 @@ SymbolMorph.prototype.renderSymbolSpeechBubble = function (ctx, color) {
     var w = this.symbolWidth(),
         h = this.size,
         n = w / 3,
-        l = Math.max(w / 20, 0.5);
+        l = Math.max(w / 20, 1/2);
 
     ctx.fillStyle = color.toString();
     ctx.lineWidth = l * 2;
@@ -12783,7 +12753,7 @@ SymbolMorph.prototype.renderSymbolSpeechBubbleOutline = function (
     var w = this.symbolWidth(),
         h = this.size,
         n = w / 3,
-        l = Math.max(w / 20, 0.5);
+        l = Math.max(w / 20, 1/2);
 
     ctx.strokeStyle = color.toString();
     ctx.lineWidth = l * 2;
@@ -12805,14 +12775,14 @@ SymbolMorph.prototype.renderSymbolLoop = function (ctx, aColor) {
         w2 = w / 2,
         w4 = w2 / 2,
         h2 = h / 2,
-        l = Math.max(h / 10, 0.5);
+        l = Math.max(h / 10, 1/2);
 
     ctx.lineWidth = l * 2;
     ctx.strokeStyle = aColor.toString();
     ctx.beginPath();
     ctx.moveTo(0, h - l);
     ctx.lineTo(w2, h - l);
-    ctx.arc(w2, h2, h2 - l, radians(90), 0, true);
+    ctx.arc(w2, h2, h2 - l, Math.PI / 2, 0, true);
     ctx.stroke();
     ctx.fillStyle = aColor.toString();
     ctx.beginPath();
@@ -15594,7 +15564,7 @@ settingsButton.children[0].bounds.corner = new Point((settingsButton.children[0]
 (settingsButton.children[0].bounds.origin.y + 16)); settingsButton.bounds.origin = new Point(9, 16);
 settingsButton.bounds.corner = new Point((settingsButton.bounds.origin.x + 20),
 (settingsButton.bounds.origin.y + 20)); settingsButton.hint = 'Change the\nnumber inputs\nto sliders.';
-settingsButton.action = function anonymous () {target.color = new Color(constrainRGB(rInp.getValue()),
+settingsButton.action = function () {target.color = new Color(constrainRGB(rInp.getValue()),
 constrainRGB(gInp.getValue()), constrainRGB(bInp.getValue()), constrainAlpha(aInp.getValue())); target.rerender();
 target.spawnRGBAEditorDialog(target, targetColor); dialog.destroy();}; inp.alignment = 'left';
 inp.setColor(this.color); bdy.setColor(this.color); rCol.alignment = 'left'; rCol.setColor(this.color);
@@ -15608,7 +15578,7 @@ rCol.fixLayout(); gCol.fixLayout(); bCol.fixLayout(); aCol.fixLayout(); settings
 inp.fixLayout(); bdy.fixLayout(); this.labelString = title; this.createLabel(); if (pic) {
 this.setPicture(pic);}; this.addBody(bdy); this.addButton((function () {target.color = (
 this.getInput()); target.rerender(); if (target.constructor.name === 'ColorSlotMorph') {
-world.children[0].recordUnsavedChanges();}; this.destroy();}), 'OK'); this.addButton((function anonymous (
+world.children[0].recordUnsavedChanges();}; this.destroy();}), 'OK'); this.addButton((function (
 ) {target.color = targetColor; target.rerender(); this.destroy();}), 'Cancel'); this.fixLayout();
 this.getInput = function () {return new Color(constrainRGB(rInp.getValue()), constrainRGB(gInp.getValue()),
 constrainRGB(bInp.getValue()), constrainAlpha(aInp.getValue()));}; var dialog = this; this.popUp(world);};
