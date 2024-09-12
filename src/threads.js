@@ -182,17 +182,14 @@ ThreadManager.prototype.startProcess = function (
     rightAway,
     atomic,
     variables
-) {
-    var top = block.topBlock(),
-        active = this.findProcess(top, receiver),
-        glow,
-        newProc;
-    if (active) {
-        if (isThreadSafe) {
-            return active;
-        };  active.stop();
-        active.canBroadcast = true;
-        this.removeTerminatedProcesses();
+)  {var top = block.topBlock(),
+    active = this.findProcess(
+    top, receiver), newProc,
+    glow; if (active) {if (
+    isThreadSafe) {return (
+    active);}; active.stop();
+    active.canBroadcast = true;
+    this.removeTerminatedProcesses();
     };  newProc = new Process(top, receiver,
     callback, isClicked); (newProc.exportResult
     ) = exportResult; newProc.isClicked = (
@@ -216,55 +213,25 @@ ThreadManager.prototype.startProcess = function (
     if (glow) {
         glow.threadCount = this.processesForBlock(top).length + 1;
         glow.updateReadout();
-    } else {
-        top.addHighlight();
+    } else {top.addHighlight();
     };  this.processes.push(newProc);
     if (rightAway) {newProc.runStep(
-    );};     return newProc;};
+    );};    return newProc;};
 
-ThreadManager.prototype.stopAll = function (excpt) {this.processes.forEach(
-proc => {if (proc !== excpt) {proc.stop();};});}; /* Useful for you. :~) */
-ThreadManager.prototype.stopAllForReceiver = function (rcvr, excpt) {this.processes.forEach(proc => {if
-(proc.homeContext.receiver === rcvr && proc !== excpt) {proc.stop(); if (rcvr.isTemporary) {proc.isDead = true;};};});};
-ThreadManager.prototype.stopAllForBlock = function (aTopBlock) {this.processesForBlock(aTopBlock, true).forEach(proc => proc.stop());};
-ThreadManager.prototype.stopProcess = function (block, receiver) {var active = this.findProcess(block, receiver); if (active) {active.stop();};};
-
-ThreadManager.prototype.pauseAll = function (stage) {window.speechSynthesis.pause(); this.processes.forEach(proc => (proc.root instanceof BlockMorph) ? (
-(proc.root.selector === 'receiveInteraction') ? ((proc.root.inputs()[0].evaluate() === 'paused') ? null : proc.pause()) : proc.pause()) : proc.pause());
-world.childThatIsA(StageMorph).runPauseScripts(); if (stage) {stage.pauseAllActiveSounds();};}; /* The tts will be paused in any cirmcunstance too! :o */
-ThreadManager.prototype.isPaused = function anonymous () {return detect(this.processes, (proc => proc.isPaused)) !== null;};
-ThreadManager.prototype.resumeAll = function anonymous (stage) {window.speechSynthesis.resume(); this.processes.forEach(
-proc => proc.resume()); if (stage) {stage.resumeAllActiveSounds();}; world.childThatIsA(StageMorph).runUnpauseScripts();};
-
-ThreadManager.prototype.step = function anonymous () {
-    // run each process until it gives up control, skipping processes
-    // for sprites that are currently picked up, then filter out any
-    // processes that have been terminated
-
-    var isInterrupted;
-    if (Process.prototype.enableSingleStepping) {
-        this.processes.forEach(proc => {
-            if (proc.isInterrupted) {
-                proc.runStep();
-                isInterrupted = true;
-            } else {
-                proc.lastYield = Date.now();
-            };
-        });
-        this.wantsToPause = (Process.prototype.flashTime > 0.5);
-        if (isInterrupted) {
-            if (this.wantsToPause) {
-                this.pauseAll();
-            }; return;
-        };
-    };
-
-    this.processes.forEach(proc => {
-        if (!proc.homeContext.receiver.isPickedUp() && !proc.isDead) {
-            proc.runStep();
-        };
-    }); this.removeTerminatedProcesses();
-};
+ThreadManager.prototype.stopAll = function (excpt) {this.processes.forEach(proc => {if (proc !== excpt) {proc.stop();};});}; (ThreadManager.prototype
+).stopAllForReceiver = function (rcvr, excpt) {this.processes.forEach(proc => {if (proc.homeContext.receiver === rcvr && proc !== excpt) {proc.stop();
+if (rcvr.isTemporary) {proc.isDead = true;};};});}; ThreadManager.prototype.stopAllForBlock = function (aTopBlock) {(this.processesForBlock(aTopBlock,
+true)).forEach(proc => proc.stop());}; ThreadManager.prototype.stopProcess = function (block, receiver) {var active = this.findProcess(block, receiver
+); if (active) {active.stop();};}; ThreadManager.prototype.isPaused = function () {return (detect(this.processes, (proc => proc.isPaused)) !== null);};
+ThreadManager.prototype.pauseAll = function (stage) {window.speechSynthesis.pause(); this.processes.forEach(proc => (proc.root instanceof BlockMorph
+) ? ((proc.root.selector === 'receiveInteraction') ? ((proc.root.inputs()[0].evaluate() === 'paused') ? null : proc.pause()) : proc.pause()) : (proc
+).pause()); world.childThatIsA(StageMorph).runPauseScripts(); if (stage) {stage.pauseAllActiveSounds();};}; ThreadManager.prototype.resumeAll = (
+function (stage) {window.speechSynthesis.resume(); this.processes.forEach(proc => proc.resume()); if (stage) {stage.resumeAllActiveSounds();};
+world.childThatIsA(StageMorph).runUnpauseScripts();}); ThreadManager.prototype.step = function () {var isInterrupted; if ((Process.prototype
+).enableSingleStepping) {this.processes.forEach(proc => {if (proc.isInterrupted) {proc.runStep(); isInterrupted = true;} else {(proc.lastYield
+) = Date.now();};}); this.wantsToPause = (Process.prototype.flashTime > 1/2); if (isInterrupted) {if (this.wantsToPause) {this.pauseAll();};
+return;};}; this.processes.forEach(proc => {if (!(proc.homeContext.receiver.isPickedUp()) && !(proc.isDead)) {proc.runStep();};}); (this
+).removeTerminatedProcesses();};
 
 ThreadManager.prototype.removeTerminatedProcesses = function () {
     // and un-highlight their scripts
@@ -871,16 +838,11 @@ Process.prototype.evaluateNextInput = function (element) {
         outer = this.context.outerContext; // for tail call elimination
 
     if (exp.isUnevaluated) {
-        if (exp.isUnevaluated === true || exp.isUnevaluated()) {
-            // just return the input as-is
-            this.context.addInput(contains(['reportScript', 'reify', 'reifyScript', 'reifyReporter', 'reifyPredicate'], sel) ? exp : this.reify(exp, new List));
-        } else {
-            this.pushContext(exp, outer);
-        };
-    } else {
-        this.pushContext(exp, outer);
-    };
-};
+        if ((exp.isUnevaluated === true) || exp.isUnevaluated()) {
+            this.context.addInput(contains(['reportScript', 'reify', 'reifyScript',
+            'reifyReporter', 'reifyPredicate'], sel) ? exp : this.reify(exp, new List));
+        } else {this.pushContext(exp, outer);};
+    } else {this.pushContext(exp, outer);};};
 
 Process.prototype.evaluateNextInputSet = function (element) {
     // Optimization to use instead of evaluateNextInput(), bums out a few
@@ -1234,7 +1196,7 @@ sym), ctx; if (frame) {return copy(frame.vars[sym].value);} else {ctx = (this.to
 ).context.outerContext; if (ctx.outerContext) {ctx.variables.parentFrame = ctx.outerContext.variables;}; if (!((this
 ).isAtomic) && this.context.expression.parent?.selector === 'execute') {this.readyToYield = true;}; return ctx;};
 
-Process.prototype.reportThisCaller = function anonymous () {
+Process.prototype.reportThisCaller = function () {
     var sym = Symbol.for('caller'),
         frame = this.context.variables.silentFind(sym),
         ctx, nb;
@@ -1250,7 +1212,7 @@ Process.prototype.reportThisCaller = function anonymous () {
     }; return this.blockReceiver();
 };
 
-Process.prototype.reportThisContinuation = function anonymous () {
+Process.prototype.reportThisContinuation = function () {
     var sym = Symbol.for('continuation'),
         frame = this.context.variables.silentFind(sym),
         cont;
@@ -1302,7 +1264,7 @@ Process.prototype.doStopCustomBlock = function () {
 
 // Process continuations primitives
 
-Process.prototype.doCallCC = function anonymous (aContext, isReporter) {this.evaluate(aContext, new List([this.context.continuation(
+Process.prototype.doCallCC = function (aContext, isReporter) {this.evaluate(aContext, new List([this.context.continuation(
 isReporter)]), !isReporter);}; Process.prototype.reportCallCC = function anonymous (aContext) {this.doCallCC(aContext, true);};
 Process.prototype.runContinuation = function (aContext, args) {var parms = args.itemsArray(); if ((parms.length > 0) && (
 aContext.expression === 'expectReport')) {this.stop(); this.homeContext.inputs[0] = parms[0]; return;};
@@ -2167,7 +2129,7 @@ localize('The catchtag isn\'t a tag-continuation.'));};} else {throw Error(local
 
 // Global Flags:
 
-Process.prototype.doSetGlobalFlag = function anonymous (name, bool) {var stage = this.homeContext.receiver.parentThatIsA(StageMorph); name = this.inputOption(name); switch (name) {case 'turbo mode':
+Process.prototype.doSetGlobalFlag = function (name, bool) {var stage = this.homeContext.receiver.parentThatIsA(StageMorph); name = this.inputOption(name); switch (name) {case 'turbo mode':
 this.doSetFastTracking(bool); break; case 'flat line ends': SpriteMorph.prototype.useFlatLineEnds = asABool(bool); break; case 'log pen vectors': StageMorph.prototype.enablePenLogging = asABool(
 bool); break; case 'video capture': if (asABool(bool)) {this.startVideo(stage);} else {stage.stopProjection();}; break; case 'mirror video': stage.mirrorVideo = asABool(bool); break;};};
 
@@ -2198,8 +2160,8 @@ isCustomBlock = this.context.isCustomBlock; if (isNaN(counter) || (counter < 1))
 block, outer); this.context.isCustomBlock = isCustomBlock; this.context.addInput(counter - 1); this.pushContext('doYield'); if (body
 ) {this.pushContext(body.blockSequence());}; this.pushContext();}; /* Repeats the script's action for n times. Is really useful. :) */
 
-Process.prototype.doTimrLp = function anonymous (secs, body) {
-if (!this.context.timerLoop) {this.context.timerLoop = Date.now();};
+Process.prototype.doTimrLp = function (secs, body) {if (!((this
+).context.timerLoop)) {this.context.timerLoop = Date.now();};
 if ((Date.now() - this.context.timerLoop) >= (secs * 1000)) {
 delete this.context.timerLoop; this.popContext(); this.pushContext('doYield');
 return null;}; this.context.inputs = []; this.pushContext('doYield');
@@ -2218,15 +2180,15 @@ return null;}; this.context.inputs = []; this.pushContext('doYield'); this.pushC
 
 // Process interpolated iteration primitives
 
-Process.prototype.doForEach = function (upvar, list, script) {var next; if (this.context.accumulator === null) {this.assertType(list, 'list'); this.context.accumulator = {source : list, remaining : list.length(
-), idx : 0};}; if (this.context.accumulator.remaining === 0) {return;}; this.context.accumulator.remaining -= 1; if (this.context.accumulator.source.isLinked) {next = this.context.accumulator.source.at(1);
-this.context.accumulator.source = this.context.accumulator.source.cdr();} else {this.context.accumulator.idx += 1; next = this.context.accumulator.source.at(this.context.accumulator.idx);
-}; if (script instanceof BlockMorph) {this.pushContext('doYield'); this.pushContext(script.blockSequence()); this.pushContext();}; this.context.outerContext.variables.addVar(upvar);
-this.context.outerContext.variables.setVar(upvar, next);}; /* This block is revamped with changing a little bit its processing function to make it more faster to run for now. :-) */
+Process.prototype.doForEach = function (upvar, list, script) {var next; if (this.context.accumulator === null) {this.assertType(list, 'list'); this.context.accumulator = {source : list, remaining : (
+list.length()), idx : 0};}; if (this.context.accumulator.remaining === 0) {return;}; this.context.accumulator.remaining -= 1; if (this.context.accumulator.source.isLinked) {next = (this.context
+).accumulator.source.at(1); this.context.accumulator.source = this.context.accumulator.source.cdr();} else {this.context.accumulator.idx += 1; next = this.context.accumulator.source.at((this.context
+).accumulator.idx);}; if (script instanceof BlockMorph) {this.pushContext('doYield'); this.pushContext(script.blockSequence()); this.pushContext();}; this.context.outerContext.variables.addVar(
+upvar); this.context.outerContext.variables.setVar(upvar, next);}; /* This block is revamped with changing a little bit its processing function to make it more faster to run for now. :-) */
 
 Process.prototype.doFor = function (upvar, start, end, script) {var vars = this.context.outerContext.variables, dta = this.context.accumulator; if (dta === null) {this.assertType(start, 'number'
-); this.assertType(end, 'number'); dta = this.context.accumulator = {test : +start < +end ? (() => vars.getVar(upvar) > +end) : (() => vars.getVar(upvar) < +end), step : +start < +end ? 1 : -1
-}; vars.addVar(upvar); vars.setVar(upvar, Math.floor(+start));} else {vars.changeVar(upvar, dta.step);}; if (!dta.test()) {if (script instanceof BlockMorph) {this.pushContext('doYield');
+); this.assertType(end, 'number'); dta = this.context.accumulator = {test : +start < +end ? (() => vars.getVar(upvar) > +end) : (() => vars.getVar(upvar) < +end), step : (((+start < +end) - 1/2
+) * 2)}; vars.addVar(upvar); vars.setVar(upvar, Math.floor(+start));} else {vars.changeVar(upvar, dta.step);}; if (!dta.test()) {if (script instanceof BlockMorph) {this.pushContext('doYield');
 this.pushContext(script.blockSequence()); this.pushContext();};};}; /* This block is revamped with changing a little bit its processing function to make it more faster to run for now. :-) */
 
 // Process interpolated HOF primitives
@@ -2705,8 +2667,8 @@ Process.prototype.doShake = function (secs, force, decay) {
     1))) {force = (force * (1 - ((Date.now() - this.context.startTime) / (
     secs * 1000))));} else {force = (force * ((Date.now() - this.context.startTime
     ) / (secs * 1000)));};};}; newX = (this.context.startX + (((Math.random(
-    ) - 0.5) * 2) * force)), newY = (this.context.startY + (((Math.random(
-    ) - 0.5) * 2) * force)); this.blockReceiver().gotoXY(newX, newY);
+    ) - 1/2) * 2) * force)), newY = (this.context.startY + (((Math.random(
+    ) - 1/2) * 2) * force)); this.blockReceiver().gotoXY(newX, newY);
 
     this.context.inputs.pop();
     this.pushContext('doYield');
@@ -3046,8 +3008,7 @@ Process.prototype.encodeWAV = function (
     sampleRate,
     numChannels,
     bitDepth
-) {
-    var bytesPerSample = bitDepth / 8,
+)  {var bytesPerSample = bitDepth / 8,
         blockAlign = numChannels * bytesPerSample,
         buffer = new ArrayBuffer(44 + samples.length * bytesPerSample),
         view = new DataView(buffer);
@@ -3093,8 +3054,7 @@ Process.prototype.encodeWAV = function (
         floatTo16BitPCM(view, 44, samples);
     } else {
         writeFloat32(view, 44, samples);
-    };  return buffer;
-};
+    };  return buffer;};
 
 // Process audio input (interpolated)
 
@@ -3391,10 +3351,8 @@ Process.prototype.reportIsA = function (thing, typeString) {var choice = this.in
 thing); break; case 'script': return thing instanceof Context; break; default: return (this.reportTypeOf(thing) === choice); break};}; /* Improved now. */
 
 Process.prototype.reportTypeOf = function (thing) {
-    // answer a string denoting the argument's type
-    var exp;
-    if (isNil(thing)) {return 'nothing';};
-    if ((thing === true) || (thing === false)) {
+    var exp; if (isNil(thing)) {return 'nothing';
+    }; if ((thing === true) || (thing === false)) {
     return 'Boolean';}; if (thing instanceof List) {
     return 'list';}; if (parseFloat(thing) === +thing) {
     return 'number';}; if (isString(thing)) {return 'text';};
@@ -3403,12 +3361,10 @@ Process.prototype.reportTypeOf = function (thing) {
     if (thing instanceof Costume) {return 'costume';};
     if (thing instanceof Sound) {return 'sound';};
     if (thing instanceof Color) {return 'color';};
-    if (thing instanceof Context) {
-    return thing.toBlock().dataType();};
-    if ((typeof thing) === 'function'
-    ) {return 'function';};
-    return 'undefined';
-};
+    if (thing instanceof Context) {return ((thing
+    ).toBlock()).dataType();}; if ((typeof thing
+    ) === 'function') {return 'function';};
+    return 'undefined';};
 
 // Process math primtives - hyper-dyadic
 
@@ -3466,65 +3422,67 @@ Process.prototype.packCoordinates = function (list) {
             : each);
 };
 
-Process.prototype.isMatrix = function anonymous (data) {return ((data instanceof List) ? (data.at(1) instanceof List) : false);};
+Process.prototype.isMatrix = ((data) => (
+(data instanceof List) ? (data.at(1
+) instanceof List) : false));
 
 // Process math primtives - arithmetic
 
-Process.prototype.reportVariadicSum = function anonymous (numbers) {this.assertType(numbers, 'list'); return this.reportListAggregation(numbers, 'reportSum');};
+Process.prototype.reportVariadicSum = function (numbers) {this.assertType(numbers, 'list'); return this.reportListAggregation(numbers, 'reportSum');};
 
-Process.prototype.reportSum = function anonymous (a, b) {return this.hyperDyadic(this.reportComplexSum, a, b);};
+Process.prototype.reportSum = function (a, b) {return this.hyperDyadic(this.reportComplexSum, a, b);};
 
-Process.prototype.reportComplexSum = function anonymous (a, b) {a = asAComplexNum(a); b = asAComplexNum(b); var realResult = Process.prototype.reportBasicSum(a, b); realResult = (((Math.abs(+a) === Infinity) && (
+Process.prototype.reportComplexSum = function (a, b) {a = asAComplexNum(a); b = asAComplexNum(b); var realResult = Process.prototype.reportBasicSum(a, b); realResult = (((Math.abs(+a) === Infinity) && (
 Math.abs(+b) === Infinity)) ? (isNaN(realResult) ? Infinity : realResult) : realResult); var imaginaryResult = Process.prototype.reportBasicSum(a.i, b.i); imaginaryResult = (((Math.abs(a.i) === Infinity) && (
 Math.abs(b.i) === Infinity)) ? (isNaN(imaginaryResult) ? Infinity : imaginaryResult) : imaginaryResult); return new ComplexNumber(realResult, imaginaryResult);};
 
-Process.prototype.reportBasicSum = function anonymous (a, b) {return Process.prototype.fixSimpleNumber((+a) + (+b));};
+Process.prototype.reportBasicSum = function (a, b) {return Process.prototype.fixSimpleNumber((+a) + (+b));};
 
-Process.prototype.reportDifference = function anonymous (a, b) {return this.hyperDyadic(this.reportComplexDifference, a, b);};
+Process.prototype.reportDifference = function (a, b) {return this.hyperDyadic(this.reportComplexDifference, a, b);};
 
-Process.prototype.reportComplexDifference = function anonymous (a, b) {a = asAComplexNum(a); b = asAComplexNum(b); var realResult = Process.prototype.reportBasicDifference(a, b); realResult = (((Math.abs(+a
+Process.prototype.reportComplexDifference = function (a, b) {a = asAComplexNum(a); b = asAComplexNum(b); var realResult = Process.prototype.reportBasicDifference(a, b); realResult = (((Math.abs(+a
 ) === Infinity) && (Math.abs(+b) === Infinity)) ? (isNaN(realResult) ? 0 : realResult) : realResult); var imaginaryResult = Process.prototype.reportBasicDifference(a.i, b.i); imaginaryResult = (((Math.abs(a.i
 ) === Infinity) && (Math.abs(b.i) === Infinity)) ? (isNaN(imaginaryResult) ? 0 : imaginaryResult) : imaginaryResult); return new ComplexNumber(realResult, imaginaryResult);}; /* Infinity is now better!!! */
 
-Process.prototype.reportBasicDifference = function anonymous (a, b) {return Process.prototype.fixSimpleNumber((+a) - (+b));};
+Process.prototype.reportBasicDifference = function (a, b) {return Process.prototype.fixSimpleNumber((+a) - (+b));};
 
-Process.prototype.reportVariadicProduct = function anonymous (numbers) {this.assertType(numbers, 'list'); return this.reportListAggregation(numbers, 'reportProduct');};
+Process.prototype.reportVariadicProduct = function (numbers) {this.assertType(numbers, 'list'); return this.reportListAggregation(numbers, 'reportProduct');};
 
-Process.prototype.reportProduct = function anonymous (a, b) {return this.hyperDyadic(this.reportComplexProduct, a, b);};
+Process.prototype.reportProduct = function (a, b) {return this.hyperDyadic(this.reportComplexProduct, a, b);};
 
-Process.prototype.reportComplexProduct = function anonymous (a, b) {a = asAComplexNum(a); b = asAComplexNum(b); var realResult = Process.prototype.reportBasicProduct(a, b),
+Process.prototype.reportComplexProduct = function (a, b) {a = asAComplexNum(a); b = asAComplexNum(b); var realResult = Process.prototype.reportBasicProduct(a, b),
 imaginaryResult = Process.prototype.fixSimpleNumber(Process.prototype.fixSimpleNumber((+a) * b.i) + Process.prototype.fixSimpleNumber(a.i * (+b))); if (((a.i > 0) && (b.i < 0)
 ) || ((a.i < 0) && (b.i > 0))) {realResult = Process.prototype.fixSimpleNumber(realResult + Process.prototype.fixSimpleNumber(a.i * (-(b.i))));} else if ((Math.sign(a.i
 ) === Math.sign(b.i)) && ((Math.sign(a.i) !== 0) && (Math.sign(b.i) !== 0))) {realResult = Process.prototype.fixSimpleNumber(realResult - Process.prototype.fixSimpleNumber(
 a.i * b.i));}; return new ComplexNumber(realResult, imaginaryResult);}; /* Complex numbers are really in this Snap! mod. :) */
 
-Process.prototype.reportBasicProduct = function anonymous (a, b) {return (Process.prototype.fixSimpleNumber(Math.abs(+a) * Math.abs(+b)) * Math.sign((+a) * (+b)));};
+Process.prototype.reportBasicProduct = function (a, b) {return (Process.prototype.fixSimpleNumber(Math.abs(+a) * Math.abs(+b)) * Math.sign((+a) * (+b)));};
 
-Process.prototype.reportQuotient = function anonymous (a, b) {return this.hyperDyadic(this.reportComplexQuotient, a, b);};
+Process.prototype.reportQuotient = function (a, b) {return this.hyperDyadic(this.reportComplexQuotient, a, b);};
 
-Process.prototype.reportComplexQuotient = function anonymous (a, b) {a = asAComplexNum(a); b = asAComplexNum(b); if ((+(a.i) === 0) && (+(b.i) === 0)) {return Process.prototype.reportBasicQuotient(+a,
+Process.prototype.reportComplexQuotient = function (a, b) {a = asAComplexNum(a); b = asAComplexNum(b); if ((+(a.i) === 0) && (+(b.i) === 0)) {return Process.prototype.reportBasicQuotient(+a,
 +b);} else if ((Math.abs(+a) == 0) && (Math.abs(+(a.i)) > 0) && (Math.abs(+b) == 0) && (Math.abs(+(b.i)) == 0)) {return ComplexNumber(0, [-Infinity, 0, Infinity][Math.sign((+a) + (a.i)) + 1]);} else if (
 (Math.abs(+b) + Math.abs(b.i)) == 0) {return [-Infinity, 0, Infinity][Math.sign((+a) + (a.i)) + 1];} else {var numerator = Process.prototype.reportComplexProduct(a, Process.prototype.reportMonadic(['conjugate'
 ], b)), denominator = Process.prototype.reportComplexSum(Process.prototype.reportComplexProduct(+b, +b), Process.prototype.reportComplexProduct(+(b.i), +(b.i)));}; return new ComplexNumber(
 Process.prototype.reportBasicQuotient(+numerator, denominator), Process.prototype.reportBasicQuotient(+(numerator.i), denominator));}; /* Now we can divide complex numbers!!! :D */
 
-Process.prototype.reportBasicQuotient = function anonymous (a, b) {return (+b === 0) ? ((+a === 0) ? 0 : (Infinity * +a)) : ((Process.prototype.reportMonadic(['periodic?'
+Process.prototype.reportBasicQuotient = function (a, b) {return (+b === 0) ? ((+a === 0) ? 0 : (Infinity * +a)) : ((Process.prototype.reportMonadic(['periodic?'
 ], +b) || Process.prototype.reportMonadic(['constant?'], +a) || Process.prototype.reportMonadic(['constant?'], +b)) ? (+a / +b) : (((Math.abs(a) === Infinity) && (Math.abs(
 b) === Infinity)) ? (isNaN((+a) - (+b)) ? 1 : -1) : (Process.prototype.fixSimpleNumber(Math.abs(+a) / Math.abs(+b)) * Math.sign((+a) * (+b)))));}; /* The revamped operation. */
 
-Process.prototype.reportModulus = function anonymous (a, b) {return this.hyperDyadic(this.reportComplexModulus, a, b);};
+Process.prototype.reportModulus = function (a, b) {return this.hyperDyadic(this.reportComplexModulus, a, b);};
 
-Process.prototype.reportComplexModulus = function anonymous (a, b) {/* -bmp- */ a = asAComplexNum(a); b = asAComplexNum(b);
+Process.prototype.reportComplexModulus = function (a, b) {/* -bmp- */ a = asAComplexNum(a); b = asAComplexNum(b);
 return ComplexNumber(Process.prototype.reportBasicModulus(+a, +b), Process.prototype.reportBasicModulus(+(a.i), +(b.i)));};
 
-Process.prototype.reportBasicModulus = function anonymous (a, b) {a = +a; b = +b; return ((b == 0
+Process.prototype.reportBasicModulus = function (a, b) {a = +a; b = +b; return ((b == 0
 ) ? 0 : (((a % b) == 0) ? 0 : Process.prototype.fixSimpleNumber((Math.sign(a) == Math.sign(b)) ? (
 (Math.abs(a) % Math.abs(b)) * Math.sign(a)) : (Math.sign(b) * (Math.abs(b) - (Math.abs(a) % Math.abs(
 b)))))));}; /* The modulus is now better with the fixed numbers and the correct number signs. :-) */
 
-Process.prototype.reportPower = function anonymous (a, b) {return this.hyperDyadic(this.reportComplexPower, a, b);};
+Process.prototype.reportPower = function (a, b) {return this.hyperDyadic(this.reportComplexPower, a, b);};
 
-Process.prototype.reportComplexPower = function anonymous (a, b) {a = asAComplexNum(a); b = asAComplexNum(b); if (((
+Process.prototype.reportComplexPower = function (a, b) {a = asAComplexNum(a); b = asAComplexNum(b); if (((
 Math.abs(+a) + Math.abs(+(a.i))) > 0) && (Math.abs(+(b.i)) > 0)) {var poweredEuler = (num) => ((Math.abs(+(num.i)) > 0
 ) ? new ComplexNumber(Process.prototype.reportMonadic(['cos'], degrees(num.i)), Process.prototype.reportMonadic(['sin'
 ], degrees(num.i))) : Math.exp(+num)), c = Process.prototype.reportComplexProduct(b, Process.prototype.reportComplexLogarithm(
@@ -3549,7 +3507,7 @@ Process.prototype.reportBasicPower(result.at(1), Math.abs(+b
 ) == 1)) ? Process.prototype.reportBasicPower(-a, b) : 0))); return (
 isNaN(result) ? 0 : (((+a < 0) && (+b < 0)) ? 0 : result));};};
 
-Process.prototype.reportBasicPower = function anonymous (
+Process.prototype.reportBasicPower = function (
 a, b) {if (+a === Math.E) {return Math.exp(+b);};
 var result = +a, i = 0; if ((+b > 0) && isFinite(+b
 ) && !isNaN(+b) && ((Math.abs(+b) % 1) === 0)) {if (
@@ -3565,24 +3523,24 @@ Process.prototype.reportMonadic(['dec'], +b) > 0
 result < 1) ? result : Process.prototype.fixSimpleNumber(
 result)));}; /* This is very impressive. :~) */
 
-Process.prototype.reportRadical = function anonymous (a, b, c) {result = ((c === 'as a list') ? this.reportComplexRadical(a, b) : this.hyperDyadic(this.reportComplexRadical, a, b)); if (c === 'as a list'
+Process.prototype.reportRadical = function (a, b, c) {result = ((c === 'as a list') ? this.reportComplexRadical(a, b) : this.hyperDyadic(this.reportComplexRadical, a, b)); if (c === 'as a list'
 ) {var variants = [result], i = 0, complexAttrs = Process.prototype.reportComplexNumAttrs(result, ['polar']); a = +a; if (isNaN(a)) {a = 0;}; if (a > 1) {while (i < (a - 1)) {variants.push(
 Process.prototype.reportComplexNumAttrs(new List([result.at(1), (result.at(2) + (360 * ((i + 1) / a)))]), ['complex'])); i++;};}; return new List(variants);} else {return result;};};
 
-Process.prototype.reportComplexRadical = function anonymous (a, b) {a = asAComplexNum(a); b = asAComplexNum(b); return (((Math.abs(+(a.i)) > 0) || ((Math.abs(+(b.i)) > 0)) ? Process.prototype.reportComplexPower(b,
+Process.prototype.reportComplexRadical = function (a, b) {a = asAComplexNum(a); b = asAComplexNum(b); return (((Math.abs(+(a.i)) > 0) || ((Math.abs(+(b.i)) > 0)) ? Process.prototype.reportComplexPower(b,
 Process.prototype.reportComplexQuotient(1, a)) : Process.prototype.reportBasicRadical(+a, +b)));}; /* The reciprocal exponentiation is here to take the place of the basic radication operation in Snavanced! :) */
 
-Process.prototype.reportBasicRadical = function anonymous (a, b) {return ((+a === 2) ? ((+b < 0) ? new ComplexNumber(0, Process.prototype.fixSimpleNumber(Math.sqrt(-b))) : Process.prototype.fixSimpleNumber(
+Process.prototype.reportBasicRadical = function (a, b) {return ((+a === 2) ? ((+b < 0) ? new ComplexNumber(0, Process.prototype.fixSimpleNumber(Math.sqrt(-b))) : Process.prototype.fixSimpleNumber(
 Math.sqrt(+b))) : ((+a === 3) ? ((+b < 0) ? -(Process.prototype.fixSimpleNumber(Math.cbrt(-b))) : Process.prototype.fixSimpleNumber(Math.cbrt(+b))) : Process.prototype.reportComplexPower(+b,
 Process.prototype.reportBasicQuotient(1, +a))));}; /* Reports real or imaginary numbers. Just like Boyfriend practicing to upgrade his little digital voice. FNF' reference, anyone are not funking? :~) */
 
-Process.prototype.reportLogarithm = function anonymous (a, b) {return this.hyperDyadic(this.reportComplexLogarithm, a, b);};
+Process.prototype.reportLogarithm = function (a, b) {return this.hyperDyadic(this.reportComplexLogarithm, a, b);};
 
-Process.prototype.reportComplexLogarithm = function anonymous (a, b) {a = asAComplexNum(a); b = asAComplexNum(b); var polar = Process.prototype.reportPolar(b); var result = (((+b < 0) || (Math.abs(
+Process.prototype.reportComplexLogarithm = function (a, b) {a = asAComplexNum(a); b = asAComplexNum(b); var polar = Process.prototype.reportPolar(b); var result = (((+b < 0) || (Math.abs(
 +(b.i)) > 0)) ? new ComplexNumber(Process.prototype.reportBasicLogarithm(Math.E, polar.at(1)), radians(polar.at(2))) : Process.prototype.reportBasicLogarithm(a, b)); return ((+a === Math.E
 ) ? result : Process.prototype.reportComplexQuotient(Process.prototype.reportComplexLogarithm(Math.E, b), Process.prototype.reportComplexLogarithm(Math.E, a)));}; /* Use it for good. :) */
 
-Process.prototype.reportBasicLogarithm = function anonymous (a, b) {var result = 0; switch (+a) {case 2: result = Math.log2(+b); break; case Math.E: result = Math.log(+b); break; case 10: result = Math.log10(+b
+Process.prototype.reportBasicLogarithm = function (a, b) {var result = 0; switch (+a) {case 2: result = Math.log2(+b); break; case Math.E: result = Math.log(+b); break; case 10: result = Math.log10(+b
 ); break; default: result = Process.prototype.reportBasicQuotient(Math.log(+b), Math.log(+a)); break;}; if (!contains([2, Math.E], +a)) {result = (isNaN(result) ? 0 : result); result = ((+a < 1) ? +result : (
 Process.prototype.reportTextContains(b.toString(), '1e') ? +(b.toString().split('1e')[1]) : (Process.prototype.reportRound(result, new List([(b < Process.prototype.reportBasicPower(+a, -321)) ? 1 : ((
 b < Process.prototype.reportBasicPower(+a, -320)) ? 2 : ((b < Process.prototype.reportBasicPower(+a, -317)) ? 5 : ((b < Process.prototype.reportBasicPower(+a, -316)) ? 6 : ((b < Process.prototype.reportBasicPower(
@@ -3592,7 +3550,7 @@ b < Process.prototype.reportBasicPower(+a, 5)) ? 15 : ((b < Process.prototype.re
 result = Process.prototype.fixSimpleNumber(+result, 12);}; return ((+a === 0) ? Infinity : (isNaN(result) ? 0 : result
 ));}; /* Snavanced! is the only mod that have customizable logarithms. Try them, they are useful in everything! :) */
 
-Process.prototype.reportAverage = function anonymous (option, numbers) {switch (this.inputOption(option)) {case 'median': numbers = new List(numbers.asArray().sort((a, b) => (asANum(a) - asANum(b))));
+Process.prototype.reportAverage = function (option, numbers) {switch (this.inputOption(option)) {case 'median': numbers = new List(numbers.asArray().sort((a, b) => (asANum(a) - asANum(b))));
 return ((this.reportBasicModulus(numbers.length(), 2) > 0) ? numbers.at(this.reportRound(this.reportBasicQuotient(numbers.length(), 2), new List)) : this.reportBasicQuotient(this.reportBasicSum(numbers.at(
 this.reportBasicQuotient(numbers.length(), 2)), numbers.at(this.reportBasicSum(this.reportBasicQuotient(numbers.length(), 2), 1))), 2)); break; case 'arithmetic mean': return Process.prototype.reportQuotient(
 Process.prototype.reportVariadicSum(numbers), numbers.length()); break; case 'geometric mean': return Process.prototype.reportRadical(numbers.length(), Process.prototype.reportVariadicProduct(numbers)); break;
@@ -3600,14 +3558,14 @@ case 'variance': var mean = Process.prototype.reportAverage(['arithmetic mean'],
 Process.prototype.reportDifference(x, mean) ** 2))), numbers.length()); break; case 'harmonic mean': return Process.prototype.reportQuotient(numbers.length(),
 Process.prototype.reportVariadicSum(numbers.map(num => (1 / num)))); break; default: return 0; break;};}; /* The means are beautiful operators. :-) */
 
-Process.prototype.fixSimpleNumber = function anonymous (
+Process.prototype.fixSimpleNumber = function (
 number, optional) {var power = (10 ** (isNil(optional
 ) ? 15 : +optional)); var result = (((+number % 1) > 0
 ) ? (Math.round(Math.abs(+number) * power) / power
 ) : Math.abs(+number)); return ((Math.sign(+number
 ) < 0) ? -result : +result);};
 
-Process.prototype.reportRandom = function anonymous (a, b, c) {
+Process.prototype.reportRandom = function (a, b, c) {
 return ((c === 'without rounding') ? ((+a) + (Math.random() * (
 +b - +a))) : this.hyperDyadic(this.reportBasicRandom, a, b));};
 
@@ -3616,19 +3574,19 @@ Process.prototype.reportBasicRandom = function (min, max) {var floor = Math.min(
 ) == 0)) {return Math.random() * (ceil - floor) + floor;}; return Math.floor(
 Math.random() * (ceil - floor + 1)) + floor;}; /* Aligned perfectly. :~) */
 
-Process.prototype.reportIntegral = function anonymous (a, b, c, d) {a = asAComplexNum(a); b = asAComplexNum(b); c = asAComplexNum(c); d = asAComplexNum(d); return Process.prototype.reportComplexQuotient(
+Process.prototype.reportIntegral = function (a, b, c, d) {a = asAComplexNum(a); b = asAComplexNum(b); c = asAComplexNum(c); d = asAComplexNum(d); return Process.prototype.reportComplexQuotient(
 Process.prototype.reportComplexProduct(b, Process.prototype.reportComplexDifference(Process.prototype.reportComplexPower(a, Process.prototype.reportComplexSum(c, 1)), Process.prototype.reportComplexPower(
 d, Process.prototype.reportComplexSum(c, 1)))), Process.prototype.reportComplexSum(c, 1));};
 
-Process.prototype.reportCombsNPerms = function anonymous (a, b, c) {a = +asANum(a); c = +asANum(c); return Process.prototype.reportBasicQuotient(Process.prototype.reportMonadic(['gamma'],
+Process.prototype.reportCombsNPerms = function (a, b, c) {a = +asANum(a); c = +asANum(c); return Process.prototype.reportBasicQuotient(Process.prototype.reportMonadic(['gamma'],
 Process.prototype.reportBasicSum(a, 1)), Process.prototype.reportBasicProduct(Process.prototype.reportMonadic(['gamma'], Process.prototype.reportBasicSum(Process.prototype.reportBasicDifference(
 a, c), 1)), ((b === 'C') ? Process.prototype.reportMonadic(['gamma'], Process.prototype.reportBasicSum(c, 1)) : 1)));};
 
-Process.prototype.reportAtan2 = function anonymous (a, b) {return this.hyperDyadic(this.reportComplexAtan2, a, b);};
+Process.prototype.reportAtan2 = function (a, b) {return this.hyperDyadic(this.reportComplexAtan2, a, b);};
 
-Process.prototype.reportComplexAtan2 = function anonymous (a, b) {a = asAComplexNum(a); b = asAComplexNum(b); return (((Math.abs(a.i) > 0) || (Math.abs(b.i) > 0)) ? Process.prototype.reportComplexProduct(2,
+Process.prototype.reportComplexAtan2 = function (a, b) {a = asAComplexNum(a); b = asAComplexNum(b); return (((Math.abs(a.i) > 0) || (Math.abs(b.i) > 0)) ? Process.prototype.reportComplexProduct(2,
 Process.prototype.reportMonadic(['atan'], Process.prototype.reportComplexQuotient(a, Process.prototype.reportComplexSum(Process.prototype.reportComplexRadical(2, Process.prototype.reportComplexSum(
-Process.prototype.reportComplexPower(b, 2), Process.prototype.reportComplexPower(a, 2))), b)))) : Process.prototype.reportBasicAtan2(+a, +b));}; Process.prototype.reportBasicAtan2 = function anonymous (
+Process.prototype.reportComplexPower(b, 2), Process.prototype.reportComplexPower(a, 2))), b)))) : Process.prototype.reportBasicAtan2(+a, +b));}; Process.prototype.reportBasicAtan2 = function (
 a, b) {return Process.prototype.reportBasicModulus(degrees(Math.atan2(+a, +b)), 360);}; /* The new complex arc tagent for only 2 inputs. This is so beautiful and cool! :~) */
 
 Process.prototype.reportVariadicMin = function (numbers) {
@@ -3636,7 +3594,7 @@ Process.prototype.reportVariadicMin = function (numbers) {
     return this.reportListAggregation(numbers, 'reportMin');
 };
 
-Process.prototype.reportMin = function anonymous (a, b) {return this.hyperDyadic(this.reportBasicMin, a, b);};
+Process.prototype.reportMin = function (a, b) {return this.hyperDyadic(this.reportBasicMin, a, b);};
 
 Process.prototype.reportBasicMin = function (a, b) {
 var x = +a, y = +b; if (isNaN(x) || isNaN(y)) {
@@ -3647,7 +3605,7 @@ Process.prototype.reportVariadicMax = function (numbers) {
     return this.reportListAggregation(numbers, 'reportMax');
 };
 
-Process.prototype.reportMax = function anonymous (a, b) {return this.hyperDyadic(this.reportBasicMax, a, b);};
+Process.prototype.reportMax = function (a, b) {return this.hyperDyadic(this.reportBasicMax, a, b);};
 
 Process.prototype.reportBasicMax = function (a, b) {
 var x = +a, y = +b; if (isNaN(x) || isNaN(y)) {
@@ -3662,19 +3620,18 @@ Process.prototype.reportAnEulerNumberPower = ((power, acurracy) => ((((+(asANum(
 
 // Process bases primitives
 
-Process.prototype.reportNewNumeral = function anonymous (number, base) {if (Process.prototype.reportTypeOf(number) === 'number') {return ((+base == 10) ? +number : new Numeral(+number, +base));} else {throw Error(
-'Your first input isn\'t a numeral!');};}; Process.prototype.reportNumeralBase = function anonymous (numeral) {if (isNil(numeral)) {return 10;}; return (isNil(numeral.base) ? 10 : numeral.base);};
-Process.prototype.reportNumeralText = (numeral => ((numeral.base === undefined) ? numeral : numeral.alphabetic)); Process.prototype.decomposeAPolynomicallyNumeral = function anonymous (numeral, base) {if (
-!contains(['text', 'number'], Process.prototype.reportTypeOf(numeral))) {throw Error('Your first input isn\'t a numeral!');}; if ((base < 2) || (base > 36)) {throw Error('You put an illegal base!');} else {
-return Process.prototype.reportVariadicSum(new List(((Process.prototype.reportLetter(1, numeral.toString().toUpperCase()) === '-') ? Process.prototype.reportLetter(Process.prototype.reportNumbers(2,
-numeral.toString().toUpperCase().length), numeral.toString().toUpperCase()) : numeral.toString().toUpperCase()).split('').reverse().map((value, index, list) => {var unicode = Process.prototype.reportUnicode(value
-); if (!(unicode < 65)) {value = Math.round(unicode - 55);}; if (!(value < base)) {throw Error('You put an illegal digit!');}; return (value * (base ** index));})));};};
-Process.prototype.reportNumberWithMoreDigits = function anonymous (number, digits) {var i = 0; decimal = Process.prototype.reportDecimalAsInteger(Math.abs(asANum(number)
-)), sign = Math.sign(asANum(number)); try {if (this.reportTypeOf(number) === 'number') {number = Math.trunc(Math.abs(+number));}; number = number.toString(); var result = number;
-while (i < (digits - number.length)) {result = ('0').concat(result); i++;}; return ((sign < 0) ? '-' : '').concat(((decimal > 0) ? result.concat('.', decimal) : result));
-} catch (error) {number = ''; while (i < digits) {number = ('0').concat(number); i++;}; return number;};}; /* All block of the bases sub-category are only monadic. */
-Process.prototype.reportDecimalAsInteger = function anonymous (n) {if (+(asANum(n)) === 0) {return 0;}; n = Process.prototype.reportMonadic(['dec'], asANum(
-n)).toString(); return Process.prototype.reportJoinWords(Process.prototype.reportLetter(Process.prototype.reportNumbers(3, n.length), n));};
+Process.prototype.reportNewNumeral = function (number, base) {if (Process.prototype.reportTypeOf(number) === 'number') {return ((+base == 10) ? +number : new Numeral(+number, +base));} else {throw Error(
+'Your first input isn\'t a numeral!');};}; Process.prototype.reportNumeralBase = function anonymous (numeral) {if (isNil(numeral)) {return 10;}; return (isNil(numeral.base) ? 10 : numeral.base);}; (Process
+).prototype.reportNumeralText = (numeral => ((numeral.base === undefined) ? numeral : numeral.alphabetic)); Process.prototype.decomposeAPolynomicallyNumeral = function (numeral, base) {if (!contains(['text',
+'number'], Process.prototype.reportTypeOf(numeral))) {throw Error('Your first input isn\'t a numeral!');}; if ((base < 2) || (base > 36)) {throw Error('You put an illegal base!');} else {return (Process
+).prototype.reportVariadicSum(new List(((Process.prototype.reportLetter(1, numeral.toString().toUpperCase()) === '-') ? Process.prototype.reportLetter(Process.prototype.reportNumbers(2, numeral.toString(
+).toUpperCase().length), numeral.toString().toUpperCase()) : numeral.toString().toUpperCase()).split('').reverse().map((value, index, list) => {var unicode = Process.prototype.reportUnicode(value); if (!(
+unicode < 65)) {value = Math.round(unicode - 55);}; if (!(value < base)) {throw Error('You put an illegal digit!');}; return (value * (base ** index));})));};}; (Process.prototype.reportNumberWithMoreDigits
+) = function (number, digits) {var i = 0; decimal = Process.prototype.reportDecimalAsInteger(Math.abs(asANum(number))), sign = Math.sign(asANum(number)); try {if (this.reportTypeOf(number) === 'number') {
+number = Math.trunc(Math.abs(+number));}; number = number.toString(); var result = number; while (i < (digits - number.length)) {result = ('0').concat(result); i++;}; return ((sign < 0) ? '-' : '').concat(
+((decimal > 0) ? result.concat('.', decimal) : result));} catch (error) {number = ''; while (i < digits) {number = ('0').concat(number); i++;}; return number;};}; (Process.prototype.reportDecimalAsInteger
+) = function (n) {if (+(asANum(n)) === 0) {return 0;}; n = Process.prototype.reportMonadic(['dec'], asANum(n)).toString(); return Process.prototype.reportJoinWords(Process.prototype.reportLetter((Process
+).prototype.reportNumbers(3, n.length), n));};
 
 // Process logic primitives - hyper-dyadic / monadic where applicable
 
@@ -3690,17 +3647,17 @@ Process.prototype.reportGreaterThanOrEquals = function (a, b) {return this.hyper
 
 Process.prototype.reportBasicGreaterThan = function (a, b) {var x = +a, y = +b; if (isNaN(x) || isNaN(y)) {x = a; y = b;}; return (x > y);};
 
-Process.prototype.reportVariadicEquals = function anonymous (inputs) {var backupInputs = inputs.fullCopy().asArray(
+Process.prototype.reportVariadicEquals = function (inputs) {var backupInputs = inputs.fullCopy().asArray(
 ); i = 1; if (backupInputs.length > 1)  {result = backupInputs[0]; while (i < (backupInputs.length - 1)) {i++; if (
 snapEquals(result, backupInputs[i - 1])) {result = backupInputs[i - 1];} else {return false;};}; return snapEquals(
 result, backupInputs[backupInputs.length - 1]);} else {return false;};}; /* Variadic equals is so cool!!! :~) */
 
-Process.prototype.reportVariadicNotEquals = function anonymous (inputs) {var backupInputs = inputs.fullCopy().asArray(
+Process.prototype.reportVariadicNotEquals = function (inputs) {var backupInputs = inputs.fullCopy().asArray(
 ); i = 1; if (backupInputs.length > 1)  {result = backupInputs[0]; while (i < (backupInputs.length - 1)) {i++; if (
 !snapEquals(result, backupInputs[i - 1])) {result = backupInputs[i - 1];} else {return false;};}; return !snapEquals(
 result, backupInputs[backupInputs.length - 1]);} else {return false;};}; /* Its sibling is so cool too!!! :^A */
 
-Process.prototype.reportVariadicIsIdentical = function anonymous (inputs) {var backupInputs = inputs.fullCopy().asArray(
+Process.prototype.reportVariadicIsIdentical = function (inputs) {var backupInputs = inputs.fullCopy().asArray(
 ); i = 1; if (backupInputs.length > 1)  {result = backupInputs[0]; while (i < (backupInputs.length - 1)) {i++; if (
 Process.prototype.reportIsIdentical(result, backupInputs[i - 1])) {result = backupInputs[i - 1];} else {return false;};
 }; return Process.prototype.reportIsIdentical(result, backupInputs[backupInputs.length - 1]);} else {return false;};};
