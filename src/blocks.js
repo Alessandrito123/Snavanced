@@ -1897,11 +1897,8 @@ nearestBlock, isForced) {this.children.forEach((morph
 ) => {if (morph instanceof SyntaxElementMorph) {(morph
 ).fixBlockColor(nearestBlock, isForced);};});};
 
-(SyntaxElementMorph.prototype
-).pictureLabelExceptions = {
-'%l' : '%verticalEllipsis',
-'%clr' : '%pipette',
-'%obj' : '%turtle'};
+SyntaxElementMorph.prototype.pictureLabelExceptions = {'%l' : '\uFE19'
+/* '%verticalEllipsis' */, '%clr' : '%pipette', '%obj' : '%turtle'};
 
 // SyntaxElementMorph label parts:
 
@@ -5527,7 +5524,7 @@ BlockMorph.prototype.mouseLeaveBounds = function (dragged) {
 
 // BlockMorph dragging and dropping
 
-BlockMorph.prototype.rootForGrab = function anonymous () {return this;};
+BlockMorph.prototype.rootForGrab = function () {return this;};
 
 /*
     for demo purposes, allows you to drop arg morphs onto
@@ -7227,7 +7224,7 @@ RingMorph.prototype.embed = function (aBlock, inputNames, noVanish) {
     this.fixBlockColor(null, true);
 };
 
-RingMorph.prototype.vanishForSimilar = function anonymous () {
+RingMorph.prototype.vanishForSimilar = function () {
     // let me disappear if I am nesting a variable getter or Ring
     // but only if I'm not already inside another ring
     var slot = this.parts().filter(part => ((part instanceof CommandSlotMorph) || (part instanceof FunctionSlotMorph)))[0];
@@ -7246,7 +7243,7 @@ RingMorph.prototype.vanishForSimilar = function anonymous () {
     )  {this.parent.replaceInput(this, block);};};
 
 RingMorph.prototype.blockSlot = function () {var slots = this.parts().filter(part => ((part instanceof CommandSlotMorph) || (part instanceof FunctionSlotMorph
-))); if (slots.length > 0) {return slots[0];} else {return null;};}; RingMorph.prototype.contents = function anonymous () {var thatSlot = this.blockSlot();
+))); if (slots.length > 0) {return slots[0];} else {return null;};}; RingMorph.prototype.contents = function () {var thatSlot = this.blockSlot();
 return ((thatSlot instanceof Morph) ? thatSlot.nestedBlock() : null);}; RingMorph.prototype.inputNamesElement = function () {var inputs = this.children.filter(
 part => (part instanceof MultiArgMorph))[0]; if (inputs instanceof MultiArgMorph) {return inputs;} else {return null;};}; (RingMorph.prototype.inputNames
 ) = function () {var inputs = this.inputNamesElement(); if (inputs instanceof MultiArgMorph) {return inputs.evaluate();} else {return [];};};
@@ -8539,7 +8536,7 @@ CommandSlotMorph.prototype.dentLeft = function () {
 CommandSlotMorph.prototype.dentCenter = function () {
     return this.dentLeft()
         + this.corner
-        + (this.dent * 0.5);
+        + (this.dent / 2);
 };
 
 CommandSlotMorph.prototype.attachTargets = function () {
@@ -9802,12 +9799,12 @@ InputSlotMorph.prototype.objectsMenu = function (searching, includeMyself, inclu
     return dict;
 };
 
-InputSlotMorph.prototype.midsMenu = function anonymous (
+InputSlotMorph.prototype.midsMenu = function (
 ) {var dict = {}, mids = world.childThatIsA(IDE_Morph).mids,
 i = 0; while (i < mids.length) {dict[('').concat('\(', (i + 1
 ) , '\) ', mids[i].name)] = (i + 1); i++;}; return dict;};
 
-InputSlotMorph.prototype.typesMenu = function anonymous () {
+InputSlotMorph.prototype.typesMenu = function () {
     var dict = {
         number : ['number'],
         text : ['text'],
@@ -9868,7 +9865,7 @@ while (i < scripts.length) {if (((scripts[i] instanceof HatBlockMorph) || (scrip
 InputSlotMorph.prototype.constantsMenu = function () {var dict = {}, ide = world.childThatIsA(IDE_Morph);
 if (ide instanceof IDE_Morph) {ide.mathConstants().forEach(con => {dict[con[0]] = con[0];});}; return dict;};
 
-InputSlotMorph.prototype.attributesMenu = function anonymous (
+InputSlotMorph.prototype.attributesMenu = function (
 searching) {var dict = {
             'position' : ['position'],
             'x position' : ['x position'],
@@ -10770,39 +10767,32 @@ progress) {var w = this.width(), h = this.height(), r = (
 h / 2), w2 = (w * ((this.value ? (3 - progress) : progress
 ) + 1/2)) / 4, shift = this.edge / 2, gradient; if ((this
 ).cachedNormalColor) {ctx.fillStyle = this.color.toString();
-} else if (progress < 0 ) {ctx.fillStyle = this.color.darker(
+} else if (progress < 0) {ctx.fillStyle = this.color.darker(
 25).toString();} else {switch (this.value) {case true: (ctx
 ).fillStyle = 'rgb(0, 200, 0)'; break; case false: (ctx
 ).fillStyle = 'rgb(200, 0, 0)'; break; default: (ctx
-).fillStyle = this.color.darker(25).toString();};
-}; if (progress > 0 && !(this.isEmptySlot())) {
-ctx.fillStyle = 'rgb(0, 200, 0)'; ctx.beginPath(
-); ctx.moveTo(0, r); ctx.lineTo(r, 0); ctx.lineTo(
-w2, 0); ctx.lineTo(w2, h); ctx.lineTo(r, h); (ctx
-).closePath(); ctx.fill(); ctx.fillStyle = (('rgb('
-) + '200, 0, 0)'); ctx.beginPath(); ctx.moveTo(
-w2, 0); ctx.lineTo(w - r, 0); ctx.lineTo(w, r);
-ctx.lineTo(w - r, h); ctx.lineTo(w2, h); (ctx
-).closePath(); ctx.fill();} else {ctx.beginPath(
-); ctx.moveTo(0, r); ctx.lineTo(r, 0); ctx.lineTo(
-w - r, 0); ctx.lineTo(w, r); ctx.lineTo(w - r, h);
-ctx.lineTo(r, h); ctx.closePath(); ctx.fill();};
-if (MorphicPreferences.isFlat) {return;}; (ctx
-).lineWidth = this.edge; ctx.lineJoin = 'round';
-ctx.lineCap = 'butt'; if (useBlurredShadows) {
-ctx.shadowOffsetX = shift; (ctx.shadowOffsetY
-) = shift; ctx.shadowBlur = this.edge; (ctx
-).shadowColor = (new Color(0, 0, 0, 1/2)
-).toString();}; ctx.strokeStyle = (this
-).cachedClrDark; ctx.beginPath(); (ctx
-).moveTo(shift, r); ctx.lineTo(r, shift
-); ctx.lineTo(w - r, shift); ctx.stroke(
-); ctx.closePath(); ctx.shadowOffsetX = (
-0); ctx.shadowOffsetY = 0; (ctx.strokeStyle
-) = this.cachedClrBright; ctx.beginPath();
-ctx.moveTo(w - shift, r); ctx.lineTo(w - (
-r), h - shift); ctx.lineTo(r, h - shift
-); ctx.stroke(); ctx.closePath();};
+).fillStyle = this.color.darker(25).toString();};}; if (
+(progress > 0) && !(this.isEmptySlot())) {(ctx.fillStyle
+) = 'rgb(0, 200, 0)'; ctx.beginPath(); ctx.moveTo(0, r);
+ctx.lineTo(r, 0); ctx.lineTo(w2, 0); ctx.lineTo(w2, h);
+ctx.lineTo(r, h); ctx.closePath(); ctx.fill(); (ctx.fillStyle
+) = 'rgb\(200, 0, 0\)'; ctx.beginPath(); ctx.moveTo(w2, 0);
+ctx.lineTo(w - r, 0); ctx.lineTo(w, r); ctx.lineTo(w - r, h);
+ctx.lineTo(w2, h); ctx.closePath(); ctx.fill();} else {(ctx
+).beginPath(); ctx.moveTo(0, r); ctx.lineTo(r, 0); ctx.lineTo(
+w - r, 0); ctx.lineTo(w, r); ctx.lineTo(w - r, h); ctx.lineTo(
+r, h); ctx.closePath(); ctx.fill();}; if (!((MorphicPreferences
+).isFlat)) {ctx.lineWidth = this.edge; ctx.lineJoin = 'round';
+ctx.lineCap = 'butt'; if (useBlurredShadows) {(ctx.shadowOffsetX
+) = shift; ctx.shadowOffsetY = shift; ctx.shadowBlur = (this
+).edge; ctx.shadowColor = (new Color(0, 0, 0, 1/2)).toString(
+);}; ctx.strokeStyle = this.cachedClrDark; ctx.beginPath();
+ctx.moveTo(shift / 2, r + shift / 2); ctx.lineTo(r, shift);
+ctx.lineTo(w - r, shift); ctx.stroke(); ctx.closePath();
+ctx.shadowOffsetX = 0; ctx.shadowOffsetY = 0; (ctx.strokeStyle
+) = this.cachedClrBright; ctx.beginPath(); ctx.moveTo((w - (
+shift / 2)), (r - (shift / 2))); ctx.lineTo(w - r, h - shift);
+ctx.lineTo(r, h - shift); ctx.stroke(); ctx.closePath();};};
 
 BooleanSlotMorph.prototype.drawLabel = function (ctx
 ) {var w = this.width(), r = (this.height() / 2) - this.edge,
@@ -10882,7 +10872,7 @@ BooleanSlotMorph.prototype.drawKnob = function (ctx, progress) {
             ctx.shadowBlur = 2 * shift;
             ctx.shadowColor = 'black';
         }; if (progress < 0) {
-            ctx.globalAlpha = 0.6;
+            ctx.globalAlpha = 3/5;
         }; break;
     case true:
         x = w - r - slideStep;
@@ -10897,19 +10887,17 @@ BooleanSlotMorph.prototype.drawKnob = function (ctx, progress) {
         if (!MorphicPreferences.isFlat && useBlurredShadows) {
             ctx.shadowOffsetX = 0;
             ctx.shadowOffsetY = 0;
-            ctx.shadowBlur = 2 *shift;
+            ctx.shadowBlur = 2 * shift;
             ctx.shadowColor = 'black';
-        }; ctx.globalAlpha = 0.6;
+        }; ctx.globalAlpha = 3/5;
     }; ctx.fillStyle = color.toString();
     ctx.beginPath();
-    ctx.arc(x, y, r, radians(0), radians(360));
+    ctx.arc(x, y, r, 0, 2 * Math.PI);
     ctx.closePath();
     ctx.fill();
 
-    if (MorphicPreferences.isFlat) {
+    if (!(MorphicPreferences.isFlat)) {
         ctx.globalAlpha = 1;
-        return;
-    }; // add 3D-Effect
     // outline:
     ctx.shadowOffsetX = 0;
     ctx.shadowBlur = 0;
@@ -10917,11 +10905,10 @@ BooleanSlotMorph.prototype.drawKnob = function (ctx, progress) {
     ctx.lineWidth = outline;
     ctx.strokeStyle = outlineColor.toString();
     ctx.beginPath();
-    ctx.arc(x, y, r - (outline / 2), radians(0), radians(360));
-    ctx.stroke();
+    ctx.arc(x, y, r - (outline / 2),
+    0, 2 * Math.PI); ctx.stroke();
 
-    if (r < outline + this.edge) {return;};
-
+    if (!(r < (outline + this.edge))) {
     // top-left:
     gradient = ctx.createRadialGradient(
         x,
@@ -10941,8 +10928,8 @@ BooleanSlotMorph.prototype.drawKnob = function (ctx, progress) {
         x,
         y,
         r - outline - this.edge / 2,
-        radians(180),
-        radians(270),
+        -(Math.PI),
+        Math.PI / -2,
         false
     ); ctx.stroke();
 
@@ -10965,16 +10952,15 @@ BooleanSlotMorph.prototype.drawKnob = function (ctx, progress) {
         x,
         y,
         r - outline - this.edge / 2,
-        radians(0),
-        radians(90),
+        0,
+        Math.PI / 2,
         false
-    ); ctx.stroke();
-    ctx.globalAlpha = 1;
-};
+    ); ctx.stroke();};};
+    ctx.globalAlpha = 1;};
 
-BooleanSlotMorph.prototype.textLabelExtent = function () {var font = ((localStorage['-snap-setting-language'] === 'tok') ? 'blockTokiPonaFont' : 'blockGlobalFont'
-), t = new StringMorph(localize('TRUE'), this.fontSize, null, true, false, false, null, null, WHITE, font), f = new StringMorph(localize('FALSE'
-), this.fontSize, null, true, false, false, null, null, WHITE, font); return new Point(Math.max(t.width(), f.width()), t.height());};
+BooleanSlotMorph.prototype.textLabelExtent = function () {var font = (((localStorage['-snap-setting-language'] === 'tok') ? 'blockTokiPonaFont' : (
+'blockGlobalFont'))), t = new StringMorph(localize('TRUE'), this.fontSize, null, true, false, false, null, null, WHITE, font), f = new StringMorph(
+localize('FALSE'), this.fontSize, null, true, false, false, null, null, WHITE, font); return new Point(Math.max(t.width(), f.width()), t.height());};
 
 // TextSlotMorph //////////////////////////////////////////////////////
 
@@ -12288,7 +12274,7 @@ ReporterSlotMorph.uber = FunctionSlotMorph.prototype;
 
 // ReporterSlotMorph instance creation:
 
-function ReporterSlotMorph(isPredicate
+function ReporterSlotMorph (isPredicate
 ) {this.init(isPredicate);}; // init
 
 ReporterSlotMorph.prototype.init = function (isPredicate
@@ -12299,7 +12285,7 @@ true); this.add(this.emptySlot()); if (isPredicate
 
 ReporterSlotMorph.prototype.drawModifiedRounded = function (ctx) {
 if (this.nestedBlock() instanceof ReporterBlockMorph) {
-var rounding = this.nestedBlock().rounding;} else {
+var rounding = (this.nestedBlock()).rounding;} else {
 var rounding = this.rounding;};
 
     var h = this.height(),
@@ -12309,122 +12295,59 @@ var rounding = this.rounding;};
         gradient;
 
     // draw the 'flat' shape:
-    ctx.fillStyle = this.color.toString();
+    if (MorphicPreferences.isFlat) {
+    ctx.fillStyle = this.color.toString();} else {
+    var gradient = ctx.createLinearGradient(0, 0, 0, this.height());
+    gradient.addColorStop(0, this.color.toString());
+    gradient.addColorStop(1, (this.color.darker()).toString());
+    ctx.fillStyle = gradient;};
     ctx.beginPath();
-
-    // top left:
     ctx.arc(
         r,
         r,
-        r,
+        r - this.edge,
         -(Math.PI),
         -(Math.PI / 2),
         false
-    );
-
-    // top right:
-    ctx.arc(
+    );  ctx.arc(
         w - r,
         r,
-        r,
+        r - this.edge,
         -(Math.PI / 2),
         0,
         false
-    );
-
-    // bottom right:
-    ctx.arc(
+    );  ctx.arc(
         w - r,
         h - r,
-        r,
+        r - this.edge,
         0,
         (Math.PI / 2),
         false
-    );
-
-    // bottom left:
-    ctx.arc(
+    );  ctx.arc(
         r,
         h - r,
-        r,
+        r - this.edge,
         (Math.PI / 2),
         Math.PI,
         false
-    );
-
-    ctx.closePath();
+    );  ctx.closePath();
     ctx.fill();
 
-    if (MorphicPreferences.isFlat) {return;};
-
+    if (!(MorphicPreferences.isFlat)) {
     // add 3D-Effect:
     ctx.lineWidth = this.edge;
     ctx.lineJoin = 'round';
-    ctx.lineCap = 'round';
-
-    // bottom left corner
-    ctx.strokeStyle = this.cachedClr; //gradient;
-    ctx.beginPath();
-    ctx.arc(
-        r,
-        h - r,
-        Math.max(r - shift, 0),
-        (Math.PI / 2),
-        Math.PI,
-        false
-    );
-    ctx.stroke();
-
-    // top right corner
-    ctx.strokeStyle = this.cachedClr; // this.gradient;
-    ctx.beginPath();
-    ctx.arc(
-        w - r,
-        r,
-        Math.max(r - shift, 0),
-        -(Math.PI / 2),
-        0,
-        false
-    );
-    ctx.stroke();
-
-    // normal gradient edges
+    ctx.lineCap = 'butt';
 
     if (useBlurredShadows) {
-        ctx.shadowOffsetX = shift;
         ctx.shadowOffsetY = shift;
         ctx.shadowBlur = this.edge;
-        ctx.shadowColor = this.color.darker(80).toString();
+        ctx.shadowColor = "black";
     };
 
-    // top edge: straight line
-    gradient = ctx.createLinearGradient(
-        0,
-        0,
-        0,
-        this.edge
-    );
-    gradient.addColorStop(1, this.cachedClrDark);
-    gradient.addColorStop(0, this.cachedClr);
-    ctx.strokeStyle = gradient;
+    ctx.strokeStyle = this.cachedClrDark;
     ctx.beginPath();
-    ctx.moveTo(r - shift, shift);
-    ctx.lineTo(w - r + shift, shift);
-    ctx.stroke();
-
-    // top edge: left corner
-    gradient = ctx.createRadialGradient(
-        r,
-        r,
-        Math.max(r - this.edge, 0),
-        r,
-        r,
-        r
-    );
-    gradient.addColorStop(1, this.cachedClr);
-    gradient.addColorStop(0, this.cachedClrDark);
-    ctx.strokeStyle = gradient;
-    ctx.beginPath();
+    ctx.moveTo(shift, h - r);
     ctx.arc(
         r,
         r,
@@ -12433,35 +12356,16 @@ var rounding = this.rounding;};
         (Math.PI * 3/2),
         false
     );
-    ctx.stroke();
-
-    // left edge: straight vertical line
-    gradient = ctx.createLinearGradient(0, 0, this.edge, 0);
-    gradient.addColorStop(1, this.cachedClrDark);
-    gradient.addColorStop(0, this.cachedClr);
-    ctx.strokeStyle = gradient;
-    ctx.beginPath();
-    ctx.moveTo(shift, r);
-    ctx.lineTo(shift, h - r);
+    ctx.lineTo(w - r + shift, shift);
     ctx.stroke();
 
     ctx.shadowOffsetX = 0;
     ctx.shadowOffsetY = 0;
     ctx.shadowBlur = 0;
 
-    // bottom edge: right corner
-    gradient = ctx.createRadialGradient(
-        w - r,
-        h - r,
-        Math.max(r - this.edge, 0),
-        w - r,
-        h - r,
-        r
-    );
-    gradient.addColorStop(1, this.cachedClr);
-    gradient.addColorStop(0, this.cachedClrBright);
-    ctx.strokeStyle = gradient;
+    ctx.strokeStyle = this.cachedClrBright;
     ctx.beginPath();
+    ctx.moveTo(w - shift, r + shift);
     ctx.arc(
         w - r,
         h - r,
@@ -12470,33 +12374,9 @@ var rounding = this.rounding;};
         (Math.PI / 2),
         false
     );
+    ctx.lineTo(r - shift, h - shift);
     ctx.stroke();
-
-    // bottom edge: straight line
-    gradient = ctx.createLinearGradient(
-        0,
-        h - this.edge,
-        0,
-        h
-    );
-    gradient.addColorStop(1, this.cachedClr);
-    gradient.addColorStop(0, this.cachedClrBright);
-    ctx.strokeStyle = gradient;
-    ctx.beginPath();
-    ctx.moveTo(r - shift, h - shift);
-    ctx.lineTo(w - r + shift, h - shift);
-    ctx.stroke();
-
-    // right edge: straight vertical line
-    gradient = ctx.createLinearGradient(w - this.edge, 0, w, 0);
-    gradient.addColorStop(1, this.cachedClr);
-    gradient.addColorStop(0, this.cachedClrBright);
-    ctx.strokeStyle = gradient;
-    ctx.beginPath();
-    ctx.moveTo(w - shift, r + shift);
-    ctx.lineTo(w - shift, h - r);
-    ctx.stroke();
-};
+};};
 
 ReporterSlotMorph.prototype.drawModifiedDiamond = function (ctx) {
 if (this.nestedBlock() instanceof ReporterBlockMorph) {
@@ -12632,25 +12512,23 @@ var isArrow = false;};
     ctx.stroke();
 };
 
-ReporterSlotMorph.prototype.renderReporter = function (ctx) {
-var borderColor; if (this.parent) {borderColor = this.parent.color;
-} else {borderColor = new Color(120, 120, 120);}; // cache my border colors
-this.cachedClr = borderColor.toString(); this.cachedClrBright = (borderColor
-).lighter(this.contrast).toString(); this.cachedClrDark = borderColor.darker(
-this.contrast).toString(); if (this.nestedBlock() instanceof ReporterBlockMorph
-) {if (this.nestedBlock().isPredicate || this.nestedBlock().isArrow) {(this
-).drawModifiedDiamond(ctx);} else {this.drawModifiedRounded(ctx);};} else {
-this.drawModifiedRounded(ctx);};};
+ReporterSlotMorph.prototype.renderReporter = function (ctx) {var borderColor; if (
+this.parent) {borderColor = this.parent.color;} else {borderColor = new Color(120,
+120, 120);}; this.cachedClr = borderColor.toString(); this.cachedClrBright = ((
+borderColor.lighter(this.contrast)).withAlpha(1/2)).toString(); (this.cachedClrDark
+) = ((borderColor.darker(this.contrast)).withAlpha(1/2)).toString(); if ((this
+).nestedBlock() instanceof ReporterBlockMorph) {if ((this.nestedBlock().isPredicate
+) || (this.nestedBlock()).isArrow) {this.drawModifiedDiamond(ctx);} else {
+this.drawModifiedRounded(ctx);};} else {this.drawModifiedRounded(ctx);};};
 
-ReporterSlotMorph.prototype.renderPredicate = function (ctx) {
-var borderColor; if (this.parent) {borderColor = this.parent.color;
-} else {borderColor = new Color(120, 120, 120);}; // cache my border colors
-this.cachedClr = borderColor.toString(); this.cachedClrBright = (borderColor
-).lighter(this.contrast).toString(); this.cachedClrDark = borderColor.darker(
-this.contrast).toString(); if (this.nestedBlock() instanceof ReporterBlockMorph
-) {if (this.nestedBlock().isPredicate || this.nestedBlock().isArrow) {(this
-).drawModifiedDiamond(ctx);} else {this.drawModifiedRounded(ctx);};} else {
-this.drawModifiedDiamond(ctx);};};
+ReporterSlotMorph.prototype.renderPredicate = function (ctx) {var borderColor; if (
+this.parent) {borderColor = this.parent.color;} else {borderColor = new Color(120,
+120, 120);}; this.cachedClr = borderColor.toString(); this.cachedClrBright = ((
+borderColor.lighter(this.contrast)).withAlpha(1/2)).toString(); (this.cachedClrDark
+) = ((borderColor.darker(this.contrast)).withAlpha(1/2)).toString(); if ((this
+).nestedBlock() instanceof ReporterBlockMorph) {if ((this.nestedBlock().isPredicate
+) || (this.nestedBlock()).isArrow) {this.drawModifiedDiamond(ctx);} else {
+this.drawModifiedRounded(ctx);};} else {this.drawModifiedDiamond(ctx);};};
 
 ReporterSlotMorph.prototype.emptySlot = function () {
     var empty = new ArgMorph,

@@ -149,11 +149,12 @@ XML_Serializer.prototype.addMedia = function (object, mediaID) {
     return this.media.length;
 };
 
-XML_Serializer.prototype.at = function anonymous (integer) {return this.contents[integer - 1];};
+XML_Serializer.prototype.at = function (integer
+) {return ((this.contents)[integer - 1]);};
 
-XML_Serializer.prototype.flush = function anonymous () {
-this.contents.forEach(obj => delete obj[this.idProperty]
-); this.contents = []; this.root = {};};
+XML_Serializer.prototype.flush = function (
+) {this.contents.forEach(obj => delete obj[(this
+).idProperty]); this.contents = []; this.root = {};};
 
 XML_Serializer.prototype.flushMedia = function () {
     // private - free all media objects and empty my media
@@ -1168,7 +1169,7 @@ SnapSerializer.prototype.loadScript = function (model, object) {
 SnapSerializer.prototype.loadComment = function (model) {var comment = new CommentMorph(model.contents), scale = SyntaxElementMorph.prototype.scale;
 comment.isCollapsed = (model.attributes.collapsed === 'true'); comment.setTextWidth(+model.attributes.w * scale); return comment;};
 
-SnapSerializer.prototype.loadBlock = function anonymous (model, isReporter, object
+SnapSerializer.prototype.loadBlock = function (model, isReporter, object
 ) {var block, info, inputs, isGlobal, receiver, migration, migrationOffset = 0,
 migrateToVariadic = false, migrateInverse = false, skip;
     if (model.tag === 'block') {

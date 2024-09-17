@@ -56,13 +56,8 @@
 
 var GridMorph, LineMorph, ChartMorph;
 
-WorldMorph.prototype.customMorphs = function () {
-	// add examples to the world's demo menu
-	return [
-		new GridMorph,
-		new ChartMorph
-	];
-};
+WorldMorph.prototype.customMorphs = ((
+) => [new GridMorph, new ChartMorph]);
 
 // GridMorph ///////////////////////////////////////////////////////////
 
@@ -477,11 +472,10 @@ ChartMorph.prototype.buildParts = function () {
 	this.contents.children.forEach(function (c) {
 		if (c instanceof LineMorph) {
 			lm = new ToggleMorph(
-				'checkbox',
-				c,
+				'checkbox', c,
 				'toggleFading',
-				c.label,
-				(function anonymous () {return this.isVisible;}),
+				c.label, (function () {
+                                  return this.isVisible;}),
 				null,
 				null
 			); lm.color = c.color;

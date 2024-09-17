@@ -2703,7 +2703,7 @@ this.type === '%n') {suff = '# = ' + this.defaultValue.toString();} else if (con
 this.type)) {suff = '? = ' + this.defaultValue.toString();} else {suff = '= ' + this.defaultValue.toString();};} else if (contains(['%b', '%bool'], this.type)) {suff = '?';} else if (this.type === '%n'
 ) {suff = '#';} else if (contains(['%mlt', '%code'], this.type)) {suff = '¶';}; return (this.labelString + ((suff.length > 0) ? (' ' + suff) : suff));};
 
-BlockLabelFragment.prototype.blockSpecFragment = function anonymous () {/* answer a string representing my block spec */ return this.isDeleted ? '' : this.type || this.labelString;};
+BlockLabelFragment.prototype.blockSpecFragment = function () {/* answer a string representing my block spec */ return this.isDeleted ? '' : this.type || this.labelString;};
 
 BlockLabelFragment.prototype.copy = function () {
     var ans = new BlockLabelFragment(this.labelString);
@@ -3351,7 +3351,7 @@ InputSlotDialogMorph.prototype.open = function (
     this.changed();
 };
 
-InputSlotDialogMorph.prototype.symbolMenu = function anonymous () {var symbols = [], symbolColor = new Color(100, 100, 130); SymbolMorph.prototype.names.forEach(sym => symbols.push([[new SymbolMorph(
+InputSlotDialogMorph.prototype.symbolMenu = function () {var symbols = [], symbolColor = new Color(100, 100, 130); SymbolMorph.prototype.names.forEach(sym => symbols.push([[new SymbolMorph(
 sym, this.fontSize, symbolColor), localize(sym)],'$' + sym])); symbols.push(['\u23CE ' + localize('new line'), '$nl']); return symbols;}; InputSlotDialogMorph.prototype.deleteFragment = function () {
 this.fragment.isDeleted = true; this.accept();}; InputSlotDialogMorph.prototype.createSlotTypeButtons = function () {var defLabel, defInput, defSwitch, loopArrow, settingsButton;
 this.addSlotTypeButton('Color\nPicker', '%clr'); this.addSlotTypeButton('Object\nInput', '%obj'); this.addSlotTypeButton('List\nInput', '%l'); this.addSlotTypeButton('Costume Slot', '%costume');
@@ -3392,7 +3392,7 @@ slots.children[idx].setPosition(new Point(cols[col], rows[row + idx - size]));};
 ).defaultInputField.setCenter(this.slots.defaultInputLabel.center().add(new Point(this.slots.defaultInputField.width() / 2 + this.slots.defaultInputLabel.width() / 2 + 5, 0))); (this.slots.defaultSwitch
 ).setCenter(this.slots.defaultInputLabel.center().add(new Point(this.slots.defaultSwitch.width() / 2 + this.slots.defaultInputLabel.width() / 2 + 5, 0))); this.slots.loopArrow.setPosition((this.slots
 ).defaultInputLabel.position()); this.slots.settingsButton.setPosition(this.slots.bottomRight().subtract(this.slots.settingsButton.extent().add(this.padding + this.slots.border))); this.slots.changed(
-);}; InputSlotDialogMorph.prototype.addSlotsMenu = function anonymous () {this.slots.userMenu = (() => {if ((typeof this.fragment.type) === 'string') {if (this.fragment.type.includes('%mult')) {
+);}; InputSlotDialogMorph.prototype.addSlotsMenu = function () {this.slots.userMenu = (() => {if ((typeof this.fragment.type) === 'string') {if (this.fragment.type.includes('%mult')) {
 return this.variadicSlotsMenu();} else if (contains(['%cmd', '%r', '%p', '%instr', '%cmdRing', '%repRing', '%predRing'], this.fragment.type)) {return this.scriptSlotsMenu();} else if (contains([
 '%cs', '%c', '%cl', '%ca', '%loop', '%cla'], this.fragment.type)) {return this.cShapeSlotsMenu();} else if (contains(['%words', '%nums', '%lists', '%colors'], this.fragment.type)) {var menu = (
 new MenuMorph(this)), on = new SymbolMorph('checkedBox', MorphicPreferences.menuFontSize * 3/4), off = new SymbolMorph('rectangle', MorphicPreferences.menuFontSize * 3/4); menu.addPair(((this

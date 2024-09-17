@@ -7,7 +7,7 @@
     written by Alessandro Moisés
     aless01pime@gmail.com
 
-    Copyleft (Ɔ) 2023 by Alessandro Moisés
+    Copyleft (Ɔ) 2024 by Alessandro Moisés
 
     This file is part of Snap!.
 
@@ -65,7 +65,7 @@ DesktopMorph, DesktopBarMorph, DesktopDockMorph, BatteryVisualizerMorph;
 
 LoginUIMorph = function LoginUIMorph (world) {this.init(world);}; LoginUIMorph.prototype = new Morph;
 LoginUIMorph.prototype.constructor = LoginUIMorph; LoginUIMorph.uber = Morph.prototype;
-LoginUIMorph.prototype.init = function anonymous (world) {FileMorph.uber.init.call(this);
+LoginUIMorph.prototype.init = function (world) {FileMorph.uber.init.call(this);
 this.setExtent(world.bounds.corner);if (false) {
 this.add(new TextMorph('\nLogin\n', 75, 'sans-serif',
 false, false, 'center')); this.children[0].setCenter(
@@ -79,7 +79,7 @@ this.text.isPassword = true;};};} else {
 this.add(new TextMorph('Sorry, the registered users only\ncan access to the local storage.', 75, 'sans-serif',
 false, false, 'center'));
 this.children[0].setCenter(this.bounds.center());};
-}; LoginUIMorph.prototype.step = function anonymous () {
+}; LoginUIMorph.prototype.step = function () {
 if (this.world() instanceof WorldMorph) {
 this.setExtent(this.world().bounds.corner);};};
 
@@ -89,12 +89,12 @@ this.setExtent(this.world().bounds.corner);};};
 
 FileMorph = function FileMorph (contents, id) {this.init(contents, id);}; FileMorph.prototype = new Morph;
 FileMorph.prototype.constructor = FileMorph; FileMorph.uber = Morph.prototype;
-FileMorph.prototype.init = function anonymous (contents, id) {FileMorph.uber.init.call(this);
+FileMorph.prototype.init = function (contents, id) {FileMorph.uber.init.call(this);
 this.userState = 'normal'; this.color = new Color(Math.round((Math.random() * 127.5) + 127.5),
 Math.round((Math.random() * 127.5) + 127.5), Math.round((Math.random() * 127.5) + 127.5));
 this.isDraggable = true; this.contents = contents ? contents.toString() : ''; this.id = +id;
 this.name = 'file-' + this.id + '.xml'; this.setExtent(new Point(60, 60)); this.rerender();};
-FileMorph.prototype.render = function anonymous (ctx) {/* draw a page symbol */
+FileMorph.prototype.render = function (ctx) {/* draw a page symbol */
 var height = this.bounds.height() - 20, width = this.bounds.width(), w = Math.min(width, height) / 2;
 ctx.fillStyle = this.color.toString(); ctx.beginPath(); ctx.moveTo(10, 0); ctx.lineTo(w + 10, 0);
 ctx.lineTo(w + 10, ((height + 20) / 4)); ctx.lineTo(width - 10, ((height + 20) / 4)); ctx.lineTo(width - 10, height + 5);
@@ -105,15 +105,15 @@ new Color(127.5, 127.5, 127.5)).toString(); ctx.fillText(this.name, 0, height + 
 ctx.strokeWidth = 5; ctx.strokeStyle = (new Color(127.5, 127.5, 127.5)).toString(); ctx.beginPath(); ctx.moveTo(0, 0);
 ctx.lineTo(this.bounds.width(), 0); ctx.lineTo(this.bounds.width(), this.bounds.height());
 ctx.lineTo(0, this.bounds.height()); ctx.lineTo(0, 0); ctx.stroke(); ctx.closePath();};};
-FileMorph.prototype.mouseEnter = function anonymous () {this.userState = 'highlight'; this.rerender();};
-FileMorph.prototype.mouseLeave = function anonymous () {this.userState = 'normal'; this.rerender();};
+FileMorph.prototype.mouseEnter = function () {this.userState = 'highlight'; this.rerender();};
+FileMorph.prototype.mouseLeave = function () {this.userState = 'normal'; this.rerender();};
 FileMorph.prototype.contextMenu = function () {var menu = new MenuMorph(this, this.name);
-menu.addItem('open', function anonymous () {localStorage['-snap-newProjectFile'] = this.contents;
+menu.addItem('open', function () {localStorage['-snap-newProjectFile'] = this.contents;
 sessionStorage['-snap-setting-isDesktopMode'] = false; location.reload();});
 menu.addItem('download', function () {IDE_Morph.prototype.saveXMLAs(this.contents,
 (this.name).split('.')[0]);}); menu.addItem('edit color', function () {
 this.spawnRGBAEditorDialog(this);}); menu.addItem('delete', function () {
-var num = ((function anonymous () {var anArray = [], i = 0, j = 0, storage =
+var num = ((function () {var anArray = [], i = 0, j = 0, storage =
 window.localStorage; while (i < storage.length) {if (storage.key(i).startsWith('-snap-file-')) {
 anArray.push([storage.getItem(storage.key(i)), (j + 1)]); j++;}; i++;};
 return j;}).apply(this)); delete localStorage['-snap-file-project-' + this.id];
@@ -130,9 +130,9 @@ var world = wrrld || this.world(); this.setPosition(world.hand.position(
 
 FolderMorph = function FolderMorph () {this.init();}; FolderMorph.prototype = new Morph;
 FolderMorph.prototype.constructor = FolderMorph; FolderMorph.uber = Morph.prototype;
-FolderMorph.prototype.init = function anonymous () {FolderMorph.uber.init.call(this);
+FolderMorph.prototype.init = function () {FolderMorph.uber.init.call(this);
 this.isDraggable = true; this.setExtent(new Point(60, 60));};
-FolderMorph.prototype.render = function anonymous (ctx) {
+FolderMorph.prototype.render = function (ctx) {
     // draw a folder symbol
     var height = this.bounds.height(),
         width = this.bounds.width(),
@@ -160,7 +160,7 @@ FolderMorph.prototype.render = function anonymous (ctx) {
 NormalWindowMorph = function NormalWindowMorph (extent, position, titleText, type, icon, fullIcon, optionalData) {
 this.init(extent, position, titleText, type, icon, fullIcon, optionalData);}; NormalWindowMorph.prototype = new Morph;
 NormalWindowMorph.prototype.constructor = NormalWindowMorph; NormalWindowMorph.uber = Morph.prototype;
-NormalWindowMorph.prototype.init = function anonymous (extent, position, titleText, type, icon, fullIcon, optionalData) {
+NormalWindowMorph.prototype.init = function (extent, position, titleText, type, icon, fullIcon, optionalData) {
 NormalWindowMorph.uber.init.call(this); this.cursorStyle = 'move'; this.cursorGrabStyle = 'move'; this.icon = icon || (
 new StringMorph('λ', 20, 'sans-serif', false, false, false, null, null, new Color(255, 184, 0), 'ogSnapFontInFileEffort'
 )).fullImage(); this.type = type; this.isDraggable = true; this.noDropShadow = true; this.fullShadowSource = false;
@@ -205,7 +205,7 @@ this.maximizeButton.labelString = '+'; this.maximizeButton.createLabel();
 this.maximizeButton.setExtent(new Point(20, 20)); this.add(this.maximizeButton);
 this.maximizeButton.setTop(this.bounds.top());
 this.maximizeButton.setLeft(this.minimizeButton.bounds.right());
-this.maximizeButton.action = function anonymous () {this.resizer.isVisible = this.isMaximized;
+this.maximizeButton.action = function () {this.resizer.isVisible = this.isMaximized;
 this.isDraggable = this.isMaximized; this.cursorGrabStyle = (this.isMaximized ? 'move' : 'auto'
 ); this.isMaximized = !this.isMaximized; if (this.isMaximized) {this.setTop(this.world(
 ).bounds.top()); this.setLeft(this.world().bounds.left()); this.setExtent(this.world(
@@ -232,7 +232,7 @@ this.ui.add(new TextMorph('Snavanced! ' + SnavancedVersion + ' - Desktop Mode ('
 + 'is influenced and inspired by Scratch,\n from the Lifelong Kindergarten group at the MIT Media Lab\n\nFor more information, see https://snap.berkeley.edu\nhttps://scratch.mit.edu '
 + 'and https://archive.glitch.pizza\nfor the license, see the license.txt in the main folder.\n If you see a bug, contact to me at aless01pime@gmail.com', 15, 'sans-serif', false,
 false, 'center')); this.ui.children[1].setCenter(this.ui.bounds.center()); this.ui.children[1].setTop(this.ui.children[0].bottom() + 5);
-} else if (type === 'demo') {(function anonymous () {
+} else if (type === 'demo') {(function () {
         var foo, bar, baz, garply, fred;
 
         foo = new BouncerMorph;
@@ -286,21 +286,21 @@ false, 'center')); this.ui.children[1].setCenter(this.ui.bounds.center()); this.
 } else if (type === 'calculator') {this.ui.color = new Color(127.5, 127.5, 127.5);
 } else if (type === 'jsBlocks') {
 this.ui.sprite = new SpriteMorph; this.ui.color = new Color(127.5, 127.5, 127.5);
-this.ui.add(new ScrollFrameMorph((function anonymous () {var aScriptsPane = new ScriptsMorph;
-aScriptsPane._userMenu = aScriptsPane.userMenu; aScriptsPane.userMenu = function anonymous () {
+this.ui.add(new ScrollFrameMorph((function () {var aScriptsPane = new ScriptsMorph;
+aScriptsPane._userMenu = aScriptsPane.userMenu; aScriptsPane.userMenu = function () {
 var menu = this._userMenu.apply(this); if (this.parentThatIsA(NormalWindowMorph).theFunction.inputs()[0
-].nestedBlock() instanceof CommandBlockMorph) {menu.addItem('copy the code to the clipboard', (function anonymous () {
+].nestedBlock() instanceof CommandBlockMorph) {menu.addItem('copy the code to the clipboard', (function () {
 try {var result = (new Function(JSBlocksCompiler.apply(this, this.parentThatIsA(NormalWindowMorph).theFunction.inputs(
 )[0].nestedBlock().blockSequence()))).toString(); if ("clipboard" in navigator) {navigator.clipboard.writeText(result
 ).then(() => window.alert(result), () => window.alert('The clipboard failed. \:\'\('));};} catch (error) {
 window.alert('An error occurred...\nThe error says\: \"'.concat(error.message, '!!!\"\.'));};}));}; menu.addItem('about...',
-function anonymous () {(this.parentThatIsA(DesktopMorph)).add(new AboutWindowMorph(this.parentThatIsA(NormalWindowMorph)));}); return menu;};
-aScriptsPane.cachedTexture = (function anonymous () {var pic = newCanvas(new Point(100, 100)), ctx = pic.getContext('2d'), i; for (i = 0; i < 100; i += 4) {
+function () {(this.parentThatIsA(DesktopMorph)).add(new AboutWindowMorph(this.parentThatIsA(NormalWindowMorph)));}); return menu;};
+aScriptsPane.cachedTexture = (function () {var pic = newCanvas(new Point(100, 100)), ctx = pic.getContext('2d'), i; for (i = 0; i < 100; i += 4) {
 ctx.fillStyle = (new Color(30, 30, 30)).toString(); ctx.fillRect(i, 0, 1, 100); ctx.fillStyle = (new Color(30, 30, 30)).lighter(5).lighter(2).toString();
 ctx.fillRect(i + 1, 0, 1, 100); ctx.fillRect(i + 3, 0, 1, 100); ctx.fillStyle = (new Color(30, 30, 30)).lighter(5).darker(2).toString();
 ctx.fillRect(i + 2, 0, 1, 100);}; return pic;}).call(this); aScriptsPane.rerender();
-this.theFunction = (function anonymous () {var aBlock = new ReporterBlockMorph;
-aBlock.setSpec('function anonymous \(\) \{ %c \}'); aBlock.setPosition(
+this.theFunction = (function () {var aBlock = new ReporterBlockMorph;
+aBlock.setSpec('function \(\) \{ %c \}'); aBlock.setPosition(
 aScriptsPane.bounds.topLeft()); aBlock.category = 'other';
 aBlock.fixBlockColor(); return aBlock;}).apply(this);
 aScriptsPane.add(this.theFunction); this.theFunction.userMenu = nop;
@@ -310,7 +310,7 @@ child === this.theFunction)).forEach(child => {child.isDraggable = true;});
 aScriptsPane.setExtent(this.ui.bounds.extent()); aScriptsPane.updateToolbar();
 aScriptsPane.rejectsHats = true; aScriptsPane.isDraggable = false;
 aScriptsPane.cleanUpMargin = 10; aScriptsPane.cleanUp();
-this.maximizeButton.action = function anonymous () {this.resizer.isVisible = this.isMaximized;
+this.maximizeButton.action = function () {this.resizer.isVisible = this.isMaximized;
 this.isDraggable = this.isMaximized; this.isMaximized = !this.isMaximized;
 if (this.isMaximized) {this.setTop(this.world().bounds.top()); this.setLeft(
 this.world().bounds.left()); this.setExtent(this.world().bounds.extent());
@@ -414,7 +414,7 @@ this.title.setLeft(this.maximizeButton.bounds.right() + 2.5);
 try {optionalData.apply(this);} catch (error) {
 desk.add(new NotificationWindowMorph('error', error.name,
 error.message, [['Ok', (function () {this.destroy();})]]));};};};
-NormalWindowMorph.prototype.updateLogo = function anonymous () {
+NormalWindowMorph.prototype.updateLogo = function () {
 this.logo.setCenter(this.closeButton.bounds.center());
 this.logo.setRight(this.bounds.right() - ((20 - this.logo.width()) / 2));};
 NormalWindowMorph.prototype.contextMenu = function () {
@@ -429,7 +429,7 @@ MinimizedWindowMorph = function MinimizedWindowMorph (minimizedWindow) {
 this.init(minimizedWindow);}; MinimizedWindowMorph.prototype = new Morph;
 MinimizedWindowMorph.prototype.constructor = MinimizedWindowMorph;
 MinimizedWindowMorph.uber = Morph.prototype; MinimizedWindowMorph.prototype.init =
-function anonymous (minimizedWindow) {MinimizedWindowMorph.uber.init.call(this);
+function (minimizedWindow) {MinimizedWindowMorph.uber.init.call(this);
 this.minimizedWindow = minimizedWindow; this.isDraggable = !this.minimizedWindow.isMaximized;
 this.noDropShadow = true; this.fullShadowSource = false; this.setExtent(new Point(
 minimizedWindow.bounds.width(), 20)); NormalWindowMorph.prototype.fixShadow.call(this);
@@ -462,7 +462,7 @@ AboutWindowMorph = function AboutWindowMorph (aWindow) {
 this.init(aWindow);}; AboutWindowMorph.prototype = new Morph;
 AboutWindowMorph.prototype.constructor = AboutWindowMorph;
 AboutWindowMorph.uber = Morph.prototype; AboutWindowMorph.prototype.init =
-function anonymous (aWindow) {AboutWindowMorph.uber.init.call(this);
+function (aWindow) {AboutWindowMorph.uber.init.call(this);
 this.noDropShadow = true; NormalWindowMorph.prototype.fixShadow.call(this);
 this.setExtent(new Point(500, 500)); this.isDraggable = true;
 this.setCenter(aWindow.bounds.center()); NormalWindowMorph.prototype.fixShadow.call(this);
@@ -499,7 +499,7 @@ this.titleText = ('About ' + aWindow.titleText); this.title = new StringMorph(th
 15, 'sans-serif', true, false, false, null, null, new Color(255, 255, 255));
 this.add(this.title); this.title.rerender(); this.title.setTop(this.bounds.top());
 this.title.setLeft(this.minimizeButton.bounds.right() + 2.5);
-this.ui.add(new TextMorph((function anonymous (aWindow) {
+this.ui.add(new TextMorph((function (aWindow) {
 var aboutWindowText = aWindow.titleText.concat(' ', SnavancedVersion);
 aboutWindowText = aboutWindowText.concat(' - \(', LastUpdated, '\)');
 if (aWindow.type === 'finder') {
@@ -517,7 +517,7 @@ NotificationWindowMorph = function NotificationWindowMorph (type, title, body, b
 this.init(type, title, body, buttons, icon);}; NotificationWindowMorph.prototype = new Morph;
 NotificationWindowMorph.prototype.constructor = NotificationWindowMorph;
 NotificationWindowMorph.uber = Morph.prototype; NotificationWindowMorph.prototype.init =
-function anonymous (type, title, body, buttons, icon) {NotificationWindowMorph.uber.init.call(this);
+function (type, title, body, buttons, icon) {NotificationWindowMorph.uber.init.call(this);
 this.cursorStyle = 'move'; this.cursorGrabStyle = 'move'; this.setExtent(new Point(370, 92.5));
 this.isDraggable = true; this.noDropShadow = true; NormalWindowMorph.prototype.fixShadow.call(this
 ); this.setCenter(world.bounds.center()); NormalWindowMorph.prototype.fixShadow.call(this);
@@ -530,7 +530,7 @@ this.ui.children[0].setPosition(this.ui.bounds.origin.copy().add(new Point(5, 5)
 if (contains(['notification', 'information', 'debugging', 'warning', 'error'], type)) {
 DesktopMorph.prototype[type.concat('Sound')].currentTime = 0;
 DesktopMorph.prototype[type.concat('Sound')].play();
-}; this.ui.children[0].render = function anonymous (ctx) {
+}; this.ui.children[0].render = function (ctx) {
 ctx.lineWidth = (((this.height() + this.width()) / 2) / 30) * 2.5;
 ctx.strokeStyle = (new Color(255, 0, 0)).toString(); ctx.beginPath();
 ctx.moveTo(0, 0); ctx.lineTo(this.width(), this.height());
@@ -542,10 +542,10 @@ this.ui.add(new TextMorph(body, 15, 'sans-serif', false, false, 'center'));
 this.ui.children[1].parse(); this.ui.children[1].setCenter(new Point(
 this.ui.bounds.center().x, this.ui.children[0].bounds.origin.y + (this.ui.children[0].bounds.height() / 2)
 )); if (buttons instanceof Array) {if (buttons.length > 0) {
-this.ui.buttons = (function anonymous (buttonsData) {
+this.ui.buttons = (function (buttonsData) {
 var i = 0, buttonMorphs = []; while (i < buttonsData.length) {
 buttonMorphs.push(new TriggerMorph(this, buttonsData[i][1], buttonsData[i][0])); i++;};
-return buttonMorphs;}).apply(this, [buttons]);};}; (function anonymous (buttonsData) {
+return buttonMorphs;}).apply(this, [buttons]);};}; (function (buttonsData) {
 var i = 0; while (i < buttonsData.length) {this.ui.add(buttonsData[i]);
 this.ui.children[i + 2].setExtent(this.ui.children[i + 2].label.bounds.extent().add(
 new Point(this.ui.children[i + 2].label.fontSize, (this.ui.children[i + 2].label.fontSize / 5))));
@@ -562,7 +562,7 @@ this.ui.children[i + 2].setPosition(new Point(
 
 AppMorph = function AppMorph (type) {this.init(type);}; AppMorph.prototype = new TriggerMorph;
 AppMorph.prototype.constructor = AppMorph; AppMorph.uber = TriggerMorph.prototype;
-AppMorph.prototype.init = function anonymous (type) {AppMorph.uber.init.call(this);
+AppMorph.prototype.init = function (type) {AppMorph.uber.init.call(this);
 this.setExtent(new Point(30, 30));
 if (type === 'finder') {
 this.color = new Color(0, 127.5, 255);
@@ -581,7 +581,7 @@ this.pressColor = new Color(235, 200, 0);
 this.hint = 'JavaScript Blocks';};
 /* this.highlightColor = this.color; */
 this.type = type;
-this.render = function anonymous (ctx) {
+this.render = function (ctx) {
     var colorBak = this.color;
     if (this.userState === 'highlight') {
         this.color = this.highlightColor;
@@ -700,28 +700,28 @@ aBubble.popUp(this.world(), this.topLeft().subtract(new Point(0, (this.height() 
 
 DesktopMorph = function DesktopMorph (world) {this.init(world);}; DesktopMorph.prototype =
 new FrameMorph; DesktopMorph.prototype.constructor = DesktopMorph; DesktopMorph.uber =
-FrameMorph.prototype; DesktopMorph.prototype.init = function anonymous (world) {
+FrameMorph.prototype; DesktopMorph.prototype.init = function (world) {
 if (isNil(localStorage['snap-desktopStorage'])) {localStorage['snap-desktopStorage'] =
 ('\{ \"type\"\:\"folder\", \"name\"\:\"Desktop\", \"firstTime\"\:\"').concat( Date.now().toString(), '\", \"lastTime\"\:\"', Date.now().toString(), '\", \"contents\"\:\{\}\}');};
-DesktopMorph.uber.init.call(this); this.isDraggable = false; this.step(); this.color = world.color; this.cachedTexture = (function anonymous () {
+DesktopMorph.uber.init.call(this); this.isDraggable = false; this.step(); this.color = world.color; this.cachedTexture = (function () {
 var pic = newCanvas(new Point(100, 100)), ctx = pic.getContext('2d'), i; for (i = 0; i < 100; i += 4) {
 ctx.fillStyle = this.color.toString(); ctx.fillRect(i, 0, 1, 100); ctx.fillStyle = this.color.lighter(2).toString();
 ctx.fillRect(i + 1, 0, 1, 100); ctx.fillRect(i + 3, 0, 1, 100); ctx.fillStyle = this.color.darker(2).toString();
 ctx.fillRect(i + 2, 0, 1, 100);}; return pic;}).call(this); this.rerender(); this.add(new DesktopBarMorph());
-this.add(new DesktopDockMorph()); this.add(new FPSMorph);}; DesktopMorph.prototype.step = function anonymous (
+this.add(new DesktopDockMorph()); this.add(new FPSMorph);}; DesktopMorph.prototype.step = function (
 ) {if (this.world() instanceof WorldMorph) {this.setExtent(this.world().bounds.corner);};};
-DesktopMorph.prototype.contextMenu = function anonymous () {var menu = new MenuMorph(this); menu.addItem('new window',
-function anonymous () {this.world().hand.add(new NormalWindowMorph(new Point(500, 500), world.bounds.center(),
+DesktopMorph.prototype.contextMenu = function () {var menu = new MenuMorph(this); menu.addItem('new window',
+function () {this.world().hand.add(new NormalWindowMorph(new Point(500, 500), world.bounds.center(),
 this.newWindowName(), 'demo')); this.world().hand.children[0].setCenter(this.world().hand.bounds.origin.copy());
-}); menu.addItem('clean up', function anonymous () {localStorage['-snap-notification-newFile'] = true;}); menu.addItem(
+}); menu.addItem('clean up', function () {localStorage['-snap-notification-newFile'] = true;}); menu.addItem(
 'Programming mode...', function () {sessionStorage['-snap-setting-isDesktopMode'] = false; location.reload();});
-menu.addItem('reload...', function anonymous () {location.reload();}); menu.addItem(
-'open the task manager', function anonymous () {this.world().hand.add(new NormalWindowMorph(new Point(500, 500), world.bounds.center(),
+menu.addItem('reload...', function () {location.reload();}); menu.addItem(
+'open the task manager', function () {this.world().hand.add(new NormalWindowMorph(new Point(500, 500), world.bounds.center(),
 'Task Manager', 'taskManager')); this.world().hand.children[0].setCenter(this.world().hand.bounds.origin.copy());});
-menu.addItem('save screenshot', (function anonymous () {this.screenshot();})); return menu;};
-DesktopMorph.prototype.newWindowName = function anonymous () {return ('Window ').concat((this.children.filter(child => (child instanceof NormalWindowMorph) || (
+menu.addItem('save screenshot', (function () {this.screenshot();})); return menu;};
+DesktopMorph.prototype.newWindowName = function () {return ('Window ').concat((this.children.filter(child => (child instanceof NormalWindowMorph) || (
 child instanceof MinimizedWindowMorph)).filter(child => child instanceof NormalWindowMorph ? !(child.type === 'aboutSnap') : true).length + 1).toString());};
-DesktopMorph.prototype.updateStorage = function anonymous () {};
+DesktopMorph.prototype.updateStorage = function () {};
 
 (['notification', 'information', 'debugging', 'warning', 'error']).forEach(item => {
 DesktopMorph.prototype[item.concat('Sound')] = document.createElement('audio');
@@ -733,12 +733,12 @@ DesktopMorph.prototype[item.concat('Sound')].src = ('src/').concat(item, '.wav')
 
 DesktopBarMorph = function DesktopBarMorph () {this.init();}; DesktopBarMorph.prototype = new Morph;
 DesktopBarMorph.prototype.constructor = DesktopBarMorph; DesktopBarMorph.uber = Morph.prototype; DesktopBarMorph.prototype.init =
-function anonymous () {DesktopBarMorph.uber.init.call(this); this.hide(); this.setHeight(20); this.alpha = 0.5;
+function () {DesktopBarMorph.uber.init.call(this); this.hide(); this.setHeight(20); this.alpha = 0.5;
 this.startButton = new TriggerMorph;
 this.startButton.color = new Color(0, 0, 0, 0);
 this.startButton.highlightColor = new Color(255, 255, 255, 0.5);
 this.startButton.pressColor = new Color(255, 255, 255, 0.25);
-this.startButton.render = function anonymous (ctx) {
+this.startButton.render = function (ctx) {
     var colorBak = this.color;
     if (this.userState === 'pressed') {
         this.color = this.pressColor;
@@ -756,7 +756,7 @@ this.startButton.render = function anonymous (ctx) {
     ctx.fillText('λ', 5, 17);
 }; this.startButton.setExtent(new Point(20, 20)); this.add(this.startButton);
 this.startButton.action = function () {var menu = new MenuMorph(this);
-menu.addItem('about...', function anonymous () {desk.add(new NormalWindowMorph(new Point(
+menu.addItem('about...', function () {desk.add(new NormalWindowMorph(new Point(
 500, 420), world.bounds.center(), 'About Snavanced! - Desktop Mode', 'aboutSnap'));});
 menu.popup(this.world(), this.bottomLeft());}; this.startButton.target = this;
 this.startButton.setCenter(this.bounds.center()); this.startButton.setLeft(this.bounds.left());
@@ -784,7 +784,7 @@ this.batteryViewer.setCenter(this.bounds.center()); this.batteryViewer.setRight(
 
 DesktopDockMorph = function DesktopDockMorph () {this.init();}; DesktopDockMorph.prototype = new Morph;
 DesktopDockMorph.prototype.constructor = DesktopDockMorph; DesktopDockMorph.uber = Morph.prototype; DesktopDockMorph.prototype.init =
-function anonymous () {DesktopDockMorph.uber.init.call(this); this.hide(); this.setHeight(60); this.color = new Color(255, 255, 255, 0.5);
+function () {DesktopDockMorph.uber.init.call(this); this.hide(); this.setHeight(60); this.color = new Color(255, 255, 255, 0.5);
 this.apps = [new AppMorph('finder'), new AppMorph('calculator'), new AppMorph('jsBlocks')];
 (function () {var i = 0; while (i < this.apps.length) {this.add(this.apps[i]); i++;};}).apply(this);};
 DesktopDockMorph.prototype.render = function (ctx) {ctx.fillStyle = this.color.copy().toString();
@@ -806,8 +806,8 @@ this.show();} else {this.hide();};} else {this.hide();}; this.rerender();}; Desk
 
 BatteryVisualizerMorph = function BatteryVisualizerMorph () {this.init();}; BatteryVisualizerMorph.prototype = new Morph;
 BatteryVisualizerMorph.prototype.constructor = BatteryVisualizerMorph; BatteryVisualizerMorph.uber = Morph.prototype; BatteryVisualizerMorph.prototype.init =
-function anonymous () {BatteryVisualizerMorph.uber.init.call(this); this.bounds.setExtent(new Point(40, 20));}; BatteryVisualizerMorph.prototype.render =
-function anonymous (ctx) {if (isNil(world.batteryAPI)) {ctx.fillStyle = (new Color(0, 0, 0, 0)).toString();} else {if (world.batteryAPI.charging) {
+function () {BatteryVisualizerMorph.uber.init.call(this); this.bounds.setExtent(new Point(40, 20));}; BatteryVisualizerMorph.prototype.render =
+function (ctx) {if (isNil(world.batteryAPI)) {ctx.fillStyle = (new Color(0, 0, 0, 0)).toString();} else {if (world.batteryAPI.charging) {
 ctx.fillStyle = WHITE.toString();} else if (world.batteryAPI.level > 0.25) {ctx.fillStyle = (new Color((340 * ((1.25 + (0 - world.batteryAPI.level)
 ) - 0.25)), 255, 0)).toString();} else {ctx.fillStyle = (new Color(255, (1020 * world.batteryAPI.level), 0)).toString();};}; ctx.fillRect(0, 0, (
 this.bounds.width() * (isNil(world.batteryAPI) ? 0 : world.batteryAPI.level)), this.bounds.height()); ctx.strokeStyle = BLACK.toString(

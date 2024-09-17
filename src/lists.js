@@ -256,41 +256,39 @@ this.at(i + 1), element) : Process.prototype.reportIsIdentical(
 this.at(i + 1), element)); i++;}; i = 0; while (i < result.length
 ) {if (!(result[i])) {return false;}; i++;}; return true;};
 
-List.prototype.isEmpty = function () {
-if (this.isLinked) {return isNil(this.first
-);}; return !(this.contents.length);};
+List.prototype.isEmpty = function () {if (
+this.isLinked) {return isNil(this.first);
+}; return !(this.contents.length);};
 
-List.prototype.indexOf = function (element) {
-var pair = this, idx = 1, i, len;
-while (pair.isLinked) {if (((
-pair.first instanceof Context
-) || (pair.first instanceof List)
-) ? snapEquals(pair.first, element) :
+List.prototype.indexOf = function (element
+) {var pair = this, idx = 1, i, len; while (
+pair.isLinked) {if (((pair.first instanceof (
+Context)) || (pair.first instanceof List)
+) ? snapEquals(pair.first, element) : (
 Process.prototype.reportIsIdentical(
-pair.first, element)) {return idx;};
-pair = pair.rest; idx += 1;};
-len = pair.contents.length;
-for (i = 0; i < len; i += 1) {
-if (((pair.contents[i] instanceof Context
-) || (pair.contents[i] instanceof List)) ?
-snapEquals(pair.contents[i], element) :
-Process.prototype.reportIsIdentical(
+pair.first, element))) {return idx;};
+pair = pair.rest; idx += 1;}; len = (
+pair.contents.length); for (i = 0; (
+i < len); i += 1) {if (((pair.contents[
+i] instanceof Context) || (pair.contents[
+i] instanceof List)) ? snapEquals((pair
+).contents[i], element) : (Process
+).prototype.reportIsIdentical(
 pair.contents[i], element)) {
 return (idx + i);};}; return 0;};
 
 List.prototype.indexesOf = function (element) {
 var list = this.fullCopy().asArray(), i = 0,
-result = []; while (i < list.length) {if (
-((list[i] instanceof Context) || (
-list[i] instanceof List)) ? snapEquals(
-list[i], element) :
-Process.prototype.reportIsIdentical(
-list[i], element)) {result.push(
-i + 1);}; i++;}; return new List(result);};
+result = []; while (i < list.length) {if ((
+(list[i] instanceof Context) || ((list[i]
+) instanceof List)) ? snapEquals(list[i],
+element) : Process.prototype.reportIsIdentical(
+list[i], element)) {result.push(i + 1);
+}; i++;}; return new List(result);};
 
 // List table (2D) accessing (for table morph widget):
 
-List.prototype.isTable = function anonymous () {return (this.enableTables && ((this.length(
+List.prototype.isTable = function () {return (this.enableTables && ((this.length(
 ) > 100) || (this.cols() > 1)));}; /* To check if is neccesary to be in the table view.  */
 
 List.prototype.get = function (col, row) {
@@ -785,11 +783,11 @@ List.prototype.strideTranspose = function () {
     return newFlat.reshape(newShape);
 };
 
-List.prototype.reversed = function anonymous () {/* only for arrayed lists */ return new List(this.itemsArray().slice().reverse());};
+List.prototype.reversed = function () {/* only for arrayed lists */ return new List(this.itemsArray().slice().reverse());};
 
 // List conversion:
 
-List.prototype.asArray = function anonymous () {this.becomeArray(); return this.contents;};
+List.prototype.asArray = function () {this.becomeArray(); return this.contents;};
 
 List.prototype.itemsArray = function () {
     if (this.isLinked) {
@@ -949,11 +947,11 @@ List.prototype.asJSON = function () {
     return JSON.stringify(objectify(this));
 };
 
-List.prototype.asXML = function anonymous () {
+List.prototype.asXML = function () {
 var result = '';
 result = ('\<').concat(this.at(1), '\>\n');
 if (this.at(2) instanceof List) {
-this.at(2).fullCopy().asArray().forEach(function anonymous (subList) {
+this.at(2).fullCopy().asArray().forEach(function (subList) {
 result = result.concat(subList.asXML(), '\n');
 });} else {result = result.concat(this.at(2), '\n');};
 result = result.concat('\</', this.at(1), '\>');
@@ -1052,9 +1050,9 @@ List.prototype.canBeBlocks = function () {
     });
 };
 
-List.prototype.fullCopy = function anonymous () {return this.deepMap(item => ((item instanceof List) ? item.fullCopy() : item));};
+List.prototype.fullCopy = function () {return this.deepMap(item => ((item instanceof List) ? item.fullCopy() : item));};
 
-List.prototype.hasOnlyAtomicData = function anonymous () {return this.itemsArray().every(value => {return (!isNaN(+value) && typeof value !== 'boolean') || isString(value);});};
+List.prototype.hasOnlyAtomicData = function () {return this.itemsArray().every(value => {return (!isNaN(+value) && typeof value !== 'boolean') || isString(value);});};
 
 // List-to-block (experimental)
 

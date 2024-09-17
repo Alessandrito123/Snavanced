@@ -8,7 +8,7 @@
 	written by Jens Mönig
 	jens@moenig.org
 
-	Copyright (C) 2021 by Jens Mönig
+	Copyright (C) 2024 by Jens Mönig
 
 	bpmn.js is free software: you can redistribute it and/or modify
 	it under the terms of the GNU Affero General Public License as
