@@ -10992,11 +10992,13 @@ StageHandleMorph.uber = Morph.prototype;
 function StageHandleMorph(target) {this.init(target);};
 
 StageHandleMorph.prototype.init = function (target) {
-    this.target = target || null;
-    this.userState = 'normal'; // or 'highlight'
+    this.target = (target || null
+    ); this.userState = 'normal';
     HandleMorph.uber.init.call(this);
-    this.color = IDE_Morph.prototype.categoryColor.lighter();
-    this.isDraggable = false;
+    this.color = IDE_Morph.prototype.backgroundColor;
+    if (((this.color.r + this.color.g + this.color.b
+    ) / 3) < 128) {this.color = new Color(190, 190,
+    190);}; this.isDraggable = false;
     this.setExtent(new Point(12, 50));
 
     this.cursorStyle = 'ew-resize';
@@ -11008,7 +11010,8 @@ StageHandleMorph.prototype.render = function (ctx) {
     if (this.userState === 'highlight') {
         this.renderOn(
             ctx,
-            (this.color).darker(),
+            MorphicPreferences.isFlat ?
+                    new Color(245, 245, 255) : new Color(100, 100, 255),
             this.color
         );
     } else { // assume 'normal'
@@ -11084,12 +11087,12 @@ ide.isSmallStage = (ide.stageRatio !== 1); (ide.controlBar
 
 StageHandleMorph.prototype.mouseEnter = function (
 ) {this.userState = 'highlight'; this.rerender();};
-
 StageHandleMorph.prototype.mouseLeave = function (
 ) {this.userState = 'normal'; this.rerender();};
 
-StageHandleMorph.prototype.mouseDoubleClick = function () {(this
-).target.parentThatIsA(IDE_Morph).toggleStageSize(this.isSmallStage);};
+(StageHandleMorph.prototype.mouseDoubleClick
+) = function () {this.target.parentThatIsA(
+IDE_Morph).toggleStageSize(this.isSmallStage);};
 
 // PaletteHandleMorph ////////////////////////////////////////////////////////
 
@@ -11104,18 +11107,10 @@ PaletteHandleMorph.uber = Morph.prototype;
 
 // PaletteHandleMorph instance creation:
 
-function PaletteHandleMorph(target) {this.init(target);};
-
-PaletteHandleMorph.prototype.init = function (target) {
-    this.target = target || null;
-    this.userState = 'normal';
-    HandleMorph.uber.init.call(this);
-    this.color = IDE_Morph.prototype.categoryColor.lighter();
-    this.isDraggable = false;
-    this.setExtent(new Point(12, 50));
-
-    this.cursorStyle = 'ew-resize';
-};
+function PaletteHandleMorph(
+target) {this.init(target);};
+(PaletteHandleMorph.prototype.init
+) = StageHandleMorph.prototype.init
 
 // PaletteHandleMorph drawing:
 
@@ -11127,53 +11122,38 @@ PaletteHandleMorph.prototype.renderOn =
 
 // PaletteHandleMorph layout:
 
-PaletteHandleMorph.prototype.fixLayout = function () {
-    if (!this.target) {return;}
-    var ide = this.target.parentThatIsA(IDE_Morph);
-    this.setTop(this.target.top() + 10);
-    this.setRight(this.target.right());
-    if (ide) {ide.add(this); } // come to front
-};
+(PaletteHandleMorph.prototype.fixLayout
+) = function () {if (!(this.target)
+) {return;}; var ide = (this.target
+).parentThatIsA(IDE_Morph); (this
+).setTop(this.target.top() + 10);
+this.setRight(this.target.right(
+)); if (ide) {ide.add(this);};};
 
 // PaletteHandleMorph stepping:
 
 PaletteHandleMorph.prototype.step = null;
 
-PaletteHandleMorph.prototype.mouseDownLeft = function (pos) {
-    var world = this.world(),
-        offset = this.right() - pos.x,
-        ide = this.target.parentThatIsA(IDE_Morph);
-
-    if (!this.target) {
-        return null;
-    }
-    this.step = function () {
-        var newPos;
-        if (world.hand.mouseButton) {
-            newPos = world.hand.bounds.origin.x + offset;
-            ide.paletteWidth = Math.min(
-                Math.max(200, newPos),
-                ide.stageHandle.left() - ide.spriteBar.tabBar.width()
-            );
-            ide.setExtent(world.extent());
-
-        } else {
-            this.step = null;
-        }
-    };
-};
+PaletteHandleMorph.prototype.mouseDownLeft = function (
+pos) {var offset = (this.right() - pos.x), ide = (this
+).target.parentThatIsA(IDE_Morph); if (!(this.target)
+) {return null;}; this.step = function () {var newPos;
+if (world.hand.mouseButton) {newPos = ((world.hand
+).bounds.origin.x + offset); ide.paletteWidth = (Math
+).min(Math.max(200, newPos), ((ide.stageHandle).left(
+) - ide.spriteBar.tabBar.width())); ide.setExtent(
+world.extent());} else {this.step = null;};};};
 
 // PaletteHandleMorph events:
 
-PaletteHandleMorph.prototype.mouseEnter
-    = StageHandleMorph.prototype.mouseEnter;
+(PaletteHandleMorph.prototype.mouseEnter
+) = StageHandleMorph.prototype.mouseEnter;
 
-PaletteHandleMorph.prototype.mouseLeave
-    = StageHandleMorph.prototype.mouseLeave;
+(PaletteHandleMorph.prototype.mouseLeave
+) = StageHandleMorph.prototype.mouseLeave;
 
 PaletteHandleMorph.prototype.mouseDoubleClick = function () {
-    this.target.parentThatIsA(IDE_Morph).setPaletteWidth(200);
-};
+(this.target.parentThatIsA(IDE_Morph)).setPaletteWidth(200);};
 
 // CamSnapshotDialogMorph ////////////////////////////////////////////////////
 

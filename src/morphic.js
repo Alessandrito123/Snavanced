@@ -378,7 +378,7 @@ function newCanvas(extentPoint, nonRetina, recycleMe) {
     };  if (nonRetina && canvas.isRetinaEnabled) {
         canvas.isRetinaEnabled = false;
     };  return canvas;
-}
+};
 
 function copyCanvas(aCanvas) {
     // answer a deep copy of a canvas element respecting its retina status
@@ -390,7 +390,7 @@ function copyCanvas(aCanvas) {
         );  c.getContext("2d").drawImage(aCanvas, 0, 0);
         return c;
     };  return aCanvas;
-}
+};
 
 function getMinimumFontHeight() {
     // answer the height of the smallest font renderable in pixels
@@ -814,7 +814,8 @@ function isRetinaSupported () {
     );
 };
 
-function isRetinaEnabled () {return HTMLCanvasElement.prototype.hasOwnProperty('_isRetinaEnabled');};
+function isRetinaEnabled () {return (HTMLCanvasElement
+).prototype.hasOwnProperty('_isRetinaEnabled');};
 
 function disableRetinaSupport() {
     // uninstalls Retina utilities. Make sure to re-create every Canvas
@@ -952,14 +953,13 @@ Animation.prototype.step = function () {
 
 // Color instance creation:
 
-function Color (r, g, b, a) {this.r = Math.max(Math.min(r, 255), 0) || 0;
-this.g = Math.max(Math.min(g, 255), 0) || 0; this.b = Math.max(Math.min(
-b, 255), 0) || 0; this.a = !isNil(a) ? Math.max(Math.min(a, 1), 0) : 1;
-this.quality = (isNil(localStorage['-snap-setting-colorQuality']) ? (
-1) : (255 / +(localStorage['-snap-setting-colorQuality'])));};
-const BLACK = Object.freeze(new Color); const CLEAR = (
-Object.freeze(new Color(0, 0, 0, 0))); const WHITE = (
-Object.freeze(new Color(255, 255, 255)));
+function Color (r, g, b, a) {this.r = Math.max(Math.min((r || 0), 255),
+0); this.g = Math.max(Math.min((g || 0), 255), 0); this.b = Math.max((Math
+).min((b || 0), 255), 0); this.a = (!isNil(a) ? Math.max(Math.min(a, 1),
+0) : 1); this.quality = (isNil(localStorage['-snap-setting-colorQuality'
+]) ? 1 : (255 / +(localStorage['-snap-setting-colorQuality'])));};
+const CLEAR = Object.freeze(new Color(0, 0, 0, 0)), WHITE = (Object
+).freeze(new Color(255, 255, 255)), BLACK = Object.freeze(new Color);
 
 // Color string representation: e.g. rgba(255,165,0,1)
 
@@ -1440,9 +1440,8 @@ this.init(new Point((left || 0), (top || 0)),
 new Point((right || 0), (bottom || 0)));};
 
 Rectangle.prototype.init = function (
-originPoint, cornerPoint) {
-this.origin = originPoint;
-this.corner = cornerPoint;};
+originPoint, cornerPoint) {(this.origin
+) = originPoint; this.corner = cornerPoint;};
 
 // Rectangle string representation: e.g. '[0@0 | 160@80]'
 
@@ -1508,43 +1507,27 @@ Rectangle.prototype.setTo = function (left, top, right, bottom) {
 
 Rectangle.prototype.setExtent = function(aPoint) {
 this.setWidth(aPoint.x); this.setHeight(aPoint.y);};
-
-Rectangle.prototype.setWidth = function (width) {
-this.corner.x = this.origin.x + width;};
-
-Rectangle.prototype.setHeight = function (height) {
-this.corner.y = this.origin.y + height;};
+Rectangle.prototype.setWidth = function (width
+) {this.corner.x = this.origin.x + width;};
+Rectangle.prototype.setHeight = function (height
+) {this.corner.y = this.origin.y + height;};
 
 // Rectangle accessing - getting:
 
-Rectangle.prototype.area = function () {return Math.abs(
-this.width() * this.height());}; /* -Better now:= :~) */
+Rectangle.prototype.area = function () {
+return (this.width() * this.height());};
 
-Rectangle.prototype.bottom = function () {
-    return this.corner.y;
-};
-
-Rectangle.prototype.bottomCenter = function () {
-    return new Point(this.center().x, this.bottom());
-};
-
-Rectangle.prototype.bottomLeft = function () {
-    return new Point(this.origin.x, this.corner.y);
-};
-
-Rectangle.prototype.bottomRight = function () {
-    return this.corner.copy();
-};
-
-Rectangle.prototype.boundingBox = function () {
-    return this;
-};
-
-Rectangle.prototype.center = function () {
-    return this.origin.add(
-        this.corner.subtract(this.origin).divideBy(2)
-    );
-};
+Rectangle.prototype.bottom = function () {return (
+this.corner.y);}; (Rectangle.prototype.bottomCenter
+) = function () {return new Point(this.center().x,
+this.bottom());}; (Rectangle.prototype.bottomLeft
+) = function () {return new Point(this.origin.x,
+this.corner.y);}; (Rectangle.prototype.bottomRight
+) = function () {return this.corner.copy();};
+Rectangle.prototype.boundingBox = function (
+) {return this;}; (Rectangle.prototype.center
+) = function () {return this.origin.add((this
+).corner.subtract(this.origin).divideBy(2));};
 
 Rectangle.prototype.corners = function () {
     return [this.origin,
@@ -2544,15 +2527,16 @@ Morph.prototype.penTrails = function () {
 
 // Morph updating:
 
-Morph.prototype.rerender = function (
-) {this.shouldRerender = true;
+(Morph.prototype.rerender
+) = function () {(this
+).shouldRerender = true;
 this.changed();};
 
 Morph.prototype.changed = function () {
     var w = this.root();
     if (w instanceof WorldMorph) {
-        w.broken.push(this.visibleBounds().spread());
-    };  if (this.parent) {
+        w.broken.push((this.visibleBounds(
+    )).spread());}; if (this.parent) {
         this.parent.childChanged(this);
     };
 };
@@ -3987,10 +3971,10 @@ len, direction = (facing || this.heading); len = (
 this.width() / 2); start = (this.center()).subtract(
 this.bounds.origin); if (this.penPoint === 'middle'
 ) {dest = start.distanceAngle(len * 3/4, direction);
-left = start.distanceAngle(len / 3, direction + 230);
-right = start.distanceAngle(len / 3, direction + 130
-);} else {dest = start.distanceAngle(len * 3/4,
-direction - 180); left = start.distanceAngle(len,
+left = start.distanceAngle(len / 3, direction + 230
+); right = start.distanceAngle(len / 3, (direction + (
+130)));} else {dest = start.distanceAngle((len * 3/4
+), direction - 180); left = start.distanceAngle(len,
 direction + 195); right = start.distanceAngle(len,
 direction + 165);}; if (isNil(this.normalExtent)) {
 this.normalExtent = this.extent();}; (this.penBounds
@@ -4009,23 +3993,21 @@ start.x, start.y); ctx.lineTo(left.x, left.y); (ctx
 ).strokeStyle = 'black'; ctx.lineWidth = realSize;
 ctx.stroke(); ctx.fill();};}; (PenMorph.prototype
 ).setHeading = function (degrees) {this.heading = (
-(+degrees % 360) + 360) % 360; this.fixLayout(); (this
-).rerender();}; (PenMorph.prototype.numericalSetters
-) = function () {return ['setLeft', 'setTop', 'setWidth',
+(+(degrees)) % 360); this.fixLayout(); this.rerender(
+);}; PenMorph.prototype.numericalSetters = function (
+) {return ['setLeft', 'setTop', 'setWidth',
 'setHeight', 'setAlphaScaled', 'setHeading'];};
 
 // PenMorph menu:
 
-PenMorph.prototype.developersMenu = function () {var menu = (PenMorph.uber).developersMenu.call(
-this); menu.addLine(); menu.addItem('set rotation', "setRotation", ('interactively turn this morph'
-).concat('\nusing a dial widget')); return menu;}; PenMorph.prototype.setRotation = function () {
-var menu, dial, name = (this.name || this.constructor.name); if (name.length > 10) {name = (name
-).slice(0, 9) + '...';}; menu = new MenuMorph(this, name); dial = new DialMorph(this.heading);
-dial.rootForGrab = (() => dial); dial.target = this; dial.action = 'setHeading'; (menu.items
-).push(dial); menu.addLine(); menu.addItem('(90) right', () => this.setHeading(90)); (menu
-).addItem('(270) left', () => this.setHeading(270)); menu.addItem('(0) up', () => (this
-).setHeading(0)); menu.addItem('(180) down', () => this.setHeading(180)); (menu
-).isDraggable = true; menu.popUpAtHand(this.world());};
+PenMorph.prototype.developersMenu = function () {var menu = (PenMorph.uber).developersMenu.call(this); (menu
+).addLine(); menu.addItem('set rotation', "setRotation", ('interactively turn this morph\nusing a dial widget'
+)); return menu;}; PenMorph.prototype.setRotation = function () {var menu, dial, name = (this.name || (this
+).constructor.name); if (name.length > 10) {name = (name.slice(0, 9)).concat('...');}; menu = new MenuMorph(
+this, name); dial = new DialMorph(this.heading); dial.rootForGrab = (() => dial); dial.target = this; (dial
+).action = 'setHeading'; menu.items.push(dial); menu.addLine(); menu.addItem('(90) right', () => this.setHeading(
+90)); menu.addItem('(270) left', () => this.setHeading(270)); menu.addItem('(0) up', () => this.setHeading(0)
+); menu.addItem('(180) down', () => this.setHeading(180)); menu.isDraggable = true; menu.popUpAtHand(world);};
 
 // PenMorph drawing:
 
@@ -4052,13 +4034,14 @@ PenMorph.prototype.forward = function (steps) {
         dest,
         dist = parseFloat(steps);
     if (dist >= 0) {
-        dest = this.position().distanceAngle(dist, this.heading);
+        dest = (this.position()
+        ).distanceAngle(dist,
+        this.heading);
     } else {
-        dest = this.position().distanceAngle(
-            Math.abs(dist),
-            (this.heading - 180)
-        );
-    };  this.setPosition(dest);
+        dest = (this.position()
+        ).distanceAngle(Math.abs(
+        dist), (this.heading - 180)
+    );};    this.setPosition(dest);
 this.drawLine(start, this.center());};
 
 PenMorph.prototype.up = function () {this.isDown = false;};

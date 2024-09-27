@@ -2562,7 +2562,7 @@ SyntaxElementMorph.prototype.showBubble = function (value, exportPic,
             return script;
         };
     } else if (value instanceof Color) {
-        img = ColorImageMorph(value.copy()).fullImage();
+        img = (ColorImageMorph(value)).fullImage();
         morphToShow = new Morph;
         morphToShow.isCachingImage = true;
         morphToShow.bounds.setWidth(img.width);
@@ -2573,10 +2573,10 @@ SyntaxElementMorph.prototype.showBubble = function (value, exportPic,
         morphToShow.isDraggable = true;
 
         morphToShow.selectForEdit = function () {
-                var script = SpriteMorph.prototype.blockForSelector('getColor'),
-                    prepare = script.prepareToBeGrabbed,
-                    ide = this.parentThatIsA(IDE_Morph) ||
-                        this.world().childThatIsA(IDE_Morph);
+                var script = SpriteMorph.prototype.blockForSelector(
+                    'getColor'), prepare = script.prepareToBeGrabbed,
+                    ide = this.parentThatIsA(IDE_Morph) || (
+                        world.childThatIsA(IDE_Morph));
                 script.children[1].setColor(value.copy());
                 script.isDraggable = true;
 
@@ -2586,10 +2586,9 @@ SyntaxElementMorph.prototype.showBubble = function (value, exportPic,
                         origin: ide.palette,
                         position: ide.palette.center()
                     };  this.prepareToBeGrabbed = prepare;
-                }; if (ide.isAppMode) {return;};
-                script.setPosition(this.position());
-                return script;
-        };
+                };  if (ide.isAppMode) {return;};
+                script.setPosition(this.position(
+                )); return script;};
     } else if (typeof value === 'boolean') {
         morphToShow = BooleanImageMorph(value);
 
@@ -2623,8 +2622,7 @@ SyntaxElementMorph.prototype.showBubble = function (value, exportPic,
             var menu = new MenuMorph(this);
             menu.addItem(
                 'export',
-                () => ide.saveFileAs(
-                    value,
+                () => ide.saveFileAs(value,
                     'text/plain;charset=utf-8',
                     localize('data')
                 )
@@ -2821,7 +2819,7 @@ BlockSymbolMorph.prototype.getRenderColor = function () {
 };
 
 BlockSymbolMorph.prototype.getShadowRenderColor = function () {
-return ((this.parent).alpha > 1/2 ? this.shadowColor : CLEAR);};
+return ((this.parent.alpha > 1/2) ? this.shadowColor : CLEAR);};
 
 // BlockMorph //////////////////////////////////////////////////////////
 
@@ -3225,8 +3223,8 @@ BlockMorph.prototype.userMenu = function () {
                             menu.addItem(
                                 'put a HOF-attribute output',
                                 () => mult.insertNewInputBefore(
-                                    slot,
-                                    localize(['value','index','list'][mult.children.indexOf(this)])
+                                    slot, localize(['value',' index',
+                                    'list'][mult.children.indexOf(this)])
                                 )
                             );
                         } else {menu.addItem('insert a variable', () => mult.insertNewInputBefore(slot, localize('variable')));};
@@ -3327,7 +3325,7 @@ BlockMorph.prototype.userMenu = function () {
     }
         if (!this?.isTemplate) {
             menu.addLine();
-            if (this.world().currentKey === 16) {
+            if (world.currentKey === 16) {
             menu.addItem(
                 "copy",
                 () => {
@@ -3551,7 +3549,7 @@ BlockMorph.prototype.userMenu = function () {
                     };
                 }
                 scripts.clearDropInfo();
-                scripts.lastDropTarget = { element: this };
+                scripts.lastDropTarget = {element : this};
                 scripts.lastDroppedBlock = comment;
                 scripts.recordDrop(world.hand.grabOrigin);
             }
@@ -3930,7 +3928,7 @@ BlockMorph.prototype.relabel = function (alternativeSelectors) {
             }
         );
     });
-    menu.popup(this.world(), this.bottomLeft().subtract(new Point(
+    menu.popup(world, this.bottomLeft().subtract(new Point(
         8,
         this instanceof CommandBlockMorph ? this.corner : 0
     )));
@@ -4169,7 +4167,8 @@ BlockMorph.prototype.showHelp = function () {
         if (this.isGlobal) {
             spec = this.definition.helpSpec();
         } else {
-            spec = this.scriptTarget().getMethod(this.blockSpec).helpSpec();
+            spec = (this.scriptTarget()
+            ).getMethod(this.blockSpec).helpSpec();
         }
     } else {
         spec = this.selector;
@@ -4183,7 +4182,8 @@ BlockMorph.prototype.showHelp = function () {
     }
 
     pic.onload = function () {
-        help = newCanvas(new Point(pic.width, pic.height), true); // nonRetina
+        help = newCanvas(new Point(pic.width,
+        pic.height), true); // nonRetina
         ctx = help.getContext('2d');
         ctx.drawImage(pic, 0, 0);
         var helpDialog = new DialogBoxMorph;
@@ -4191,7 +4191,7 @@ BlockMorph.prototype.showHelp = function () {
         helpDialog.inform(
             'Help',
             null,
-            myself.world(),
+            world,
             help
         );
     };
@@ -5000,7 +5000,7 @@ BlockMorph.prototype.thumbnail = function (scale, clipWidth) {
         );
     };  if (nb) {
     nb.isVisible = true;
-    }; return trgt;};
+    };  return trgt;};
 
 BlockMorph.prototype.scriptPic = function () {
     // answer a canvas image that also includes comments
@@ -11599,49 +11599,6 @@ new Point(dim.x, 0))); arrows.setExtent(dim);};};} else {
     this.parent.forAllChildren(child => child.rerender());
     }; this.forAllChildren(child => child.rerender());};
 
-/* MultiArgMorph.prototype.fixArrowsLayout = function () {var label = this.label(), arrows = this.arrows(), leftArrow = arrows.children[0], rightArrow = arrows.children[1], listSymbol = arrows.children[2],
-inpCount = this.inputs().length, dim = new Point(rightArrow.width() / 2, rightArrow.height()); if (this.hidden) {if (this.isStatic) {listSymbol.hide();}; if (this.hiddenInput) {if (this.hiddenInput.isVisible
-) {if (label) {label.show();}; leftArrow.show(); rightArrow.hide(); arrows.setExtent(dim);} else {if (label) {label.hide();}; leftArrow.hide(); rightArrow.show(); rightArrow.setPosition(arrows.position().subtract(
-new Point(dim.x, 0))); arrows.setExtent(dim);};};} else {leftArrow.show(); listSymbol.show(); rightArrow.show(); if (this.isStatic) {listSymbol.hide();}; if (inpCount < (this.minInputs + 1)) {
-        if (label) {label.hide(
-        );}; leftArrow.hide();
-        arrows.setExtent(new Point(
-        (dim.x + (listSymbol.isVisible
-        ? (listSymbol.width() * 2) : 0
-        )), dim.y)); if (this.isStatic) {
-        listSymbol.setLeft(
-        arrows.left());} else {
-        listSymbol.setCenter(
-        arrows.center());}; listSymbol.setLeft(
-        arrows.left() + (MorphicPreferences.isFlat
-        ? 0 : (listSymbol.width() / 2)));
-        rightArrow.setCenter(arrows.center()
-        ); rightArrow.setRight(arrows.right());
-    } else if (this.is3ArgRingInHOF() && inpCount > 2) {
-        if (label) {label.show();};
-        rightArrow.hide();
-        arrows.setExtent(dim);
-    } else {
-        if (label) {label.show();};
-        leftArrow.show();
-        rightArrow.show();
-        if (this.inputs().length > 0) {
-            rightArrow.setPosition(leftArrow.topCenter());
-        } else {
-            rightArrow.setPosition(leftArrow.topCenter().subtract(
-                new Point(dim.x / 3, 0)));
-        }; arrows.bounds.corner = rightArrow.bottomRight(
-        ).copy(); listSymbol.setCenter(arrows.center().add(new Point((listSymbol.width() / 6), 0)));
-        if (!isNil(this.maxInputs) && inpCount > this.maxInputs - 1) {
-        rightArrow.hide(); arrows.setExtent(dim);};
-    };};
-    listSymbol.moveBy(listSymbol.shadowOffset);
-    arrows.rerender(); if (this.parent instanceof Morph) {
-    this.parent.fixLayout(); (this.parent
-    ).forAllChildren(child => child.rerender());};
-    this.forAllChildren(child => child.rerender());
-}; */
-
 MultiArgMorph.prototype.fixHolesLayout = function () {
     var pos;
     this.holes = [];
@@ -11714,54 +11671,27 @@ MultiArgMorph.prototype.insertNewInputBefore = function (anInput, contents) {
 
 // MultiArgMorph arity control:
 
-MultiArgMorph.prototype.addInput = function (contents) {
-    var len = this.inputs().length,
-        newPart = this.labelPart(this.slotSpecFor(len)),
-        value = isNil(contents) ? this.defaultValueFor(len) : contents,
-        i, name, idx;
-
-    this.addInfix();
-    idx = this.children.length - 1;
-    if (!isNil(value)) {
-        newPart.setContents(value);
-    } else if (contains(['%scriptVars', '%blockVars', '%commaParms'], this.elementSpec)) {
-        name = '';
-        i = idx;
-        if (contains(['%scriptVars', '%commaParms'], this.elementSpec)) {i += 1;};
-        if (this.infix) {if (this.elementSpec === '%commaParms') {
-        name = 'input'.concat((this.inputs().length + 1).toString());
-        } else {
-        name = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
-                'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z'][(this.infix ? this.inputs().length : 0)];
-        };} else {
-        while (i > 0) {
-            name = String.fromCharCode(97 + (i - 1) % 26) + name;
-            i = Math.floor((i - 1) / 26);
-        };}; newPart.setContents(name);
-    } else if (contains(['%parms', '%ringparms'], this.elementSpec)) {
-        if (this.is3ArgRingInHOF() && idx < 4) {
-            newPart.setContents([
-                localize('value'),
-                localize('index'),
-                localize('list')
-            ][idx - 1]);
-        } else {
-            newPart.setContents('#' + idx);
-        };
-    } else if (this.elementSpec === '%message') {
-        newPart.setContents(localize('message'));
-    } else if (this.elementSpec === '%keyName') {
-        newPart.setContents(localize('key'));
-    }; newPart.parent = this;
-    this.children.splice(idx, 0, newPart);
-    this.addPostfix();
-    newPart.fixLayout();
-    if (this.parent instanceof BlockMorph) {
-        this.parent.fixLabelColor();
-    }; this.fixLayout();
-    if (this.hidden) {this.hiddenInput = newPart;};
-    return newPart;
-};
+MultiArgMorph.prototype.addInput = function (contents) {var len = (this.inputs()
+).length, newPart = this.labelPart(this.slotSpecFor(len)), value = (isNil(contents
+) ? this.defaultValueFor(len) : contents), i, name, idx; this.addInfix(); idx = (
+this.children.length - 1); if (!isNil(value)) {newPart.setContents(value);} else if (
+contains(['%scriptVars', '%blockVars', '%commaParms'], this.elementSpec)) {name = '';
+i = idx; if (contains(['%scriptVars', '%commaParms'], this.elementSpec)) {i += 1;};
+if (this.infix) {if (this.elementSpec === '%commaParms') {name = 'input'.concat((
+this.inputs().length + 1).toString());} else {name = ['A','B','C','D','E','F','G',
+'H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','a','b',
+'c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w',
+'x','y','z'][(this.infix ? (this.inputs()).length : 0)];};} else {while (i > 0) {
+name = String.fromCharCode(97 + ((i - 1) % 26)) + name; i = Math.floor((i - 1) / 26
+);};}; newPart.setContents(name);} else if (contains(['%parms', '%ringparms'],
+this.elementSpec)) { if (this.is3ArgRingInHOF() && idx < 4) {newPart.setContents([
+localize('value'), localize('index'), localize('list')][idx - 1]);} else {(newPart
+).setContents('#' + idx);};} else if (this.elementSpec === '%message') {(newPart
+).setContents(localize('message'));} else if (this.elementSpec === '%keyName') {
+newPart.setContents(localize('key'));}; newPart.parent = this; (this.children
+).splice(idx, 0, newPart); this.addPostfix(); newPart.fixLayout(); if ((this
+).parent instanceof BlockMorph) {this.parent.fixLabelColor();}; this.fixLayout(
+); if (this.hidden) {this.hiddenInput = newPart;}; return newPart;};
 
 MultiArgMorph.prototype.addInfix = function () {
     var infix,
@@ -12020,7 +11950,7 @@ MultiArgMorph.prototype.mapToCode = function (key, label) {
     ).promptCode(
         'Code mapping - ' + label,
         StageMorph.prototype.codeMappings[key] || '',
-        this.world()
+        world
     );
 };
 
@@ -12221,34 +12151,22 @@ FunctionSlotMorph.uber = ArgMorph.prototype;
 function FunctionSlotMorph(isPredicate) {this.init(isPredicate);};
 
 FunctionSlotMorph.prototype.init = function (isPredicate) {
-FunctionSlotMorph.uber.init.call(this); this.isPredicate =
-asABool(isPredicate); this.color = this.rfColor.lighter(
-).lighter(10); this.cursorStyle = 'default';};
-FunctionSlotMorph.prototype.getSpec = (() => '%f');
+FunctionSlotMorph.uber.init.call(this); (this.isPredicate
+) = asABool(isPredicate); this.color = ((this.rfColor
+).lighter()).lighter(10); this.cursorStyle = 'default';
+}; FunctionSlotMorph.prototype.getSpec = (() => '%f');
 FunctionSlotMorph.prototype.nestedBlock = (() => null);
 
 // FunctionSlotMorph drawing:
 
-FunctionSlotMorph.prototype.backupRender = function (ctx) {
-    var borderColor;
-
-    if (this.parent) {
-        borderColor = this.parent.color;
-    } else {
-        borderColor = new Color(120, 120, 120);
-    };
-
-    // cache my border colors
-    this.cachedClr = borderColor.toString();
-    this.cachedClrBright = borderColor.lighter(this.contrast).toString();
-    this.cachedClrDark = borderColor.darker(this.contrast).toString();
-
-    if (this.isPredicate) {
-        this.drawDiamond(ctx);
-    } else {
-        this.drawRounded(ctx);
-    };
-};
+FunctionSlotMorph.prototype.backupRender = function (ctx
+) {var borderColor; if (this.parent) {borderColor = (this
+).parent.color;} else {borderColor = new Color(120, 120,
+120);}; this.cachedClr = borderColor.toString(); (this
+).cachedClrBright = (borderColor.lighter(this.contrast
+)).toString(); this.cachedClrDark = (borderColor.darker(
+this.contrast)).toString(); if (this.isPredicate) {(this
+).drawDiamond(ctx);} else {this.drawRounded(ctx);};};
 
 // ReporterSlotMorph ///////////////////////////////////////////////////
 
@@ -12283,234 +12201,67 @@ true); this.add(this.emptySlot()); if (isPredicate
 ) {this.backupRender = this.renderPredicate;} else {(this
 ).backupRender = this.renderReporter;}; this.fixLayout();};
 
-ReporterSlotMorph.prototype.drawModifiedRounded = function (ctx) {
-if (this.nestedBlock() instanceof ReporterBlockMorph) {
-var rounding = (this.nestedBlock()).rounding;} else {
-var rounding = this.rounding;};
+ReporterSlotMorph.prototype.drawModifiedRounded = function (
+ctx) {if (this.nestedBlock() instanceof ReporterBlockMorph
+) {var rounding = (this.nestedBlock()).rounding;} else {
+var rounding = this.rounding;}; var h = this.height(),
+r = Math.max(Math.min(rounding, h / 2), this.edge),
+w = this.width(), shift = this.edge / 2, gradient;
+if (MorphicPreferences.isFlat) {ctx.fillStyle = (
+this.color.toString());} else {var gradient = (ctx
+).createLinearGradient(0, 0, 0, this.height());
+gradient.addColorStop(0, this.color.toString()
+); gradient.addColorStop(1, (this.color.darker()
+).toString()); ctx.fillStyle = gradient;}; (ctx
+).beginPath(); ctx.arc(r, r, r - this.edge, -(
+Math.PI), Math.PI / -2, false); ctx.arc(w - r,
+r, r - this.edge, Math.PI / -2, 0, false); (ctx
+).arc(w - r, h - r, r - this.edge, 0, ((Math.PI
+) / 2), false); ctx.arc(r, h - r, r - this.edge,
+(Math.PI / 2), Math.PI, false); ctx.closePath();
+ctx.fill(); if (!(MorphicPreferences.isFlat)) {
+ctx.lineWidth = this.edge; ctx.lineJoin = 'round';
+ctx.lineCap = 'butt'; if (useBlurredShadows) {(ctx
+).shadowOffsetY = shift; ctx.shadowBlur = this.edge;
+ctx.shadowColor = "black";}; ctx.strokeStyle = (this
+).cachedClrDark; ctx.beginPath(); ctx.moveTo(shift,
+h - r); ctx.arc(r, r, r - shift, Math.PI, ((Math.PI
+) * 3/2), false); ctx.lineTo(w - r, shift); (ctx
+).stroke(); ctx.shadowOffsetX = 0; (ctx.shadowOffsetY
+) = 0; ctx.shadowBlur = 0; ctx.strokeStyle = (this
+).cachedClrBright; ctx.beginPath(); ctx.moveTo(
+w - shift, r - this.edge); ctx.arc(w - r, h - r,
+r - shift, 0, (Math.PI / 2), false); ctx.lineTo(
+r - this.edge, h - shift); ctx.stroke();};};
 
-    var h = this.height(),
-        r = Math.min(rounding, h / 2),
-        w = this.width(),
-        shift = this.edge / 2,
-        gradient;
-
-    // draw the 'flat' shape:
-    if (MorphicPreferences.isFlat) {
-    ctx.fillStyle = this.color.toString();} else {
-    var gradient = ctx.createLinearGradient(0, 0, 0, this.height());
-    gradient.addColorStop(0, this.color.toString());
-    gradient.addColorStop(1, (this.color.darker()).toString());
-    ctx.fillStyle = gradient;};
-    ctx.beginPath();
-    ctx.arc(
-        r,
-        r,
-        r - this.edge,
-        -(Math.PI),
-        -(Math.PI / 2),
-        false
-    );  ctx.arc(
-        w - r,
-        r,
-        r - this.edge,
-        -(Math.PI / 2),
-        0,
-        false
-    );  ctx.arc(
-        w - r,
-        h - r,
-        r - this.edge,
-        0,
-        (Math.PI / 2),
-        false
-    );  ctx.arc(
-        r,
-        h - r,
-        r - this.edge,
-        (Math.PI / 2),
-        Math.PI,
-        false
-    );  ctx.closePath();
-    ctx.fill();
-
-    if (!(MorphicPreferences.isFlat)) {
-    // add 3D-Effect:
-    ctx.lineWidth = this.edge;
-    ctx.lineJoin = 'round';
-    ctx.lineCap = 'butt';
-
-    if (useBlurredShadows) {
-        ctx.shadowOffsetY = shift;
-        ctx.shadowBlur = this.edge;
-        ctx.shadowColor = "black";
-    };
-
-    ctx.strokeStyle = this.cachedClrDark;
-    ctx.beginPath();
-    ctx.moveTo(shift, h - r);
-    ctx.arc(
-        r,
-        r,
-        Math.max(r - shift, 0),
-        Math.PI,
-        (Math.PI * 3/2),
-        false
-    );
-    ctx.lineTo(w - r + shift, shift);
-    ctx.stroke();
-
-    ctx.shadowOffsetX = 0;
-    ctx.shadowOffsetY = 0;
-    ctx.shadowBlur = 0;
-
-    ctx.strokeStyle = this.cachedClrBright;
-    ctx.beginPath();
-    ctx.moveTo(w - shift, r + shift);
-    ctx.arc(
-        w - r,
-        h - r,
-        Math.max(r - shift, 0),
-        0,
-        (Math.PI / 2),
-        false
-    );
-    ctx.lineTo(r - shift, h - shift);
-    ctx.stroke();
-};};
-
-ReporterSlotMorph.prototype.drawModifiedDiamond = function (ctx) {
-if (this.nestedBlock() instanceof ReporterBlockMorph) {
-var isArrow = this.nestedBlock().isArrow;} else {
-var isArrow = false;};
-
-    var w = this.width(),
-        h = this.height(),
-        h2 = Math.floor(h / 2),
-        r = Math.min(this.rounding, h2),
-        shift = this.edge / 2,
-        gradient;
-
-    // draw the 'flat' shape:
-    ctx.fillStyle = this.color.toString();
-    ctx.beginPath();
-
-    if (isArrow) {
-    ctx.moveTo(0, 0);
-    ctx.lineTo(w - r, 0);
-    ctx.lineTo(w, h2);
-    ctx.lineTo(w - r, h);
-    ctx.lineTo(0, h);
-    ctx.lineTo(r, h2);
-    } else {
-    ctx.moveTo(0, h2);
-    ctx.lineTo(r, 0);
-    ctx.lineTo(w - r, 0);
-    ctx.lineTo(w, h2);
-    ctx.lineTo(w - r, h);
-    ctx.lineTo(r, h);};
-
-    ctx.closePath();
-    ctx.fill();
-
-    if (MorphicPreferences.isFlat) {return;};
-
-    // add 3D-Effect:
-    ctx.lineWidth = this.edge;
-    ctx.lineJoin = 'round';
-    ctx.lineCap = 'round';
-
-    // half-tone edges
-    // bottom left corner
-    ctx.strokeStyle = this.cachedClr;
-    ctx.beginPath();
-    ctx.moveTo(shift, h2);
-    if (isArrow) {
-    ctx.lineTo(0, h - shift);
-    } else {
-    ctx.lineTo(r, h - shift);
-    }; ctx.stroke();
-
-    // top right corner
-    ctx.strokeStyle = this.cachedClr;
-    ctx.beginPath();
-    ctx.moveTo(w - shift, h2);
-    ctx.lineTo(w - r, shift);
-    ctx.stroke();
-
-    // normal gradient edges
-    // top edge: left corner
-
-    if (useBlurredShadows) {
-        ctx.shadowOffsetX = shift;
-        ctx.shadowOffsetY = shift;
-        ctx.shadowBlur = this.edge;
-        ctx.shadowColor = this.color.darker(80).toString();
-    };
-
-    gradient = ctx.createLinearGradient(
-        0,
-        0,
-        r,
-        0
-    );
-    gradient.addColorStop(1, this.cachedClrDark);
-    gradient.addColorStop(0, this.cachedClr);
-    ctx.strokeStyle = gradient;
-    ctx.beginPath(); ctx.moveTo(
-    (isArrow ? r : shift), h2);
-    ctx.lineTo((!isArrow * r),
-    shift); ctx.stroke();
-
-    // top edge: straight line
-    gradient = ctx.createLinearGradient(
-        0,
-        0,
-        0,
-        this.edge
-    );
-    gradient.addColorStop(1, this.cachedClrDark);
-    gradient.addColorStop(0, this.cachedClr);
-    ctx.strokeStyle = gradient;
-    ctx.beginPath(); ctx.moveTo(
-    (!isArrow * r), shift);
-    ctx.lineTo(w - r, shift);
-    ctx.stroke();
-
-    ctx.shadowOffsetX = 0;
-    ctx.shadowOffsetY = 0;
-    ctx.shadowBlur = 0;
-
-    // bottom edge: right corner
-    gradient = ctx.createLinearGradient(
-        w - r,
-        0,
-        w,
-        0
-    );
-    gradient.addColorStop(1, this.cachedClr);
-    gradient.addColorStop(0, this.cachedClrBright);
-    ctx.strokeStyle = gradient;
-    ctx.beginPath();
-    ctx.moveTo(w - r, h - shift);
-    ctx.lineTo(w - shift, h2);
-    ctx.stroke();
-
-    // bottom edge: straight line
-    gradient = ctx.createLinearGradient(
-        0,
-        h - this.edge,
-        0,
-        h
-    );
-    gradient.addColorStop(1, this.cachedClr);
-    gradient.addColorStop(0, this.cachedClrBright);
-    ctx.strokeStyle = gradient;
-    ctx.beginPath(); ctx.moveTo(
-    (!isArrow * (r + shift)),
-    h - shift); ctx.lineTo(
-    w - r - shift, h - shift);
-    ctx.stroke();
-};
+ReporterSlotMorph.prototype.drawModifiedDiamond = function (
+ctx) {if (this.nestedBlock() instanceof ReporterBlockMorph
+) {var isArrow = (this.nestedBlock()).isArrow;} else {
+var isArrow = false;}; var w = this.width(), h = (this
+).height(), h2 = Math.floor(h / 2), r = Math.min((this
+).rounding, h2), shift = this.edge / 2, gradient; if (
+MorphicPreferences.isFlat) {ctx.fillStyle = (this.color
+).toString();} else {var gradient = ctx.createLinearGradient(
+0, 0, 0, this.height()); gradient.addColorStop(0, (this.color
+).toString()); gradient.addColorStop(1, (this.color.darker(
+)).toString()); ctx.fillStyle = gradient;}; ctx.beginPath();
+if (isArrow) {ctx.moveTo(this.edge, this.edge); ctx.lineTo(
+w - r, this.edge); ctx.lineTo(w - this.edge, h2); ctx.lineTo(
+w - r, h - this.edge); ctx.lineTo(0, h - this.edge); ctx.lineTo(
+r + (shift / 2), h2 - (shift / 2));} else {ctx.moveTo(shift, h2
+); ctx.lineTo(r, this.edge); ctx.lineTo(w - r, this.edge); (ctx
+).lineTo(w - this.edge, h2); ctx.lineTo(w - r, h - this.edge);
+ctx.lineTo(r, h - this.edge);}; ctx.closePath(); ctx.fill(); if (
+!(MorphicPreferences.isFlat)) {ctx.lineWidth = this.edge; (ctx
+).lineJoin = 'round'; ctx.lineCap = 'butt'; if (useBlurredShadows
+) {ctx.shadowOffsetY = shift; ctx.shadowBlur = this.edge; (ctx
+).shadowColor = "black";}; ctx.strokeStyle = this.cachedClrDark;
+ctx.beginPath(); ctx.moveTo((isArrow * r), h2); ctx.lineTo((
+!isArrow * r), shift); ctx.lineTo(w - r, shift); ctx.stroke();
+ctx.shadowOffsetX = 0; ctx.shadowOffsetY = 0; (ctx.shadowBlur
+) = 0; ctx.strokeStyle = this.cachedClrBright; ctx.beginPath(
+); ctx.moveTo((!isArrow * r), h - shift); ctx.lineTo(w - r,
+h - shift); ctx.lineTo(w - shift, h2); ctx.stroke();};};
 
 ReporterSlotMorph.prototype.renderReporter = function (ctx) {var borderColor; if (
 this.parent) {borderColor = this.parent.color;} else {borderColor = new Color(120,
@@ -12531,21 +12282,19 @@ borderColor.lighter(this.contrast)).withAlpha(1/2)).toString(); (this.cachedClrD
 this.drawModifiedRounded(ctx);};} else {this.drawModifiedDiamond(ctx);};};
 
 ReporterSlotMorph.prototype.emptySlot = function () {
-    var empty = new ArgMorph,
-        shrink = this.rfBorder * 2 + this.edge * 2;
-    empty.color = this.color.lighter(
-    );  empty.alpha = 0;
-    empty.bounds.setExtent(new Point(
-        (this.fontSize + this.edge * 2) * 2 - shrink,
-        this.fontSize + this.edge * 2 - shrink
-    )); empty.render = nop; return empty;};
+var empty = new ArgMorph, shrink = ((this.rfBorder * 2
+) + (this.edge * 2)); empty.color = this.color.lighter(
+); empty.alpha = 0; empty.bounds.setExtent(new Point(
+((this.fontSize + (this.edge * 2)) * 2) - shrink,
+(this.fontSize + (this.edge * 2) - shrink))
+); empty.render = nop; return empty;};
 
 // ReporterSlotMorph accessing:
 
 ReporterSlotMorph.prototype.getSpec = function (
-) {return (this.isPredicate ? '%p' : '%r');};
-
-ReporterSlotMorph.prototype.contents = function () {return this.children[0];};
+) {return (this.isPredicate ? '%p' : '%r');
+}; (ReporterSlotMorph.prototype.contents
+) = function () {return (this.children)[0];};
 
 ReporterSlotMorph.prototype.nestedBlock = function (
 ) {var contents = this.contents(); return (((contents
@@ -13156,6 +12905,132 @@ RingReporterSlotMorph.prototype.drawEdgesArrow = function (ctx) {
     ctx.stroke();
 };
 
+/*
+RingReporterSlotMorph.prototype.outlinePathOval = function (ctx) {
+if (this.nestedBlock() instanceof ReporterBlockMorph) {
+var rounding = (this.nestedBlock()).rounding;} else {
+var rounding = this.rounding;};
+
+    var h = this.height(),
+        r = Math.min(rounding, h / 2),
+        w = this.width(),
+        shift = this.edge / 2,
+        gradient;
+
+    // draw the 'flat' shape:
+    if (MorphicPreferences.isFlat) {
+    ctx.fillStyle = this.color.toString();} else {
+    var gradient = ctx.createLinearGradient(0, 0, 0, this.height());
+    gradient.addColorStop(0, this.color.toString());
+    gradient.addColorStop(1, (this.color.darker()).toString());
+    ctx.fillStyle = gradient;};
+    ctx.beginPath();
+    ctx.arc(
+        r,
+        r,
+        r - this.edge,
+        -(Math.PI),
+        -(Math.PI / 2),
+        false
+    );  ctx.arc(
+        w - r,
+        r,
+        r - this.edge,
+        -(Math.PI / 2),
+        0,
+        false
+    );  ctx.arc(
+        w - r,
+        h - r,
+        r - this.edge,
+        0,
+        (Math.PI / 2),
+        false
+    );  ctx.arc(
+        r,
+        h - r,
+        r - this.edge,
+        (Math.PI / 2),
+        Math.PI,
+        false
+    );  ctx.closePath();
+    ctx.fill();
+
+    if (!(MorphicPreferences.isFlat)) {
+    // add 3D-Effect:
+    ctx.lineWidth = this.edge;
+    ctx.lineJoin = 'round';
+    ctx.lineCap = 'butt';
+
+    if (useBlurredShadows) {
+        ctx.shadowOffsetY = shift;
+        ctx.shadowBlur = this.edge;
+        ctx.shadowColor = "black";
+    };
+
+    ctx.strokeStyle = this.cachedClrDark;
+    ctx.beginPath();
+    ctx.moveTo(shift, h - r);
+    ctx.arc(
+        r,
+        r,
+        Math.max(r - shift, 0),
+        Math.PI,
+        (Math.PI * 3/2),
+        false
+    );
+    ctx.lineTo(w - r + shift, shift);
+    ctx.stroke();
+
+    ctx.shadowOffsetX = 0;
+    ctx.shadowOffsetY = 0;
+    ctx.shadowBlur = 0;
+
+    ctx.strokeStyle = this.cachedClrBright;
+    ctx.beginPath();
+    ctx.moveTo(w - shift, r + shift);
+    ctx.arc(
+        w - r,
+        h - r,
+        Math.max(r - shift, 0),
+        0,
+        (Math.PI / 2),
+        false
+    );
+    ctx.lineTo(r - shift, h - shift);
+    ctx.stroke();
+};};
+
+RingReporterSlotMorph.prototype.outlinePathDiamond = function (
+ctx) {if (this.nestedBlock() instanceof ReporterBlockMorph
+) {var isArrow = (this.nestedBlock()).isArrow;} else {
+var isArrow = false;}; var w = this.width(), h = (this
+).height(), h2 = Math.floor(h / 2), r = Math.min((this
+).rounding, h2), shift = this.edge / 2, gradient; if (
+MorphicPreferences.isFlat) {ctx.fillStyle = (this.color
+).toString();} else {var gradient = ctx.createLinearGradient(
+0, 0, 0, this.height()); gradient.addColorStop(0, (this.color
+).toString()); gradient.addColorStop(1, (this.color.darker(
+)).toString()); ctx.fillStyle = gradient;}; ctx.beginPath();
+if (isArrow) {ctx.moveTo(this.edge, this.edge); ctx.lineTo(
+w - r, this.edge); ctx.lineTo(w - this.edge, h2); ctx.lineTo(
+w - r, h - this.edge); ctx.lineTo(0, h - this.edge); ctx.lineTo(
+r + (shift / 2), h2 - (shift / 2));} else {ctx.moveTo(shift, h2
+); ctx.lineTo(r, this.edge); ctx.lineTo(w - r, this.edge); (ctx
+).lineTo(w - this.edge, h2); ctx.lineTo(w - r, h - this.edge);
+ctx.lineTo(r, h - this.edge);}; ctx.closePath(); ctx.fill(); if (
+!(MorphicPreferences.isFlat)) {ctx.lineWidth = this.edge; (ctx
+).lineJoin = 'round'; ctx.lineCap = 'butt'; if (useBlurredShadows
+) {ctx.shadowOffsetY = shift; ctx.shadowBlur = this.edge; (ctx
+).shadowColor = "black";}; ctx.strokeStyle = this.cachedClrDark;
+ctx.beginPath(); ctx.moveTo((isArrow * r), h2); ctx.lineTo((
+!isArrow * r), shift); ctx.lineTo(w - r, shift); ctx.stroke();
+ctx.shadowOffsetX = 0; ctx.shadowOffsetY = 0; (ctx.shadowBlur
+) = 0; ctx.strokeStyle = this.cachedClrBright; ctx.beginPath(
+); ctx.moveTo((!isArrow * r), h - shift); ctx.lineTo(w - r,
+h - shift); ctx.lineTo(w - shift, h2); ctx.stroke();};};
+*/
+
 // CommentMorph //////////////////////////////////////////////////////////
 
 /*
@@ -13186,49 +13061,43 @@ CommentMorph.prototype.refreshScale();
 function CommentMorph (contents
 ) {this.init(contents);};
 
-CommentMorph.prototype.init = function (contents) {
-    var scale = SyntaxElementMorph.prototype.scale;
+CommentMorph.prototype.titleColor = new Color(255, 255, 165);
 
-    this.block = null; // optional anchor block
-    this.stickyOffset = null; // not to be persisted
-    this.isCollapsed = false;
-    this.titleBar = new BoxMorph(
-        this.rounding, scale,
-        new Color(255, 255, 180)
-    );  this.titleBar.color = new Color(255, 255, 160);
-    this.titleBar.setHeight(fontHeight(
-    SyntaxElementMorph.prototype.fontSize
-    ) + this.padding); this.title = null;
-    this.arrow = new ArrowMorph('down',
-    this.fontSize, 0, new Color(130, 130,
-    105)); this.arrow.mouseClickLeft = (() => (
-    this).toggleExpand()); this.contents = new TextMorph(
-    (contents || localize('Please edit\nthis comment.')),
-    SyntaxElementMorph.prototype.fontSize, 'sans-serif',
-    false, false, null, null, 'blockGlobalFont', 0, null
-    ); this.contents.isEditable = true; (this.contents
-    ).enableSelecting(); this.contents.maxWidth = (
-    Math.round((this.contents).width()) + (4 * scale
-    )); this.contents.fixLayout(); this.handle = (
-    new HandleMorph(this.contents, (this.contents
-    ).maxWidth, (this.fontSize * 2), 4, 4, ('move'
-    ).concat('Horizontal'))); this.handle.color = (
-    this.arrow).color; this.handle.setExtent(new Point(
-    12 * scale, 12 * scale)); this.anchor = null;
-
-    CommentMorph.uber.init.call(
-    this, this.rounding, scale,
-    new Color(255, 255, 160));
-    this.color = new Color(255,
-    255, 210); this.isDraggable = (
-    true); this.cursorStyle = 'grab';
-    this.titleBar.cursorStyle = 'grab';
-    this.cursorGrabStyle = 'grabbing';
-    this.titleBar.cursorGrabStyle = (
-    'grabbing'); this.add(this.titleBar
-    ); this.add(this.arrow); this.add(
-    this.contents); this.add((this
-    ).handle); this.fixLayout();};
+CommentMorph.prototype.init = function (contents
+) {var scale = SyntaxElementMorph.prototype.scale;
+this.block = null; this.stickyOffset = null; (this
+).isCollapsed = false; this.titleBar = new BoxMorph(
+this.rounding, scale, CommentMorph.prototype.titleColor
+);  this.titleBar.color = (CommentMorph.prototype
+).titleColor; this.titleBar.setHeight(fontHeight(
+SyntaxElementMorph.prototype.fontSize) + this.padding
+); this.title = null; this.arrow = new ArrowMorph('down',
+this.fontSize, 0, new Color(128, 128, 105)); (this.arrow
+).mouseClickLeft = (() => this.toggleExpand()); (this
+).contents = new TextMorph((contents || localize(
+'Please edit\nthis comment.')), (SyntaxElementMorph
+).prototype.fontSize, 'sans-serif', false, false,
+null, null, 'blockGlobalFont', 0, null); (this
+).contents.isEditable = true; (this.contents
+).enableSelecting(); this.contents.maxWidth = (
+Math.round((this.contents).width()) + (4 * scale
+)); this.contents.fixLayout(); this.handle = (
+new HandleMorph(this.contents, (this.contents
+).maxWidth, (this.fontSize * 2), 4, 4, ('move'
+).concat('Horizontal'))); (this.handle.color
+) = new Color(136, 136, 136); (this.handle
+).setExtent(new Point(12 * scale, 12 * scale
+)); this.anchor = null; (CommentMorph.uber
+).init.call(this, this.rounding, scale,
+new Color(255, 255, 160)); this.color = (
+new Color(255, 255, 210)); (this.isDraggable
+) = true; this.cursorStyle = 'grab'; (this
+).titleBar.cursorStyle = 'grab'; (this
+).cursorGrabStyle = 'grabbing'; (this
+).titleBar.cursorGrabStyle = 'grabbing';
+this.add(this.titleBar); this.add((this
+).arrow); this.add(this.contents); (this
+).add(this.handle); this.fixLayout();};
 
 // CommentMorph ops:
 

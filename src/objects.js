@@ -2889,8 +2889,8 @@ SpriteMorph.prototype.render = function (ctx) {
     this.cachedImage); this.version = Date.now();
 };
 
-SpriteMorph.prototype.rotationCenter = function (
-) {return this.position().add(this.rotationOffset);};
+SpriteMorph.prototype.rotationCenter = function () {
+return (this.position()).add(this.rotationOffset);};
 
 SpriteMorph.prototype.getImageData = function () {
     // used for video motion detection.
@@ -2902,28 +2902,22 @@ SpriteMorph.prototype.getImageData = function () {
             newExtent = new Point(
                 Math.floor(ext.x / stage.scale),
                 Math.floor(ext.y / stage.scale)
-            ),
-            canvas = newCanvas(newExtent, true),
-            canvasContext,
-            imageData;
-        canvasContext = canvas.getContext("2d");
-        canvasContext.drawImage(
+            ),  canvas = newCanvas(newExtent,
+            true), canvasContext, imageData;
+        canvasContext = canvas.getContext(
+        "2d"); canvasContext.drawImage(
             this.getImage(),
             0, 0, Math.floor(ext.x),
             Math.floor(ext.y),
             0, 0, newExtent.x, newExtent.y
         );  imageData = canvasContext.getImageData(
-            0,
-            0,
-            newExtent.x,
-            newExtent.y
-        ).data;
+            0, 0, newExtent.x,
+            newExtent.y).data;
         this.imageData = {
             version : this.version,
-            pixels : new Uint32Array(imageData.buffer.slice(0))
-        };
-    }; return this.imageData.pixels;
-};
+            pixels : new Uint32Array(
+            imageData.buffer.slice(0))};
+        };  return this.imageData.pixels;};
 
 SpriteMorph.prototype.projectionSnap = function() {
     var stage = this.parentThatIsA(StageMorph),
@@ -10292,8 +10286,8 @@ SpriteBubbleMorph.prototype.dataAsMorph = function (data) {
         };
 
     } else if (data instanceof Color) {
-        img = ColorImageMorph(data.copy()
-        ).fullImage(); contents = new Morph;
+        img = (ColorImageMorph(data
+        )).fullImage(); contents = new Morph;
         contents.isCachingImage = true;
         contents.bounds.setWidth(img.width);
         contents.bounds.setHeight(img.height);
@@ -11721,7 +11715,7 @@ CellMorph.prototype.big = function () {
     this.changed();
     if (this.contentsMorph instanceof TextMorph) {
         this.contentsMorph.setFontSize(
-            SyntaxElementMorph.prototype.fontSize * 1.5
+            SyntaxElementMorph.prototype.fontSize * 3/2
         );
     }; this.fixLayout(true);
     this.rerender();
@@ -11743,7 +11737,7 @@ CellMorph.prototype.normal = function () {
 
 
 CellMorph.prototype.isCircular = function (list) {
-    if (!this.parentCell) {return false; }
+    if (!(this.parentCell)) {return false;};
     if (list instanceof List) {
        return this.contents === list || this.parentCell.isCircular(list);
     }; return this.parentCell.isCircular(this.contents);
@@ -11770,7 +11764,7 @@ CellMorph.prototype.fixLayout = function (justMe) {
         this.contentsMorph.width() + this.edge * 2,
         (this.contents instanceof Context ||
             this.contents instanceof List ? 0 :
-                    SyntaxElementMorph.prototype.fontSize * 3.5)
+                    SyntaxElementMorph.prototype.fontSize * 7/2)
     )); // position my contents
     if (!isSameList && !isSameTable) {
         this.contentsMorph.setCenter(this.center());
@@ -11788,17 +11782,14 @@ CellMorph.prototype.fixLayout = function (justMe) {
 };
 
 CellMorph.prototype.createContents = function () {
-    // re-build my contents
-    var txt,
-        img,
-        myself = this,
+    var txt, img, myself = this,
         fontSize = SyntaxElementMorph.prototype.fontSize,
         isSameList = this.contentsMorph instanceof ListWatcherMorph
             && (this.contentsMorph.list === this.contents),
         isSameTable = this.contentsMorph instanceof TableFrameMorph
             && (this.contentsMorph.tableMorph.table === this.contents);
 
-    if (this.isBig) {fontSize = fontSize * 1.5;
+    if (this.isBig) {fontSize = fontSize * 3/2;
     }; if (this.contentsMorph && !isSameList && !isSameTable
     ) {this.contentsMorph.destroy(); this.version = null;
     }; this.cursorStyle = null;
@@ -11817,7 +11808,7 @@ CellMorph.prototype.createContents = function () {
                 this.contentsMorph = this.contents;
             };
         } else if (isString(this.contents)) {
-            txt  = this.contents.length > 500 ?
+            txt = this.contents.length > 500 ?
                     this.contents.slice(0, 500) + '...' : this.contents;
             this.contentsMorph = new TextMorph(
                 txt, fontSize, null, true, false,
@@ -11828,7 +11819,7 @@ CellMorph.prototype.createContents = function () {
                 this.cursorStyle = 'text';
             }; this.contentsMorph.setColor(WHITE);
         } else if (this.contents instanceof Color) {
-            img = ColorImageMorph(this.contents.copy()).fullImage();
+            img = (ColorImageMorph(this.contents)).fullImage();
             this.contentsMorph = new Morph;
             this.contentsMorph.isCachingImage = true;
             this.contentsMorph.bounds.setWidth(img.width);

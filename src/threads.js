@@ -94,7 +94,7 @@ isString(any) && (any.indexOf(' ') > -1)))) {x = a;
 y = b;}; if (isString(x) && isString(y)) {return ((x
 ).toLowerCase() === y.toLowerCase());}; return (x === y);};
 
-function invoke(
+function invoke (
     action, // a BlockMorph or a Context, a reified ("ringified") block
     contextArgs, // optional List of arguments for the context, or null
     receiver, // sprite or environment, optional for contexts
@@ -103,8 +103,7 @@ function invoke(
     suppressErrors, // bool
     callerProcess, // optional for JS-functions
     returnContext // bool
-) {
-    // execute the given block or context synchronously without yielding.
+)  {// execute the given block or context synchronously without yielding.
     // Apply context (not a block) to a list of optional arguments.
     // Receiver (sprite, stage or  environment), timeout etc. are optional.
     // If a timeout (in milliseconds) is specified, abort execution
@@ -704,10 +703,10 @@ input1, input2) {this.assertType(input1, ['nothing', 'number', 'Boolean']); this
 ) instanceof List) ? (input.fullCopy().map(item => myself.reportNot(item))) : asABool(myself.reportBasicNot(input)));}; Process.prototype.reportBasicNot = function (input) {return (1 - Math.sign(Math.abs(input
 )));}; /* Any of the boolean operators are now better. */ Process.prototype.doPauseScript = function (script) {var myself = this; if (!(myself.debugDialog)) {myself.debugDialog = new DialogBoxMorph; (myself
 ).debugDialog.setPicture(myself.topBlock.fullImage()); myself.debugDialog.labelString = (myself.blockReceiver()).name + ' ^'; myself.debugDialog.addButton(function () {this.isDestroyed = true; this.destroy();
-}, new SymbolMorph('pointRight', 12)); myself.debugDialog.addButton(function () {this.isDestroyed = true; this.destroy(); if (!isNil(script)) {myself.execute(['run'], script, new List);};}, new SymbolMorph(
-'stepForward', 12)); myself.debugDialog.addButton(function () {myself.stop(); this.destroy();}, new SymbolMorph('rectangle', 12)); myself.debugDialog.key = ('debug - ' + Date.now());
-myself.debugDialog.process = myself; myself.debugDialog.createLabel(); myself.debugDialog.fixLayout(); myself.debugDialog.popUp(world); myself.isOnDebug = true; myself.pushContext(
-'doYield'); myself.pushContext();} else {if (!(myself.debugDialog.isDestroyed)) {myself.pushContext('doYield'); myself.pushContext();} else {myself.debugDialog = null;};};};
+}, new SymbolMorph('pointRight', 12)); myself.debugDialog.addButton(function () {this.isDestroyed = true; this.destroy(); if (!isNil(script)) {myself.doRun(script, new List);};}, new SymbolMorph('stepForward',
+12)); myself.debugDialog.addButton(function () {myself.stop(); this.destroy();}, new SymbolMorph('rectangle', 12)); myself.debugDialog.key = ('debug - ' + Date.now()); myself.debugDialog.process = myself;
+myself.debugDialog.createLabel(); myself.debugDialog.fixLayout(); myself.debugDialog.popUp(world); myself.isOnDebug = true; myself.pushContext('doYield'); myself.pushContext();} else {if (!((myself
+).debugDialog.isDestroyed)) {myself.pushContext('doYield'); myself.pushContext();} else {myself.debugDialog = null;};};};
 
 // Process: Special Forms Blocks Primitives
 
@@ -2123,8 +2122,8 @@ this.isAtomic = false; if (this.homeContext.receiver) {if (this.homeContext.rece
 // Statement Functions: Are for managing scripts more than expected. :-)
 
 Process.prototype.doCatch = function (tag, action) {if (action instanceof CommandBlockMorph) {if (this.context.isOnlyToOnce) {delete this.context.isOnlyToOnce;} else {this.context.isOnlyToOnce = true;
-this.context.outerContext.variables.addVar(tag); this.context.outerContext.variables.setVar(tag, this.context.catchContinuation()); this.pushContext(action.blockSequence()); this.pushContext('doYield');
-this.pushContext();};};}; Process.prototype.throw = function (catchtag) {if (catchtag instanceof Context) {if (catchtag.isCatchContinuation) {this.doRun(catchtag, new List);} else {throw Error(
+this.context.outerContext.variables.addVar(tag); this.context.outerContext.variables.setVar(tag, this.context.catchContinuation()); this.pushContext(action.blockSequence()); this.pushContext('doYield'
+); this.pushContext();};};}; Process.prototype.throw = function (catchtag) {if (catchtag instanceof Context) {if (catchtag.isCatchContinuation) {this.doRun(catchtag, new List);} else {throw Error(
 localize('The catchtag isn\'t a tag-continuation.'));};} else {throw Error(localize('The catchtag isn\'t a tag-continuation.'));};}; /* Are really managed by modified and catched continuations. :-) */
 
 // Global Flags:
