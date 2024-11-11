@@ -1956,7 +1956,7 @@ Process.prototype.reportLinkedNumbers = function (start, end) {
         this.assertType(start, 'number');
         this.assertType(end, 'number');
         this.context.accumulator = {
-            target : new List(),
+            target : new List,
             end : null,
             idx : +start,
             step: +end > +start ? +1 : -1
@@ -3683,10 +3683,10 @@ Process.prototype.reportConstants = function (cname) {var ide = world.childThatI
 
 Process.prototype.reportMonadic = function (fname, n) {if (this.enableHyperOps) {if (n instanceof List) {return n.map(each => this.reportMonadic(fname, each));};}; function abs (num) {return (
 +num < 0) ? -num : +num;}; function sign (num) {if (num === 0) {return 0;} else {return Process.prototype.reportBasicQuotient(num, abs(num));};}; function sin (x) {x = Process.prototype.reportBasicModulus(
-x, 360); var y = Process.prototype.fixSimpleNumber(sign(180 - x)); x = radians(Process.prototype.fixSimpleNumber(abs(((((+x / 2) + 45) % 90) - 45) * 2))); /* Taking faster time. */ var answer = Math.sin(
-Process.prototype.reportBasicProduct(Process.prototype.reportRound(x, new List([15])), y)); return (isNaN(answer) ? 0 : answer);}; function circ (x) {x = Process.prototype.reportBasicQuotient(+x, 90);
-return Process.prototype.fixSimpleNumber(Math.sqrt(1 - ((Process.prototype.reportBasicModulus(+x, 2) - 1) ** 2))) * (-2 * ((Process.prototype.reportBasicModulus(+x, 4) > 2) - 0.5));}; function complexRadians (
-degrees) {return Process.prototype.reportComplexProduct(degrees, Process.prototype.reportComplexQuotient(Math.PI, 180));}; function complexDegrees (radians) {return Process.prototype.reportComplexProduct(radians,
+x, 360); var y = Process.prototype.fixSimpleNumber(sign(180 - x)); x = radians(Process.prototype.fixSimpleNumber(abs(((((+x / 2) + 45) % 90) - 45) * 2))); var answer = Math.sin((Process.prototype
+).reportBasicProduct(Process.prototype.reportRound(x, new List([15])), y)); return (isNaN(answer) ? 0 : answer);}; function circ (x) {x = Process.prototype.reportBasicQuotient(+x, 90); return (Process
+).prototype.fixSimpleNumber(Math.sqrt(1 - ((Process.prototype.reportBasicModulus(+x, 2) - 1) ** 2))) * (-2 * ((Process.prototype.reportBasicModulus(+x, 4) > 2) - 1/2));}; function complexRadians (degrees
+) {return Process.prototype.reportComplexProduct(degrees, Process.prototype.reportComplexQuotient(Math.PI, 180));}; function complexDegrees (radians) {return Process.prototype.reportComplexProduct(radians,
 Process.prototype.reportComplexQuotient(180, Math.PI));}; switch (this.inputOption(fname)) {
     case 'abs':
         try {var complex = (new ComplexNumber(
@@ -3859,27 +3859,19 @@ Process.prototype.reportComplexQuotient(180, Math.PI));}; switch (this.inputOpti
 };
 
 Process.prototype.reportComplexNumAttrs = function (n, option) {
-option = this.inputOption(option);
-if (option === 'complex') {
-        this.assertType(n, 'list');
-        return new ComplexNumber(Process.prototype.reportBasicProduct(
-        +(n.at(1)), Process.prototype.reportMonadic(['sin'], (180 - (n.at(2)
-        )))), Process.prototype.reportBasicProduct(+(n.at(1)),
-        Process.prototype.reportMonadic(['cos'], (n.at(2)))));
-} else {
-        this.assertType(n, ['number', 'text', 'Boolean'
-        ]); try {var complex = (new ComplexNumber(+n, (
-        (n.i === undefined) ? 0 : +(n.i))));} catch (error
-        ) {return new List([0, 90]);}; result = new List([
-        Process.prototype.reportMonadic(['abs'], n),
-        Process.prototype.reportBasicModulus((
-        Process.prototype.reportBasicAtan2(
-        +complex, ((complex.i === undefined
-        ) ? 0 : +(complex.i)))), 360)]);
-        if (+(result.at(1)) === 0) {
-        return new List([0, 90]);};
-        return result;
-};};
+option = this.inputOption(option); if (option === 'complex') {
+this.assertType(n, 'list'); return new ComplexNumber((Process
+).prototype.reportBasicProduct(+(n.at(1)), (Process.prototype
+).reportMonadic(['sin'], (180 - (n.at(2))))), (Process.prototype
+).reportBasicProduct(+(n.at(1)), Process.prototype.reportMonadic(
+['cos'], (n.at(2)))));} else {this.assertType(n, ['number', 'text',
+'Boolean']); try {var complex = (new ComplexNumber(+n, (isNil(
+n.i) ? 0 : +(n.i))));} catch (error) {return new List([0, 90]);
+}; result = new List([Process.prototype.reportMonadic(['abs'],
+n), Process.prototype.reportBasicModulus(((Process.prototype
+).reportBasicAtan2(+complex, (isNil(complex.i) ? 0 : +(
+complex.i)))), 360)]); if (+(result.at(1)) === 0) {
+return new List([0, 90]);}; return result;};};
 
 Process.prototype.reportPolar = function (n) {
         this.assertType(n, ['number', 'text', 'Boolean'

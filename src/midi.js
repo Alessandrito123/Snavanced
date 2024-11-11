@@ -49,8 +49,8 @@
 // Declarations
 
 var MIDSoundSystem = {basicHertzValue : BigDec(256),
-basicLogarithmicValue : BigDec('59.760344731969152'),
-basicSampleRateValue : BigDec(20)}; /* Starters. */
+basicLogarithmicValue : BigDec('59.760344731969152'
+), basicSampleRateValue : BigDec(20)}; // Starters.
 
 MIDSoundSystem.createWhiteNoise = function (volume, duration) {if (isNil(volume)) {volume = theOne;
 } else {volume = (theOne.min(volume.max())).squareRoot(true);}; if (isNil(duration)) {duration = (

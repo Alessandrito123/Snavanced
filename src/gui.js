@@ -6405,38 +6405,19 @@ IDE_Morph.prototype.value_depthMenu = function () {
 
 // IDE_Morph microphone settings
 
-IDE_Morph.prototype.microphoneMenu = function () {
-    var menu = new MenuMorph(this),
-        world = this.world(),
-        pos = this.controlBar.settingsButton.bottomLeft(),
-        resolutions = ['low', 'normal', 'high', 'max'],
-        microphone = this.stage.microphone,
-        tick = new SymbolMorph(
-            'tick',
-            MorphicPreferences.menuFontSize * 3/4
-        ),  on = new SymbolMorph(
-            'checkedBox',
-            MorphicPreferences.menuFontSize * 3/4
-        ),  empty = tick.fullCopy();
-
-    empty.render = nop;
-    if (microphone.isReady) {
-        menu.addItem(
-            [
-                on,
-                localize('Microphone')
-            ],
-            () => microphone.stop()
-        );  menu.addLine();
-    };  resolutions.forEach((res, i) => {
-        menu.addItem(
-            [
-                ((microphone.resolution === (i + 1
-                )) ? tick : empty), localize(res)
-            ],
-            () => microphone.setResolution(i + 1)
-        );
-    }); menu.popup(world, pos);};
+IDE_Morph.prototype.microphoneMenu = function () {var menu = (
+new MenuMorph(this)), world = this, pos = (this.controlBar
+).settingsButton.bottomLeft(), resolutions = ['low', 'normal',
+'high', 'max'], microphone = this.stage.microphone, tick = (
+new SymbolMorph('tick', MorphicPreferences.menuFontSize * 3/4
+)), on = new SymbolMorph('checkedBox', ((MorphicPreferences
+).menuFontSize * 3/4)),  empty = tick.fullCopy(); (empty
+).render = nop; if (microphone.isReady) {menu.addItem([on,
+localize('Microphone')], () => microphone.stop()); (menu
+).addLine();}; resolutions.forEach((res, i) => {(menu
+).addItem([((microphone.resolution === (i + 1)) ? (
+tick) : empty), localize(res)], () => (microphone
+).setResolution(i + 1));}); menu.popup(world, pos);};
 
 IDE_Morph.prototype.themesMenu = function () {var menu = new MenuMorph(this), pos = this.controlBar.settingsButton.bottomLeft(
 ), themes = ['old', 'simple', 'default', 'light', 'turbo', 'scratchy', 'animated', 'penguin'], tick = new SymbolMorph('tick',
@@ -6509,53 +6490,36 @@ IDE_Morph.prototype.reflectLanguage = function (lang, callback, noSave) {
         this.openProjectString(projectData);
     };  if (!noSave) {
         this.saveSetting('language', lang);
-    };  if (callback) {callback.call(this);};
-};
+    };  if (callback) {callback.call(this);};};
 
 // IDE_Morph blocks scaling
 
-IDE_Morph.prototype.userSetBlocksScale = function (
-) {var scrpt, blck, shield, sample, action, dlg;
-scrpt = new CommandBlockMorph; scrpt.color = (
-SpriteMorph.prototype.blockColor.control); (scrpt
-).setSpec(localize('ZOOM TEST STRING 2')); (blck
-) = new CommandBlockMorph; blck.color = (SpriteMorph
-).prototype.blockColor.variables; blck.setSpec(localize(
-'ZOOM TEST STRING 3')); scrpt.nextBlock(blck); blck = (
-new CommandBlockMorph); blck.color = (SpriteMorph.prototype
-).blockColor.lists; blck.setSpec(localize('ZOOM TEST STRING 4'
-)); scrpt.bottomBlock().nextBlock(blck); blck = (SpriteMorph
-).prototype.blockForSelector('zoomLambdaTest'); blck.inputs(
-)[0].nestedBlock(scrpt); sample = new FrameMorph; (sample
-).acceptsDrops = false; sample.color = (IDE_Morph.prototype
-).categoryColor; if ((SyntaxElementMorph.prototype.alpha
-) > 0.8) {sample.cachedTexture = this.scriptsPaneTexture;
-}; sample.setExtent(new Point(250, 125)); blck.setPosition(
-sample.position().add(20)); sample.add(blck); shield = (
-new Morph); shield.alpha = 0; shield.setExtent(sample.extent(
-)); shield.setPosition(sample.position()); sample.add(shield
-); action = (num => {var backup = blck.children[(blck.children
-).length - 1].nestedBlock().fullCopy(); blck.setScale(num);
-blck.setSpec(blck.blockSpec); blck.children[(blck.children
-).length - 1].nestedBlock(backup); blck.inputs()[0].setScale(
-num); blck.inputs()[0].fixLayout(); backup.setScale(num);
-backup.setSpec(backup.blockSpec); backup.fixLayout();
-backup.blockSequence().forEach((block => {block.setScale(
-num); block.setSpec(block.blockSpec); block.fixLayout();}));
-blck.inputs()[0].fixLayout(); blck.fullChanged();}); dlg = (
-new DialogBoxMorph(null, num => this.setBlocksScale(num
-))).withKey('zoomBlocks'); if ((MorphicPreferences
-).isTouchDevice) {dlg.isDraggable = false;}; (dlg
-).prompt('ZOOM MENU STRING', (SyntaxElementMorph
-).prototype.scale.toString(), world, sample, {
-'ZOOM 0.5 SIZE' : 0.5, 'ZOOM 0.75 SIZE' : 0.75,
-'ZOOM 0.9 SIZE' : 0.9, 'ZOOM 1 SIZE' : 1,
-'ZOOM 1.11 SIZE' : 1.11, 'ZOOM 1.295 SIZE' : 1.295,
-'ZOOM 1.365 SIZE' : 1.365, 'ZOOM 1.445 SIZE' : 1.445,
-'ZOOM 1.5 SIZE' : 1.5, 'ZOOM 2 SIZE' : 2,
-'ZOOM 4 SIZE' : 4, 'ZOOM 8 SIZE' : 8,
-'ZOOM 10 SIZE' : 10},  false,
-true, 0.5, 10, action);};
+IDE_Morph.prototype.userSetBlocksScale = function () {var shield, sample, action, dlg,
+scrpt = new CommandBlockMorph; scrpt.color = SpriteMorph.prototype.blockColor.control;
+scrpt.setSpec(localize('ZOOM TEST STRING 2')); var blck = new CommandBlockMorph;
+blck.color = SpriteMorph.prototype.blockColor.variables; blck.setSpec(localize(
+'ZOOM TEST STRING 3')); scrpt.nextBlock(blck); blck = new CommandBlockMorph;
+blck.color = SpriteMorph.prototype.blockColor.lists; blck.setSpec(localize(
+'ZOOM TEST STRING 4')); (scrpt.bottomBlock()).nextBlock(blck); blck = (SpriteMorph
+).prototype.blockForSelector('zoomLambdaTest'); ((blck.inputs())[0]).nestedBlock(scrpt
+); sample = new FrameMorph; sample.acceptsDrops = false; sample.color = (IDE_Morph
+).prototype.categoryColor; if (SyntaxElementMorph.prototype.alpha > 4/5) {(sample
+).cachedTexture = this.scriptsPaneTexture;}; sample.setExtent(new Point(250, 125));
+blck.setPosition((sample.position()).add(20)); sample.add(blck); shield = new Morph;
+shield.alpha = 0; shield.setExtent(sample.extent()); shield.setPosition((sample
+).position()); sample.add(shield); action = (num => {var backup = blck.children[
+blck.children.length - 1].nestedBlock().fullCopy(); blck.setScale(num); blck.setSpec(
+blck.blockSpec); blck.children[blck.children.length - 1].nestedBlock(backup); (blck
+).inputs()[0].setScale(num); blck.inputs()[0].fixLayout(); backup.setScale(num);
+backup.setSpec(backup.blockSpec); backup.fixLayout(); (backup.blockSequence()).forEach(
+(block => {block.setScale(num); block.setSpec(block.blockSpec); block.fixLayout();})
+); ((blck.inputs())[0]).fixLayout(); blck.fullChanged();}); dlg = (new DialogBoxMorph(
+null, num => this.setBlocksScale(num))).withKey('zoomBlocks'); if ((MorphicPreferences
+).isTouchDevice) {dlg.isDraggable = false;}; dlg.prompt('ZOOM MENU STRING',
+SyntaxElementMorph.prototype.scale.toString(), world, sample, {'ZOOM 0.5 SIZE' : 1/2,
+'ZOOM 0.75 SIZE' : 3/4, 'ZOOM 1 SIZE' : 1, 'ZOOM 1.2 SIZE' : 6/5, 'ZOOM 1.4 SIZE' : 7/5,
+'ZOOM 1.5 SIZE' : 3/2, 'ZOOM 2 SIZE' : 2, 'ZOOM 4 SIZE' : 4, 'ZOOM 8 SIZE' : 8,
+'ZOOM 10 SIZE' : 10},  false, true, 1/2, 10, action);};
 
 IDE_Morph.prototype.setBlocksScale = function (num) {
 var projectData;
@@ -6581,8 +6545,7 @@ var projectData;
     this.createCorralBar();
     this.fixLayout();
     this.openProjectString(projectData);
-    this.saveSetting('zoom', num);
-};
+    this.saveSetting('zoom', num);};
 
 // IDE_Morph blocks fading
 
