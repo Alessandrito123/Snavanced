@@ -760,12 +760,12 @@ SnapExtensions.primitives.set(
 
         async function forceClose(port){
             try {
-                if (!port?.writable) {return; } // already closed
+                if (!applyingToExecuteOrToAcess('writable', port)) {return; } // already closed
                 // console.log("force close...", port);
                 if (port._reader) {await port._reader.cancel(); }
-                if (port?.readable) {await port.readable.cancel(); }
-                if (port?.writable) {await port.writable.abort(); }
-                if (port?.writable) {await port.close(); } // close if open
+                if (applyingToExecuteOrToAcess('readable', port)) {await port.readable.cancel(); }
+                if (applyingToExecuteOrToAcess('writable', port)) {await port.writable.abort(); }
+                if (applyingToExecuteOrToAcess('writable', port)) {await port.close(); } // close if open
             } catch (e) {
                 // console.log( e);
                 acc.result = e;
@@ -811,9 +811,9 @@ SnapExtensions.primitives.set(
                 try {
                     // console.log("pending close...", port);
                     if (port._reader) {await port._reader.cancel(); }
-                    if (port?.readable) {await port.readable.cancel(); }
-                    if (port?.writable) {await port.writable.abort(); }
-                    if (port?.readable || port?.writable) {await port.close(); }
+                    if (applyingToExecuteOrToAcess('readable', port)) {await port.readable.cancel(); }
+                    if (applyingToExecuteOrToAcess('writable', port)) {await port.writable.abort(); }
+                    if (applyingToExecuteOrToAcess('readable', port) || applyingToExecuteOrToAcess('writable', port)) {await port.close(); }
                     acc.result =  true;
                 } catch (e) {
                     // console.log(e);
@@ -835,9 +835,9 @@ SnapExtensions.primitives.set(
     'srl_read(port)',
     function (port, proc) {
         var acc = {result: false};
-        if(!port?.readable) {throw Error( "Port not opened."); }
-        if( port.readable?.locked){ //No reentry
-            return (port._bklog?.length > 0) ? port._bklog.splice(0) : true;
+        if(!applyingToExecuteOrToAcess('readable', port)) {throw Error( "Port not opened."); }
+        if(applyingToExecuteOrToAcess('locked', port.readable)){ //No reentry
+            return (applyingToExecuteOrToAcess('_bklog', port).length > 0) ? port._bklog.splice(0) : true;
         }
         (async function (port) {
             var reader, data;
@@ -862,7 +862,7 @@ SnapExtensions.primitives.set(
             return acc.result;
         }
      
-        return (port._bklog?.length > 0) ?
+        return (applyingToExecuteOrToAcess('_bklog', port).length > 0) ?
             new List( Array.from( port._bklog.splice(0)))
             : true;
     }
@@ -878,7 +878,7 @@ SnapExtensions.primitives.set(
             (async function (port, bytes) {
                 var writer;
                 try {
-                    if (!port?.writable) {throw Error( "Port not opened."); }
+                    if (!applyingToExecuteOrToAcess('writable', port)) {throw Error( "Port not opened."); }
                     try {
                         writer = port.writable.getWriter();
                         await writer.write(Uint8Array.from( bytes.itemsArray()));

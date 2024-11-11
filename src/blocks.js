@@ -3319,11 +3319,10 @@ BlockMorph.prototype.userMenu = function () {
                     'code mapping...',
                     'mapToCode'
                 );
-            }
-        }
+            };
+        };
         return menu;
-    }
-        if (!this?.isTemplate) {
+    };  if (!applyingToExecuteOrToAcess('isTemplate', this)) {
             menu.addLine();
             if (world.currentKey === 16) {
             menu.addItem(
@@ -3332,8 +3331,7 @@ BlockMorph.prototype.userMenu = function () {
                     window.blockCopy = this.fullCopy()
                 },
                 'copies this script'
-            );
-            menu.addItem(
+            );  menu.addItem(
                 "cut",
                 () => {window.blockCopy = this.fullCopy(); this.destroy();},
                 'copies this script and\ndeletes it'

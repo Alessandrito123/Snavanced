@@ -8505,8 +8505,9 @@ SpriteMorph.prototype.recordUserEdit = function (...details) {
     }
 };
 
-SpriteMorph.prototype.scriptsOnlyXML = function () {
-    var serializer = this.parentThatIsA(IDE_Morph)?.serializer ||
+SpriteMorph.prototype.scriptsOnlyXML = function (
+    ) {var serializer = applyingToExecuteOrToAcess(
+    'serializer', this.parentThatIsA(IDE_Morph)) ||
         new SnapSerializer();
     return '<scriptsonly' +
         ' app="' + serializer.app +
@@ -8516,8 +8517,9 @@ SpriteMorph.prototype.scriptsOnlyXML = function () {
         '</scriptsonly>';
 };
 
-SpriteMorph.prototype.synchScriptsFrom = function (xml) {
-    var serializer = this.parentThatIsA(IDE_Morph)?.serializer ||
+SpriteMorph.prototype.synchScriptsFrom = function (
+    xml) {var serializer = applyingToExecuteOrToAcess(
+    'serializer', this.parentThatIsA(IDE_Morph)) ||
             new SnapSerializer(),
         bak = this.scripts.children;
     try {

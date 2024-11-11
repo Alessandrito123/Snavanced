@@ -9,6 +9,10 @@ return undefined;}; return (new Function(
 '\;\} catch \(error\) \{return undefined\;\}\;'
 )))();}; var nil = [null, undefined];
 
+function applyingToExecuteOrToAcess (thing, that, args) {if (isNil(args)) {
+args = [];}; thing = that[thing]; return (((typeof thing) === 'function'
+) ? thing.apply(that, args) : (isNil(thing) ? undefined : thing));};
+
 Array.prototype.flatten = function () {
 var result = []; this.deepMap(function (
 item) {result.push(item);}); return result;};

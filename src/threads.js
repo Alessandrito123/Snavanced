@@ -778,7 +778,8 @@ Process.prototype.evaluateInput = function (input) {
                     input.constructor === BlockSlotMorph ||
                     ((input instanceof CSlotMorph) &&
                         (!input.isStatic || input.isLambda ||
-                inputSlot.parentThatIsA(BlockMorph)?.isCustomBlock))) {
+                applyingToExecuteOrToAcess('isCustomBlock',
+                inputSlot.parentThatIsA(BlockMorph))))) {
                 // I know, this still needs yet to be done right...
                 ans = this.reify(ans, new List);
             };
@@ -1190,10 +1191,10 @@ this.doRun(context, args);}; if (this.inputOption(choice) === 'launch') {this.fo
 
 // Process introspection
 
-Process.prototype.reportThisContext = function () {var sym = Symbol.for('self'), frame = this.context.variables.silentFind(
-sym), ctx; if (frame) {return copy(frame.vars[sym].value);} else {ctx = (this.topBlock).reify();}; ctx.outerContext = (this
-).context.outerContext; if (ctx.outerContext) {ctx.variables.parentFrame = ctx.outerContext.variables;}; if (!((this
-).isAtomic) && this.context.expression.parent?.selector === 'execute') {this.readyToYield = true;}; return ctx;};
+Process.prototype.reportThisContext = function () {var sym = Symbol.for('self'), frame = this.context.variables.silentFind(sym),
+ctx; if (frame) {return copy(frame.vars[sym].value);} else {ctx = (this.topBlock).reify();}; ctx.outerContext = ((this.context
+).outerContext); if (ctx.outerContext) {ctx.variables.parentFrame = ctx.outerContext.variables;}; if (!(this.isAtomic) && (
+applyingToExecuteOrToAcess('selector', this.context.expression.parent) === 'execute')) {this.readyToYield = true;}; return ctx;};
 
 Process.prototype.reportThisCaller = function () {
     var sym = Symbol.for('caller'),
@@ -1201,9 +1202,9 @@ Process.prototype.reportThisCaller = function () {
         ctx, nb;
     if (frame) {
         ctx = copy(frame.vars[sym].value);
-        // ctx.expression = ctx.expression?.topBlock().fullCopy();
-        ctx.expression = ctx.expression?.fullCopy();
-        nb = ctx.expression?.nextBlock ? ctx.expression.nextBlock() : null;
+        // ctx.expression = (applyingToExecuteOrToAcess('topBlock', ctx.expression)).fullCopy();
+        ctx.expression = applyingToExecuteOrToAcess('fullCopy', ctx.expression);
+        nb = applyingToExecuteOrToAcess('nextBlock', ctx.expression) ? ctx.expression.nextBlock() : null;
         if (nb) {
             nb.destroy();
         }; ctx.inputs = [];
@@ -1995,7 +1996,7 @@ Process.prototype.doIf = function (block) {
         }; this.popContext(); return;
     };  if (args.pop()) {
         this.popContext();
-        this.pushContext(acc.args.shift().evaluate()?.blockSequence(), outer);
+        this.pushContext(applyingToExecuteOrToAcess('blockSequence', acc.args.shift().evaluate()), outer);
         this.context.isCustomBlock = isCustomBlock;
         return;
     };  acc.args.shift();};
