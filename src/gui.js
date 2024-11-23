@@ -2122,9 +2122,9 @@ IDE_Morph.prototype.createCategories = function () {
                 + 2 * border
         );
     };  SpriteMorph.prototype.categories.forEach(cat => {if (
-    !contains(['motor'], cat)) {addCategoryButton(cat);};});
-    Array.from(SpriteMorph.prototype.customCategories.keys(
-    )).forEach(cat => {addCustomCategoryButton(cat,
+    !contains(['motor', 'events'], cat)) {addCategoryButton(
+    cat);};}); Array.from((SpriteMorph.prototype.customCategories
+    ).keys()).forEach(cat => {addCustomCategoryButton(cat,
     SpriteMorph.prototype.customCategories.get(cat));});
     fixCategoriesLayout();
     this.add(this.categories);

@@ -1895,8 +1895,8 @@ JSBI.subtract = function (a, b) {return (a - b);
 }; JSBI.multiply = function (a, b) {return (a * b
 );}; JSBI.divide = function (a, b) {return (a / b
 );}; JSBI.remainder = function (a, b) {return (
-a % b);}; JSBI.exponentiate = function (a, b) {
-return ((b > JSBI.theZero) ? JSBI.multiply(a,
-JSBI.exponentiate(a, (b - JSBI.theOne))) : (
-JSBI.theOne));}; JSBI.theZero = BigInt('0'
-); JSBI.theOne = BigInt('1');};
+a % b);}; JSBI.exponentiate = function (a, b
+) {return ((b > JSBI.theZero) ? JSBI.multiply(
+a, JSBI.exponentiate(a, (b - JSBI.theOne
+))) : JSBI.theOne);}; JSBI.theZero = (
+BigInt(0)); JSBI.theOne = BigInt(1);};

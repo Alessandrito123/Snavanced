@@ -1801,19 +1801,19 @@ BlockDialogMorph.prototype = new DialogBoxMorph; BlockDialogMorph.prototype.cons
 function BlockDialogMorph(target, action, environment) {this.init(target, action, environment);};
 
 BlockDialogMorph.prototype.init = function (target, action, environment) {this.blockType = 'command'; this.category = 'other'; this.isGlobal = true; this.types = null; this.categories = null;
-BlockDialogMorph.uber.init.call(this, target, action, environment); this.key = 'makeABlock'; this.types = new AlignmentMorph('row', this.padding); this.add(this.types); this.scopes = new AlignmentMorph('row',
-this.padding); this.add(this.scopes); this.categories = new BoxMorph; this.categories.color = SpriteMorph.prototype.paletteColor.lighter(5); this.categories.borderColor = this.categories.color.lighter(40);
+BlockDialogMorph.uber.init.call(this, target, action, environment); this.key = 'makeABlock'; this.types = new AlignmentMorph('row', this.padding); this.add(this.types); this.scopes = new AlignmentMorph(
+'row', this.padding); this.add(this.scopes); this.categories = new BoxMorph; this.categories.color = SpriteMorph.prototype.paletteColor.lighter(5); this.categories.borderColor = this.categories.color.lighter(40);
 this.categories.buttons = []; this.categories.refresh = function () {this.buttons.forEach(cat => {cat.refresh(); if (cat.state) {cat.scrollIntoView();}});}; this.createCategoryButtons(); this.fixCategoriesLayout(
 ); this.add(this.categories); this.createTypeButtons(); this.createScopeButtons(); this.fixLayout();}; BlockDialogMorph.prototype.openForChange = function (title, category, type, world, pic, preventTypeChange) {
 var clr = SpriteMorph.prototype.blockColorFor(category); this.key = 'changeABlock'; this.category = category; this.blockType = type; this.categories.refresh(); this.types.children.forEach(each => {each.setColor(
 clr); each.refresh();}); this.labelString = title; this.createLabel(); if (pic) {this.setPicture(pic);}; this.addButton('ok', 'OK'); this.addButton('cancel', 'Cancel'); this.fixLayout(); this.rerender(
-); this.popUp(world);}; BlockDialogMorph.prototype.createCategoryButtons = function () {SpriteMorph.prototype.categories.filter(cat => !contains(['motor', 'events', 'strings'], cat)).forEach(
-cat => this.addCategoryButton(cat)); Array.from(SpriteMorph.prototype.customCategories.keys()).forEach(name => this.addCustomCategoryButton(name, SpriteMorph.prototype.customCategories.get(name)));};
-BlockDialogMorph.prototype.addCategoryButton = function (category) {var labelWidth = 75, colors = [IDE_Morph.prototype.frameColor, IDE_Morph.prototype.frameColor.darker(MorphicPreferences.isFlat ? 5 : 50),
-SpriteMorph.prototype.blockColorFor(category)], button; button = new ToggleButtonMorph(colors, this, () => {this.category = category; this.categories.refresh(); if (this.types) {this.types.children.forEach(
-each => each.setColor(colors[2]));}; this.edit();}, category[0].toUpperCase().concat(category.slice(1)), () => this.category === category, null, null, labelWidth, true); button.corner = 8; button.padding = 0;
-button.labelShadowOffset = new Point(-1, -1); button.labelShadowColor = colors[1]; button.labelColor = IDE_Morph.prototype.buttonLabelColor; if (MorphicPreferences.isFlat) {button.labelPressColor = WHITE;};
-button.contrast = this.buttonContrast; button.fixLayout(); button.refresh(); this.categories.add(button); this.categories.buttons.push(button); return button;};
+); this.popUp(world);}; BlockDialogMorph.prototype.createCategoryButtons = function () {SpriteMorph.prototype.categories.forEach(cat => this.addCategoryButton(cat)); Array.from((SpriteMorph.prototype
+).customCategories.keys()).forEach(name => this.addCustomCategoryButton(name, SpriteMorph.prototype.customCategories.get(name)));}; BlockDialogMorph.prototype.addCategoryButton = function (category
+) {var labelWidth = 75, colors = [IDE_Morph.prototype.frameColor, IDE_Morph.prototype.frameColor.darker(MorphicPreferences.isFlat ? 5 : 50), SpriteMorph.prototype.blockColorFor(category)], button;
+button = new ToggleButtonMorph(colors, this, () => {this.category = category; this.categories.refresh(); if (this.types) {this.types.children.forEach(each => each.setColor(colors[2]));}; this.edit(
+);}, category[0].toUpperCase().concat(category.slice(1)), () => this.category === category, null, null, labelWidth, true); button.corner = 8; button.padding = 0; button.labelShadowOffset = new Point(
+-1, -1); button.labelShadowColor = colors[1]; button.labelColor = IDE_Morph.prototype.buttonLabelColor; if (MorphicPreferences.isFlat) {button.labelPressColor = WHITE;}; button.contrast = (this
+).buttonContrast; button.fixLayout(); button.refresh(); this.categories.add(button); this.categories.buttons.push(button); return button;};
 
 BlockDialogMorph.prototype.addCustomCategoryButton = function (category, clr) {
     var labelWidth = 75,
@@ -1948,12 +1948,13 @@ BlockDialogMorph.prototype.addTypeButton = function (action, label, query) {
     return button;
 };
 
-BlockDialogMorph.prototype.setType = function (blockType) {this.blockType = blockType || this.blockType; this.types.children.forEach(c => c.refresh()); this.edit();};
+BlockDialogMorph.prototype.setType = function (blockType) {this.blockType = ((blockType
+) || this.blockType); this.types.children.forEach(c => c.refresh()); this.edit();};
 
 // scope radio buttons
 
 BlockDialogMorph.prototype.createScopeButtons = function () {this.addScopeButton(() => this.setScope('global'), "for all sprites",
-() => this.isGlobal); this.addScopeButton(() => this.setScope('local'), "for this sprite only", () => !this.isGlobal);};
+(() => this.isGlobal)); this.addScopeButton(() => this.setScope('local'), "for this sprite only", (() => !(this.isGlobal)));};
 
 BlockDialogMorph.prototype.addScopeButton = function (action, label, query) {
     var button = new ToggleMorph(
@@ -1974,14 +1975,14 @@ BlockDialogMorph.prototype.addScopeButton = function (action, label, query) {
     return button;
 };
 
-
-BlockDialogMorph.prototype.setScope = function (varType) {this.isGlobal = (varType === 'global'); this.scopes.children.forEach(c => c.refresh()); this.edit();};
+BlockDialogMorph.prototype.setScope = function (varType) {this.isGlobal = ((varType
+) === 'global'); this.scopes.children.forEach(c => c.refresh()); this.edit();};
 
 // other ops
 
-BlockDialogMorph.prototype.getInput = function () {var spec, def, body; if (this.body instanceof InputFieldMorph) {spec = this.normalizeSpaces(this.body.getValue());}; def = new CustomBlockDefinition(
-spec); def.type = this.blockType; def.category = this.category; def.isGlobal = this.isGlobal; if (contains(['reporter', 'predicate', 'arrow'], def.type)) {body = Process.prototype.reify.call(null,
-SpriteMorph.prototype.blockForSelector('doReport'), new List, true); body.outerContext = null; def.body = body;}; return def;};
+BlockDialogMorph.prototype.getInput = function () {var spec, def, body; if (this.body instanceof InputFieldMorph) {spec = this.normalizeSpaces(this.body.getValue());};
+def = new CustomBlockDefinition(spec); def.type = this.blockType; def.category = this.category; def.isGlobal = this.isGlobal; if (!(def.type === 'command')) {body = (
+Process).prototype.reify.call(null, SpriteMorph.prototype.blockForSelector('doReport'), new List, true); body.outerContext = null; def.body = body;}; return def;};
 
 BlockDialogMorph.prototype.fixLayout = function () {
     var th = fontHeight(this.titleFontSize) + this.titlePadding * 2;
@@ -2042,7 +2043,6 @@ BlockDialogMorph.prototype.fixLayout = function () {
         this.label.setCenter(this.center());
         this.label.setTop(this.top() + (th - this.label.height()) / 2);
     }
-
     if (this.types) {
         this.types.fixLayout();
         this.bounds.setHeight(
@@ -2057,11 +2057,21 @@ BlockDialogMorph.prototype.fixLayout = function () {
         this.types.setCenter(this.center());
         if (this.body) {
             this.types.setTop(this.body.bottom() + this.padding);
+            this.body.setWidth(this.types.width() - this.padding);
         } else if (this.categories) {
             this.types.setTop(this.categories.bottom() + this.padding);
         }
     }
 
+    if (this.label) {
+        this.label.setCenter(this.center());
+        this.label.setTop(this.top() + (th - this.label.height()) / 2);
+    }
+    if (this.body && this.categories) {
+        this.categories.setLeft(
+            this.body.left() + (this.body.width() - this.categories.width()) / 2
+        );
+    }
     if (this.scopes) {
         this.scopes.fixLayout();
         this.bounds.setHeight(
@@ -2224,7 +2234,7 @@ BlockEditorMorph.prototype.justDropped = function () {
 
 BlockEditorMorph.prototype.accept = function (origin) {
     // check DialogBoxMorph comment for accept()
-    if (origin instanceof CursorMorph) {return; }
+    if (origin instanceof CursorMorph) {return;}
     if (this.action) {
         if (typeof this.target === 'function') {
             if (typeof this.action === 'function') {

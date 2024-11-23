@@ -1730,7 +1730,7 @@ function () {return this.isStatic;});
 
 SyntaxElementMorph.prototype.topBlock = function (
 ) {if (this.parent && ((this.parent).topBlock)) {
-return this.parent.topBlock();};  return this;};
+return this.parent.topBlock();}; return this;};
 
 // SyntaxElementMorph reachable variables
 
@@ -3615,10 +3615,7 @@ BlockMorph.prototype.userMenu = function () {
     if (this.parent.parentThatIsA(RingMorph)) {
         menu.addLine();
         menu.addItem("unquote", 'unringify');
-        if (this instanceof ReporterBlockMorph ||
-                (!(top instanceof HatBlockMorph) || !(top instanceof DefinitorBlockMorph))) {
-            menu.addItem("quote", 'ringify');
-        };
+        menu.addItem("quote", 'ringify');
         return menu;
     };
     if (contains(
@@ -3633,17 +3630,11 @@ BlockMorph.prototype.userMenu = function () {
             'showMessageUsers'
         );
     };
-    if (this.parent instanceof ReporterSlotMorph
-            || (this.parent instanceof CommandSlotMorph)
-            || (this instanceof DefinitorBlockMorph)
-            || (this instanceof HatBlockMorph)
-            || (this instanceof CommandBlockMorph
-                && (top instanceof HatBlockMorph))) {
-        return menu;
-    };
-    if (!hasLine) {menu.addLine();};
-    menu.addItem("quote", 'ringify');
-    if (StageMorph.prototype.enableCodeMapping) {
+    if ((this.parent instanceof ReporterSlotMorph
+    ) || (this.parent instanceof CommandSlotMorph)
+    ) {return menu;}; if (!hasLine) {menu.addLine(
+    );}; menu.addItem("quote", 'ringify'); if (
+    StageMorph.prototype.enableCodeMapping) {
         menu.addLine();
         menu.addItem(
             'header mapping...',
@@ -3844,10 +3835,7 @@ center = top.fullBounds().center(); if (this.parent === null) {return null;}; to
         if (this instanceof ReporterBlockMorph) {
             this.parent.replaceInput(this, ring, true); // don't vanish
             ring.embed(this, null, true); // don't vanish
-        } else if (top) { // command
-            if (top instanceof HatBlockMorph) {
-                return;
-            }
+        } else if (top) {
             top.parent.add(ring);
             ring.embed(top);
             ring.setCenter(center);
@@ -4316,7 +4304,7 @@ BlockMorph.prototype.components = function (parameterNames = []) {
     if (this instanceof ReporterBlockMorph) {
         return this.syntaxTree(parameterNames);
     }
-    var seq = new List(this.blockSequence()).map((block, i) =>
+    var seq = new List(this.metaSequence()).map((block, i) =>
         block.syntaxTree(i < 1 ? parameterNames : [])
     );
     return seq.length() === 1 ? seq.at(1) : seq;
@@ -5118,14 +5106,12 @@ BlockMorph.prototype.backupRender = function (ctx) {
     this.drawMethodIcon(ctx);};};
 
 BlockMorph.prototype.drawMethodIcon = function (ctx) {
-    var ext = this.methodIconExtent(),
-        w = ext.x, h = ext.y, r = w / 2,
-        x = this.edge + this.labelPadding,
-        y = this.edge,
-        isNormal =
-            this.color === SpriteMorph.prototype.blockColorFor(this.category);
-    if (this.isPredicate || this.isArrow) {
-        x = this.rounding;
+var ext = this.methodIconExtent(), w = ext.x, h = ext.y,
+r = w / 2, x = this.edge + this.labelPadding, y = (((this
+) instanceof CustomDefinitorBlockMorph) ? (this.hatHeight
+) : this.edge), isNormal = (this.color === (SpriteMorph
+).prototype.blockColorFor(this.category)); if ((this
+).isPredicate || this.isArrow) {x = this.rounding;
     }; if (this instanceof CommandBlockMorph) {
         y += this.corner;
     }; ctx.fillStyle = (isNormal ? this.bright() : this.dark());
@@ -5476,9 +5462,8 @@ receiver.parentThatIsA(StageMorph
 ).toggleProcess(top, receiver);};};};
 
 BlockMorph.prototype.focus = function () {
-    var scripts = this.parentThatIsA(ScriptsMorph),
-        world = this.world(),
-        focus;
+    var scripts = this.parentThatIsA(
+        ScriptsMorph), focus;
     if (!scripts || !ScriptsMorph.prototype.enableKeyboard) {return; }
     if (scripts.focus) {scripts.focus.stopEditing(); }
     world.stopEditing();
@@ -5646,7 +5631,8 @@ BlockMorph.prototype.snap = function () {
         top.addHighlight(top.removeHighlight());
     };
     // register generic hat blocks
-    if (this.selector === 'receiveCondition') {
+    if ((this instanceof CustomDefinitorBlockMorph
+    ) || (this.selector === 'receiveCondition')) {
         receiver = top.scriptTarget();
         if (receiver) {
             stage = receiver.parentThatIsA(StageMorph);
@@ -5699,9 +5685,11 @@ CommandBlockMorph.prototype.init = function () {
 
 // CommandBlockMorph enumerating:
 
-CommandBlockMorph.prototype.blockSequence = function () {
+CommandBlockMorph.prototype.metaSequence = function () {
 var sequence = [this], nb = this.nextBlock(); while (nb) {
 sequence.push(nb); nb = nb.nextBlock();}; return sequence;};
+
+CommandBlockMorph.prototype.blockSequence = CommandBlockMorph.prototype.metaSequence;
 
 CommandBlockMorph.prototype.bottomBlock = function () {if ((this
 ).nextBlock()) {return this.nextBlock().bottomBlock();}; return this;};
@@ -5772,19 +5760,8 @@ CommandBlockMorph.prototype.dentCenter = function () {
 
 CommandBlockMorph.prototype.attachTargets = function () {
     var answer = [],
-        tp;
-    if (!((this instanceof HatBlockMorph) || (this instanceof DefinitorBlockMorph))) {
         tp = this.topAttachPoint();
-        if (!(this.parent instanceof SyntaxElementMorph)) {
-            answer.push({
-                point: tp,
-                element: this,
-                loc: 'top',
-                type: 'block'
-            });
-        }
-        if (ScriptsMorph.prototype.enableNestedAutoWrapping ||
-                !this.parentThatIsA(CommandSlotMorph)) {
+        if (!this.parentThatIsA(CommandSlotMorph)) {
             answer.push({
                 point: tp,
                 element: this,
@@ -5792,6 +5769,15 @@ CommandBlockMorph.prototype.attachTargets = function () {
                 type: 'block'
             });
         }
+    if (!((this instanceof HatBlockMorph) || (this instanceof DefinitorBlockMorph))) {
+        if (!(this.parent instanceof SyntaxElementMorph)) {
+            answer.push({
+                point: tp,
+                element: this,
+                loc: 'top',
+                type: 'block'
+            });
+        };
     }
     if (!this.isStop()) {
         answer.push({
@@ -5836,12 +5822,8 @@ CommandBlockMorph.prototype.closestAttachTarget = function (newParent) {
         thresh = Math.max(
             this.corner * 2 + this.dent,
             this.minSnapDistance
-        ),
-        dist,
-        ref = [],
-        minDist = 1000,
-        wrap;
-
+        ), dist, wrap, ref = [],
+        minDist = 1000;
     if (!((this instanceof HatBlockMorph) || (this instanceof DefinitorBlockMorph))) {
         ref.push(
             {
@@ -5961,7 +5943,7 @@ CommandBlockMorph.prototype.snap = function (hand) {
 
         // fix zebra coloring.
         // this could probably be generalized into the fixBlockColor mechanism
-        target.element.blockSequence().forEach(cmd =>
+        target.element.metaSequence().forEach(cmd =>
             cmd.fixBlockColor()
         );
     };
@@ -6309,17 +6291,8 @@ if (asABool(isPrototypeLike)) {this.category = 'custom'; this.setSpec(localize('
 
 // HatBlockMorph enumerating:
 
-HatBlockMorph.prototype.blockSequence = function () {
-    // override my inherited method so that I am not part of my sequence
-    var result = HatBlockMorph.uber.blockSequence.call(this);
-    result.shift(); return result;
-};
-
-// HatBlockMorph syntax analysis
-
-HatBlockMorph.prototype.reify = function (
-) {var nb = this.nextBlock(); if (!(nb)) {
-return new Context;}; return nb.reify();};
+HatBlockMorph.prototype.blockSequence = function () {if (this.selector === 'receiveCondition') {return (
+this);} else {var result = HatBlockMorph.uber.blockSequence.call(this); result.shift(); return result;};};
 
 // HatBlockMorph drawing:
 
@@ -6473,6 +6446,11 @@ function DefinitorBlockMorph() {this.init();};
 
 DefinitorBlockMorph.prototype.init = function () {(DefinitorBlockMorph
 ).uber.init.call(this); this.fixLayout(); this.rerender();};
+
+// DefinitorBlockMorph enumerating:
+
+DefinitorBlockMorph.prototype.blockSequence = function () {if (this.isCustomBlock) {return this;
+} else {var result = HatBlockMorph.uber.blockSequence.call(this); result.shift(); return result;};};
 
 DefinitorBlockMorph.prototype.outlinePath = HatBlockMorph.prototype.outlinePath;
 DefinitorBlockMorph.prototype.drawEdges = HatBlockMorph.prototype.drawEdges;
@@ -7976,7 +7954,7 @@ ScriptsMorph.prototype.recoverLastDrop = function (forRedrop) {
 
                 // fix zebra coloring.
                 // this could be generalized into the fixBlockColor mechanism
-                rec.lastDropTarget.element.blockSequence().forEach(cmd =>
+                rec.lastDropTarget.element.metaSequence().forEach(cmd =>
                     cmd.fixBlockColor()
                 );
                 cslot.fixLayout();
@@ -13692,7 +13670,8 @@ ScriptFocusMorph.prototype.fillInBlock = function (block) {
     this.fixLayout();
 
     // register generic hat blocks
-    if (block.selector === 'receiveCondition') {
+    if ((block instanceof CustomDefinitorBlockMorph
+    ) || (block.selector === 'receiveCondition')) {
         rcvr = this.editor.scriptTarget();
         if (rcvr) {
             stage = rcvr.parentThatIsA(StageMorph);
@@ -13708,7 +13687,7 @@ ScriptFocusMorph.prototype.fillInBlock = function (block) {
     }
 
     // experimental: if the inserted block has inputs, go to the first one
-    if (block.inputs && block.inputs().length) {
+    if (block.inputs && (block.inputs()).length) {
         this.element = block;
         this.atEnd = false;
         this.nextElement();
@@ -13994,12 +13973,11 @@ ScriptFocusMorph.prototype.blockTypes = function () {
     if (this.element instanceof ScriptsMorph) {
         return ['hat', 'command', 'reporter', 'predicate', 'arrow', 'ring', 'definitor'];
     }
-    if (this.element instanceof HatBlockMorph ||
-            this.element instanceof CommandSlotMorph) {
-        return ['command'];
+    if (this.element instanceof CommandSlotMorph) {
+        return ['command', 'hat', 'definitor'];
     }
-    if (this.element instanceof DefinitorBlockMorph ||
-            this.element instanceof CommandSlotMorph) {
+    if (this.element instanceof HatBlockMorph ||
+            this.element instanceof DefinitorBlockMorph) {
         return ['command'];
     }
     if (this.element instanceof CommandBlockMorph) {

@@ -215,7 +215,7 @@ ThreadManager.prototype.startProcess = function (
     } else {top.addHighlight();
     };  this.processes.push(newProc);
     if (rightAway) {newProc.runStep(
-    );};    return newProc;};
+    );}; return newProc;};
 
 ThreadManager.prototype.stopAll = function (excpt) {this.processes.forEach(proc => {if (proc !== excpt) {proc.stop();};});}; (ThreadManager.prototype
 ).stopAllForReceiver = function (rcvr, excpt) {this.processes.forEach(proc => {if (proc.homeContext.receiver === rcvr && proc !== excpt) {proc.stop();
@@ -306,49 +306,6 @@ ThreadManager.prototype.processesForBlock = function (block, only) {
             each.isRunning() &&
                 !each.isDead
     );
-};
-
-ThreadManager.prototype.doWhen = function (block, receiver, stopIt) {
-    if (this.pauseCustomHatBlocks) {return;};
-    if ((!block) || this.findProcess(block,
-    receiver)) {return;}; var pred = (block
-    ).inputs()[0], test; if ((block
-    ).removeHighlight()) {if (world
-    ) {world.hand.destroyTemporaries();
-    };}; if (stopIt) {return;}; try {
-        test = invoke(
-            pred,
-            null,
-            receiver,
-            50, // timeout in msecs
-            'the predicate takes\ntoo long for a\ncustom hat block',
-            true, // suppress errors => handle them right here instead
-            null, // caller process for JS-functions
-            true // return the whole home context instead of just he result
-        );
-    } catch (error) {
-        block.addErrorHighlight();
-        block.showBubble(
-            error.name
-            + '\n'
-            + error.message
-        );
-    }; // since we're asking for the whole context instead of just the result
-    // of the computation, we need to look at the result-context's first
-    // input to find out whether the condition is met
-    if (test === true || (test && test.inputs && test.inputs[0] === true)) {
-        this.startProcess(
-            block,
-            receiver,
-            null, // isThreadSafe
-            null, // exportResult
-            null, // callback
-            null, // isClicked
-            true,  // rightAway
-            null, // atomic
-            test.variables // make the test-context's variables available
-        );
-    };
 };
 
 ThreadManager.prototype.toggleSingleStepping = function (
@@ -485,7 +442,7 @@ function Process (topBlock, receiver, onComplete, yieldFirst) {
         this.context = new Context(
             null,
             topBlock.blockSequence(
-            ),  this.homeContext
+            ), this.homeContext
         );  if (yieldFirst) {
             this.pushContext('doYield');
         };};};
@@ -1266,24 +1223,27 @@ Process.prototype.doStopCustomBlock = function () {
 
 Process.prototype.doCallCC = function (aContext, isReporter) {this.evaluate(aContext, new List([this.context.continuation(
 isReporter)]), !isReporter);}; Process.prototype.reportCallCC = function (aContext) {this.doCallCC(aContext, true);};
-Process.prototype.runContinuation = function (aContext, args) {var parms = args.itemsArray(); if ((parms.length > 0) && (
-aContext.expression === 'expectReport')) {this.stop(); this.homeContext.inputs[0] = parms[0]; return;};
+Process.prototype.runContinuation = function (aContext, args) {var parms = args.itemsArray(); if ((parms.length > 0
+) && (aContext.expression === 'expectReport')) {this.stop(); this.homeContext.inputs[0] = parms[0]; return;};
 this.context.parentContext = aContext.copyForContinuationCall(); if (parms.length === 1) {
 this.context.parentContext.outerContext.variables.addVar(1, parms[0]);};};
 
 // Process custom block primitives
 
 Process.prototype.evaluateCustomBlock = function () {
+    if ((this.context.expression instanceof CustomDefinitorBlockMorph) && !(
+    this.context.accumulator)) {return this.evaluateCustomDefinitorBlock();};
+
     var caller = this.context.parentContext,
         block = this.context.expression,
         method = block.isGlobal ? block.definition
                 : this.blockReceiver().getMethod(block.semanticSpec),
-        context = method.body,
+        context = method.body, outer, i,
         declarations = method.declarations,
-        cont = this.context.rawContinuation(method.type !== 'command'),
-        args = new List(this.context.inputs),
-        parms = args.itemsArray(), runnable,
-        exit, i, value, outer, self;
+        cont = this.context.rawContinuation(
+        method.type !== 'command'), parms = (
+        this.context.inputs), args = new List(
+        parms), self, runnable, exit, value;
 
     if (!context) {return null;
     }; this.procedureCount += 1;
@@ -1371,6 +1331,19 @@ Process.prototype.evaluateCustomBlock = function () {
     outer.variables.addVar(Symbol.for('arguments'), args);
     runnable.expression = runnable.expression.blockSequence();
 };
+
+Process.prototype.evaluateCustomDefinitorBlock = function (
+) {var runnable = new Context(this.context.parentContext,
+'dispatchEvent', this.context.outerContext); (runnable
+).addInput(this.context.expression.nextBlock()); (this
+).context.parentContext = runnable; (this.context
+).accumulator = true; this.evaluateCustomBlock();};
+
+Process.prototype.dispatchEvent = function (script,
+bool) {var outer = this.context.outerContext;
+this.popContext(); if (((bool === true) || (this
+).isClicked) && script) {this.pushContext((script
+).blockSequence(), outer);}; this.pushContext();};
 
 // Process variables primitives
 
@@ -1974,6 +1947,16 @@ Process.prototype.reportLinkedNumbers = function (start, end) {
     this.pushContext();
 };
 
+Process.prototype.receiveCondition = function (bool) {
+    var nb = this.context.expression.nextBlock(),
+        outer = this.context.outerContext;
+    this.popContext();
+    if (((bool === true) || (this.isClicked)) && nb) {
+        this.pushContext(nb.blockSequence(), outer);
+    }
+    this.pushContext();
+};
+
 // Process conditionals primitives
 
 Process.prototype.doIf = function (block) {
@@ -2010,11 +1993,13 @@ Process.prototype.doIfElse = function () {
     this.popContext();
     if (asABool(args[0])) {
         if (args[1]) {
-            this.pushContext(args[1].blockSequence(), outer);
+            this.pushContext((args[1]
+            ).blockSequence(), outer);
         };
     } else {
         if (args[2]) {
-            this.pushContext(args[2].blockSequence(), outer);
+            this.pushContext((args[2]
+            ).blockSequence(), outer);
         } else {
             this.pushContext('doYield');
         };
@@ -4914,7 +4899,7 @@ Process.prototype.reportBasicBlockAttribute = function (attribute, block) {
         ).map(each => new List([each[0], each[1].value])));
         break;
     case 'sequence':
-        var result = expr.fullCopy().blockSequence(); if (!(
+        var result = (expr.fullCopy()).metaSequence(); if (!(
         result instanceof Array)) {result = [result];}; if (
         result[0] instanceof ReporterBlockMorph) {return (
         new List(result)).map(block => myself.reify(block,
@@ -7160,7 +7145,8 @@ return (expr instanceof Context) ? new List([expr]) : expr;}; Context.prototype.
         : this;
 }; Context.prototype.copyWithNext = function (next) {
 return this.expression.copyWithNext(next.expression, this.inputs.slice());
-}; Context.prototype.updateEmptySlots = function () {this.emptySlots = this.expression.markEmptySlots();};
+}; Context.prototype.updateEmptySlots = function () {if (!isNil((this.expression
+).markEmptySlots)) {this.emptySlots = this.expression.markEmptySlots();};};
 
 // Variable /////////////////////////////////////////////////////////////////
 

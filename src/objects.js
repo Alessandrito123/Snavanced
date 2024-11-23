@@ -131,20 +131,19 @@ SpriteMorph.uber = PenMorph.prototype;
 
 // SpriteMorph settings
 
-SpriteMorph.prototype.attributes = ['x position', 'y position', 'direction', 'size', 'costumes', 'costume #', 'volume', 'balance', 'sounds', 'shown?', 'pen down?', 'scripts']; (SpriteMorph
-).prototype.categories = ['motion', 'motor', 'control', 'looks', 'sensing', 'sound', 'operators', 'pen', 'variables', 'lists', 'other']; SpriteMorph.prototype.sortedCategories = ['motion',
-'motor', 'looks', 'sound', 'pen', 'control', 'sensing', 'operators', 'variables', 'lists', 'other']; SpriteMorph.prototype.blockColor = {motion : new Color(74, 108, 212), motor : new Color(
-49, 72, 170), looks : new Color(143, 86, 227), sound : new Color(207, 74, 217), pen : new Color(0, 161, 120), events : new Color(200, 131, 48), control : new Color(230, 168, 0), sensing : (
-new Color(4, 148, 220)), operators : new Color(98, 194, 19), variables : new Color(243, 118, 29), lists : new Color(217, 77, 17), other: new Color(159, 159, 159), custom : new Color(117, 57,
-14), undefined: new Color(200, 0, 0)}; SpriteMorph.prototype.customCategories = new Map; SpriteMorph.prototype.allCategories = function () {return this.categories.concat(Array.from((this
-).customCategories.keys()));}; SpriteMorph.prototype.allSortedCategories = function () {return this.sortedCategories.concat(Array.from(this.customCategories.keys()));}; (SpriteMorph
-).prototype.blockColorFor = function (category) {return ((this.blockColor[category]) || (this.customCategories.get(category)) || (this.blockColor.other));}; (SpriteMorph.prototype
-).paletteColor = new Color(55, 55, 55); SpriteMorph.prototype.paletteTextColor = new Color(230, 230, 230); SpriteMorph.prototype.sliderColor = (SpriteMorph.prototype.paletteColor
-).lighter(30); SpriteMorph.prototype.isCachingPrimitives = true; SpriteMorph.prototype.enableNesting = true; SpriteMorph.prototype.enableFirstClass = true; (SpriteMorph.prototype
-).showingExtensions = false; SpriteMorph.prototype.useFlatLineEnds = false; SpriteMorph.prototype.penColorModel = 'hsv'; SpriteMorph.prototype.highlightColor = new Color(250, 200,
-130); SpriteMorph.prototype.highlightBorder = 8; SpriteMorph.prototype.bubbleFontSize = 14; SpriteMorph.prototype.bubbleCorner = 10; SpriteMorph.prototype.bubbleBorder = 3;
-SpriteMorph.prototype.bubbleBorderColor = new Color(190, 190, 190); SpriteMorph.prototype.bubbleColor = WHITE; SpriteMorph.prototype.bubbleMaxTextWidth = 130; (SpriteMorph
-).prototype.initBlocks = function () {SpriteMorph.prototype.blocks = {
+SpriteMorph.prototype.attributes = ['x position', 'y position', 'direction', 'size', 'costumes', 'costume #', 'volume', 'balance', 'sounds', 'shown?', 'pen down?', 'scripts']; (SpriteMorph.prototype
+).categories = ['motion', 'motor', 'events', 'control', 'looks', 'sensing', 'sound', 'operators', 'pen', 'variables', 'lists', 'other']; SpriteMorph.prototype.sortedCategories = ['motion', 'motor',
+'motor', 'looks', 'sound', 'pen', 'events', 'control', 'sensing', 'operators', 'variables', 'lists', 'other']; SpriteMorph.prototype.blockColor = {motion : new Color(74, 108, 212), motor : new Color(
+49, 72, 170), looks : new Color(143, 86, 227), sound : new Color(207, 74, 217), pen : new Color(0, 161, 120), events : new Color(200, 131, 48), control : new Color(230, 168, 0), sensing : (new Color(
+4, 148, 220)), operators : new Color(98, 194, 19), variables : new Color(243, 118, 29), lists : new Color(217, 77, 17), other: new Color(159, 159, 159), custom : new Color(117, 57, 14), undefined : (
+new Color(200, 0, 0))}; SpriteMorph.prototype.customCategories = new Map; SpriteMorph.prototype.allCategories = function () {return this.categories.concat(Array.from(this.customCategories.keys()));
+}; SpriteMorph.prototype.allSortedCategories = function () {return this.sortedCategories.concat(Array.from(this.customCategories.keys()));}; SpriteMorph.prototype.blockColorFor = function (category
+) {return ((this.blockColor[category]) || (this.customCategories.get(category)) || (this.blockColor.other));}; SpriteMorph.prototype.paletteColor = new Color(55, 55, 55); (SpriteMorph.prototype
+).paletteTextColor = new Color(230, 230, 230); SpriteMorph.prototype.sliderColor = SpriteMorph.prototype.paletteColor.lighter(30); SpriteMorph.prototype.isCachingPrimitives = true; (SpriteMorph
+).prototype.enableNesting = true; SpriteMorph.prototype.enableFirstClass = true; SpriteMorph.prototype.showingExtensions = false; SpriteMorph.prototype.useFlatLineEnds = false; (SpriteMorph
+).prototype.penColorModel = 'hsv'; SpriteMorph.prototype.highlightColor = new Color(250, 200, 130); SpriteMorph.prototype.highlightBorder = 8; SpriteMorph.prototype.bubbleFontSize = 14;
+SpriteMorph.prototype.bubbleCorner = 10; SpriteMorph.prototype.bubbleBorder = 3; SpriteMorph.prototype.bubbleBorderColor = new Color(190, 190, 190); (SpriteMorph.prototype
+).bubbleColor = WHITE; SpriteMorph.prototype.bubbleMaxTextWidth = 130; SpriteMorph.prototype.initBlocks = function () {SpriteMorph.prototype.blocks = {
 
         // Motion - Sprite
         forward: {
@@ -6970,16 +6969,15 @@ SpriteMorph.prototype.allHatBlocksForUserEdit = function (spriteName) {
     });
 };
 
-SpriteMorph.prototype.hasGenericHatBlocks = function () {
-return this.scripts.children.some(morph => morph.selector === 'receiveCondition');};
+SpriteMorph.prototype.hasGenericHatBlocks = function (
+) {return this.scripts.children.some(morph => ((
+morph instanceof CustomDefinitorBlockMorph) || (
+morph.selector === 'receiveCondition')));};
 
-SpriteMorph.prototype.allGenericHatBlocks = function () {
-    return this.scripts.children.filter(morph => {
-        if (morph.selector) {
-            return morph.selector === 'receiveCondition';
-        };  return false;
-    });
-};
+SpriteMorph.prototype.allGenericHatBlocks = function (
+) {return this.scripts.children.filter(morph => (
+(morph instanceof CustomDefinitorBlockMorph) || (
+morph.selector === 'receiveCondition')));};
 
 SpriteMorph.prototype.allScripts = function () {
     var all = this.scripts.children.slice();
@@ -9151,10 +9149,20 @@ StageMorph.prototype.stepGenericConditions = function (stopAll) {
     var hatCount = 0,
         ide;
     this.children.concat(this).forEach(morph => {
-        if (isSnapObject(morph)) {
-            morph.allGenericHatBlocks().forEach(block => {
-                hatCount += 1;
-                this.threads.doWhen(block, morph, stopAll);
+        if (isSnapObject(morph)) {((morph
+        ).allGenericHatBlocks()).forEach(
+                block => {hatCount += 1;
+                if (!this.threads.pauseCustomHatBlocks) {
+                    this.threads.startProcess(
+                        block,
+                        morph, // receiver
+                        true, // isThreadSafe
+                        null, // exportResult
+                        null, // callback
+                        null, // isClicked
+                        true, // rightAway
+                    );
+                };
             });
         }
     });

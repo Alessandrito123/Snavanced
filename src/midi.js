@@ -117,3 +117,9 @@ this.initialData = data;} else {this.initialData = [];};
 this.isEditable = false; this.defaultOptional = asANum(
 optional); /* Inspired by FNF's Sound Samples. Try it,
 its cool! :-) */}; MIDVoiceData.prototype.makeInitialData = nop;
+
+/*
+var theMorph = new SoundVisualizerMorph(thing
+); theMorph.setExtent(new Point(480, 360));
+return new Costume(theMorph.fullImage());
+*/
