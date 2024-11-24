@@ -815,7 +815,7 @@ SpriteMorph.prototype.initBlocks = function () {
         receiveCondition: {
             type: 'hat',
             category: 'events',
-            spec: 'when %b'
+            spec: 'when %b triggers'
         },
         getLastMessage: {
             type: 'reporter',
@@ -1069,25 +1069,11 @@ SpriteMorph.prototype.initBlocks = function () {
             spec: '%block of %r',
             defaults: [['definition']]
         },
-        reportThisContext: {
+        reportEnvironment: {
             type: 'reporter',
             category: 'control',
-            spec: 'this script'
-        },
-        reportThisCaller: {
-            type: 'reporter',
-            category: 'control',
-            spec: 'this caller'
-        },
-        reportThisContinuation: {
-            type: 'reporter',
-            category: 'control',
-            spec: 'this continuation'
-        },
-        reportThisInputs: {
-            type: 'reporter',
-            category: 'control',
-            spec: 'this inputs'
+            spec: 'this %env',
+            defaults: [['script']]
         },
 
         // Debugging
@@ -2458,6 +2444,22 @@ SpriteMorph.prototype.initBlockMigrations = function () {
             selector: 'reportVariadicIsIdentical',
             variadic: true
         },
+        reportThisContext: {
+            selector: 'reportEnvironment',
+            inputs: [['script']]
+        },
+        reportThisCaller: {
+            selector: 'reportEnvironment',
+            inputs: [['caller']]
+        },
+        reportThisContinuation: {
+            selector: 'reportEnvironment',
+            inputs: [['continuation']]
+        },
+        reportThisInputs: {
+            selector: 'reportEnvironment',
+            inputs: [['inputs']]
+        },
         reportStringSize: {
             selector: 'reportTextAttribute',
             inputs: [['length']],
@@ -3291,10 +3293,7 @@ category = 'other', all = false) {var blocks = [], myself = this, varNames, inhe
         blocks.push(block('doCallCC'));
         blocks.push(block('reportCallCC'));
         blocks.push('-');
-        blocks.push(block('reportThisContext'));
-        blocks.push(block('reportThisContinuation'));
-        blocks.push(block('reportThisCaller'));
-        blocks.push(block('reportThisInputs'));
+        blocks.push(block('reportEnvironment'));
         blocks.push('-');
         blocks.push(this.subCategoryText('Scenes'));
         blocks.push('-');

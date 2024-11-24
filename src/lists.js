@@ -286,6 +286,73 @@ element) : Process.prototype.reportIsIdentical(
 list[i], element)) {result.push(i + 1);
 }; i++;}; return new List(result);};
 
+// List key-value accessing (experimental in v8.1):
+
+List.prototype.lookup = function (key, ifNone = '') {
+    // look up the value of a given key, return optional ifNone value,
+    // which can also be a niladic callback, or an empty string
+    var rec, parent;
+    if (parseFloat(key) === +key) { // treat as numerical index
+        return this.at(key);
+    }
+    rec = this.itemsArray().find(elem => elem instanceof List &&
+        elem.length() > 0 &&
+        snapEquals(elem.at(1), key));
+    if (rec) {
+        return rec.length() > 2 ? rec.cdr() : rec.at(2);
+    }
+    if (snapEquals(key, '...')) {
+        if (typeof ifNone === 'function') {
+            return ifNone();
+        }
+        return ifNone;
+    }
+    parent = this.lookup('...');
+    if (parent instanceof List) {
+        return parent.lookup(key, ifNone);
+    } else if (isSnapObject(parent)) {
+        Process.prototype.assertAlive(parent);
+        return parent.variables.getVar(key);
+    }
+    return typeof ifNone === 'function' ? ifNone() : ifNone;
+};
+
+List.prototype.bind = function (key, value) {
+    if (parseFloat(key) === +key) { // treat as numerical index
+        return this.put(value, key);
+    }
+    if (key instanceof List) {
+        return; // cannot use lists as key because of hyperization
+    }
+    this.add(new List([key, value]), this.forget(key) + 1);
+};
+
+List.prototype.forget = function (key) {
+    // remove all records indicated by the key
+    // and return the index of the first match, if any
+    var idx = 0,
+        match = this.length(),
+        query = rec =>
+            snapEquals(rec, key) || (
+                rec instanceof List &&
+                rec.length() === 2 &&
+                snapEquals(rec.at(1), key)
+            );
+
+    if (parseFloat(key) === +key) { // treat as numerical index
+        this.remove(key);
+        return key;
+    }
+    while (idx > -1) {
+        idx = this.itemsArray().findIndex(query);
+        if (idx > -1) {
+            match = Math.min(match, idx);
+            this.remove(idx + 1);
+        }
+    }
+    return match;
+};
+
 // List table (2D) accessing (for table morph widget):
 
 List.prototype.isTable = function () {return (this.enableTables && ((this.length(

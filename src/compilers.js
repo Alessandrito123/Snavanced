@@ -1,5 +1,3 @@
-var JSCompiler;
-
 // JSCompiler /////////////////////////////////////////////////////////////////
 
 /*
@@ -187,6 +185,8 @@ JSCompiler.prototype.compileExpression = function (block) {
     case 'reportBoolean':
     case 'reportNewList':
         return this.compileInput(inputs[0]);
+    case 'reportEnvironment':
+        return 'func';
     default:
         target = this.process[selector] ? this.process
             : (this.source.receiver || this.process.receiver);
@@ -376,4 +376,4 @@ return ((contains(['number', 'Boolean'], (new Process).reportTypeOf(reportBasicT
 } else if (blocks.selector === 'evaluateCustomBlock') {return reportBasicToJS(blocks.definition.body.toBlock()) + '.apply\(this, \[' + blocks.inputs().map(value => reportBasicToJS(value)) + '\]\);';
 } else if (blocks.selector === 'reportGetVar') {return blocks.blockSpec;} else {return '';};} else {return '';};};
 function reportToJS (input) {if (input instanceof List) {return new List(input.asArray().map(miniInput => reportToJS(miniInput)));}
-else if (input instanceof Context) {return reportBasicToJS(input);} else {return reportBasicToJS(new Context());};};
+else if (input instanceof Context) {return reportBasicToJS(input);} else {return reportBasicToJS(new Context);};};

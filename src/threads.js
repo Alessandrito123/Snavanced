@@ -631,7 +631,7 @@ Process.prototype.doPauseThread = function () {var myself = this; if (!(myself.d
 ).key = ('debug - ' + Date.now()); myself.debugDialog.process = myself; myself.debugDialog.createLabel(); myself.debugDialog.fixLayout(); myself.debugDialog.popUp(world); myself.isOnDebug = true; (myself
 ).pushContext('doYield'); myself.pushContext();} else {if (!(myself.debugDialog.isDestroyed)) {this.context.inputs = []; myself.pushContext('doYield'); myself.pushContext();} else {myself.debugDialog = null;
 myself.returnValueToParentContext(input);};};}; Process.prototype.durationOf = function (action) {if (action instanceof CommandBlockMorph) {if (!(this.context.startTime)) {this.context.startTime = Date.now();};
-if (this.context.isOnlyToOnce) {delete this.context.isOnlyToOnce; return ((Date.now() - this.context.startTime) / 1000);} else {this.context.isOnlyToOnce = true; this.pushContext(action.blockSequence()); (this
+if (this.context.isOnlyToOnce) {delete this.context.isOnlyToOnce; return ((Date.now() - this.context.startTime) / 1000);} else {this.context.isOnlyToOnce = true; this.pushContext(action.metaSequence()); (this
 ).pushContext('doYield'); this.pushContext();};} else {return 0;};}; Process.prototype.reportLocalStorage = function () {return new List([new List(Object.keys(localStorage)), new List(Object.values(localStorage
 ))]);}; Process.prototype.blockComment = nop; Process.prototype.doIgnoreValue = nop; Process.prototype.scriptNamer = function (name, action) {action = action.at(1); if (action instanceof CommandBlockMorph) {if (
 this.context.isOnlyToOnce) {delete this.context.isOnlyToOnce;} else {this.context.isOnlyToOnce = true; this.pushContext(action.blockSequence()); this.pushContext('doYield'); this.pushContext();};};}; (Process
@@ -962,20 +962,21 @@ Process.prototype.createCategory = function (name, color) {if (!(world.children[
 ide.stage.globalBlocks.forEach(def => {if (def.category === oldName) {def.category = newName; ide.currentSprite.allBlockInstances(def).reverse().forEach(block => block.refresh());}}); ide.sprites.asArray().concat(
 ide.stage).forEach(obj => {obj.customBlocks.forEach(def => {if (def.category === oldName) {def.category = newName; obj.allDependentInvocationsOf(def.blockSpec()).reverse().forEach(block => block.refresh(def));
 }});}); SpriteMorph.prototype.customCategories.delete(oldName); ide.createCategories(); ide.createPaletteHandle(); ide.categories.fixLayout(); ide.flushPaletteCache(); ide.refreshPalette(true); ide.categories.
-refreshEmpty(); ide.fixLayout(); ide.recordUnsavedChanges(); if (ide.currentCategory === oldName) {ide.currentCategory = newName;}; ide.categories.children.forEach(function (each) {each.refresh();}); ide.
-refreshPalette(true); ide.savingPreferences = true;};}; Process.prototype.setCategoryColor = function (name, color) {var ide = world.children[0], ctg = ide.currentSprite.customCategories; if (ctg.has(name)) {
-ctg.set(name, color); ide.createCategories(); ide.createPaletteHandle(); ide.categories.fixLayout(); ide.flushPaletteCache(); ide.refreshPalette(true); ide.categories.refreshEmpty(); ide.fixLayout(); ide.
-recordUnsavedChanges(); var def = ide.stage.globalBlocks; def = def.filter(block => {return block.category === name;}); def.map(def => {ide.currentSprite.allBlockInstances(def).map(block => block.refresh())})}};
-Process.prototype.deleteCategory = function (name) {world.children[0].deletePaletteCategory(name);}; /* List Manager */ Process.prototype.reportListContents = function (list) {return list.itemsArray().join('');};
-Process.prototype.reportListCopy = function (list, copies) {this.assertType(list, 'list'); var backup = list.fullCopy().asArray(), result = [], iCopy = 0; while (iCopy < +copies) {iCount = 0; while (
-iCount < backup.length) {result.push(backup[iCount]); iCount++;}; iCopy++;}; return new List(result); /* Copy. */}; Process.prototype.reportJSFunction = function (parmNames, body) {if (!this.enableJS) {
-throw new Error('JavaScript extensions for Snap!\nare turned off');}; return Function.apply(null, parmNames.itemsArray().concat([body]));}; Process.prototype.doRun = function (context, args, root) {
-return this.evaluate(context, args, true, root);}; Process.prototype.evaluate = function (context, args = new List, isCommand = false, root) {if (root instanceof BlockMorph) {this.root = root;}; if (!context) {
-return this.returnValueToParentContext('');}; if (context instanceof Function) {if (this.enableJS) {return context.apply(this.blockReceiver(), args.itemsArray().concat([this]));} else {throw Error(
-'JavaScript extensions for Snap!\nare turned off');};}; if (context.isContinuation) {return this.runContinuation(context, args);}; if (!(context instanceof Context)) {throw Error('expecting a lambda but getting '
-+ context);}; if (context instanceof Context) {if ((context.selector === 'reportScript') && (!context.isContinuation) && (context.expression instanceof Array) && (context.inputs.length === 0)) {if (args.fullCopy(
-).asArray().length > 1) {throw Error(localize('expecting') + ' ' + localize('1 input, but getting') + ' ' + args.length());} else if (args.fullCopy().asArray().length === 1) {
-return (args.fullCopy().asArray())[0];} else {return context;};};};
+refreshEmpty(); ide.fixLayout(); ide.recordUnsavedChanges(); if (ide.currentCategory === oldName) {ide.currentCategory = newName;}; ide.categories.children.forEach(function (each) {each.refresh();}); (ide
+).refreshPalette(true); ide.savingPreferences = true;};}; Process.prototype.setCategoryColor = function (name, color) {var ide = world.children[0], ctg = ide.currentSprite.customCategories; if (ctg.has(name
+)) {ctg.set(name, color); ide.createCategories(); ide.createPaletteHandle(); ide.categories.fixLayout(); ide.flushPaletteCache(); ide.refreshPalette(true); ide.categories.refreshEmpty(); ide.fixLayout(); (ide
+).recordUnsavedChanges(); var def = ide.stage.globalBlocks; def = def.filter(block => {return block.category === name;}); def.map(def => {ide.currentSprite.allBlockInstances(def).map(block => block.refresh());}
+)};}; Process.prototype.deleteCategory = function (name) {world.children[0].deletePaletteCategory(name);}; /* List Manager */ Process.prototype.reportListContents = function (list) {return list.itemsArray().join(
+'');}; Process.prototype.reportListCopy = function (list, copies) {this.assertType(list, 'list'); var backup = list.fullCopy().asArray(), result = [], iCopy = 0; while (iCopy < +copies) {iCount = 0; while ((iCount
+) < backup.length) {result.push(backup[iCount]); iCount++;}; iCopy++;}; return new List(result); /* Copy. */}; Process.prototype.reportJSFunction = function (parmNames, body) {if (!this.enableJS) {throw new Error(
+'JavaScript extensions for Snap!\nare turned off');}; return Function.apply(null, parmNames.itemsArray().concat([body]));}; Process.prototype.doRun = function (context, args, root) {return this.evaluate(context,
+args, true, root);}; Process.prototype.evaluate = function (context, args, isCommand, root) {if (isNil(args)) {args = new List;}; if (isNil(isCommand)) {isCommand = false;}; if (root instanceof BlockMorph) {(this
+).root = root;}; if (!(context)) {return this.returnValueToParentContext('');}; if (context instanceof Function) {if (this.enableJS) {return context.apply(this.blockReceiver(), args.itemsArray().concat([this]));
+} else {throw Error('JavaScript extensions for Snap!\nare turned off');};}; if (context.isContinuation) {return this.runContinuation(context, args);}; if (context instanceof List) {return this.hyperEval(context,
+args);}; if (!(context instanceof Context)) {throw Error('expecting a lambda but getting ' + context);}; if (context instanceof Context) {if ((context.selector === 'reportScript') && !(context.isContinuation) && (
+context.expression instanceof Array) && (context.inputs.length === 0)) {if (args.fullCopy().asArray().length > 1) {throw Error(localize('expecting') + ' ' + localize('1 input, but getting') + ' ' + args.length());
+} else if (args.fullCopy().asArray().length === 1) {return (args.fullCopy().asArray())[0];} else {return context;};};};
+
     if (context instanceof Context) {if ((context.selector === 'reify')
     && (!context.isContinuation) && (context.expression instanceof Array)
     && (context.inputs.length === 0)) {
@@ -990,8 +991,13 @@ return (args.fullCopy().asArray())[0];} else {return context;};};};
     var outer = new Context(null, null, context.outerContext),
     caller = this.context.parentContext, exit, runnable, expr,
     cont = this.context.rawContinuation(!isCommand), i, value,
-    parms = args.itemsArray(); if (!outer.receiver) {
-    outer.receiver = context.receiver;}; // for custom blocks
+    parms = args.itemsArray(), csym = Symbol.for('caller'),
+    lastCaller = ((applyingToExecuteOrToAcess('vars', (this
+    ).context.variables.silentFind(csym), [])).vars[csym]
+    ).value; function isRecursiveCall () {return (((lastCaller
+    ) instanceof Context) && ((this.context.expression
+    ) === lastCaller.expression));}; if (!(outer.receiver
+    )) {outer.receiver = context.receiver;};
     runnable = new Context(
         this.context.parentContext,
         context.expression,
@@ -1003,59 +1009,64 @@ return (args.fullCopy().asArray())[0];} else {return context;};};};
     if (context.expression instanceof ReporterBlockMorph) {
         // auto-"warp" nested reporters
         this.readyToYield = (this.currentTime - this.lastYield > this.timeout);
-    }; // assign a self-reference for introspection and recursion
+    };
+
+    // assign a self-reference for introspection and recursion
     outer.variables.addVar(Symbol.for('self'), context);
-    // capture the dynamic scope in "this caller"
-    outer.variables.addVar(Symbol.for('caller'), this.context);
+
     // capture the current continuation
     outer.variables.addVar(Symbol.for('continuation'), cont);
+
+    // capture the dynamic scope in "this caller"
+    // only capture the caller once in repeating recursive calls
+    // to prevent TCO memory leaks
+    outer.variables.addVar(csym, isRecursiveCall() ? lastCaller : this.context);
+
+    // assign arguments to parameters
+
     // assign the actual arguments list to the special
     // parameter ID Symbol.for('arguments'), to be used for variadic inputs
     outer.variables.addVar(Symbol.for('arguments'), args);
-    // assign arguments that are actually passed
-    if (parms.length > 0) {
-        // assign formal parameters
-        for (i = 0; i < context.inputs.length; i += 1) {
-            value = null;
-            if (!isNil(parms[i])) {
-                value = parms[i];
-            }; outer.variables.addVar(context.inputs[i], value);
-        }; // assign implicit parameters if there are no formal ones
-        if (context.inputs.length === 0) {
-            // in case there is only one input
-            // assign it to all empty slots...
-            if (parms.length === 1) {
-                // ... unless it's an empty reporter ring,
-                // in which special case it gets treated as the ID-function;
-                // experimental feature jens is not at all comfortable with
-                if (!context.emptySlots) {
-                    expr = context.expression;
-                    if (expr instanceof Array &&
-                            expr.length === 1 &&
-                            expr[0].selector &&
-                            expr[0].selector === 'reifyReporter' &&
-                            !expr[0].contents()) {
-                        runnable.expression = new Variable(parms[0]);
-                    };
-                } else {
-                    for (i = 1; i <= context.emptySlots; i += 1) {
-                        outer.variables.addVar(i, parms[0]);
-                    };
-                }; // if the number of inputs matches the number
-            // of empty slots distribute them sequentially
-            } else if (parms.length === context.emptySlots) {
-                for (i = 1; i <= parms.length; i += 1) {
-                    outer.variables.addVar(i, parms[i - 1]);
-                };
-            } else if (context.emptySlots !== 1) {
-                throw new Error(
-                    localize('expecting') + ' ' + context.emptySlots + ' '
-                        + localize('input(s), but getting') + ' '
-                        + parms.length
-                );
+
+    // assign formal parameters
+    for (i = 0; i < context.inputs.length; i += 1) {
+        value = 0;
+        if (!isNil(parms[i])) {
+            value = parms[i];
+        }
+        outer.variables.addVar(context.inputs[i], value);
+    }
+
+    // assign implicit parameters if there are no formal ones
+    if (context.inputs.length === 0) {
+        // in case there is only one input
+        // assign it to all empty slots...
+        if (parms.length === 1) {
+            // ... unless it's an empty reporter ring,
+            // in which special case it gets treated as the ID-function;
+            if (!context.emptySlots) {
+                expr = context.expression;
+                if (expr instanceof Array &&
+                        expr.length === 1 &&
+                        expr[0].selector &&
+                        ((['reify', 'reifyReporter', 'reifyPredicate'
+                        ]).includes((expr[0]).selector)) && !((expr[0
+                        ]).contents())) {
+                    runnable.expression = new Variable(parms[0]);
+                }
+            } else {
+                for (i = 1; i <= context.emptySlots; i += 1) {
+                    outer.variables.addVar(i, parms[0]);
+                }
+            }
+        // otherwise match the inputs sequentially to the empty slots,
+        // disregard unmatched or excess inputs or slots
+        } else {
+            for (i = 1; i <= parms.length; i += 1) {
+                outer.variables.addVar(i, parms[i - 1]);
             };
         };
-    }; if (runnable.expression instanceof CommandBlockMorph) {
+    };  if (runnable.expression instanceof CommandBlockMorph) {
         runnable.expression = runnable.expression.blockSequence();
         if (!isCommand) {
             if (caller) {
@@ -1072,6 +1083,25 @@ return (args.fullCopy().asArray())[0];} else {return context;};};};
                 ); exit.tag = 'exit';
                 runnable.parentContext = exit;
     };};};};
+
+Process.prototype.hyperEval = function (context, args) {
+    // hyper-monadic deep-map
+    // note: currently only literal inputs are supported in hyper-calls
+    var mapBlock = SpriteMorph.prototype.blockForSelector('reportMap'),
+        callBlock = SpriteMorph.prototype.blockForSelector('evaluate'),
+        varBlock = SpriteMorph.prototype.variableBlock('fn'),
+        argsBlock = this.assertType(args, 'JSON').blockify(),
+        funArg;
+
+    callBlock.replaceInput(callBlock.inputs()[0], varBlock);
+    callBlock.replaceInput(callBlock.inputs()[1], argsBlock);
+    funArg = this.reify(callBlock, new List(['fn']));
+
+    this.popContext();
+    this.pushContext(mapBlock);
+    this.context.inputs = [funArg, context];
+    this.pushContext();
+};
 
 Process.prototype.fork = function (context, args) {if (context instanceof Context) {if (this.readyToTerminate) {return;}; var proc = new Process, stage = this.homeContext.receiver.parentThatIsA(
 StageMorph); proc.instrument = this.instrument; proc.receiver = this.receiver; proc.initializeFor(context, args); stage.threads.processes.push(proc);} else if (context instanceof Function) {
@@ -1148,48 +1178,35 @@ this.doRun(context, args);}; if (this.inputOption(choice) === 'launch') {this.fo
 
 // Process introspection
 
-Process.prototype.reportThisContext = function () {var sym = Symbol.for('self'), frame = this.context.variables.silentFind(sym
-), ctx; if (frame) {return copy(frame.vars[sym].value);} else {ctx = this.topBlock.reify();}; ctx.outerContext = (this.context
+Process.prototype.reportEnvironment = function (choice,
+trgt) {if (isNil(trgt)) {trgt = this.context;}; switch (
+this.inputOption(choice)) {case 'caller': return (this
+).reportCaller(trgt); case 'continuation': return (this
+).reportContinuation(trgt); case 'inputs': return (this
+).reportInputs(trgt); case 'object': return this.reportData(
+trgt); default: return this.reportSelf(trgt);};};
+
+Process.prototype.reportSelf = function () {var sym = Symbol.for('self'), frame = this.context.variables.silentFind(sym),
+ctx; if (frame) {return copy(frame.vars[sym].value);} else {ctx = this.topBlock.reify();}; ctx.outerContext = (this.context
 ).outerContext; if (ctx.outerContext) {ctx.variables.parentFrame = ctx.outerContext.variables;}; if (!(this.isAtomic) && (
 applyingToExecuteOrToAcess('selector', this.context.expression.parent) === 'execute')) {this.readyToYield = true;}; return ctx;};
 
-Process.prototype.reportThisCaller = function () {
-    var sym = Symbol.for('caller'),
-        frame = this.context.variables.silentFind(sym),
-        ctx, nb;
-    if (frame) {
-        ctx = copy(frame.vars[sym].value);
-        // ctx.expression = (applyingToExecuteOrToAcess('topBlock', ctx.expression)).fullCopy();
-        ctx.expression = applyingToExecuteOrToAcess('fullCopy', ctx.expression);
-        nb = applyingToExecuteOrToAcess('nextBlock', ctx.expression) ? ctx.expression.nextBlock() : null;
-        if (nb) {
-            nb.destroy();
-        }; ctx.inputs = [];
-        return ctx;
-    }; return this.blockReceiver();
-};
+Process.prototype.reportCaller = function () {var sym = Symbol.for('caller'), ctx, frame = (this.context.variables
+).silentFind(sym); if (frame) {ctx = copy((frame.vars[sym]).value); ctx.expression = applyingToExecuteOrToAcess(
+'fullCopy', ctx.expression); var nb = (applyingToExecuteOrToAcess('nextBlock', ctx.expression) ? (ctx.expression
+).nextBlock() : null); if (nb) {nb.destroy();}; ctx.inputs = []; return ctx;}; return this.blockReceiver();};
 
-Process.prototype.reportThisContinuation = function () {
-    var sym = Symbol.for('continuation'),
-        frame = this.context.variables.silentFind(sym),
-        cont;
-    if (frame) {
-        cont = frame.vars[sym].value;
-        cont = cont.copyForContinuation();
-        cont.tag = null;
-    } else {
-        cont = new Context(
-            null,
-            'popContext'
-        );
-    };  cont.isContinuation = true;
-    return cont;};
+Process.prototype.reportContinuation = function () {var sym = Symbol.for(
+'continuation'), frame = this.context.variables.silentFind(sym), cont; if (frame) {
+cont = frame.vars[sym].value; cont = cont.copyForContinuation(); cont.tag = null;} else {
+cont = new Context(null, 'popContext');}; cont.isContinuation = true; return cont;};
 
-Process.prototype.reportThisInputs = function () {
-    var sym = Symbol.for('arguments'),
-        frame = this.context.variables.silentFind(sym);
-    return (frame ? frame.vars[sym].value : new List);
-};
+Process.prototype.reportInputs = function () {var sym = Symbol.for('arguments'), frame = (
+this.context.variables.silentFind(sym)); return (frame ? frame.vars[sym].value : new List);};
+
+Process.prototype.reportData = function (trgt) {var data = trgt.variables; while (
+!isNil(data)) {if (data instanceof List) {return data;}; if (isSnapObject((data
+).owner)) {return data.owner;}; data = data.parentFrame;}; return data;};
 
 // Process stopping blocks primitives
 
@@ -1541,13 +1558,28 @@ Process.prototype.doInsertInList = function (element, index, list) {
     if (list.type) {
         this.assertType(element, list.type);
         list = this.shadowListAttribute(list);
-    };  if (index === '') {
+    }
+    if (index === '') {
         return null;
-    };  if (this.inputOption(index) === 'any') {
-        idx = this.reportBasicRandom(1, list.length() + 1);
-    };  if (this.inputOption(index) === 'last') {
-        idx = list.length() + 1;
-    };  list.add(element, idx);
+    }
+    if (index instanceof Array) {
+        if (index[0] === 'any') {
+            idx = this.reportBasicRandom(1, list.length() + 1);
+        } else if (index[0] === 'last') {
+            idx = list.length() + 1;
+        } else if (index[0] === 'parent') {
+            idx = '...';
+        } else {
+            idx = list.length() + 1;
+        }
+    }
+    if (parseFloat(idx) !== +idx) { // treat as alphanumerical index
+        if (element instanceof Context) { // OOP 2.0: treat ring as method
+            element = this.reportContextFor(element, list);
+        }
+        return list.bind(idx, element);
+    }
+    list.add(element, idx);
 };
 
 Process.prototype.doReplaceInList = function (index, list, element) {
@@ -1560,13 +1592,22 @@ Process.prototype.doReplaceInList = function (index, list, element) {
     if (index === '') {
         return null;
     }
-    if (this.inputOption(index) === 'any') {
-        idx = this.reportBasicRandom(1, list.length());
+    if (index instanceof Array) {
+        if (index[0] === 'any') {
+            idx = this.reportBasicRandom(1, list.length() + 1);
+        } else if (index[0] === 'last') {
+            idx = list.length();
+        } else if (index[0] === 'parent') {
+            idx = '...';
+        } else {
+            idx = 0;
+        }
     }
-    if (this.inputOption(index) === 'last') {
-        idx = list.length();
+    if (element instanceof Context && (parseFloat(idx) !== +idx)) {
+        // OOP 2.0: treat ring as method
+        element = this.reportContextFor(element, list);
     }
-    list.put(element, idx);
+    list.bind(idx, element);
 };
 
 Process.prototype.shadowListAttribute = function (list) {
@@ -1587,6 +1628,7 @@ Process.prototype.shadowListAttribute = function (list) {
 // Process accessing list elements - hyper dyadic
 
 Process.prototype.reportListItem = function (index, list) {
+    var value;
     this.assertType(list, 'list');
     if (index === '') {
         return '';
@@ -1598,12 +1640,22 @@ Process.prototype.reportListItem = function (index, list) {
         if (index[0] === 'last') {
             return list.at(list.length());
         }
-        return '';
+        if (index[0] === 'parent') {
+            index = '...';
+        } else {
+            return '';
+        }
     }
     if (index instanceof List && this.enableHyperOps) {
         return list.query(index);
     }
-    return list.at(index);
+    value = list.lookup(index);
+    if (value instanceof Context && (parseFloat(index) !== +index)) {
+        // treat the ring as macro and bind it to the list as environment
+        // for OOP 2.0
+        value = this.reportContextFor(value, list);
+    }
+    return value;
 };
 
 // Process - tabular list ops
@@ -5636,15 +5688,12 @@ Process.prototype.reportAttributeOf = function (attribute, name) {
     att, obj), attribute, name);
 };
 
-Process.prototype.reportBasicAttributeOf = function (attribute, name) {
-    var thisObj = this.blockReceiver(),
-        thatObj,
-        stage;
-
-    if (name instanceof Context && attribute instanceof Context) {
-        return this.reportContextFor(attribute, name);
-    }
-    if (thisObj) {
+Process.prototype.reportBasicAttributeOf = function (attribute, name) {var thisObj = (this
+).blockReceiver(), thatObj, stage; if ((name instanceof Context) && (attribute instanceof (
+Context))) {if ((applyingToExecuteOrToAcess('expression', attribute, [])).selector === (
+'reportEnvironment')) {this.returnValueToParentContext(this.reportEnvironment((((attribute
+).expression.inputs())[0]).evaluate(), name)); return;}; return this.reportContextFor(
+attribute, name);}; if (thisObj) {
         this.assertAlive(thisObj);
         stage = thisObj.parentThatIsA(StageMorph);
         if (name instanceof Context) {
@@ -5892,23 +5941,23 @@ rcvr.costumes.asArray()[value - 1]);} else if (attribute.expression.selector ===
         );
     };};};
 
-Process.prototype.reportContextFor = function (context, otherObj) {
-var result = copy(context), receiverVars, rootVars; if ((otherObj
-) instanceof Context) {result.outerContext = otherObj.outerContext;
-result.variables.parentFrame = otherObj.outerContext.variables;
-result.receiver = otherObj.receiver; return result;}; (result
-).receiver = otherObj; if (!(result.outerContext)) {(result
-).outerContext = new Context; (result.variables.parentFrame
-) = result.outerContext.variables;}; result.outerContext = (
-copy(result.outerContext)); result.outerContext.variables = (
-copy(result.outerContext.variables)); (result.outerContext
-).receiver = otherObj; if ((result.outerContext.variables
-).parentFrame) {rootVars = (result.outerContext.variables
-).parentFrame; receiverVars = copy(otherObj.variables);
-receiverVars.parentFrame = rootVars; (result.outerContext
-).variables.parentFrame = receiverVars;} else {(result
-).outerContext.variables.parentFrame = otherObj.variables;
-}; return result;};
+Process.prototype.reportContextFor = function (context, otherObj
+) {var result = copy(context); if (otherObj instanceof List) {(result
+).outerContext = new Context; (result.outerContext.variables.parentFrame
+) = otherObj; return result;}; if (otherObj instanceof Context) {(result
+).outerContext = otherObj.outerContext; result.variables.parentFrame = (
+otherObj.outerContext.variables); result.receiver = otherObj.receiver;
+return result;}; result.receiver = otherObj; if (!(result.outerContext)
+) {result.outerContext = new Context; result.variables.parentFrame = (
+result.outerContext.variables);}; result.outerContext = copy((result
+).outerContext); result.outerContext.variables = copy((result
+).outerContext.variables); result.outerContext.receiver = otherObj;
+if (result.outerContext.variables.parentFrame) {var rootVars = (
+result.outerContext.variables.parentFrame), receiverVars = (otherObj
+).variables.fullCopy(); (receiverVars.root()).parentFrame = rootVars;
+result.outerContext.variables.parentFrame = receiverVars;
+result.variables = receiverVars;} else {(result.outerContext
+).variables.parentFrame = otherObj.variables;}; return result;};
 
 Process.prototype.reportMousePosition = function () {
     var world, pos;
@@ -5921,22 +5970,9 @@ Process.prototype.reportMousePosition = function () {
     };  return new List([0, 0]);};
 
 Process.prototype.reportMouseX = function () {
-    var world;
-    if (this.homeContext.receiver) {
-        world = this.homeContext.receiver.world();
-        if (world) {
-            return this.homeContext.receiver.snapPoint(world.hand.position()).x;
-        };
-    };  return 0;};
-
+return (this.reportMousePosition()).at(1);};
 Process.prototype.reportMouseY = function () {
-    var world;
-    if (this.homeContext.receiver) {
-        world = this.homeContext.receiver.world();
-        if (world) {
-            return this.homeContext.receiver.snapPoint(world.hand.position()).y;
-        };
-    };  return 0;};
+return (this.reportMousePosition()).at(2);};
 
 Process.prototype.reportMouseButton = function (
 button) {var world; if (this.homeContext.receiver
@@ -7260,14 +7296,19 @@ VariableFrame.prototype.setVar = function (name, value, sender) {
 
     var frame = this.find(name);
     if (frame) {
+        if (frame instanceof List) { // OOP 2.0
+            frame.lookup(name, () => this.variableError(name));
+            frame.bind(name, value);
+            return;
+        }
         if (sender instanceof SpriteMorph &&
                 (frame.owner instanceof SpriteMorph) &&
                 (sender !== frame.owner)) {
             sender.shadowVar(name, value);
         } else {
             frame.vars[name].value = value;
-        };
-    };
+        }
+    }
 };
 
 VariableFrame.prototype.changeVar = function (name, delta, sender) {
@@ -7279,35 +7320,63 @@ VariableFrame.prototype.changeVar = function (name, delta, sender) {
     // shadow it (create an explicit one for the sender)
     // before changing the value ("create-on-write")
 
-    var frame = this.find(name), newValue; if (frame) {
-        newValue = Process.prototype.reportSum(frame.vars[name].value, delta);
+    var frame = this.find(name),
+        value,
+        newValue;
+    if (frame) {
+        if (frame instanceof List) { // OOP 2.0
+            value = frame.lookup(name, () => this.variableError(name));
+            // hypermutation is not supported for use inside dictionaries
+            newValue = isNaN(parseFloat(value)) ? delta
+                : Process.prototype.reportSum(value, delta);
+            frame.bind(name, newValue);
+            return;
+        }
+        value = frame.vars[name].value;
+        if (value instanceof List) {
+            Process.prototype.hyperChangeBy(value, delta);
+            return; // do not shadow in this case (problematic, experimental)
+        }
+        newValue = !(value instanceof List) && isNaN(parseFloat(value)) ? delta
+            : Process.prototype.reportSum(value, delta);
         if (sender instanceof SpriteMorph &&
                 (frame.owner instanceof SpriteMorph) &&
                 (sender !== frame.owner)) {
             sender.shadowVar(name, newValue);
         } else {
             frame.vars[name].value = newValue;
-        };
-    };
+        }
+    }
 };
 
-VariableFrame.prototype.getVar = function (name) {
+VariableFrame.prototype.getVar = function (name, proc) {
     var frame = this.silentFind(name),
         value;
+
     if (frame) {
+        if (frame instanceof List) { // OOP 2.0
+            value = frame.lookup(
+                name,
+                proc ?
+                    () => proc.blockReceiver().globalVariables().getVar(name)
+                    : () => this.variableError(name)
+            );
+            if (value instanceof Context) {
+                value = Process.prototype.reportContextFor(value, frame);
+            }
+            return value;
+        }
         value = frame.vars[name].value;
         return (value === 0 ? 0
                 : value === false ? false
                         : value === '' ? ''
                             : value || 0); // don't return null
-    }; if (typeof name === 'number') {
+    }
+    if (typeof name === 'number') {
         // empty input with a Binding-ID called without an argument
         return '';
-    }; throw new Error(
-        localize('a variable of name \'')
-            + name
-            + localize('\'\ndoes not exist in this context')
-    );
+    }
+    this.variableError(name);
 };
 
 VariableFrame.prototype.addVar = function (name, value) {
@@ -7322,6 +7391,8 @@ VariableFrame.prototype.deleteVar = function (name) {
         delete frame.vars[name];
     };
 };
+
+VariableFrame.prototype.variableError = Process.prototype.variableError;
 
 // VariableFrame tools
 

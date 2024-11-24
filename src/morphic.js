@@ -11251,7 +11251,8 @@ SymbolMorph.prototype.names = [
     'trash',
     'trashFull',
     'cube',
-    'cubeSolid'
+    'cubeSolid',
+    'infinity'
 ];
 
 // SymbolMorph instance creation:
@@ -11612,8 +11613,9 @@ SymbolMorph.prototype.renderShape = function (ctx, aColor) {
     case 'cubeSolid':
         this.renderSymbolCubeSolid(ctx, aColor);
         break;
-    default:
-        throw new Error('unknown symbol name: "' + this.name + '"');
+    case 'infinity':
+        this.renderSymbolInfinity(ctx, aColor);
+        break;
     };
 };
 
@@ -11654,6 +11656,8 @@ SymbolMorph.prototype.symbolWidth = function () {
     case 'keyboard':
     case 'keyboardFilled':
         return size * 8/5;
+    case 'infinity':
+        return size * 7/4;
     case 'loop':
         return size * 2;
     default:
@@ -13710,6 +13714,22 @@ SymbolMorph.prototype.renderSymbolCubeSolid = function (ctx, color) {
     ctx.lineTo(half, side - l);
     ctx.closePath();
     ctx.fill();
+};
+
+SymbolMorph.prototype.renderSymbolInfinity = function (ctx, color) {
+    var h = this.size,
+        l = Math.max(h / 4, 1),
+        r = h / 2;
+    ctx.lineWidth = l;
+    ctx.strokeStyle = color.toString();
+    // left arc
+    ctx.beginPath();
+    ctx.arc(r, r, r - l / 2, (Math.PI / 3), (2 * Math.PI), false);
+    ctx.stroke();
+    // right arc
+    ctx.beginPath();
+    ctx.arc(r * 3 - l, r, r - l / 2, -(Math.PI * 2/3), Math.PI, false);
+    ctx.stroke();
 };
 
 (function () {

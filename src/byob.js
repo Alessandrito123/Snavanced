@@ -1449,20 +1449,16 @@ CustomDefinitorBlockMorph.prototype.isCustomBlock = true;
 function CustomDefinitorBlockMorph(definition,
 isProto) {this.init(definition, isProto);};
 
-CustomDefinitorBlockMorph.prototype.init = function (definition, isProto) {
-    this.definition = definition;
-    this.semanticSpec = '';
-    this.isGlobal = definition ? definition.isGlobal : false;
-    this.isPrototype = isProto || false;
-    CustomDefinitorBlockMorph.uber.init.call(this);
-    if (isProto) {this.isTemplate = true;};
-    this.category = definition.category;
-    this.selector = 'evaluateCustomBlock';
-    this.variables = null;
-    this.storedTranslations = null;
-    this.initializeVariables();
-    if (definition) {this.refresh();};
-};
+CustomDefinitorBlockMorph.prototype.init = function (definition,
+isProto) {this.definition = definition; this.isGlobal = ((definition
+) ? definition.isGlobal : false); this.semanticSpec = ''; (this
+).isPrototype = (isProto || false); (CustomDefinitorBlockMorph.uber
+).init.call(this); if (isProto) {this.isTemplate = true;}; (this
+).category = definition.category; this.selector = 'evaluateCustomBlock';
+this.variables = null; this.storedTranslations = null; (this
+).initializeVariables(); if (definition) {this.refresh();};};
+
+CustomDefinitorBlockMorph.prototype.isRuleHat = function () {return true;};
 
 CustomDefinitorBlockMorph.prototype.reactToTemplateCopy = CustomCommandBlockMorph.prototype.reactToTemplateCopy;
 

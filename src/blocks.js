@@ -563,7 +563,9 @@ SyntaxElementMorph.prototype.labelParts = {
         menu: {
             '1' : 1,
             last : ['last'],
-            any : ['any']
+            any : ['any'],
+            '~' : null,
+            parent : ['parent']
         }
     },
     '%la': {
@@ -689,6 +691,18 @@ SyntaxElementMorph.prototype.labelParts = {
             duplicate: ['duplicate'],
             comic: ['comic'],
             confetti: ['confetti']
+        }
+    },
+    '%env': {
+        type: 'input',
+        tags: 'read-only static',
+        menu: {
+            script: ['script'],
+            caller: ['caller'],
+            continuation: ['continuation'],
+            '~' : null,
+            inputs : ['inputs'],
+            object : ['object']
         }
     },
     '%snd': {
@@ -5103,7 +5117,11 @@ BlockMorph.prototype.backupRender = function (ctx) {
         this.drawEdges(ctx);
     };  // draw location pin icon if applicable
     if (this.hasLocationPin()) {
-    this.drawMethodIcon(ctx);};};
+    this.drawMethodIcon(ctx);};
+    // draw infinity / chain link icon if applicable
+    if (this.isRuleHat()) {
+        this.drawRuleIcon(ctx);
+    };};
 
 BlockMorph.prototype.drawMethodIcon = function (ctx) {
 var ext = this.methodIconExtent(), w = ext.x, h = ext.y,
@@ -5128,7 +5146,32 @@ r = w / 2, x = this.edge + this.labelPadding, y = (((this
     ctx.closePath();
     ctx.fill();};
 
-BlockMorph.prototype.hasLocationPin = function () {return (this.isCustomBlock && !this.isGlobal) || this.isLocalVarTemplate;};
+BlockMorph.prototype.drawRuleIcon = function (ctx) {
+    var h = this.hatHeight * 4/5,
+        l = Math.max(h / 4, 1),
+        r = h / 2,
+        x = (this.hatWidth - h * 7/4) * 11/20,
+        y = h / 2,
+        isNormal =
+            this.color === SpriteMorph.prototype.blockColorFor(this.category);
+    ctx.lineWidth = l;
+    // ctx.strokeStyle = color.toString();
+    ctx.strokeStyle = isNormal ? this.cachedClrBright : this.cachedClrDark;
+    // left arc
+    ctx.beginPath();
+    ctx.arc(x + r, y + r, r - l / 2, radians(60), radians(360), false);
+    ctx.stroke();
+    // right arc
+    ctx.beginPath();
+    ctx.arc(x + r * 3 - l, y + r, r - l / 2, radians(-120), radians(180), false);
+    ctx.stroke();
+};
+
+BlockMorph.prototype.hasLocationPin = function () {return (((this
+).isCustomBlock && !(this.isGlobal)) || this.isLocalVarTemplate);};
+
+(BlockMorph.prototype.isRuleHat
+) = function () {return false;};
 
 // BlockMorph highlighting
 
@@ -6293,6 +6336,9 @@ if (asABool(isPrototypeLike)) {this.category = 'custom'; this.setSpec(localize('
 
 HatBlockMorph.prototype.blockSequence = function () {if (this.selector === 'receiveCondition') {return (
 this);} else {var result = HatBlockMorph.uber.blockSequence.call(this); result.shift(); return result;};};
+
+HatBlockMorph.prototype.isRuleHat = function () {
+return (this.selector === 'receiveCondition');};
 
 // HatBlockMorph drawing:
 
@@ -10512,12 +10558,12 @@ droppedMorph) {if (droppedMorph.selector === (
 // TemplateSlotMorph drawing:
 
 TemplateSlotMorph.prototype.backupRender = function (ctx) {if (this.parent instanceof Morph) {
-this.color = this.parent.color.copy();}; BlockMorph.prototype.backupRender.call(this, ctx);};
-TemplateSlotMorph.prototype.outlinePath = ReporterBlockMorph.prototype.outlinePathOval;
-TemplateSlotMorph.prototype.drawEdges = ReporterBlockMorph.prototype.drawEdgesOval;
-TemplateSlotMorph.prototype.hasLocationPin = function () {return false;};
-TemplateSlotMorph.prototype.cSlots = (() => []); (TemplateSlotMorph
-).prototype.clearSlots = TemplateSlotMorph.prototype.cSlots;
+this.color = this.parent.color.copy();}; BlockMorph.prototype.backupRender.call(this, ctx);
+}; TemplateSlotMorph.prototype.outlinePath = ReporterBlockMorph.prototype.outlinePathOval;
+TemplateSlotMorph.prototype.cSlots = function () {return [];}; (TemplateSlotMorph.prototype
+).drawEdges = ReporterBlockMorph.prototype.drawEdgesOval; (TemplateSlotMorph.prototype.isRuleHat
+) = function () {return false;}; TemplateSlotMorph.prototype.hasLocationPin = function () {
+return false;}; TemplateSlotMorph.prototype.clearSlots = TemplateSlotMorph.prototype.cSlots;
 
 // TemplateSlotMorph single-stepping
 
