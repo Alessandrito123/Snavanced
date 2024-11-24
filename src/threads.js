@@ -1148,9 +1148,9 @@ this.doRun(context, args);}; if (this.inputOption(choice) === 'launch') {this.fo
 
 // Process introspection
 
-Process.prototype.reportThisContext = function () {var sym = Symbol.for('self'), frame = this.context.variables.silentFind(sym),
-ctx; if (frame) {return copy(frame.vars[sym].value);} else {ctx = (this.topBlock).reify();}; ctx.outerContext = ((this.context
-).outerContext); if (ctx.outerContext) {ctx.variables.parentFrame = ctx.outerContext.variables;}; if (!(this.isAtomic) && (
+Process.prototype.reportThisContext = function () {var sym = Symbol.for('self'), frame = this.context.variables.silentFind(sym
+), ctx; if (frame) {return copy(frame.vars[sym].value);} else {ctx = this.topBlock.reify();}; ctx.outerContext = (this.context
+).outerContext; if (ctx.outerContext) {ctx.variables.parentFrame = ctx.outerContext.variables;}; if (!(this.isAtomic) && (
 applyingToExecuteOrToAcess('selector', this.context.expression.parent) === 'execute')) {this.readyToYield = true;}; return ctx;};
 
 Process.prototype.reportThisCaller = function () {
