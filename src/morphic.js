@@ -366,15 +366,15 @@ function newCanvas(extentPoint, nonRetina, recycleMe) {
             (recycleMe.isRetinaEnabled || false) !== nonRetina &&
             ext.x === recycleMe.width && ext.y === recycleMe.height
     ) {
-        canvas = recycleMe; canvas.getContext("2d").clearRect(0, 0,
+        canvas = recycleMe; canvas.getContext("2d",
+        {willReadFrequently: true}).clearRect(0, 0,
         canvas.width, canvas.height);
     } else {
         canvas = document.createElement(
         'canvas'); canvas.width = ext.x;
         canvas.height = ext.y;
         canvas.getContext("2d", {
-            willReadFrequently: true
-        });
+        willReadFrequently: true});
     };  if (nonRetina && canvas.isRetinaEnabled) {
         canvas.isRetinaEnabled = false;
     };  return canvas;
@@ -387,9 +387,10 @@ function copyCanvas(aCanvas) {
         c = newCanvas(
             new Point(aCanvas.width, aCanvas.height),
             !aCanvas.isRetinaEnabled
-        );  c.getContext("2d").drawImage(aCanvas, 0, 0);
-        return c;
-    };  return aCanvas;
+        );  c.getContext("2d", {
+        willReadFrequently: true}
+        ).drawImage(aCanvas, 0, 0);
+        return c;}; return aCanvas;
 };
 
 function getMinimumFontHeight() {
@@ -552,7 +553,8 @@ function enableRetinaSupport() {
 
     // Get the window's pixel ratio for canvas elements.
     // See: http://www.html5rocks.com/en/tutorials/canvas/hidpi/
-    var ctx = document.createElement("canvas").getContext("2d"),
+    var ctx = document.createElement("canvas").getContext("2d",
+        {willReadFrequently: true}),
         backingStorePixelRatio = ctx.webkitBackingStorePixelRatio ||
             ctx.mozBackingStorePixelRatio ||
             ctx.msBackingStorePixelRatio ||
@@ -649,11 +651,8 @@ function enableRetinaSupport() {
                 var pixelRatio = getPixelRatio(this),
                     context;
                 uber.width.set.call(this, width * pixelRatio);
-                context = this.getContext('2d');
-                /*
-                context.restore();
-                context.save();
-                */
+                context = this.getContext("2d",
+                {willReadFrequently: true});
                 context.scale(pixelRatio, pixelRatio);
             } catch (err) {
                 console.log('Retina Display Support Problem', err);
@@ -670,11 +669,8 @@ function enableRetinaSupport() {
             var pixelRatio = getPixelRatio(this),
                 context;
             uber.height.set.call(this, height * pixelRatio);
-            context = this.getContext('2d');
-            /*
-            context.restore();
-            context.save();
-            */
+            context = this.getContext("2d",
+            {willReadFrequently: true});
             context.scale(pixelRatio, pixelRatio);
         }
     });
@@ -773,7 +769,8 @@ function enableRetinaSupport() {
 }
 
 function isRetinaSupported () {
-    var ctx = document.createElement("canvas").getContext("2d"),
+    var ctx = document.createElement("canvas"
+        ).getContext("2d", {willReadFrequently: true}),
         backingStorePixelRatio = ctx.webkitBackingStorePixelRatio ||
             ctx.mozBackingStorePixelRatio ||
             ctx.msBackingStorePixelRatio ||
@@ -821,7 +818,7 @@ function disableRetinaSupport() {
     // uninstalls Retina utilities. Make sure to re-create every Canvas
     // element afterwards
     var canvasProto, contextProto, uber;
-    if (!isRetinaEnabled()) {return; }
+    if (!isRetinaEnabled()) {return;};
     canvasProto = HTMLCanvasElement.prototype;
     contextProto = CanvasRenderingContext2D.prototype;
     uber = canvasProto._bak;
@@ -840,15 +837,16 @@ function normalizeCanvas(aCanvas, getCopy) {
     // make sure aCanvas is non-retina, otherwise convert it in place (!)
     // or answer a normalized copy if the "getCopy" flag is <true>
     var cpy;
-    if (!aCanvas.isRetinaEnabled) {return aCanvas; }
+    if (!aCanvas.isRetinaEnabled) {return aCanvas;};
     cpy = newCanvas(new Point(aCanvas.width, aCanvas.height), true);
-    cpy.getContext('2d').drawImage(aCanvas, 0, 0);
+    cpy.getContext("2d", {willReadFrequently: true
+    }).drawImage(aCanvas, 0, 0);
     if (getCopy) {return cpy; }
     aCanvas.isRetinaEnabled = false;
     aCanvas.width = cpy.width;
     aCanvas.height = cpy.height;
-    aCanvas.getContext('2d').drawImage(cpy, 0, 0);
-    return aCanvas;
+    aCanvas.getContext("2d", {willReadFrequently: true
+    }).drawImage(cpy, 0, 0); return aCanvas;
 };  enableRetinaSupport();
 
 // Animations //////////////////////////////////////////////////////////////
@@ -2262,9 +2260,10 @@ Morph.prototype.getImage = function () {var img; if (
 this.cachedImage);}; img = newCanvas(this.extent(),
 false, this.cachedImage); (img.imageSmoothingEnabled
 ) = false; if (this.isCachingImage) {(this.cachedImage
-) = img;}; this.render(img.getContext('2d')); (this
-).shouldRerender = false; return img;}; (Morph.prototype
-).render = function (aContext) {aContext.fillStyle = (
+) = img;}; this.render(img.getContext("2d", {
+willReadFrequently: true})); (this.shouldRerender
+) = false; return img;}; (Morph.prototype.render
+) = function (aContext) {aContext.fillStyle = (
 this.getRenderColor()).toString(); aContext.fillRect(0,
 0, this.width(), this.height()); if (this.cachedTexture
 ) {this.renderCachedTexture(aContext);} else if (
@@ -2338,7 +2337,8 @@ this.cachedImage && !this.shouldRerender) {return (this
 ).cachedImage;}; img = newCanvas(this.integerExtent(),
 false, this.cachedImage); img.imageSmoothingEnabled = (
 false); if (this.isCachingImage) {this.cachedImage = img;
-}; var ctx = img.getContext('2d'); if (this.isHighContrast
+}; var ctx = img.getContext("2d", {
+willReadFrequently: true}); if (this.isHighContrast
 ) {ctx.filter = "contrast(2)";}; this.backupRender(
 ctx); this.shouldRerender = false; return img;};
 
@@ -2388,23 +2388,25 @@ this.isVisible) {this.hide();} else {this.show();};};
 
 Morph.prototype.fullImage = function () {
 var fb = this.fullBounds(), img = newCanvas(
-fb.extent()), ctx = img.getContext('2d');
-ctx.translate(-fb.origin.x, -fb.origin.y);
-this.fullDrawOn(ctx, fb); return img;};
+fb.extent()), ctx = img.getContext("2d", {
+willReadFrequently: true}); ctx.translate(
+-fb.origin.x, -fb.origin.y); (this
+).fullDrawOn(ctx, fb); return img;};
 
 Morph.prototype.recordBodyImage = function () {
 var fb = this.fullBounds(), img = newCanvas(
-fb.extent()), ctx = img.getContext('2d');
-ctx.translate(-fb.origin.x, -fb.origin.y);
-this.recordDrawOn(ctx, fb); return img;};
+fb.extent()), ctx = img.getContext("2d", {
+willReadFrequently: true}); ctx.translate(
+-fb.origin.x, -fb.origin.y); (this
+).recordDrawOn(ctx, fb); return img;};
 
 // Morph screenshot:
 
 Morph.prototype.screenshot = function () {var aWorld = (world || this.world()); if (aWorld.currentKey === 16) {var canvas = this.fullImage(
-); IDE_Morph.prototype.saveFileAs(canvas.toDataURL(), 'image/png', 'screenshot');} else {this.nextSteps([(function () {this.rerender();
-}), (function () {var canvas = newCanvas(this.bounds.extent()); var ctx = canvas.getContext('2d'); var width = this.bounds.width();
-var height = this.bounds.height(); var i = 0; while (i < (width * height)) {ctx.fillStyle = aWorld.getGlobalPixelColor(new Point(
-((i % width) + this.bounds.origin.x), (Math.floor(i / width) + this.bounds.origin.y))).toString(); ctx.fillRect((i % width),
+); IDE_Morph.prototype.saveFileAs(canvas.toDataURL(), 'image/png', 'screenshot');} else {this.nextSteps([(function () {this.rerender();}),
+(function () {var canvas = newCanvas(this.bounds.extent()); var ctx = canvas.getContext("2d", {willReadFrequently: true}); var width = (
+this.bounds.width()); var height = this.bounds.height(); var i = 0; while (i < (width * height)) {ctx.fillStyle = aWorld.getGlobalPixelColor(
+new Point(((i % width) + this.bounds.origin.x), (Math.floor(i / width) + this.bounds.origin.y))).toString(); ctx.fillRect((i % width),
 Math.floor(i / width), 1, 1); i++;}; IDE_Morph.prototype.saveFileAs(canvas.toDataURL(), 'image/png', 'screenshot');})]);};};
 
 // Morph shadow:
@@ -2421,7 +2423,8 @@ Morph.prototype.shadowImage = function (off, color) {
         fb = this.extent();
         img = this.getImage();
     };  outline = newCanvas(fb);
-    ctx = outline.getContext('2d');
+    ctx = outline.getContext("2d",
+    {willReadFrequently: true});
     ctx.drawImage(img, 0, 0);
     ctx.globalCompositeOperation = 'destination-out';
     ctx.drawImage(
@@ -2429,7 +2432,8 @@ Morph.prototype.shadowImage = function (off, color) {
         -offset.x,
         -offset.y
     );  sha = newCanvas(fb);
-    ctx = sha.getContext('2d');
+    ctx = sha.getContext("2d",
+    {willReadFrequently: true});
     ctx.drawImage(outline, 0, 0);
     ctx.globalCompositeOperation = 'source-atop';
     ctx.fillStyle = clr.toString();
@@ -2450,7 +2454,8 @@ Morph.prototype.shadowImageBlurred = function (off, color) {
         fb = this.extent().add(blur * 2);
         img = this.getImage();
     };  sha = newCanvas(fb);
-    ctx = sha.getContext('2d');
+    ctx = sha.getContext("2d",
+    {willReadFrequently: true});
     ctx.shadowOffsetX = offset.x;
     ctx.shadowOffsetY = offset.y;
     ctx.shadowBlur = blur;
@@ -2624,17 +2629,19 @@ Morph.prototype.overlappedMorphs = function () {
 // Morph pixel access:
 
 Morph.prototype.getPixelColor = function (aPoint) {
-try {var point = aPoint.subtract(this.bounds.origin),
-context = this.getImage().getContext('2d'), data = (
-context.getImageData(point.x, point.y, 1, 1).data
-); return new Color(data[0], data[1], data[2],
+try {var point = aPoint.subtract(this.bounds.origin
+), context = this.getImage().getContext("2d",
+{willReadFrequently: true}), data = ((context
+).getImageData(point.x, point.y, 1, 1).data);
+return new Color(data[0], data[1], data[2],
 (data[3] / 255));} catch {return BLACK;};};
 
 Morph.prototype.isTransparentAt = function (aPoint) {
 var point, context, data; if (this.bounds.containsPoint(
 aPoint)) {if (this.texture) {return false;}; point = (
-aPoint.subtract(this.bounds.origin)); context = (
-this.getImage()).getContext('2d'); data = (context
+aPoint.subtract(this.bounds.origin));
+context = (this.getImage()).getContext("2d", {
+willReadFrequently: true}); data = (context
 ).getImageData(Math.floor(point.x), Math.floor((point
 ).y), 1, 1); return data.data[3] === 0;}; return false;};
 
@@ -3352,13 +3359,17 @@ Morph.prototype.overlappingPixels = function (otherMorph) {
         thisImg = normalizeCanvas(thisImg, true);
         thatImg = normalizeCanvas(thatImg, true);
     }; return [
-        thisImg.getContext("2d").getImageData(
+        thisImg.getContext("2d",
+            {willReadFrequently: true}
+            ).getImageData(
             oRect.left() - this.left(),
             oRect.top() - this.top(),
             oRect.width(),
             oRect.height()
         ).data,
-        thatImg.getContext("2d").getImageData(
+        thatImg.getContext("2d",
+            {willReadFrequently: true}
+            ).getImageData(
             oRect.left() - otherMorph.left(),
             oRect.top() - otherMorph.top(),
             oRect.width(),
@@ -3419,19 +3430,18 @@ pipetteButton.children[0].bounds.origin = new Point(108.5, 73.5); pipetteButton.
 new Point((pipetteButton.children[0].bounds.origin.x + 16), (pipetteButton.children[0].bounds.origin.y + 16));
 pipetteButton.bounds.origin = new Point(104.5, 70); pipetteButton.bounds.corner = new Point(
 (pipetteButton.bounds.origin.x + 24), (pipetteButton.bounds.origin.y + 24)); pipetteButton.action =
-function () {var myself = targetMorph, hand = world.hand, posInDocument = getDocumentPositionOf(
-world.worldCanvas), mouseMoveBak = hand.processMouseMove, mouseDownBak = hand.processMouseDown,
-mouseUpBak = hand.processMouseUp; hand.processMouseMove = function (event) {var pos = hand.position(),
-clr = Morph.prototype.fullImage.call(world).getContext('2d').getImageData(pos.x, pos.y, 1, 1).data;
-clr = new Color(clr[0], clr[1], clr[2]); hand.setPosition(new Point(event.pageX - posInDocument.x,
-event.pageY - posInDocument.y)); if (!clr.a) {return;}; myself.color = clr; myself.rerender();
-result.color = myself.color; rSlider.value = myself.color.r; gSlider.value = myself.color.g;
-bSlider.value = myself.color.b; aSlider.value = myself.color.a * 100; rSlider.action(); gSlider.action();
-bSlider.action(); aSlider.action(aSlider.value); result.fixLayout(); editor.fixLayout(); dialog.fixLayout();};
-hand.processMouseDown = nop; hand.processMouseUp = function () {hand.processMouseMove = mouseMoveBak;
-hand.processMouseDown = mouseDownBak; hand.processMouseUp = mouseUpBak;};}; pipetteButton.hint =
-'Select any color\nwith your\nmouse\'s movement.\nCheck it out!'; editor.add(pipetteButton);
-var settingsButton = new PushButtonMorph; settingsButton.children.pop(); settingsButton.add(
+function () {var myself = targetMorph, hand = world.hand, posInDocument = getDocumentPositionOf(world.worldCanvas
+), mouseMoveBak = hand.processMouseMove, mouseDownBak = hand.processMouseDown, mouseUpBak = hand.processMouseUp;
+hand.processMouseMove = function (event) {var pos = hand.position(), clr = Morph.prototype.fullImage.call(world
+).getContext("2d", {willReadFrequently: true}).getImageData(pos.x, pos.y, 1, 1).data; clr = new Color(clr[0],
+clr[1], clr[2]); hand.setPosition(new Point(event.pageX - posInDocument.x, event.pageY - posInDocument.y)); if (
+!clr.a) {return;}; myself.color = clr; myself.rerender(); result.color = myself.color; rSlider.value = (myself
+).color.r; gSlider.value = myself.color.g; bSlider.value = myself.color.b; aSlider.value = myself.color.a * 100;
+rSlider.action(); gSlider.action(); bSlider.action(); aSlider.action(aSlider.value); result.fixLayout(); (editor
+).fixLayout(); dialog.fixLayout();}; hand.processMouseDown = nop; hand.processMouseUp = function () {(hand
+).processMouseMove = mouseMoveBak; hand.processMouseDown = mouseDownBak; hand.processMouseUp = mouseUpBak;};};
+pipetteButton.hint = 'Select any color\nwith your\nmouse\'s movement.\nCheck it out!'; editor.add(pipetteButton
+); var settingsButton = new PushButtonMorph; settingsButton.children.pop(); settingsButton.add(
 new SymbolMorph('gearBig', 16)); settingsButton.children[0].bounds.origin = new Point(137, 73.5);
 settingsButton.children[0].bounds.corner = new Point((settingsButton.children[0].bounds.origin.x + 16),
 (settingsButton.children[0].bounds.origin.y + 16)); settingsButton.bounds.origin = new Point(133, 70);
@@ -4012,10 +4022,11 @@ this, name); dial = new DialMorph(this.heading); dial.rootForGrab = (() => dial)
 // PenMorph drawing:
 
 PenMorph.prototype.drawLine = function (start, dest) {
-var context = this.parent.penTrails().getContext('2d'),
-from = start.subtract(this.parent.bounds.origin), to = (
-dest.subtract(this.parent.bounds.origin)); if (this.isDown
-) {context.lineWidth = this.size; context.strokeStyle = (
+var context = this.parent.penTrails().getContext("2d",
+{willReadFrequently: true}), from = start.subtract(
+this.parent.bounds.origin), to = dest.subtract(
+this.parent.bounds.origin); if (this.isDown) {(context
+).lineWidth = this.size; context.strokeStyle = (
 this.color).toString(); context.lineCap = 'round';
 context.lineJoin = 'round'; context.beginPath();
 context.moveTo(from.x, from.y); context.lineTo(
@@ -5193,7 +5204,8 @@ SpeechBubbleMorph.prototype.shadowImage = function (off, color) {
     fb = this.extent();
     img = this.getImage();
     outline = newCanvas(fb);
-    ctx = outline.getContext('2d');
+    ctx = outline.getContext("2d",
+    {willReadFrequently: true});
     ctx.drawImage(img, 0, 0);
     ctx.globalCompositeOperation = 'destination-out';
     ctx.drawImage(
@@ -5202,7 +5214,8 @@ SpeechBubbleMorph.prototype.shadowImage = function (off, color) {
         -offset.y
     );
     sha = newCanvas(fb);
-    ctx = sha.getContext('2d');
+    ctx = sha.getContext("2d",
+    {willReadFrequently: true});
     ctx.drawImage(outline, 0, 0);
     ctx.globalCompositeOperation = 'source-atop';
     ctx.fillStyle = clr.toString();
@@ -5218,7 +5231,8 @@ SpeechBubbleMorph.prototype.shadowImageBlurred = function (off, color) {
     fb = this.extent().add(blur * 2);
     img = this.getImage();
     sha = newCanvas(fb);
-    ctx = sha.getContext('2d');
+    ctx = sha.getContext("2d",
+    {willReadFrequently: true});
     ctx.shadowOffsetX = offset.x;
     ctx.shadowOffsetY = offset.y;
     ctx.shadowBlur = blur;
@@ -7049,7 +7063,8 @@ StringMorph.uber = Morph.prototype;
 // StringMorph shared properties:
 
 // context for measuring text dimensions, used by StringMorphs and TextMorphs
-StringMorph.prototype.measureCtx = newCanvas().getContext("2d");
+StringMorph.prototype.measureCtx = (newCanvas()
+).getContext("2d", {willReadFrequently: true});
 
 // StringMorph instance creation:
 
@@ -10189,11 +10204,10 @@ HandMorph.prototype.processDrop = function (event) {
         }
         pic.onload = () => {
             canvas = newCanvas(new Point(pic.width, pic.height), true);
-            canvas.getContext('2d').drawImage(pic, 0, 0);
-            trg.droppedImage(canvas, aFile.name);
-            bulkDrop();
+            canvas.getContext("2d", {willReadFrequently: true}).drawImage(
+            pic, 0, 0); trg.droppedImage(canvas, aFile.name); bulkDrop();
         };
-        frd = new FileReader();
+        frd = new FileReader;
         frd.onloadend = (e) => pic.src = e.target.result;
         frd.readAsDataURL(aFile);
     }
@@ -10332,9 +10346,9 @@ HandMorph.prototype.processDrop = function (event) {
             }
             img = new Image();
             img.onload = () => {
-                canvas = newCanvas(new Point(img.width, img.height), true);
-                canvas.getContext('2d').drawImage(img, 0, 0);
-                target.droppedImage(canvas);
+                canvas = newCanvas(new Point(img.width, img.height), true
+                ); canvas.getContext("2d", {willReadFrequently: true}
+                ).drawImage(img, 0, 0); target.droppedImage(canvas);
             };
             img.src = url;
         } else if (suffix === 'svg' && !MorphicPreferences.rasterizeSVGs) {
@@ -10366,9 +10380,9 @@ HandMorph.prototype.processDrop = function (event) {
         img = new Image();
         img.onload = () => {
             canvas = newCanvas(new Point(img.width, img.height),
-            true); canvas.getContext('2d').drawImage(img, 0, 0);
-            target.droppedImage(canvas);}; src = parseImgURL(
-            txt); if (src) {img.src = src;};
+            true); canvas.getContext("2d", {willReadFrequently: true
+            }).drawImage(img, 0, 0); target.droppedImage(canvas);};
+            src = parseImgURL(txt); if (src) {img.src = src;};
     };
 };
 
@@ -10457,7 +10471,8 @@ WorldMorph.prototype.fullDrawOn = function (aContext, aRect
 ); this.hand.fullDrawOn(aContext, aRect);};
 
 WorldMorph.prototype.updateBroken = function () {
-    var ctx = this.worldCanvas.getContext('2d');
+    var ctx = this.worldCanvas.getContext("2d",
+    {willReadFrequently: true});
     this.condenseDamages();
     this.broken.forEach(rect => {
         if (rect.extent().gt(ZERO)) {
@@ -10573,9 +10588,10 @@ WorldMorph.prototype.fillPage = function () {
 // WorldMorph global pixel access:
 
 WorldMorph.prototype.getGlobalPixelColor = function (point) {try {
-var dta = (((Morph.prototype.fullImage.call(this)).getContext('2d'
-)).getImageData(point.x, point.y, 1, 1)).data; return (new Color(
-dta[0], dta[1], dta[2], 1));} catch {return BLACK;};}; // Done!
+var dta = (((Morph.prototype.fullImage.call(this)).getContext("2d",
+{willReadFrequently: true})).getImageData(point.x, point.y, 1, 1)
+).data; return (new Color(dta[0], dta[1], dta[2], 1));} catch (
+error) {return BLACK;};}; /* Getting pixel's color with GPU. */
 
 // WorldMorph messages:
 

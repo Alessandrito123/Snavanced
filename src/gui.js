@@ -506,7 +506,7 @@ IDE_Morph.prototype.setLightDesign = function () {
         = IDE_Morph.prototype.buttonLabelColor;
 
     IDE_Morph.prototype.flagColor = new Color(0, 128, 0);
-    SyntaxElementMorph.prototype.contrast = 25;
+    SyntaxElementMorph.prototype.contrast = 65;
     ScriptsMorph.prototype.feedbackColor = WHITE;
     if (this.fpsViewer instanceof IDE_FPSMorph) {
     this.fpsViewer.color = IDE_Morph.prototype.buttonLabelColor;
@@ -559,7 +559,7 @@ IDE_Morph.prototype.setTurboDesign = function () {
         = IDE_Morph.prototype.buttonLabelColor;
 
     IDE_Morph.prototype.flagColor = new Color(0, 128, 0);
-    SyntaxElementMorph.prototype.contrast = 25;
+    SyntaxElementMorph.prototype.contrast = 65;
     ScriptsMorph.prototype.feedbackColor = WHITE;
     if (this.fpsViewer instanceof IDE_FPSMorph) {
     this.fpsViewer.color = IDE_Morph.prototype.buttonLabelColor;
@@ -612,7 +612,7 @@ IDE_Morph.prototype.setScratchyDesign = function () {
         = IDE_Morph.prototype.buttonLabelColor;
 
     IDE_Morph.prototype.flagColor = new Color(0, 128, 0);
-    SyntaxElementMorph.prototype.contrast = 25;
+    SyntaxElementMorph.prototype.contrast = 65;
     ScriptsMorph.prototype.feedbackColor = WHITE;
     if (this.fpsViewer instanceof IDE_FPSMorph) {
     this.fpsViewer.color = IDE_Morph.prototype.buttonLabelColor;
@@ -666,7 +666,7 @@ IDE_Morph.prototype.setAnimatedDesign = function () {
         = IDE_Morph.prototype.buttonLabelColor;
 
     IDE_Morph.prototype.flagColor = new Color(255, 128, 0);
-    SyntaxElementMorph.prototype.contrast = 25;
+    SyntaxElementMorph.prototype.contrast = 65;
     ScriptsMorph.prototype.feedbackColor = WHITE;
     if (this.fpsViewer instanceof IDE_FPSMorph) {
     this.fpsViewer.color = IDE_Morph.prototype.buttonLabelColor;
@@ -720,7 +720,7 @@ IDE_Morph.prototype.setPenguinDesign = function () {
         = IDE_Morph.prototype.buttonLabelColor;
 
     IDE_Morph.prototype.flagColor = new Color(0, 153, 255);
-    SyntaxElementMorph.prototype.contrast = 25;
+    SyntaxElementMorph.prototype.contrast = 65;
     ScriptsMorph.prototype.feedbackColor = WHITE;
     if (this.fpsViewer instanceof IDE_FPSMorph) {
     this.fpsViewer.color = IDE_Morph.prototype.buttonLabelColor;

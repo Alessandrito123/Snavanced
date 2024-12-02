@@ -5156,7 +5156,7 @@ BlockMorph.prototype.drawRuleIcon = function (ctx) {
             this.color === SpriteMorph.prototype.blockColorFor(this.category);
     ctx.lineWidth = l;
     // ctx.strokeStyle = color.toString();
-    ctx.strokeStyle = isNormal ? this.cachedClrBright : this.cachedClrDark;
+    ctx.strokeStyle = (isNormal ? this.bright() : this.dark());
     // left arc
     ctx.beginPath();
     ctx.arc(x + r, y + r, r - l / 2, radians(60), radians(360), false);
@@ -6598,7 +6598,8 @@ ReporterBlockMorph.prototype.prepareToBeGrabbed = function (handMorph) {
 
 ReporterBlockMorph.prototype.isUnevaluated = function () {var spec = this.getSlotSpec(); return contains(['%anyUE', '%numericUE', '%textingUE', '%linesUE', '%codeUE', '%boolUE', '%bUE'], spec);};
 
-ReporterBlockMorph.prototype.isLocked = function () {return this.isStatic || (this.getSlotSpec() === '%t');};
+ReporterBlockMorph.prototype.isLocked = function () {return (
+this.isStatic || (this.getSlotSpec() === '%t'));};
 
 ReporterBlockMorph.prototype.getSlotSpec = function () {
     // answer the spec of the slot I'm in, if any
@@ -10530,7 +10531,7 @@ TemplateSlotMorph.uber.init.call(this); this.add(template); this.fixLayout(); th
 
 // TemplateSlotMorph accessing:
 
-TemplateSlotMorph.prototype.getSpec = (() => '%t'); TemplateSlotMorph.prototype.template = function () {
+TemplateSlotMorph.prototype.getSpec = function () {return '%t';}; TemplateSlotMorph.prototype.template = function () {
 return this.children[0];}; TemplateSlotMorph.prototype.contents = function () {return (this.template()).blockSpec;};
 
 TemplateSlotMorph.prototype.setContents = function (aString) {var tmp = this.template(); tmp.setSpec((
