@@ -2362,7 +2362,8 @@ IDE_Morph.prototype.createSpriteBar = function () {
     ).setColor(this.buttonLabelColor
     ); padlock.color = tabColors[2];
     padlock.highlightColor = tabColors[
-    0]; padlock.pressColor = tabColors[1];
+    0]; padlock.pressColor = tabColors[
+    1]; padlock.label.fixLayout();
 
     padlock.tick.shadowOffset = ((
     MorphicPreferences).isFlat ? (
@@ -2402,11 +2403,11 @@ IDE_Morph.prototype.createSpriteBar = function () {
 
     tab.getPressRenderColor = function () {
         if (MorphicPreferences.isFlat ||
-                SyntaxElementMorph.prototype.alpha > 0.85) {
+                SyntaxElementMorph.prototype.alpha > 17/20) {
             return this.pressColor;
         }
         return this.pressColor.mixed(
-            Math.max(SyntaxElementMorph.prototype.alpha - 0.15, 0),
+            Math.max(SyntaxElementMorph.prototype.alpha - 3/20, 0),
             SpriteMorph.prototype.paletteColor
         );
     };
@@ -2418,8 +2419,8 @@ IDE_Morph.prototype.createSpriteBar = function () {
         tabColors,
         null, // target
         () => tabBar.tabTo('costumes'),
-        localize(this.currentSprite instanceof SpriteMorph ?
-            'Costumes' : 'Backgrounds'
+        localize(this.currentSprite instanceof StageMorph ?
+            'Backgrounds' : 'Costumes'
         ),
         () => this.currentTab === 'costumes' // query
     );

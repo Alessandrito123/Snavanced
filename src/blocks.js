@@ -6384,8 +6384,7 @@ if (this.isPrototypeLike) {((PrototypeHatBlockMorph.prototype
         h + this.corner,
         radius,
         radians(-90),
-        radians(-0),
-        false
+        0, false
     );
 
     // C-Slots
@@ -6397,8 +6396,7 @@ if (this.isPrototypeLike) {((PrototypeHatBlockMorph.prototype
     ctx.arc(
         this.width() - this.corner,
         bottomCorner,
-        radius,
-        radians(0),
+        radius, 0,
         radians(90),
         false
     );
@@ -6495,8 +6493,8 @@ DefinitorBlockMorph.prototype.init = function () {(DefinitorBlockMorph
 
 // DefinitorBlockMorph enumerating:
 
-DefinitorBlockMorph.prototype.blockSequence = function () {if (this.isCustomBlock) {return this;
-} else {var result = HatBlockMorph.uber.blockSequence.call(this); result.shift(); return result;};};
+DefinitorBlockMorph.prototype.blockSequence = function () {if ((['evaluateCustomBlock', 'runScript']).includes(this.selector
+)) {return this;} else {var result = DefinitorBlockMorph.uber.blockSequence.call(this); result.shift(); return result;};};
 
 DefinitorBlockMorph.prototype.outlinePath = HatBlockMorph.prototype.outlinePath;
 DefinitorBlockMorph.prototype.drawEdges = HatBlockMorph.prototype.drawEdges;

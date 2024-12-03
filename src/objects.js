@@ -975,11 +975,6 @@ SpriteMorph.prototype.initBlocks = function () {
             category: 'control',
             spec: 'compile fast %cl'
         },
-        durationOf: {
-            type: 'reporter',
-            category: 'control',
-            spec: 'duration %c'
-        },
 
         // Message passing
         doTellTo: {
@@ -1203,6 +1198,11 @@ SpriteMorph.prototype.initBlocks = function () {
             category: 'sensing',
             spec: '%asp at %loc',
             defaults: [['hue'], ['mouse-pointer']]
+        },
+        durationOf: {
+            type: 'reporter',
+            category: 'sensing',
+            spec: 'duration %c'
         },
         reportStackSize: {
             type: 'reporter',
@@ -3265,8 +3265,6 @@ category = 'other', all = false) {var blocks = [], myself = this, varNames, inhe
         blocks.push(block('doPauseThread'));
         blocks.push(block('reportInPause'));
         blocks.push('-');
-        blocks.push(block('durationOf'));
-        blocks.push('-');
         blocks.push(this.subCategoryText('Errors'));
         blocks.push('-');
         blocks.push(block('tryCatch'));
@@ -3387,6 +3385,8 @@ category = 'other', all = false) {var blocks = [], myself = this, varNames, inhe
         blocks.push(block('reportStackSize'));
         blocks.push(block('reportFrameCount'));
         blocks.push(block('reportYieldCount'));
+        blocks.push('-');
+        blocks.push(block('durationOf'));
 
     } else if (category === 'operators') {
 

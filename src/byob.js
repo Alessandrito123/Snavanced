@@ -737,15 +737,19 @@ CustomCommandBlockMorph.prototype.refreshPrototype = function () {
 
     // update the prototype's type
     // and possibly exchange 'this' for 'myself'
-    if (this instanceof CustomCommandBlockMorph
-            && ((hat.type === 'reporter') || (hat.type === 'predicate'))) {
-        myself = new CustomReporterBlockMorph(
-            this.definition,
-            hat.type === 'predicate',
-            true,
-            hat.type === 'arrow'
-        );
-        hat.replaceInput(this, myself);
+    if (this instanceof CustomCommandBlockMorph && hat.type !== 'command') {
+        if (['reporter', 'predicate'].includes(hat.type)) {
+            myself = new CustomReporterBlockMorph(
+                this.definition,
+                hat.type === 'predicate',
+                true
+            );
+        } else if (hat.type === 'definitor') {
+            myself = new CustomDefinitorBlockMorph(
+                this.definition,
+                true
+            );
+        };  hat.replaceInput(this, myself);
     } else if (this instanceof CustomReporterBlockMorph) {
         if (hat.type === 'command') {
             myself = new CustomCommandBlockMorph(
@@ -753,12 +757,34 @@ CustomCommandBlockMorph.prototype.refreshPrototype = function () {
                 true
             );
             hat.replaceInput(this, myself);
-        } else {
+        } else if (hat.type === 'definitor') {
+            myself = new CustomDefinitorBlockMorph(
+                this.definition,
+                true
+            );
+            hat.replaceInput(this, myself);
+        } else if (this.isPredicate !== (hat.type === 'predicate')) {
             this.isPredicate = (hat.type === 'predicate');
             this.fixLayout();
             this.rerender();
         }
+    } else if (this instanceof CustomDefinitorBlockMorph && hat.type !== 'definitor') {
+        if (hat.type === 'command') {
+            myself = new CustomCommandBlockMorph(
+                this.definition,
+                true
+            );
+        } else if (['reporter', 'predicate'].includes(hat.type)) {
+            myself = new CustomReporterBlockMorph(
+                this.definition,
+                hat.type === 'predicate',
+                true
+            );
+        }
+        hat.replaceInput(this, myself);
     }
+
+    // update the (new) prototype's category & color
     myself.setCategory(hat.blockCategory || 'other');
     hat.fixBlockColor();
 
