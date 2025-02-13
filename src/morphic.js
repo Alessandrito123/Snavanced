@@ -301,15 +301,15 @@
 */  // Global Functions ////////////////////////////////////////////////
 
 var getText = (text, data) => (((typeof text) === 'function') ? text.call(data) : text), asAnArray = ((input) => ((input instanceof Array) ? input : [input])), asANum = ((input) => {return (contains(['number',
-'string', 'boolean'], (typeof input)) ? (isNaN(+input) ? 0 : +input) : (isNil(input) ? 0 : input.isComplex ? new ComplexNumber(+input, +(input.i)) : (input.isAlphanumerical ? +input : 0)));}); function asABool (
-input) {if (isNil(input)) {return false;} else {return ((asANum(input) > 0) ? true : (input === 'true'));};}; function nop () {return null;}; function localize (string) {return string;}; function contains (list,
-element) {return ((list instanceof Array) ? (list.indexOf(element) > -1) : false);}; function detect (list, predicate) {var i, size = list.length; for (i = 0; i < size; i += 1) {if (predicate.call(null, list[i
-])) {return list[i];};}; return null;}; function sizeOf (object) {var size = 0, key; for (key in object) {if (Object.prototype.hasOwnProperty.call(object, key)) {size += 1;};}; return size;}; var isString = (
-target => (((typeof target) === 'string') || (target instanceof String))), isObject = (target => ((target !== null) && (typeof target === 'object' || target instanceof Object))), radians = (degrees => ((degrees
-) * (Math.PI / 180))), degrees = (radians => (radians * (180 / Math.PI))), fontHeight = (height => (Math.max(height, MorphicPreferences.minimumFontHeight) * 6/5)), isWordChar = (aCharacter => (aCharacter.match(
-/[A-zÀ-ÿ0-9]/))), isURLChar = (aCharacter => aCharacter.match(/[A-z0-9./:?&_+%-]/)), isURL = (text => (/^https?:\/\//.test(text))); if (isNil(localStorage['-snap-setting-isShowingBlanks'])) {localStorage[
-'-snap-setting-isShowingBlanks'] = true;}; function extraContains (list, element) {if (element instanceof Array) {var result = element.deepMap(item => contains(list, item)), i = 0; while (i < (result.length
-)) {if (result[i]) {return true;}; i++;}; return false;} else {return contains(list, element);};}; /* Morphic has now better and newer improvements to try within the world. */
+'string', 'boolean'], (typeof input)) ? (isNaN(+input) ? Number.parseFloat(input) : +input) : (isNil(input) ? 0 : input.isComplex ? new ComplexNumber(+input, +(input.i)) : (input.isAlphanumerical ? +input : (
+Number.parseFloat(input)))));}); function asABool (input) {if (isNil(input)) {return false;} else {return ((asANum(input) > 0) ? true : (input === 'true'));};}; function nop () {return null;}; function localize (
+string) {return string;}; function contains (list, element) {return ((list instanceof Array) ? (list.indexOf(element) > -1) : false);}; function detect (list, predicate) {var i, size = list.length; for (i = 0;
+i < size; i += 1) {if (predicate.call(null, list[i])) {return list[i];};}; return null;}; function sizeOf (object) {var size = 0, key; for (key in object) {if (Object.prototype.hasOwnProperty.call(object, key
+)) {size += 1;};}; return size;}; var isString = (target => (((typeof target) === 'string') || (target instanceof String))), isObject = (target => ((target !== null) && (typeof target === 'object' || (target
+) instanceof Object))), radians = (degrees => ((degrees) * (Math.PI / 180))), degrees = (radians => (radians * (180 / Math.PI))), fontHeight = (height => (Math.max(height, MorphicPreferences.minimumFontHeight
+) * 6/5)), isWordChar = (aCharacter => (aCharacter.match(/[A-zÀ-ÿ0-9]/))), isURLChar = (aCharacter => aCharacter.match(/[A-z0-9./:?&_+%-]/)), isURL = (text => (/^https?:\/\//.test(text))); if (isNil(localStorage[
+'-snap-setting-isShowingBlanks'])) {localStorage['-snap-setting-isShowingBlanks'] = true;}; function extraContains (list, element) {if (element instanceof Array) {var result = element.deepMap(item => contains(
+list, item)), i = 0; while (i < (result.length)) {if (result[i]) {return true;}; i++;}; return false;} else {return contains(list, element);};}; /* Morphic has now better and newer improvements to try in it. */
 
 var standardSettings = {
     minimumFontHeight: getMinimumFontHeight(),
@@ -1351,7 +1351,7 @@ Point.prototype.theta = function () {
     if (this.x === 0) {
         if (this.y >= 0) {
             return (Math.PI / 2);
-        };  return (Math.PI * 1.5
+        };  return (Math.PI * 3/2
     );};    tan = this.y / this.x;
     theta = Math.atan(tan);
     if (this.x >= 0) {

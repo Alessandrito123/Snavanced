@@ -1216,17 +1216,15 @@ SyntaxElementMorph.prototype.labelParts = {
         kind: 'unknown'
     },
     '%cmdRing': {
-        type: 'ring',
+        type: 'block',
         selector: 'reifyScript'
     },
     '%repRing': {
-        type: 'ring',
-        tags: 'static',
+        type: 'block',
         selector: 'reifyReporter'
     },
     '%predRing': {
-        type: 'ring',
-        tags: 'static',
+        type: 'block',
         selector: 'reifyPredicate'
     },
 
@@ -1286,27 +1284,86 @@ SyntaxElementMorph.prototype.labelParts = {
         tags: 'fading'
     },
 
-    '%jsMiscellaneousName': {
-        type: 'input',
-        tags: 'static'
+    // javascript
+
+    '%jsAwaitHideout': {
+        type: 'labelString',
+        oldText: '',
+        newText: 'await'
     },
-    '%jsComment': {
-        type: 'textEntry',
-        tags: 'static'
+    '%jsParethesesStatement': {
+        type: 'block',
+        selector: 'jsParethesesStatement'
     },
-    '%commaParms': {
-        type: 'multi',
-        slots: '%t',
-        infix: ','
+    '%jsBlockBracesStatement1': {
+        type: 'block',
+        selector: 'jsBlockBracesStatement1'
     },
-    '%extraGroup': {
+    '%jsBlockBracesStatement2': {
+        type: 'block',
+        selector: 'jsBlockBracesStatement2'
+    },
+    '%jsBreakChanging': {
+        type: 'labelString',
+        oldText: 'break',
+        newText: 'continue'
+    },
+    '%jsReporterHideout': {
         type: 'multi',
         tags: 'static',
         slots: '%rr',
-        label: '\)\(',
         max: 1
     },
-    '%a': {
+    '%jsCaseOrDefault': {
+        type: 'multi',
+        tags: 'static',
+        slots: '%n',
+        dflt: [0],
+        label: 'case',
+        collapse: 'default',
+        defaults: 1,
+        max: 1
+    },
+    '%jsReturnChanging': {
+        type: 'labelString',
+        oldText: 'return',
+        newText: 'throw'
+    },
+    '%jsNullChanging': {
+        type: 'labelString',
+        oldText: 'null',
+        newText: 'undefined'
+    },
+    '%jsInputHideout': {
+        type: 'multi',
+        tags: 'static',
+        slots: '%n',
+        dflt: [0],
+        max: 1
+    },
+    '%jsArrayPrimitive': {
+        type: 'block',
+        selector: 'jsArrayPrimitive',
+    },
+    '%jsComparatorsMenu': {
+        type: 'input',
+        tags: 'read-only static',
+        menu: {
+            '==': ['=='],
+            '===': ['==='],
+            '!=': ['!='],
+            '!==': ['!=='],
+            '>': ['>'],
+            '>=': ['>='],
+            '<': ['<'],
+            '<=': ['<='],
+            '&&': ['&&'],
+            '||': ['||'],
+            '===': ['==='],
+            '!=': ['!='],
+        }
+    },
+    '%jsVariableMenu': {
         type: 'input',
         tags: 'read-only static',
         menu: {
@@ -1314,6 +1371,105 @@ SyntaxElementMorph.prototype.labelParts = {
             'let': ['let'],
             'const': ['const']
         }
+    },
+    '%jsVariadicInputsSyntax': {
+        type: 'block',
+        tags: 'static',
+        selector: 'jsVariadicInputsSyntax'
+    },
+    '%jsVariadicProperties': {
+        type: 'multi',
+        tags: 'static',
+        infix: ',',
+        slots: '%jsVariableSetter',
+        min: 1
+    },
+    '%jsVariadicParameters': {
+        type: 'multi',
+        tags: 'static',
+        slots: '%jsVariableSetter',
+        infix: ','
+    },
+    '%jsVariadicAttributes': {
+        type: 'multi',
+        tags: 'static',
+        slots: '%jsPropertySetter',
+        infix: ','
+    },
+    '%jsCommaInputs': {
+        type: 'multi',
+        tags: 'static widget',
+        slots: '%n',
+        infix: ',',
+        dflt: [0]
+    },
+    '%jsCommaParms': {
+        type: 'multi',
+        slots: '%t',
+        infix: ','
+    },
+    '%jsVariableSetter': {
+        type: 'block',
+        selector: 'jsVariableSetter'
+    },
+    '%jsPropertySetter': {
+        type: 'block',
+        selector: 'jsPropertySetter'
+    },
+    '%jsOptionalSetting': {
+        type: 'multi',
+        tags: 'static widget',
+        group: '\= %n',
+        dflt: [0],
+        max: 1
+    },
+    '%jsElseHideout': {
+        type: 'multi',
+        label: 'else',
+        slots: '%jsBlockBracesStatement1',
+        tags: 'static widget',
+        max: 1
+    },
+    '%jsElseIf': {
+        type: 'multi',
+        group: 'else if \( %rp \) %jsBlockBracesStatement1',
+        tags: 'static widget'
+    },
+    '%jsAsyncHideout': {
+        type: 'labelString',
+        oldText: '',
+        newText: 'async'
+    },
+    '%jsFunctionOrGenerator': {
+        type: 'labelString',
+        oldText: 'function',
+        newText: 'function*'
+    },
+    '%jsFunctionName': {
+        type: 'multi',
+        slots: '%t',
+        dflt: ['anonymous'],
+        max: 1
+    },
+    '%jsMiscellaneousName': {
+        type: 'input',
+        tags: 'static'
+    },
+    '%jsBool': {
+        type: 'boolean',
+        tags: 'static binary'
+    },
+    '%jsComment': {
+        type: 'text entry',
+        tags: 'static'
+    },
+    '%jsParenthesesGrouping': {
+        type: 'multi',
+        tags: 'static',
+        slots: '%n',
+        infix: '\)\(',
+        dflt: [0],
+        min: 1
     },
 
     // specialized variadic inputs
@@ -1564,7 +1720,8 @@ SyntaxElementMorph.prototype.labelParts = {
         group: 'else if %b %c',
         dflt: [true, null],
         tags: 'static widget'
-    }};
+    }
+};
 
 // SyntaxElementMorph instance creation:
 
@@ -1985,7 +2142,9 @@ SyntaxElementMorph.prototype.labelPart = function (spec) {
             part.isStatic = true;};}; break;
             default: part = new ArgMorph(
             info.kind);}; break;
-        case 'boolean': part = new BooleanSlotMorph; break;
+        case 'boolean': part = new BooleanSlotMorph(null,
+            (((typeof info.tags) === 'string') ? !(((info
+            ).tags).includes('binary')) : true)); break;
             case 'symbol': part = new BlockSymbolMorph((
             info.name === 'flagTheme' ? 'flag' : info.name
             )); part.size = (this.labelSize * (((info.name
@@ -2005,14 +2164,14 @@ SyntaxElementMorph.prototype.labelPart = function (spec) {
         case 'c': part = new CSlotMorph; break;
         case 'script variable': part = new ReporterBlockMorph;
             part.category = 'variables'; part.fixBlockColor();
-            part.selector = 'reportGetVar'; part.setSpec(info.label);
-            part.isDraggable = true; break; case 'ring':
+            part.selector = 'reportGetVar'; part.setSpec(info.label
+            ); part.isDraggable = true; break; case 'block':
             part = SpriteMorph.prototype.blockForSelector(
-            info.selector); part.isDraggable = true; break;
-            case 'ring slot': switch (info.kind) {
-            case 'command':
-               part = new RingCommandSlotMorph;
-               break;
+            info.selector, true); part.isDraggable = (((typeof (
+            info.tags)) === 'string') ? !((info.tags).includes(
+            'static')) : true); break; case 'ring slot': switch (
+            info.kind) {case 'command': part = (
+            new RingCommandSlotMorph); break;
             default:
                part = new RingReporterSlotMorph(
                info.kind === 'predicate');
@@ -3082,7 +3241,7 @@ BlockMorph.prototype.setSpec = function (spec, definition) {
     }; this.parseSpec(spec).forEach((word, idx, arr) => {
         if (word[0] === '%' && (word !== '%br')) {
             inputIdx += 1;
-        }; part = this.labelPart(word);
+        };  part = this.labelPart(word);
         if (isNil(part)) {
             // console.log('could not create label part', word);
             return;
@@ -3091,7 +3250,7 @@ BlockMorph.prototype.setSpec = function (spec, definition) {
                 part instanceof StringMorph)) {
             part.fixLayout();
             part.rerender();
-        }; if (part instanceof RingMorph) {
+        }; if (part instanceof BlockMorph) {
             part.fixBlockColor();
         }; if (part instanceof MultiArgMorph ||
                 part.constructor === CommandSlotMorph ||
@@ -6034,7 +6193,7 @@ CommandBlockMorph.prototype.isStop = function () {if (this.isCustomBlock) {retur
 ); return (['this scene', 'this sprite', 'this script', 'this block', 'all scenes',
 'this scene and restart'].indexOf((choice instanceof Array) && choice[0]) > -1);
 } else {return contains(['doForever', 'doReport', 'removeClone', 'doSwitchToScene',
-'launchError', 'runScript', 'throw', 'JSBlocksReturnStatement'], this.selector);};};};
+'launchError', 'runScript', 'throw', 'jsReturnThrow', 'jsBreakContinue'], this.selector);};};};
 
 // CommandBlockMorph deleting
 
@@ -10039,15 +10198,15 @@ InputSlotMorph.prototype.speakingSpeedMenu = function (searching
 'normal'); dict[localize('slow')] = localize('slow'); dict[
 localize('very slow')] = localize('very slow'); return dict;};
 
-InputSlotMorph.prototype.speakingLanguageMenu = function (searching) {
-var dict = {}; dict[localize('Arabic')] = localize('Arabic'); dict[
+InputSlotMorph.prototype.speakingLanguageMenu = function (searching
+) {var dict = {}; dict[localize('Arabic')] = localize('Arabic'); dict[
 localize('Chinese \(Mandarin\)')] = localize('Chinese \(Mandarin\)');
 dict[localize('Danish')] = localize('Danish'); dict[localize('Dutch')
 ] = localize('Dutch'); dict[localize('English')] = localize('English');
 dict[localize('English \(United States\)')] = localize('English ' + (
 '\(United States\)')); dict[localize('French')] = localize('French');
-dict[localize('German')] = localize('German'); dict[localize('Greek')
-] = localize('Greek'); dict[localize('Hindi')] = localize('Hindi');
+dict[localize('German')] = localize('German'); dict[localize('Greek'
+)] = localize('Greek'); dict[localize('Hindi')] = localize('Hindi');
 dict[localize('Icelandic')] = localize('Icelandic'); dict[localize(
 'Italian')] = localize('Italian'); dict[localize('Japanese')] = (
 localize('Japanese')); dict[localize('Korean')] = localize('Korean');
@@ -10057,22 +10216,19 @@ localize('Portuguese')); dict[localize('Portuguese \(Brazilian\)'
 )] = localize('Portuguese \(Brazilian\)'); dict[localize('Romanian'
 )] = localize('Romanian'); dict[localize('Russian')] = localize(
 'Russian'); dict[localize('Spanish')] = localize('Spanish'); dict[
-localize('Spanish \(Latin American\)')] = localize(('Spanish \('
-) + 'Latin American\)'); dict[localize('Swedish')] = localize(
-'Swedish'); dict[localize('Turkish')] = localize('Turkish'
-); dict[localize('Welsh')] = localize('Welsh');
-return (searching ? dict : {});};
+localize('Spanish \(Latin American\)')] = localize('Spanish \(' + (
+'Latin American\)')); dict[localize('Swedish')] = localize('Swedish'
+); dict[localize('Turkish')] = localize('Turkish'); dict[localize(
+'Welsh')] = localize('Welsh'); return (searching ? dict : {});};
 
-InputSlotMorph.prototype.pianoKeyboardMenu = function (searching
-) {if (searching) {return {};}; var instrument, menu, block = (
-this.parentThatIsA(BlockMorph)); if (block) {instrument = (
-block.scriptTarget()).instrument;}; menu = new PianoMenuMorph(
-this.setContents, this, this.fontSize, instrument); menu.popup(
-world, new Point((this.right() - (menu.width() / 2)), (this
-).bottom())); menu.selectKey(+(this.evaluate()));};
-
-InputSlotMorph.prototype.directionDialMenu = (
-searching => (searching ? {} : {'§_dir': null}));
+InputSlotMorph.prototype.directionDialMenu = (searching => ((searching
+) ? {} : {'§_dir': null})); (InputSlotMorph.prototype.pianoKeyboardMenu
+) = function (searching) {if (searching) {return {};}; var instrument,
+menu, block = this.parentThatIsA(BlockMorph); if (block) {instrument = (
+block.scriptTarget()).instrument;}; menu = new PianoMenuMorph((this
+).setContents, this, this.fontSize, instrument); menu.popup(world,
+new Point((this.right() - (menu.width() / 2)), this.bottom())); (menu
+).selectKey(Math.min(Math.max(asANum(this.evaluate()), 0), 143));};
 
 InputSlotMorph.prototype.audioMenu = function (searching
 ) {var dict = {'volume' : ['volume'], 'note' : ['note'],
@@ -10601,22 +10757,23 @@ BooleanSlotMorph.prototype.isTernary = false;
 
 // BooleanSlotMorph instance creation:
 
-function BooleanSlotMorph(initialValue) {this.init(initialValue);}
+function BooleanSlotMorph(initialValue,
+isTernary) {this.init(initialValue, isTernary);};
 
-BooleanSlotMorph.prototype.init = function (initialValue
-) {this.value = ((typeof initialValue === 'boolean'
-) ? initialValue : null); this.isUnevaluated = (
-false); this.progress = 0; (BooleanSlotMorph.uber
-).init.call(this); this.alpha = 1; this.fixLayout(
-); this.cursorStyle = 'pointer';};
+BooleanSlotMorph.prototype.init = function (initialValue, isTernary
+) {if (!isNil(isTernary)) {this.isTernary = isTernary;}; (this
+).value = ((typeof initialValue === 'boolean') ? (initialValue
+) : null); this.isUnevaluated = false; this.progress = 0; (
+BooleanSlotMorph).uber.init.call(this); this.alpha = 1;
+this.fixLayout(); this.cursorStyle = 'pointer';};
 
 BooleanSlotMorph.prototype.getSpec = function () {
 return (this.isUnevaluated ? '%boolUE' : '%b');};
 
 // BooleanSlotMorph accessing:
 
-BooleanSlotMorph.prototype.evaluate = (
-function () {return this.value;});
+(BooleanSlotMorph.prototype.evaluate
+) = function () {return this.value;};
 
 BooleanSlotMorph.prototype.isEmptySlot = (
 function () {return isNil(this.value);});
@@ -10654,6 +10811,22 @@ BooleanSlotMorph.prototype.toggleValue = function (
             this.rerender();
         },
         () => {
+            this.progress = 2 * (1 - Math.sin(Math.PI / 16));
+            this.rerender();
+        },
+        () => {
+            this.progress = 2;
+            this.rerender();
+        },
+        () => {
+            this.progress = 2 * (1 - Math.sin(Math.PI / 16));
+            this.rerender();
+        },
+        () => {
+            this.progress = 2 * (1 - Math.sin(Math.PI / 8));
+            this.rerender();
+        },
+        () => {
             this.progress = 2 * (1 - Math.sin(Math.PI * 3/16));
             this.rerender();
         },
@@ -10666,7 +10839,7 @@ BooleanSlotMorph.prototype.toggleValue = function (
             this.rerender();
         },
         () => {
-            this.progress = 2 * (1 - Math.sin(Math.PI * 6/16));
+            this.progress = 2 * (1 - Math.sin(Math.PI * 3/8));
             this.rerender();
         },
         () => {
@@ -10676,11 +10849,28 @@ BooleanSlotMorph.prototype.toggleValue = function (
         () => {
             this.progress = 0;
             this.rerender();
-        },]);};
+        },
+        () => {
+            this.progress = 2 * (1 - Math.sin(Math.PI * 7/16));
+            this.rerender();
+        },
+        () => {
+            this.progress = 2 * (1 - Math.sin(Math.PI * 3/8));
+            this.rerender();
+        },
+        () => {
+            this.progress = 2 * (1 - Math.sin(Math.PI * 7/16));
+            this.rerender();
+        },
+        () => {
+            this.progress = 0;
+            this.rerender();
+        }]);};
 
-BooleanSlotMorph.prototype.nextValue = function (
-) {switch (this.value) {case true: return false;
-case false: return null; default: return true;};};
+BooleanSlotMorph.prototype.nextValue = function () {
+if (this.isTernary) {switch (this.value) {case true:
+return false; break; case false: return null; case null:
+return true;};} else {return !(this.value);};};
 
 // BooleanSlotMorph events:
 
@@ -10688,9 +10878,9 @@ BooleanSlotMorph.prototype.mouseClickLeft = function (
 ) {this.toggleValue(); if (isNil(this.value)) {return;
 }; this.reactToSliderEdit();};
 
-BooleanSlotMorph.prototype.mouseEnter = function () {
-if (this.nextValue() === null) {this.progress = -1;
-} else {this.progress = 1;}; this.rerender();};
+BooleanSlotMorph.prototype.mouseEnter = function (
+) {this.progress = ((0.5 - (this.nextValue(
+) === null)) * 2); this.rerender();};
 
 BooleanSlotMorph.prototype.mouseLeave = function (
 ) {this.progress = 0; this.rerender();};
@@ -11681,12 +11871,11 @@ MultiArgMorph.prototype.insertNewInputBefore = function (anInput, contents) {
         this.children.splice(idx, 0, newPart, infix);
     } else {
         this.children.splice(idx, 0, newPart);
-    }
-    newPart.fixLayout();
+    };  newPart.fixLayout();
     if (this.parent instanceof BlockMorph) {
         this.parent.fixLabelColor();
-    }
-    this.fixLayout();
+    };  if (newPart instanceof BlockMorph) {
+    newPart.fixBlockColor();}; this.fixLayout();
     return newPart;
 };
 
@@ -11696,10 +11885,10 @@ MultiArgMorph.prototype.addInput = function (contents) {var len = (this.inputs()
 ).length, newPart = this.labelPart(this.slotSpecFor(len)), value = (isNil(contents
 ) ? this.defaultValueFor(len) : contents), i, name, idx; this.addInfix(); idx = (
 this.children.length - 1); if (!isNil(value)) {newPart.setContents(value);} else if (
-contains(['%scriptVars', '%blockVars', '%commaParms'], this.elementSpec)) {name = '';
-i = idx; if (contains(['%scriptVars', '%commaParms'], this.elementSpec)) {i += 1;};
-if (this.infix) {if (this.elementSpec === '%commaParms') {name = 'input'.concat((
-this.inputs().length + 1).toString());} else {name = ['A','B','C','D','E','F','G',
+contains(['%scriptVars', '%blockVars', '%jsCommaParms'], this.elementSpec)) {name = '';
+i = idx; if (contains(['%scriptVars', '%jsCommaParms'], this.elementSpec)) {i += 1;
+}; if (this.infix) {if (this.elementSpec === '%jsCommaParms') {name = ('parm').concat(
+(this.inputs().length + 1).toString());} else {name = ['A','B','C','D','E','F','G',
 'H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','a','b',
 'c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w',
 'x','y','z'][(this.infix ? (this.inputs()).length : 0)];};} else {while (i > 0) {
@@ -11712,7 +11901,8 @@ localize('value'), localize('index'), localize('list')][idx - 1]);} else {(newPa
 newPart.setContents(localize('key'));}; newPart.parent = this; (this.children
 ).splice(idx, 0, newPart); this.addPostfix(); newPart.fixLayout(); if ((this
 ).parent instanceof BlockMorph) {this.parent.fixLabelColor();}; this.fixLayout(
-); if (this.hidden) {this.hiddenInput = newPart;}; return newPart;};
+); if (this.hidden) {this.hiddenInput = newPart;}; if (newPart instanceof BlockMorph
+) {newPart.fixBlockColor();}; return newPart;};
 
 MultiArgMorph.prototype.addInfix = function () {
     var infix,

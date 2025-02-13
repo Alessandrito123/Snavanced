@@ -234,7 +234,7 @@ IDE_Morph.prototype.init = function (isAutoFill
     this.globalVariables = this.scene.globalVariables;
     this.currentSprite = this.scene.addDefaultSprite();
     this.sprites = this.scene.sprites;
-    this.currentCategory = this.scene.unifiedPalette ? 'unified' : 'motion';
+    this.currentCategory = this.scene.unifiedPalette ? 'unified' : 'other';
     this.currentTab = 'scripts';
     this.logo = null;
     this.controlBar = null;
@@ -4663,8 +4663,7 @@ IDE_Morph.prototype.parseResourceFile = function (text) {
 IDE_Morph.prototype.importLocalFile = function () {
     var inp = document.createElement('input'),
         addingScenes = this.isAddingScenes,
-        myself = this,
-        world = this.world();
+        myself = this;
 
     if (this.filePicker) {
         document.body.removeChild(this.filePicker);
@@ -4710,14 +4709,10 @@ IDE_Morph.prototype.importMedia = function (folderName) {
 
 };
 
-IDE_Morph.prototype.popupMediaImportDialog = function (folderName, items) {
-    var dialog = new DialogBoxMorph().withKey('import' + folderName),
-        frame = new ScrollFrameMorph(),
-        selectedIcon = null,
-        turtle = new SymbolMorph('turtle', 60),
-        myself = this,
-        world = this.world(),
-        handle;
+IDE_Morph.prototype.popupMediaImportDialog = function (folderName, items
+    )  {var dialog = (new DialogBoxMorph).withKey('import' + folderName
+        ), frame = new ScrollFrameMorph, selectedIcon = null, handle,
+        turtle = new SymbolMorph('turtle', 60), myself = this;
 
     frame.acceptsDrops = false;
     frame.contents.acceptsDrops = false;
@@ -4871,7 +4866,7 @@ IDE_Morph.prototype.undeleteSprites = function (pos) {
             ],
             sprite
         )
-    );  menu.popup(this.world(), pos);
+    );  menu.popup(world, pos);
 };
 
 IDE_Morph.prototype.undelete = function (aSprite, pos) {

@@ -37,7 +37,6 @@
     the following list shows the order in which all constructors are
     defined. Use this list to locate code in this document:
 
-        TimerFunction
         SpriteMorph
         SpriteHighlightMorph
         StageMorph
@@ -76,11 +75,9 @@
 
 */
 
-var SpriteMorph, StageMorph, TimerFunction, SpriteBubbleMorph,
+var SpriteMorph, StageMorph, SpriteBubbleMorph,
 Costume, SVG_Costume, CostumeEditorMorph, Sound, Note, Microphone,
 CellMorph, WatcherMorph, StagePrompterMorph, Note, SpriteHighlightMorph;
-
-/* Timer functions */
 
 function TimerFunction () {if (isNil(new.target)) {throw Error(
 'Please use the \"new\" operator.');} else {this.stopNow();};};
@@ -133,17 +130,16 @@ SpriteMorph.uber = PenMorph.prototype;
 
 SpriteMorph.prototype.attributes = ['x position', 'y position', 'direction', 'size', 'costumes', 'costume #', 'volume', 'balance', 'sounds', 'shown?', 'pen down?', 'scripts']; (SpriteMorph.prototype
 ).categories = ['motion', 'motor', 'events', 'control', 'looks', 'sensing', 'sound', 'operators', 'pen', 'variables', 'lists', 'other']; SpriteMorph.prototype.sortedCategories = ['motion', 'motor',
-'looks', 'sound', 'pen', 'events', 'control', 'sensing', 'operators', 'variables', 'lists', 'other']; SpriteMorph.prototype.blockColor = {motion : new Color(74, 108, 212), motor : new Color(49, 72,
-170), looks : new Color(143, 86, 227), sound : new Color(207, 74, 217), pen : new Color(0, 161, 120), events : new Color(200, 131, 48), control : new Color(230, 168, 0), sensing : (new Color(4, 148,
-220)), operators : new Color(98, 194, 19), variables : new Color(243, 118, 29), lists : new Color(217, 77, 17), other: new Color(159, 159, 159), custom : new Color(117, 57, 14), undefined : new Color(
-200, 0, 0)}; SpriteMorph.prototype.customCategories = new Map; SpriteMorph.prototype.allCategories = function () {return this.categories.concat(Array.from(this.customCategories.keys()));}; (SpriteMorph
-).prototype.allSortedCategories = function () {return this.sortedCategories.concat(Array.from(this.customCategories.keys()));}; SpriteMorph.prototype.blockColorFor = function (category) {return (((this
-).blockColor[category]) || (this.customCategories.get(category)) || (this.blockColor.other));}; SpriteMorph.prototype.paletteColor = new Color(55, 55, 55); SpriteMorph.prototype.paletteTextColor = (
-new Color(230, 230, 230)); SpriteMorph.prototype.sliderColor = SpriteMorph.prototype.paletteColor.lighter(30); SpriteMorph.prototype.isCachingPrimitives = true; (SpriteMorph.prototype.enableNesting
-) = true; SpriteMorph.prototype.enableFirstClass = true; SpriteMorph.prototype.showingExtensions = false; SpriteMorph.prototype.useFlatLineEnds = false; SpriteMorph.prototype.penColorModel = 'hsv';
-SpriteMorph.prototype.highlightColor = new Color(250, 200, 130); SpriteMorph.prototype.highlightBorder = 8; SpriteMorph.prototype.bubbleFontSize = 14; SpriteMorph.prototype.bubbleCorner = 10;
-SpriteMorph.prototype.bubbleBorder = 3; SpriteMorph.prototype.bubbleBorderColor = new Color(190, 190, 190); SpriteMorph.prototype.bubbleColor = WHITE; SpriteMorph.prototype.bubbleMaxTextWidth = 130;
-SpriteMorph.prototype.initBlocks = function () {
+'looks', 'sound', 'pen', 'events', 'control', 'sensing', 'operators', 'variables', 'lists', 'other']; SpriteMorph.prototype.blockColor = {motion : new Color(74, 108, 212), motor : new Color(49, 72, 170
+), looks : new Color(143, 86, 227), sound : new Color(207, 74, 217), pen : new Color(0, 161, 120), events : new Color(200, 131, 48), control : new Color(230, 168, 0), sensing : (new Color(4, 148, 220)),
+operators : new Color(98, 194, 19), variables : new Color(243, 118, 29), lists : new Color(217, 77, 17), other: new Color(159, 159, 159), custom : new Color(117, 57, 14), undefined : new Color(200, 0, 0
+), JavaScript: new Color(80, 80, 80)}; SpriteMorph.prototype.customCategories = new Map; SpriteMorph.prototype.allCategories = function () {return this.categories.concat(Array.from(this.customCategories.keys(
+)));}; SpriteMorph.prototype.allSortedCategories = function () {return this.sortedCategories.concat(Array.from(this.customCategories.keys()));}; SpriteMorph.prototype.blockColorFor = function (category) {
+return ((this.blockColor[category]) || (this.customCategories.get(category)) || (this.blockColor.other));}; SpriteMorph.prototype.paletteColor = new Color(55, 55, 55); (SpriteMorph.prototype.paletteTextColor
+) = new Color(230, 230, 230); SpriteMorph.prototype.sliderColor = SpriteMorph.prototype.paletteColor.lighter(30); SpriteMorph.prototype.isCachingPrimitives = true; SpriteMorph.prototype.enableNesting = true;
+SpriteMorph.prototype.enableFirstClass = true; SpriteMorph.prototype.showingExtensions = false; SpriteMorph.prototype.useFlatLineEnds = false; SpriteMorph.prototype.penColorModel = 'hsv'; (SpriteMorph.prototype
+).highlightColor = new Color(250, 200, 130); SpriteMorph.prototype.highlightBorder = 8; SpriteMorph.prototype.bubbleFontSize = 14; SpriteMorph.prototype.bubbleCorner = 10; SpriteMorph.prototype.bubbleBorder = (
+3); SpriteMorph.prototype.bubbleBorderColor = new Color(190, 190, 190); SpriteMorph.prototype.bubbleColor = WHITE; SpriteMorph.prototype.bubbleMaxTextWidth = 130; SpriteMorph.prototype.initBlocks = function () {
 
     SpriteMorph.prototype.blocks = {
         // Motion - Sprite
@@ -1093,7 +1089,7 @@ SpriteMorph.prototype.initBlocks = function () {
             dev: true,
             type: 'command',
             category: 'control',
-            spec: 'debug $arrowDown %cl'
+            spec: 'debug $arrowDown %c'
         },
         reportInPause: {
             type: 'reporter',
@@ -2081,50 +2077,200 @@ SpriteMorph.prototype.initBlocks = function () {
         },
 
         // JavaScript Blocks
-        jsSingleLineComment: {
-            type: 'command',
-            category: 'other',
-            spec: '// %jsMiscellaneousName'
-        },
-        jsMultiLineComment: {
-            type: 'command',
-            category: 'other',
-            spec: '/* \n %jsComment \n */'
-        },
-        jsCurlyBraces: {
+        jsForStatement: {
             type: 'reporter',
-            category: 'other',
+            category: 'JavaScript',
+            spec: 'for %jsAwaitHideout %jsParethesesStatement %jsBlockBracesStatement1'
+        },
+        jsBlockBracesStatement1: {
+            type: 'ring',
+            category: 'JavaScript',
             spec: '\{ %c \}'
         },
-        jsLabeledStatement: {
-            type: 'command',
-            category: 'other',
-            spec: '%s \:'
+        jsBlockBracesStatement2: {
+            type: 'ring',
+            category: 'JavaScript',
+            spec: '\{ %rc \}'
         },
-        test1: {
+        jsParethesesStatement: {
+            type: 'ring',
+            category: 'JavaScript',
+            spec: '\( %rc \)'
+        },
+        jsParenthesesBinding: {
+            type: 'reporter',
+            category: 'JavaScript',
+            spec: '%n \( %n \)',
+            defaults: [0, 0]
+        },
+        jsSemiColonCloser: {
             type: 'command',
-            category: 'other',
+            category: 'JavaScript',
             spec: '%rr \;'
         },
-        test2: {
+        jsLabelPrefixer: {
             type: 'reporter',
-            category: 'other',
-            spec: '%rr \;'
+            category: 'JavaScript',
+            spec: '%t \: %jsBlockBracesStatement1',
+            defaults: ['newLoop']
         },
-        test3: {
-            type: 'reporter',
-            category: 'other',
-            spec: '\( %commaParms \) => %rr'
+        jsBreakContinue: {
+            type: 'command',
+            category: 'JavaScript',
+            spec: '%jsBreakChanging %jsReporterHideout \;'
         },
-        test4: {
-            type: 'reporter',
-            category: 'other',
-            spec: '\( %rr %extraGroup \)'
+        jsReturnThrow: {
+            type: 'command',
+            category: 'JavaScript',
+            spec: '%jsReturnChanging %jsInputHideout \;'
         },
-        test5: {
+        jsVariadicInputsSyntax: {
             type: 'reporter',
-            category: 'other',
-            spec: '%a a'
+            category: 'JavaScript',
+            spec: '%jsCommaInputs'
+        },
+        jsArrayPrimitive: {
+            type: 'reporter',
+            category: 'JavaScript',
+            spec: '\[ %jsCommaInputs \]',
+        },
+        jsVariableTokenSetter: {
+            type: 'reporter',
+            category: 'JavaScript',
+            spec: '%jsVariableMenu %jsVariadicProperties',
+            defaults: ['var']
+        },
+        jsVariableArraySetter: {
+            type: 'reporter',
+            category: 'JavaScript',
+            spec: '%jsVariableMenu %jsArrayPrimitive \= %n',
+            defaults: ['var', null, 0]
+        },
+        jsVariadicIfElse: {
+            type: 'reporter',
+            category: 'JavaScript',
+            spec: 'if \( %rp \) %jsBlockBracesStatement1 %jsElseIf %jsElseHideout'
+        },
+        jsFunctionDefinitor: {
+            type: 'reporter',
+            category: 'JavaScript',
+            spec: '%jsAsyncHideout %jsFunctionOrGenerator %jsFunctionName \( %jsVariadicParameters \) %jsBlockBracesStatement1'
+        },
+        jsClassDefinitor: {
+            type: 'reporter',
+            category: 'JavaScript',
+            spec: 'class %jsFunctionName %jsBlockBracesStatement1'
+        },
+        jsClassFunction: {
+            type: 'reporter',
+            category: 'JavaScript',
+            spec: '%t \( %jsVariadicParameters \) %jsBlockBracesStatement1',
+            defaults: ['unusedFunction']
+        },
+        jsVariableSetter: {
+            type: 'ring',
+            category: 'JavaScript',
+            spec: '%t %jsOptionalSetting',
+            defaults: ['unusedVariable']
+        },
+        jsPropertyAccesor: {
+            type: 'reporter',
+            category: 'JavaScript',
+            spec: '%n \. %jsMiscellaneousName',
+            defaults: [0, 'unusedProperty']
+        },
+        jsComparisonOperator: {
+            type: 'predicate',
+            category: 'JavaScript',
+            spec: '%n %jsComparatorsMenu %n',
+            defaults: [0, '==', 0]
+        },
+        jsTernaryConditional: {
+            type: 'reporter',
+            category: 'JavaScript',
+            spec: '%n \? %n \: %n',
+            defaults: [0, 0, 0]
+        },
+        jsTrueOrFalse: {
+            type: 'predicate',
+            category: 'JavaScript',
+            spec: '%jsBool',
+            defaults: [true]
+        },
+        jsNullOrUndefined: {
+            type: 'reporter',
+            category: 'JavaScript',
+            spec: '%jsNullChanging'
+        },
+        jsSpecialNegator: {
+            type: 'reporter',
+            category: 'JavaScript',
+            spec: '! %n',
+            defaults: [0]
+        },
+        jsSpreadSyntax: {
+            type: 'reporter',
+            category: 'JavaScript',
+            spec: '... %n',
+            defaults: [0]
+        },
+        jsPropertySetter: {
+            type: 'ring',
+            category: 'JavaScript',
+            spec: '%t : %n',
+            defaults: ['unusedProperty', 0]
+        },
+        jsObjectInitializer: {
+            type: 'reporter',
+            category: 'JavaScript',
+            spec: '\{ %jsVariadicAttributes \}'
+        },
+        jsSwitch: {
+            type: 'reporter',
+            category: 'JavaScript',
+            spec: 'switch \( %n \) %jsBlockBracesStatement1',
+            defaults: [0]
+        },
+        jsCaseDefault1: {
+            type: 'command',
+            category: 'JavaScript',
+            spec: '%jsCaseOrDefault \: %c'
+        },
+        jsCaseDefault2: {
+            type: 'command',
+            category: 'JavaScript',
+            spec: '%jsCaseOrDefault \: %rc'
+        },
+        jsWhile: {
+            type: 'reporter',
+            category: 'JavaScript',
+            spec: 'while \( %rp \) %jsBlockBracesStatement1'
+        },
+        jsDoWhile: {
+            type: 'reporter',
+            category: 'JavaScript',
+            spec: 'do %jsBlockBracesStatement1 while \( %rp \) %jsBlockBracesStatement1'
+        },
+        jsWith: {
+            type: 'reporter',
+            category: 'JavaScript',
+            spec: 'with \( %n \) %jsBlockBracesStatement1',
+            defaults: [0]
+        },
+        jsString1: {
+            type: 'reporter',
+            category: 'JavaScript',
+            spec: '\' %jsMiscellaneousName \''
+        },
+        jsString2: {
+            type: 'reporter',
+            category: 'JavaScript',
+            spec: '\" %jsMiscellaneousName \"'
+        },
+        jsString3: {
+            type: 'reporter',
+            category: 'JavaScript',
+            spec: '\` %jsMiscellaneousName \`'
         },
 
         // Obsolete
@@ -3001,8 +3147,13 @@ SpriteMorph.prototype.variableBlock = function (varName, isLocalTemplate) {var b
 // SpriteMorph block templates
 
 SpriteMorph.prototype.subCategoryText = function (text) {var txt = new StringMorph(localize(text)); txt.acceptedFontName = SyntaxElementMorph.prototype.labelFontName; txt.fontSize = (11 + ((
-txt.acceptedFontName === 'blockTokiPonaFont') * 2)); txt.isBold = true; txt.setColor(this.paletteTextColor); txt.fixLayout(); return txt;}; SpriteMorph.prototype.blockTemplates = function (
-category = 'other', all = false) {var blocks = [], myself = this, varNames, inheritedVars = this.inheritedVariableNames(), devMode = world.isDevMode; /* We are sorted correctly. */
+txt.acceptedFontName === 'blockTokiPonaFont') * 2)); txt.isBold = true; txt.setColor(this.paletteTextColor); txt.fixLayout(); return txt;};
+
+SpriteMorph.prototype.blocksByCategory = function (selectedCategory) {return ((Object.keys(SpriteMorph.prototype.blocks)
+).map(value => [value, SpriteMorph.prototype.blocks[value]])).filter(block => ((block[1]).category === selectedCategory));};
+
+SpriteMorph.prototype.blockTemplates = function (category = 'other', all = false) {
+var blocks = [], myself = this, varNames, inheritedVars = this.inheritedVariableNames(), devMode = world.isDevMode; /* We are sorted correctly. */
 
     function block(selector, isGhosted) {
         if (StageMorph.prototype.hiddenPrimitives[selector] && !all) {
@@ -3577,6 +3728,12 @@ category = 'other', all = false) {var blocks = [], myself = this, varNames, inhe
 
     } else if (category === 'other') {
 
+        blocks.push(this.subCategoryText('JavaScript'
+        )); blocks.push('-'); (this.blocksByCategory(
+        'JavaScript')).forEach(x => {blocks.push(
+        block(x[0])); if ((x[1]).type === 'ring') {
+        blocks.push('#');};}); blocks.push('=');
+
         blocks.push(this.makeBlockButton());
         blocks.push(this.chooseExtensionButton());
 
@@ -3602,7 +3759,7 @@ category = 'other', all = false) {var blocks = [], myself = this, varNames, inhe
         };
 
         // for debugging: ///////////////
-        if (this.world().isDevMode) {
+        if (world.isDevMode) {
             blocks.push('-');
             blocks.push(this.devModeText());
         };
@@ -3694,7 +3851,7 @@ SpriteMorph.prototype.deleteVariableButton = function () {
                     true // verbatim - don't translate
                 )
             );
-            menu.popUpAtHand(myself.world());
+            menu.popUpAtHand(world);
         },
         'Delete a variable'
     );
@@ -8590,6 +8747,8 @@ StageMorph.prototype.enableInheritance = true;
 StageMorph.prototype.enableSublistIDs = false;
 StageMorph.prototype.enablePenLogging = false; // for SVG generation
 
+StageMorph.prototype.blocksByCategory = SpriteMorph.prototype.blocksByCategory;
+
 // StageMorph instance creation
 
 function StageMorph (globals) {this.init(globals);};
@@ -10635,31 +10794,33 @@ function Costume(canvas, name, rotationCenter, noFit, maxExtent) {
     this.loaded = null; // for de-serialization only
 };
 
-Costume.prototype.maxExtent = function () {return StageMorph.prototype.dimensions;};
+Costume.prototype.maxExtent = function (
+) {var theWorld = getHiddenVariable('world'
+); return (isNil(theWorld) ? (StageMorph
+).prototype : (world.childThatIsA(IDE_Morph
+)).stage).dimensions;};
 
-Costume.prototype.toString = function () {return 'a Costume(' + this.name + ')';};
+Costume.prototype.toString = function () {
+return 'a Costume(' + this.name + ')';};
 
 // Costume dimensions - all relative
 
-Costume.prototype.extent = function () {
-    return new Point(this.contents.width, this.contents.height);
-};
+Costume.prototype.extent = function (
+) {return new Point((this.contents
+).width, this.contents.height);};
 
-Costume.prototype.center = function () {
-    return this.extent().divideBy(2);
-};
+Costume.prototype.center = function (
+) {return (this.extent()).divideBy(2);};
 
-Costume.prototype.width = function () {
-    return this.contents ? this.contents.width : 0;
-};
+Costume.prototype.width = function () {return (
+this.contents ? this.contents.width : 0);};
 
-Costume.prototype.height = function () {
-    return this.contents ? this.contents.height : 0;
-};
+Costume.prototype.height = function () {return (
+this.contents ? this.contents.height : 0);};
 
-Costume.prototype.bounds = function () {
-    return new Rectangle(0, 0, this.width(), this.height());
-};
+Costume.prototype.bounds = function (
+) {return new Rectangle(0, 0, (this
+).width(), this.height());};
 
 // Costume shrink-wrapping
 
@@ -11317,7 +11478,8 @@ Sound.prototype.toDataURL = function () {return this.audio.src;};
 // Note instance creation
 
 function Note(pitch) {
-    this.pitch = ((pitch === 0) ? 0 : pitch) || 59.760344731969152;
+    if (isNil(pitch)) {pitch = 59.760344731969152;};
+    this.pitch = ((pitch === 0) ? 0 : Math.min(Math.max(pitch, 0), 144));
     this.frequency = null; // alternative for playing a non-note frequency
     this.setupContext(); this.oscillator = null; // the instrument
     this.fader = null; // gain node for suppressing clicks

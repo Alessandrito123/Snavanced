@@ -1325,9 +1325,8 @@ SnapSerializer.prototype.loadInput = function (model, input, block, object) {var
 
 SnapSerializer.prototype.loadValue = function (model, object) {
     // private
-    var v, i, lst, items, el, center, image, name, audio, option, bool, origin,
-    	wish, def,
-        myself = this;
+    var v, i, lst, items, el, center, image, name, audio,
+    option, bool, origin, wish, def, bigdec, myself = this;
 
     function record() {
         if (Object.prototype.hasOwnProperty.call(
@@ -1356,6 +1355,8 @@ SnapSerializer.prototype.loadValue = function (model, object) {
             return this.mediaDict[model.attributes.mediaID];
         }
         throw new Error('expecting a reference id');
+    case 'bigdec':
+        return BigDec(model.contents);
     case 'l':
         option = model.childNamed('option');
         if (option) {
@@ -1369,6 +1370,10 @@ SnapSerializer.prototype.loadValue = function (model, object) {
         if (wish) {
             return this.loadValue(wish);
         }
+        bigdec = model.childNamed('bigdec');
+        if (bigdec) {
+            return this.loadValue(bigdec);
+        }
         return model.contents;
     case 'bool':
         return model.contents === 'true';
@@ -1380,7 +1385,7 @@ SnapSerializer.prototype.loadValue = function (model, object) {
                 record();
                 return v;
             }
-            v = new List();
+            v = new List;
             v.isLinked = true;
             record();
             lst = v;
@@ -1535,7 +1540,7 @@ SnapSerializer.prototype.loadValue = function (model, object) {
         }
         return v;
     case 'costume':
-        center = new Point();
+        center = new Point;
         if (Object.prototype.hasOwnProperty.call(
                 model.attributes,
                 'center-x'
@@ -1650,6 +1655,9 @@ SnapSerializer.prototype.paletteToXML = function (aMap) {
 
 // Generics
 
+BigDec.prototype.toXML = function (serializer) {return (
+serializer.format('<bigdec>%</bigdec>', this.toString()));};
+
 Array.prototype.toXML = function (serializer) {
     return this.reduce(
         (xml, item) => xml + serializer.store(item),
@@ -1685,8 +1693,6 @@ Project.prototype.toXML = function (serializer) {
 };
 
 Scene.prototype.toXML = function (serializer) {
-    var xml;
-
     function code(key) {
         var str = '';
         Object.keys(StageMorph.prototype[key]).forEach(
@@ -1705,7 +1711,7 @@ Scene.prototype.toXML = function (serializer) {
 
     serializer.scene = this; // keep the order of sprites in the corral
 
-    xml = serializer.format(
+    var xml = serializer.format(
         '<scene name="@"%%%%%>' +
             '<notes>$</notes>' +
             '%' +

@@ -60,7 +60,7 @@ TableDialogMorph, StageMorph, SpriteMorph, StagePrompterMorph, Note, modules, is
 Map, isNil, WatcherMorph, List, ListWatcherMorph, alert, console, TableMorph, TableFrameMorph,
 ColorSlotMorph, isSnapObject, newCanvas, Symbol, SVG_Costume, SnapExtensions, AlignmentMorph, TextMorph, Cloud */
 
-var Numeral = function (number, base) {number = asANum(number); numeral = new Number(asANum(number)); numeral.base = base; numeral.textRepresentation = ''; if ((base < 2) || (base > 36)) {
+var Numeral = function (number, base) {number = asANum(number); numeral = new Number(number); numeral.base = base; numeral.textRepresentation = ''; if ((base < 2) || (base > 36)) {
 throw Error('You put in here an illegal base!');}; var dividend = Math.trunc(Math.abs(number)), showChar = (char => ((char < 10) ? char : String.fromCharCode(char + 55)).toString()); while (
 !(dividend < base)) {numeral.textRepresentation = (showChar(dividend % base)).concat(numeral.textRepresentation); dividend = Math.trunc(dividend / base);}; numeral.alphabetic = ((Math.sign(
 number) == -1) ? '-' : '').concat(showChar(dividend), numeral.textRepresentation); numeral.textRepresentation = (numeral.alphabetic).concat('\(', base, '\)'); numeral.isAlphanumerical = true;
@@ -659,14 +659,14 @@ input1, input2) {this.assertType(input1, ['nothing', 'number', 'Boolean']); this
 ).reportBasicXor = function (input1, input2) {return +(Math.abs(Math.sign(Math.abs(input1)) - Math.sign(Math.abs(input2))) > 0);}; Process.prototype.reportNot = function (input) {myself = this; return (((input
 ) instanceof List) ? (input.fullCopy().map(item => myself.reportNot(item))) : asABool(myself.reportBasicNot(input)));}; Process.prototype.reportBasicNot = function (input) {return (1 - Math.sign(Math.abs(input
 )));}; /* Any of the boolean operators are now better. */ Process.prototype.doPauseScript = function (script) {var myself = this; if (!(myself.debugDialog)) {myself.debugDialog = new DialogBoxMorph; (myself
-).debugDialog.setPicture(myself.topBlock.fullImage()); myself.debugDialog.labelString = (myself.blockReceiver()).name + ' ^'; myself.debugDialog.addButton(function () {this.isDestroyed = true; this.destroy(
-);}, new SymbolMorph('pointRight', 12)); myself.debugDialog.addButton(function () {this.isDestroyed = true; this.destroy(); if (script instanceof Context) {myself.doRun(script, new List);};}, new SymbolMorph(
-'stepForward', 12)); myself.debugDialog.addButton(function () {myself.stop(); this.destroy();}, new SymbolMorph('rectangle', 12)); myself.debugDialog.key = ('debug - ' + Date.now()); (myself.debugDialog.process
-) = myself; myself.debugDialog.createLabel(); myself.debugDialog.fixLayout(); myself.debugDialog.popUp(world); myself.isOnDebug = true; myself.pushContext('doYield'); myself.pushContext();} else {if (!((myself
-).debugDialog.isDestroyed)) {myself.pushContext('doYield'); myself.pushContext();} else {myself.debugDialog = null;};};}; Process.prototype.doReport = function (block) {var outer = this.context.outerContext;
-if (this.flashContext()) {return;}; if (this.isClicked && (block.topBlock() === this.topBlock)) {this.isShowingResult = true;}; if (block.partOfCustomCommand) {this.doStopCustomBlock(); this.popContext();
-} else {while (this.context && this.context.tag !== 'exit') {if (this.context.expression === 'doStopWarping') {this.doStopWarping();} else {this.popContext();};}; if (this.context) {if ((this.context
-).expression === 'expectReport') {this.popContext();} else {this.context.tag = null;};};}; this.pushContext(block.inputs()[0], outer); this.context.isCustomCommand = block.partOfCustomCommand;};
+).debugDialog.setPicture(myself.topBlock.fullImage()); myself.debugDialog.labelString = (myself.blockReceiver()).name + ' ^'; myself.debugDialog.addButton(function () {this.isDestroyed = true; this.destroy();
+}, new SymbolMorph('pointRight', 12)); myself.debugDialog.addButton(function () {this.isDestroyed = true; this.destroy(); if (script instanceof BlockMorph) {myself.doRun(myself.reportScript(new List, script
+));};}, new SymbolMorph('stepForward', 12)); myself.debugDialog.addButton(function () {myself.stop(); this.destroy();}, new SymbolMorph('rectangle', 12)); myself.debugDialog.key = ('debug - ' + Date.now());
+myself.debugDialog.process = myself; myself.debugDialog.createLabel(); myself.debugDialog.fixLayout(); myself.debugDialog.popUp(world); myself.isOnDebug = true; myself.pushContext('doYield'); myself.pushContext(
+);} else {if (!(myself.debugDialog.isDestroyed)) {myself.pushContext('doYield'); myself.pushContext();} else {myself.debugDialog = null;};};}; Process.prototype.doReport = function (block) {var outer = (this
+).context.outerContext; if (this.flashContext()) {return;}; if (this.isClicked && (block.topBlock() === this.topBlock)) {this.isShowingResult = true;}; if (block.partOfCustomCommand) {this.doStopCustomBlock(
+); this.popContext();} else {while (this.context && this.context.tag !== 'exit') {if (this.context.expression === 'doStopWarping') {this.doStopWarping();} else {this.popContext();};}; if (this.context) {if (
+this.context.expression === 'expectReport') {this.popContext();} else {this.context.tag = null;};};}; this.pushContext(block.inputs()[0], outer); this.context.isCustomCommand = block.partOfCustomCommand;};
 
 // Process: Non-Block evaluation
 
@@ -813,16 +813,15 @@ Process.prototype.evaluateSequence = function (arr) {
 
 Process.prototype.evaluateNextInput = function (element) {
     var nxt = this.context.inputs.length,
-        args = element.inputs(),
-        exp = args[nxt],
+        args = element.inputs(), exp = args[nxt],
         sel = this.context.expression.selector,
         outer = this.context.outerContext; // for tail call elimination
 
     if (exp.isUnevaluated) {
         if ((exp.isUnevaluated === true) || exp.isUnevaluated()) {
             this.context.addInput(contains(['reportScript', 'reify', 'reifyScript',
-            'reifyReporter', 'reifyPredicate'], sel) ? exp : this.reify(exp, new List));
-        } else {this.pushContext(exp, outer);};
+            'reifyReporter', 'reifyPredicate'], sel) ? exp : this.reify(exp,
+            new List));} else {this.pushContext(exp, outer);};
     } else {this.pushContext(exp, outer);};};
 
 Process.prototype.evaluateNextInputSet = function (element) {
@@ -841,8 +840,8 @@ Process.prototype.evaluateNextInputSet = function (element) {
             if (exp.isUnevaluated === true || exp.isUnevaluated()) {
                 this.context.addInput(contains(['reportScript', 'reify', 'reifyScript',
                 'reifyReporter', 'reifyPredicate'], sel) ? exp : this.reify(exp,
-                new List));} else {this.pushContext(exp, outer); break;};
-        } else {
+                new List));} else {this.pushContext(exp, outer);
+            break;};} else {
             if (exp instanceof MultiArgMorph || exp instanceof ArgLabelMorph ||
                     exp instanceof BlockMorph) {
                  this.pushContext(exp, outer);
@@ -992,9 +991,9 @@ percent / 100))));};
 Process.prototype.createCategory = function (name, color) {if (!(world.children[0].currentSprite.customCategories.get(name))) {world.children[0].addPaletteCategory(name, color)}}; Process.prototype.renameCategory
 = function (oldName, newName) {var ide = world.children[0], ctg = ide.currentSprite.customCategories; if (ctg.has(oldName) && !ctg.has(newName)) {var col = ctg.get(oldName); ide.addPaletteCategory(newName, col);
 ide.stage.globalBlocks.forEach(def => {if (def.category === oldName) {def.category = newName; ide.currentSprite.allBlockInstances(def).reverse().forEach(block => block.refresh());}}); ide.sprites.asArray().concat(
-ide.stage).forEach(obj => {obj.customBlocks.forEach(def => {if (def.category === oldName) {def.category = newName; obj.allDependentInvocationsOf(def.blockSpec()).reverse().forEach(block => block.refresh(def));
-}});}); SpriteMorph.prototype.customCategories.delete(oldName); ide.createCategories(); ide.createPaletteHandle(); ide.categories.fixLayout(); ide.flushPaletteCache(); ide.refreshPalette(true); ide.categories.
-refreshEmpty(); ide.fixLayout(); ide.recordUnsavedChanges(); if (ide.currentCategory === oldName) {ide.currentCategory = newName;}; ide.categories.children.forEach(function (each) {each.refresh();}); (ide
+ide.stage).forEach(obj => {obj.customBlocks.forEach(def => {if (def.category === oldName) {def.category = newName; obj.allDependentInvocationsOf(def.blockSpec()).reverse().forEach(block => block.refresh(def));};
+});}); SpriteMorph.prototype.customCategories.delete(oldName); ide.createCategories(); ide.createPaletteHandle(); ide.categories.fixLayout(); ide.flushPaletteCache(); ide.refreshPalette(true); (ide.categories
+).refreshEmpty(); ide.fixLayout(); ide.recordUnsavedChanges(); if (ide.currentCategory === oldName) {ide.currentCategory = newName;}; ide.categories.children.forEach(function (each) {each.refresh();}); (ide
 ).refreshPalette(true); ide.savingPreferences = true;};}; Process.prototype.setCategoryColor = function (name, color) {var ide = world.children[0], ctg = ide.currentSprite.customCategories; if (ctg.has(name
 )) {ctg.set(name, color); ide.createCategories(); ide.createPaletteHandle(); ide.categories.fixLayout(); ide.flushPaletteCache(); ide.refreshPalette(true); ide.categories.refreshEmpty(); ide.fixLayout(); (ide
 ).recordUnsavedChanges(); var def = ide.stage.globalBlocks; def = def.filter(block => {return block.category === name;}); def.map(def => {ide.currentSprite.allBlockInstances(def).map(block => block.refresh());}
@@ -1002,23 +1001,23 @@ refreshEmpty(); ide.fixLayout(); ide.recordUnsavedChanges(); if (ide.currentCate
 '');}; Process.prototype.reportListCopy = function (list, copies) {this.assertType(list, 'list'); var backup = list.fullCopy().asArray(), result = [], iCopy = 0; while (iCopy < +copies) {iCount = 0; while ((iCount
 ) < backup.length) {result.push(backup[iCount]); iCount++;}; iCopy++;}; return new List(result); /* Copy. */}; Process.prototype.reportJSFunction = function (parmNames, body) {if (!this.enableJS) {throw new Error(
 'JavaScript extensions for Snap!\nare turned off');}; return Function.apply(null, parmNames.itemsArray().concat([body]));}; Process.prototype.doRun = function (context, args, root) {return this.evaluate(context,
-args, true, root);}; Process.prototype.evaluate = function (context, args, isCommand, root) {if (isNil(args)) {args = new List;}; if (isNil(isCommand)) {isCommand = false;}; var myself = this; if ((root
-) instanceof BlockMorph) {myself.root = root;}; if (!(context)) {return myself.returnValueToParentContext('');} else if (context instanceof Function) {if (myself.enableJS) {return context.apply((myself
-).blockReceiver(), args.itemsArray().concat([myself]));} else {throw Error('JavaScript extensions for Snap!\nare turned off');};} else if (context.isContinuation) {return myself.runContinuation(context,
-args);} else if (context instanceof List) {return myself.hyperEval(context, args);} else if (context instanceof Context) {var argsCopy = args.fullCopy().asArray(); if ((!context.isContinuation) && (
-context.expression instanceof Array) && (context.inputs.length === 0)) {if (argsCopy.length > 1) {throw Error(localize('expecting') + ' ' + localize('1 input, but getting') + ' ' + argsCopy.length);
-} else if (argsCopy.length === 1) {return argsCopy[0];} else {return context;};};} else {throw Error('expecting a lambda but getting ' + context);}; var outer = new Context(null, null, context.outerContext),
-caller = myself.context.parentContext, cont = myself.context.rawContinuation(!isCommand), parms = args.itemsArray(), csym = Symbol.for('caller'), lastCaller = myself.context.variables.silentFind(csym), exit,
-value, i, runnable, expr; if (!isNil(lastCaller)) {lastCaller = (applyingToExecuteOrToAcess('vars', lastCaller)[csym]).value;}; function isRecursiveCall () {return (isNil(lastCaller) ? false : (((lastCaller
-) instanceof Context) ? (myself.context.expression === lastCaller.expression) : false));}; if (!(outer.receiver)) {outer.receiver = context.receiver;}; runnable = new Context(myself.context.parentContext,
-context.expression, outer, context.receiver); runnable.isCustomCommand = isCommand; myself.context.parentContext = runnable; if (context.expression instanceof ReporterBlockMorph) {myself.readyToYield = (
-myself.currentTime - myself.lastYield > myself.timeout);}; outer.variables.addVar(Symbol.for('self'), context); outer.variables.addVar(Symbol.for('continuation'), cont); outer.variables.addVar(csym, (
-isRecursiveCall() ? lastCaller : myself.context)); outer.variables.addVar(Symbol.for('arguments'), args); for (i = 0; i < context.inputs.length; i += 1) {value = 0; if (!isNil(parms[i])) {value = parms[
-i];}; outer.variables.addVar(context.inputs[i], value);}; if (context.inputs.length === 0) {if (parms.length === 1) {if (!(context.emptySlots)) {expr = context.expression; if (expr instanceof Array && (
-expr.length === 1) && expr[0].selector && ((['reify', 'reifyReporter', 'reifyPredicate']).includes((expr[0]).selector)) && !((expr[0]).contents())) {runnable.expression = new Variable(parms[0]);};} else {
-for (i = 1; i <= context.emptySlots; i += 1) {outer.variables.addVar(i, parms[0]);};};} else {for (i = 1; i <= parms.length; i += 1) {outer.variables.addVar(i, parms[i - 1]);};};}; if ((runnable.expression
-) instanceof CommandBlockMorph) {runnable.expression = runnable.expression.metaSequence(); if (!isCommand) {if (caller) {caller.tag = 'exit';} else {exit = new Context(runnable.parentContext, 'expectReport',
-outer, outer.receiver); exit.tag = 'exit'; runnable.parentContext = exit;};};};};
+args, true, root);}; Process.prototype.evaluate = function (context, args, isCommand, root) {if (isNil(args)) {args = new List;}; if (isNil(isCommand)) {isCommand = false;}; var myself = this; if (root instanceof (BlockMorph)) {myself.root = root;}; if (!(context)) {return myself.returnValueToParentContext(null);} else if (context instanceof Function) {if (myself.enableJS) {return context.apply(myself.blockReceiver(),
+args.itemsArray().concat([myself]));} else {throw Error('JavaScript extensions for Snap!\nare turned off');};} else if (context.isContinuation) {return myself.runContinuation(context, args);} else if (context instanceof List) {return myself.hyperEval(context, args);} else if (context instanceof Context) {var argsCopy = args.fullCopy().asArray(); if ((!context.isContinuation) && (context.expression instanceof Array
+) && (context.inputs.length === 0)) {if (argsCopy.length > 1) {throw Error(localize('expecting') + ' ' + localize('1 input, but getting') + ' ' + argsCopy.length);} else if (argsCopy.length === 1) {return (
+argsCopy[0]);} else {return context;};};} else {throw Error('expecting a lambda but getting ' + context);}; var outer = new Context(null, null, context.outerContext), caller = myself.context.parentContext,
+cont = myself.context.rawContinuation(!isCommand), parms = args.itemsArray(), csym = Symbol.for('caller'), lastCaller = myself.context.variables.silentFind(csym), exit, value, i, runnable, expr; if (!isNil(
+lastCaller)) {lastCaller = (applyingToExecuteOrToAcess('vars', lastCaller)[csym]).value;}; function isRecursiveCall () {return (isNil(lastCaller) ? false : ((lastCaller instanceof Context) ? ((myself.context
+).expression === lastCaller.expression) : false));}; if (!(outer.receiver)) {outer.receiver = context.receiver;}; runnable = new Context(myself.context.parentContext, context.expression, outer, context.receiver
+); runnable.isCustomCommand = isCommand; myself.context.parentContext = runnable; if (context.expression instanceof ReporterBlockMorph) {myself.readyToYield = ((myself.currentTime - myself.lastYield) > (myself
+).timeout);}; outer.variables.addVar(Symbol.for('self'), context); outer.variables.addVar(Symbol.for('continuation'), cont); outer.variables.addVar(csym, (isRecursiveCall() ? lastCaller : myself.context));
+outer.variables.addVar(Symbol.for('arguments'), args); for (i = 0; i < context.inputs.length; i += 1) {value = null; if (!isNil(parms[i])) {value = parms[i];}; outer.variables.addVar(context.inputs[i], value
+);}; if (context.inputs.length === 0) {if (parms.length === 1) {if (!(context.emptySlots)) {expr = context.expression; if (expr instanceof Array && (expr.length === 1) && expr[0].selector && ((['reify',
+'reifyReporter', 'reifyPredicate']).includes((expr[0]).selector)) && !((expr[0]).contents())) {runnable.expression = new Variable(parms[0]);};} else {for (i = 1; i <= context.emptySlots; i += 1) {(outer
+).variables.addVar(i, parms[0]);};};} else {for (i = 1; i <= parms.length; i += 1) {outer.variables.addVar(i, parms[i - 1]);};};}; if (runnable.expression instanceof CommandBlockMorph) {(runnable.expression
+) = runnable.expression.metaSequence(); if (!isCommand) {if (caller) {caller.tag = 'exit';} else {exit = new Context(runnable.parentContext, 'expectReport', outer, outer.receiver); exit.tag = 'exit'; (runnable
+).parentContext = exit;};};};}; Process.prototype.fork = function (context, args) {if (context instanceof Context) {if (this.readyToTerminate) {return;}; var proc = new Process, stage = (this.homeContext.receiver
+).parentThatIsA(StageMorph); proc.instrument = this.instrument; proc.receiver = this.receiver; proc.initializeFor(context, args); stage.threads.processes.push(proc);} else if (context instanceof Function) {
+throw Error('Forking JavaScript functions is not available.\nIf do you want to launch one,\nplease put it in a \"\[run\] %cmd\" block\nand put them in the launch %cmd block.');};}; /* Redirecting null inputs. */
 
 Process.prototype.hyperEval = function (context, args) {
     // hyper-monadic deep-map
@@ -1029,8 +1028,8 @@ Process.prototype.hyperEval = function (context, args) {
         argsBlock = this.assertType(args, 'JSON').blockify(),
         funArg;
 
-    callBlock.replaceInput(callBlock.inputs()[0], varBlock);
-    callBlock.replaceInput(callBlock.inputs()[1], argsBlock);
+    callBlock.replaceInput((callBlock.inputs())[0], varBlock);
+    callBlock.replaceInput((callBlock.inputs())[1], argsBlock);
     funArg = this.reify(callBlock, new List(['fn']));
 
     this.popContext();
@@ -1038,10 +1037,6 @@ Process.prototype.hyperEval = function (context, args) {
     this.context.inputs = [funArg, context];
     this.pushContext();
 };
-
-Process.prototype.fork = function (context, args) {if (context instanceof Context) {if (this.readyToTerminate) {return;}; var proc = new Process, stage = this.homeContext.receiver.parentThatIsA(
-StageMorph); proc.instrument = this.instrument; proc.receiver = this.receiver; proc.initializeFor(context, args); stage.threads.processes.push(proc);} else if (context instanceof Function) {
-throw Error('Forking JavaScript functions is not available.\nIf do you want to launch one,\nplease put it in a \"\[run\] %cmd\" block\nand put them in the launch %cmd block.');};};
 
 Process.prototype.initializeFor = function (context, args) {
     // used by Process.fork() and global invoke()
@@ -1077,7 +1072,7 @@ Process.prototype.initializeFor = function (context, args) {
 
         // assign formal parameters
         for (i = 0; i < context.inputs.length; i += 1) {
-            value = 0;
+            value = null;
             if (!isNil(parms[i])) {
                 value = parms[i];
             }; outer.variables.addVar(context.inputs[i], value);
@@ -1239,8 +1234,7 @@ Process.prototype.evaluateCustomBlock = function () {
     if (parms.length > 0) {
         // assign formal parameters
         for (i = 0; i < context.inputs.length; i += 1) {
-            value = null; if (!isNil(parms[i])) {
-                value = parms[i];
+            value = null; if (!isNil(parms[i])) {value = parms[i];
             }; outer.variables.addVar(context.inputs[i], value);
 
             // if the parameter is an upvar,
@@ -4886,9 +4880,9 @@ this.context.costumeDialog = this.context.costumeDialog.replacement; this.pushCo
 this.pushContext();};} else {var slctdCst = this.costumeNamed(input); if (slctdCst instanceof Costume) {this.context.costumeDialog = slctdCst.edit(world, world.childThatIsA(IDE_Morph), false, nop,
 nop, true); this.pushContext('doYield'); this.pushContext();};};}; /* Edits the costume and waits until the editor's dialog is closed. This function works with no problem. Try it for fun!!! :-) */
 
-Process.prototype.reportBlockAttribute = function (attribute, block) {return this.hyperDyadic((att, obj) => this.reportBasicBlockAttribute(att, obj), attribute, block);};
-Process.prototype.reportBasicBlockAttribute = function (attribute, block) {
-    var choice = this.inputOption(attribute), expr = block.expression, myself = this; this.assertType(block, ['command', 'reporter', 'predicate']);
+Process.prototype.reportBlockAttribute = function (attribute, block) {return this.hyperDyadic((att, obj) => this.reportBasicBlockAttribute(att, obj), attribute,
+block);}; Process.prototype.reportBasicBlockAttribute = function (attribute, block) {var choice = this.inputOption(attribute), expr = ((block instanceof Context
+) ? block.expression : null), myself = this; if (!(choice === 'sequence')) {this.assertType(block, ['command', 'reporter', 'predicate']);};
     switch (choice) {
     case 'spec':
         return (expr ? expr.blockSpec : '');
@@ -4913,6 +4907,7 @@ Process.prototype.reportBasicBlockAttribute = function (attribute, block) {
         ).map(each => new List([each[0], each[1].value])));
         break;
     case 'sequence':
+        if (expr instanceof BlockMorph) {
         var result = (expr.fullCopy()).metaSequence(); if (!(
         result instanceof Array)) {result = [result];}; if (
         result[0] instanceof ReporterBlockMorph) {return (
@@ -4922,7 +4917,8 @@ Process.prototype.reportBasicBlockAttribute = function (attribute, block) {
         child instanceof CommandBlockMorph) {
         block.removeChild(child);};});
         return myself.reportScript(
-        null, block);});}; break;
+        null, block);});};} else {
+        return new List;}; break;
     case 'selector':
         return (expr ? expr.selector : '');
         break;
@@ -5083,7 +5079,7 @@ Process.prototype.reportBasicBlockAttribute = function (attribute, block) {
             def = (expr.isGlobal ?
                 expr.definition
                 : this.blockReceiver().getMethod(expr.semanticSpec));
-            loc = new List();
+            loc = new List;
             Object.keys(def.translations).forEach(lang =>
                 loc.add(new List([lang, def.translations[lang]]))
             );
@@ -5654,10 +5650,8 @@ Process.prototype.reportBasicAttributeOf = function (attribute, name) {var thisO
 ).blockReceiver(), thatObj, stage; if ((name instanceof Context) && (attribute instanceof (
 Context))) {if ((applyingToExecuteOrToAcess('expression', attribute, [])).selector === (
 'reportEnvironment')) {this.returnValueToParentContext(this.reportEnvironment((((attribute
-).expression.inputs())[0]).evaluate(), name)); return;}; return this.reportContextFor(
-attribute, name);}; if (thisObj) {
-        this.assertAlive(thisObj);
-        stage = thisObj.parentThatIsA(StageMorph);
+).expression.inputs())[0]).evaluate(), name));} else {return this.reportContextFor(attribute,
+name);};}; if (thisObj) {this.assertAlive(thisObj); stage = thisObj.parentThatIsA(StageMorph);
         if (name instanceof Context) {
             thatObj = name;
         } else if (stage.name === name) {
@@ -5670,9 +5664,9 @@ attribute, name);}; if (thisObj) {
             if (attribute instanceof BlockMorph) { // a "wish"
             	return this.reportContextFor(
              	   this.reify(
-                		thatObj.getMethod(attribute.semanticSpec)
-                        	.blockInstance(),
-                		new List()
+                		thatObj.getMethod(attribute.semanticSpec
+                         ).blockInstance(),
+                		new List
                 	),
                  	thatObj
                 );
@@ -6517,14 +6511,8 @@ Process.prototype.getVarNamed = function (name) {
     // DO NOT use except in compiled methods!
     // first check script vars, then global ones
     var frame = this.homeContext.variables.silentFind(name) ||
-            this.context.variables.silentFind(name),
-        value;  if (frame) {
-        value = frame.vars[name].value;
-        return (value === 0 ? 0
-                : value === false ? false
-                        : value === '' ? ''
-                            : value || 0); // don't return null
-    };  this.variableError(name);};
+        this.context.variables.silentFind(name); return ((frame
+        ) ? frame.vars[name].value : this.variableError(name));};
 
 Process.prototype.setVarNamed = function (name, value) {
     // private - special form for compiled expressions
@@ -6535,7 +6523,7 @@ Process.prototype.setVarNamed = function (name, value) {
             this.context.variables.silentFind(name);
     if (isNil(frame)) {
         this.variableError(name);
-    };  frame.vars[name].value = value;};
+    };  frame.vars[name].value = (isNil(value) ? null : value);};
 
 Process.prototype.incrementVarNamed = function (name, delta) {
 this.setVarNamed(name, +(this.getVarNamed(name)) + (+delta));};
@@ -7140,7 +7128,7 @@ return this.expression.copyWithNext(next.expression, this.inputs.slice());
 
 // Variable /////////////////////////////////////////////////////////////////
 
-function Variable(value, isTransient, isHidden) {this.value = value; this.isTransient = asABool(isTransient); this.isHidden = asABool(isHidden);};
+function Variable(value, isTransient, isHidden) {this.value = (isNil(value) ? null : value); this.isTransient = asABool(isTransient); this.isHidden = asABool(isHidden);};
 
 Variable.prototype.toString = function () {return 'a ' + (this.isTransient ? 'transient ' : '') + (this.isHidden ? 'hidden ' : '') + 'Variable [' + this.value + ']';};
 
@@ -7256,7 +7244,7 @@ VariableFrame.prototype.setVar = function (name, value, sender) {
                 (sender !== frame.owner)) {
             sender.shadowVar(name, value);
         } else {
-            frame.vars[name].value = value;
+            frame.vars[name].value = (isNil(value) ? null : value);
         }
     }
 };
@@ -7316,11 +7304,7 @@ VariableFrame.prototype.getVar = function (name, proc) {
             }
             return value;
         }
-        value = frame.vars[name].value;
-        return (value === 0 ? 0
-                : value === false ? false
-                        : value === '' ? ''
-                            : value || 0); // don't return null
+        return frame.vars[name].value;
     }
     if (typeof name === 'number') {
         // empty input with a Binding-ID called without an argument
@@ -7329,11 +7313,8 @@ VariableFrame.prototype.getVar = function (name, proc) {
     this.variableError(name);
 };
 
-VariableFrame.prototype.addVar = function (name, value) {
-    this.vars[name] = new Variable(value === 0 ? 0
-              : value === false ? false
-                       : value === '' ? '' : value || 0);
-};
+VariableFrame.prototype.addVar = function (name,
+value) {this.vars[name] = new Variable(value);};
 
 VariableFrame.prototype.deleteVar = function (name) {
     var frame = this.find(name);
